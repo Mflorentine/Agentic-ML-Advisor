@@ -54,7 +54,7 @@ uv add <package>                 # add a dependency, updating uv.lock
 
 | Component | Version |
 | --- | --- |
-| Python | 3.12.13 |
+| Python | 3.12.15 |
 | pandas | 3.0.5 |
 | numpy | 2.5.2 |
 | scipy | 1.18.1 |

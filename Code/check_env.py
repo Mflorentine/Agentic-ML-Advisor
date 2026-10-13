@@ -24,6 +24,7 @@ REQUIRED = [
     ("statsmodels", "statsmodels"),
     ("matplotlib", "matplotlib"),
     ("seaborn", "seaborn"),
+    ("sklearn", "scikit-learn"),
 ]
 
 
