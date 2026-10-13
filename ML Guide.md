@@ -4,7 +4,9 @@ A working guide to choosing, training and evaluating a supervised machine learni
 
 This is a set of notes written in our own words, not a substitute for the book. Every entry gives the printed page number it rests on, so the claim can be checked. **Printed page = PDF page − 10** (chapter 2 starts on printed p. 15, PDF p. 25). Where a line is our own inference or practice rather than something the book says, it is marked *(not from the book)*.
 
-The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours.
+The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours. **Part III (sections 24–25) fixes the record formats** the advisor writes into `Appendix.md`: the Decision Record and the Recommendation Report.
+
+**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
 
 **Scope.** Only chapters 2, 3, 4 and 13. Every other method — L1/LASSO included — is flagged and not used (section 23).
 
@@ -604,3 +606,294 @@ Every number below is ours (`[I]`). Each is reported in the Decision Record wher
 | O3 / O4 | Overfitting / underfitting ratios | gap ≥ 2 × E_train / E_train ≥ 2 × gap |
 | O5 | Grid edge | most outer folds |
 | S3 / S6 | No-gain passes / maximum passes | 2 / 5 |
+
+# Part III — Record formats
+
+Part III fixes the two formats the advisor writes into `Appendix.md`: the Decision Record (§24) and the Recommendation Report (§25). They change together with Part II and the deterministic core, under `FRAMEWORK`. The advisor evaluation parses them, so field names and their order are fixed.
+
+## 24. Decision Record
+
+A Decision Record (DR) is the unit of the advisor's reasoning trace. Every decision the advisor makes is written as one DR at the time it is made — about admissibility, the formulation, the properties, the admissible set, the prior, a cross-validation round, a diagnosis pass, the recommendation, or a flag. Together the DRs form the trace that the Recommendation Report points to.
+
+### 24.1 Where they live
+
+- **Location.** The `Decision Records` section of `Appendix.md`, after `Analysis` and before `Recommendation`.
+- **One copy.** The Markdown in `Appendix.md` is the only copy.
+- **Relation to the Analysis Log.** The Analysis Log keeps one numbered row per step taken. A row that involved a decision names its DR IDs: the log says what was done, the DR says why.
+
+### 24.2 Types
+
+| Type | Written when | Guide | Workflow step |
+| --- | --- | --- | --- |
+| `ADM` | Each admissibility question (ADM-1 … ADM-4) is answered. One DR per question. | §10 | 1–2 |
+| `FORM` | The formulation is agreed: y, x, P1, metric, success criterion, baseline, achievable level, must-haves (P5, P6), expectations (P7, P8) | §11, §12 | 2 |
+| `SPLIT` | The train/test split is fixed (random or grouped, with its seed) and the test set locked | §10 (ADM-3), §16 | 2 |
+| `PROP` | The property values P1–P10 are recorded: P1–P8 in step 2; P9–P10 from training data in step 3, in a new `PROP` DR that supersedes the first | §11 | 2–3 |
+| `ADMSET` | The admissible set is built: task gate, must-haves, MOD-1, MOD-2 | §9, §12 | 4 |
+| `PRIOR` | The prior ranking is made, **before any training** | §13, §15 | 4 |
+| `CV` | A cross-validation round is completed. Round 1 is always the baseline and the simple-first configuration (SEQ-3); round 2 the other kept configurations; later rounds come from the diagnosis loop. | §14, §16 | 4 |
+| `DX` | Each pass of the diagnosis loop | §18 | 4 |
+| `FINAL` | The recommendation rule is applied and the single test-set evaluation made | §17, §19 | 4 |
+| `FLAG` | The evidence suggests a method outside the solution space might help | §20, §23 | any |
+
+### 24.3 Fields
+
+Fields appear in this order. A field that does not apply is written `n/a`, never left out, so a missing field can be told apart from one that does not apply.
+
+| Field | Content | Rules |
+| --- | --- | --- |
+| **ID** | `DR-01`, `DR-02`, … | Numbered in the order written; never renumbered |
+| **Type** | One of the types in §24.2 | |
+| **Step** | Workflow step 1–8 | |
+| **Sub-task** | The sub-task from step 2 it belongs to | |
+| **Date** | ISO date | |
+| **Question** | The decision that had to be made, as one question | Must be answerable from the evidence listed |
+| **Evidence** | Table: item · value · evidence tag · where | Evidence tag: `M`, `T`, `CV` or `TEST` (§8). "Where" names the output file, the metadata field, or the user's statement (quoted). |
+| **Rules applied** | Table: rule ID · result · provenance · effect | IDs from this guide: `ADM-n`, `Pn`, task gate, `MOD-n`, `REQ-n`, `SEQ-n`, matrix entries written `Pn=value→column` (e.g. `P1=count→GLM`), `On`, `DX-n`, `Sn`, `C1`–`C3`, §19 steps. Provenance `[B p.x]`, `[B→I p.x]` or `[I]`, copied from this guide. A rule not in the guide is written `UNLISTED [I]` with its wording. |
+| **Thresholds applied** | Table: threshold · value used · value compared | Every `[I]` threshold the decision used (Appendix to Part II), with the actual number it was compared against |
+| **Options considered** | Structural configurations or actions | Configurations named as in §9, e.g. `Logistic + poly + L2`; diagnosis-loop additions marked `post-prior` |
+| **Expectation** | What the advisor expects the next result to show, and why | Required for `PRIOR` and `DX`: the expected CV order, or the expected effect of the action. `n/a` otherwise. |
+| **Decision** | What was chosen | One sentence |
+| **Why not** | Table: configuration · code · evidence | Codes in priority order: `EXCL`, `USER`, `DISF`, `BASE`, `OUTP`, `SIMP` (§20). In `ADMSET` and `PRIOR`, every configuration removed or not kept. In `FINAL`, **all 14 structural configurations** except the one recommended, each with exactly one code. |
+| **Confidence** | `FINAL` only | Selection confidence High / Medium / Low, with C1, C2, C3 and the rule applied (§17). Alongside, not combined: prior agreement (agree / partial / disagree); grounding (count of `[B]` / `[B→I]` / `[I]` entries behind the recommendation's prior score); breadth note (yes / no, with the number of configurations compared). No probabilities. |
+| **Outcome vs expectation** | Filled in by the later DR that tests the expectation | e.g. the round-2 `CV` DR fills it in on the `PRIOR` DR; the `CV` DR after a `DX` fills it in on that `DX`. The original DR is edited only in this field. |
+| **User involvement** | none · informed · asked · approved | If asked or approved, quote the user's answer |
+| **Supersedes / superseded by** | DR IDs | A superseded DR stays in place, marked, as the contract requires for reversed decisions |
+| **Links** | Code and output files | Paths relative to the vault root |
+
+### 24.4 Extra fields by type
+
+| Type | Extra field | Content |
+| --- | --- | --- |
+| `CV` | **CV table** | One row per configuration in the round: configuration · post-prior (yes/no) · tuned hyperparameters (most common across outer folds) · CV mean · margin vs leader with spread · margin vs baseline with spread · E_train · E_val. Folds: outer 10, inner 5; seed. |
+| `DX` | **Observation → action** | Which of O1–O6 held, with its test values; which action DX-1 … DX-10 followed; and which observations were checked and did not hold |
+| `DX` | **Stopping check** | S1–S6: whether any applies |
+| `FINAL` | **§19 trace** | Eligible configurations → candidates (within the "none" margin) → choice (add-on count, then prior score, then CV mean) → test result |
+| `FLAG` | **Flag** | Method · chapter (§23) · the evidence suggesting it might help · the statement that it was not applied or tested |
+| `ADMSET`, `PRIOR`, `CV`, `FINAL` | **Reference code** | The function called, the code version (commit hash), the inputs passed (property values, CV settings), and the output file. Outputs are copied unchanged. Any disagreement by the agent is written here and raised with the user, not substituted (§7). |
+
+### 24.5 Validity checks
+
+Applied by the advisor before writing a DR, in the step 7 read-through, and by the advisor evaluation afterwards.
+
+1. Every rule ID and matrix entry exists in the guide version in use, with the same provenance tag.
+2. Every `[B p.x]` and `[B→I p.x]` has a page within chapters 2, 3, 4 or 13. *(The exact printed page ranges of the four chapters are still to be recorded in this guide.)*
+3. `TEST` evidence appears only in `FINAL`. There is one `FINAL` per sub-task, unless a superseded one is marked.
+4. `T` evidence never appears in a DR from step 2.
+5. **P8 evidence is always `M`, with the user's or the domain source's words quoted.** It is never `T` or `CV`.
+6. `PRIOR` comes before the first `CV` DR. The round-1 `CV` DR contains only the baseline and the simple-first configuration.
+7. Every option considered is either the decision or has a why-not code. The `FINAL` why-not table covers all 14 structural configurations.
+8. The admissible set, prior ranking, CV table, confidence level and recommendation in the DRs are identical to the reference code's recorded output, and the inputs passed to it match the property values in the `PROP` DR.
+9. Every `[I]` threshold used appears under *Thresholds applied*.
+
+### 24.6 Template
+
+```markdown
+### DR-NN · TYPE · step N
+
+- **Sub-task:** …
+- **Date:** YYYY-MM-DD
+- **Question:** …
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| … | … | M / T / CV / TEST | … |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| … | … | [B p.x] / [B→I p.x] / [I] | … |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| … | … | … |
+
+- **Options considered:** …
+- **Expectation:** … / n/a
+- **Decision:** …
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| … | EXCL / USER / DISF / BASE / OUTP / SIMP | … |
+
+<!-- type-specific fields here (§24.4): CV table · Observation → action · Stopping check · §19 trace · Flag · Reference code -->
+
+- **Confidence:** High / Medium / Low — C1 … · C2 … · C3 … — rule … · prior agreement … · grounding [B] n / [B→I] n / [I] n · breadth note … / n/a
+- **Outcome vs expectation:** … / pending / n/a
+- **User involvement:** none / informed / asked / approved — "…"
+- **Supersedes / superseded by:** … / n/a
+- **Links:** …
+```
+
+### 24.7 Illustrative example (structure only — not a real result)
+
+Angle-bracket values are placeholders. The example is a `PRIOR` record for a hypothetical count-valued target where the user has stated an expectation about shape.
+
+```markdown
+### DR-07 · PRIOR · step 4
+
+- **Sub-task:** 1 — predict daily rental count
+- **Date:** <date>
+- **Question:** Which admissible configurations should be cross-validated, and in what expected order?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| P1 output type | count | M | DR-03 (FORM) |
+| P2 data-to-parameter ratio | ample (<ratio>) | M | DR-05 (PROP) |
+| P3 number of inputs | few (<p>) | M | DR-05 (PROP) |
+| P5 interpretability | inspectable, not a must-have | M | user, step 2: "<quote>" |
+| P8 expected shape | curved | M | user, step 2: "<quote>" |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Task gate, P1 = count | Poisson, Linear, k-NN, Tree admissible | [B pp.17, 61–63] | from DR-06 (ADMSET) |
+| P1=count→Linear | holds | [B p.62] | −1 on Linear configurations |
+| P1=count→GLM | holds | [B pp.61–62] | +1 on Poisson configurations |
+| P5=inspectable→Linear, GLM, Tree | holds | [B→I p.347] | +1 each |
+| P5=inspectable→+poly | holds | [I] | −1 on `+ poly` configurations |
+| P8=curved→Linear | holds | [B→I pp.58–59] | −1 on Linear configurations |
+| P8=curved→k-NN | holds | [B→I p.26] | +1 |
+| P8=curved→+poly | holds | [B→I p.59] | +1 on `Linear + poly`, `Linear + poly + L2` |
+| SEQ-2 | simple-first = `Poisson` | [B p.331]; GLM as simple-first [I] | kept |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | <ratio> |
+| P3 many inputs | > 20 | <p> |
+| Kept besides baseline and simple-first | 3 (+ ties) | — |
+
+- **Options considered:** `Poisson`, `Poisson + L2`, `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `kNN`, `Tree`
+- **Expectation:** `Poisson` and `Poisson + L2` rank above `Tree` and `kNN`, and all Linear configurations rank last, because the count output (P1) is the only explicit-advice entry and favours the GLM.
+- **Decision:** Keep baseline; `Poisson` (simple-first, score <s>); `Poisson + L2` (<s>); `Tree` (<s>); `kNN` (<s>). Prior order: `Poisson` = `Poisson + L2` by score; `Poisson` first on fewer add-ons.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2` | DISF | scores <s>: P1=count→Linear −1, P8=curved→Linear −1 |
+| Logistic configurations, `Exponential`, `Exponential + L2` | EXCL | task gate (DR-06) |
+
+**Reference code**
+
+- Function: <prior ranking entry point> · version <commit> · inputs: DR-05 property values · output: <file>
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** pending (round-2 CV DR)
+- **User involvement:** informed
+- **Supersedes / superseded by:** n/a
+- **Links:** Code/04_prior_ranking.py
+```
+
+## 25. Recommendation Report
+
+The Recommendation Report is the advisor's answer for one sub-task. It is assembled from the Decision Records and adds nothing new: every statement in it points to a DR, and every number comes from generated output.
+
+### 25.1 Where it lives, and how it relates to `Report.md`
+
+`Report.md` reads as an argument, not a technical log, so the Recommendation Report exists in two forms.
+
+| Form | Location | Content |
+| --- | --- | --- |
+| **Full structured report** | The `Recommendation` section of `Appendix.md`, one sub-heading per sub-task | All thirteen parts below, with tables |
+| **Prose in the report** | `Report.md` | `Methods` (step 4): how configurations were chosen and compared (parts 1, 4 and 5 in summary, plus the nested CV protocol). `Results` (step 4): the recommended configuration, test result, ranking summary, selection confidence (parts 2, 3, 5, 8). `Discussion` (step 5): why and why not, how the model predicts, use and limits (parts 4, 6, 7, 9, 10). |
+
+It is written at the end of step 4 for a sub-task, after its `FINAL` DR. Parts 9 and 10 are drafted then, and turned into prose in step 5.
+
+### 25.2 The thirteen parts
+
+| # | Part | Content | Source DRs |
+| --- | --- | --- | --- |
+| 1 | **Problem** | What is predicted (y) from what (x); output type (P1); the agreed metric; success criterion; baseline; achievable level if known; must-haves (P5, P6); stated expectations (P7, P8, quoted); admissibility answers (ADM-1 … ADM-4) and the split. | `ADM`, `FORM`, `SPLIT` |
+| 2 | **Recommendation** | The configuration (§9 name), its tuned hyperparameters, and the selection confidence level, in two sentences. | `FINAL` |
+| 3 | **Test-set result** | E_new on the agreed metric with its uncertainty (method still to be decided, §5.2), n_test, the baseline's result on the same test set, and whether the success criterion is met. Classification: the confusion matrix, plus the PR or ROC curve where §5.5 calls for it; the decision threshold and how it was set (§16). | `FINAL` |
+| 4 | **Why this configuration** | Four strands, in the order of §7. Constraints: the task gate, must-haves and MOD-1/MOD-2 that shaped the admissible set. CV evidence: the margin over the runner-up and over the baseline, each with its spread. Simplicity: whether the §19 within-noise step decided it, with add-on counts. Prior support: the matrix entries behind its prior score, with provenance tags. | `ADMSET`, `PRIOR`, `CV`, `FINAL` |
+| 5 | **Ranking table** | One row per cross-validated configuration: prior rank · prior score · post-prior (yes/no) · CV mean · margin vs recommended (± spread) · margin vs baseline (± spread) · why-not code. | `PRIOR`, `CV` |
+| 6 | **Prior versus evidence** | Prior agreement (agree / partial / disagree), with post-prior configurations excluded. Where the CV order departed from the expectation: which matrix entries the departure contradicts, and what that suggests. | `PRIOR` (outcome field) |
+| 7 | **Why not the others** | All 14 structural configurations except the recommendation, grouped by code in priority order — `EXCL`, `USER`, `DISF`, `BASE`, `OUTP`, `SIMP` — each with its evidence. Then the flags, listed separately: method, chapter, the evidence suggesting it might help, and the statement that it was not applied or tested. | `ADMSET`, `PRIOR`, `CV`, `FINAL`, `FLAG` |
+| 8 | **Confidence** | Selection confidence: the level, the values of C1, C2 and C3, and the rule applied (§17). Reported alongside, not combined: prior agreement; grounding (counts of `[B]` / `[B→I]` / `[I]` entries behind the recommendation's prior score); the breadth note, if more than 10 configurations were compared. | `FINAL` |
+| 9 | **How the model predicts** | The explanation for the chosen family (§21), pitched to the user's recorded experience level, with the trust limits. | `FINAL` + §21 |
+| 10 | **Use and limits** | What the model can and cannot be used for. The trust limits: average-case only, evaluation-like data only, a worst-case bound only where the family gives one. Data-issue limitations from step 1 that affect this result, each placed beside the claim it qualifies. | `FORM`, Data Summary, §6.5–6.6 |
+| 11 | **Improvement history** | Each diagnosis pass in order — observation (O1–O6, with its test values) → action (DX-1 … DX-10) → result — then the stopping rule (S1–S6) that ended the loop. | `DX`, `CV` |
+| 12 | **Thresholds applied** | Every `[I]` threshold that affected this result, with the value used and the value it was compared against. | All DRs (*Thresholds applied*) |
+| 13 | **Trace index and provenance** | The DR IDs behind this report. Counts of the rules and matrix entries used across the trace, by provenance (`[B]`, `[B→I]`, `[I]`, `UNLISTED`). | All DRs |
+
+### 25.3 Depth by user experience
+
+The experience level is recorded in step 1. It changes how much is explained, never what is reported: all thirteen parts appear at every level.
+
+| Level | Parts 4, 6, 9 | Parts 3, 5, 8, 12 |
+| --- | --- | --- |
+| New to ML | Each term explained the first time it is used (cross-validation, baseline, overfitting, regularisation); one worked example of a prediction | Full tables, with a sentence saying what each column means |
+| Some experience | Terms used without definition; reasoning in full | Full tables |
+| Experienced | Compact reasoning with rule IDs and tags | Full tables |
+
+### 25.4 Rules for writing it
+
+- **Nothing new.** Every statement has a DR behind it, and every number is in the generated output.
+- **The recommendation is the §19 result.** The report explains it; it does not argue for a different one. If the writer disagrees with the outcome, that is raised with the user, not written into the report.
+- **No grading of evidence.** The contract's rule applies. Selection confidence is the one summary judgement; it is computed rather than chosen, and its factors are shown.
+- **Disagreement is a finding.** If the prior was wrong, part 6 says so plainly.
+- **A flag is not a claim.** Out-of-scope methods are named with their chapter. The report never says they would have done better, because that was not tested.
+
+### 25.5 Template
+
+```markdown
+### Sub-task N — <short name>
+
+**1. Problem.** … ADM: … Split: … (DR-xx, DR-xx)
+
+**2. Recommendation.** `<configuration>` with <hyperparameters>. Selection confidence: <High / Medium / Low>.
+
+**3. Test-set result.** <metric> = <value> (<uncertainty>), n_test = <n>; baseline <value>. Success criterion (<criterion>): <met / not met>. Threshold: <value, how set>. (DR-xx)
+
+**4. Why this configuration.**
+- Constraints: …
+- CV evidence: margin over <runner-up> <value> (spread <value>); over baseline <value> (spread <value>).
+- Simplicity: <decided by §19 within-noise step: yes / no> …
+- Prior support: <entries with tags>.
+
+**5. Ranking.**
+
+| Configuration | Prior rank | Prior score | Post-prior | CV mean | Margin vs recommended (± spread) | Margin vs baseline (± spread) | Code |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+
+**6. Prior versus evidence.** <agree / partial / disagree>. …
+
+**7. Why not the others.**
+- EXCL: …
+- USER: …
+- DISF: …
+- BASE: …
+- OUTP: …
+- SIMP: …
+
+Flags: <method> (<chapter>) — <evidence>; not applied or tested.
+
+**8. Confidence.** Selection confidence <level>: C1 <…>, C2 <…>, C3 <…>; rule <…>. Prior agreement: <…>. Grounding: [B] <n> · [B→I] <n> · [I] <n>. Breadth note: <…>.
+
+**9. How the model predicts.** …
+
+**10. Use and limits.** …
+
+**11. Improvement history.** Pass 1: O<n> (<values>) → DX-<n> → <result>. … Stopped by S<n>.
+
+**12. Thresholds applied.**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+
+**13. Trace and provenance.** DRs: … Rules and entries used: [B] <n> · [B→I] <n> · [I] <n> · UNLISTED <n>.
+```
