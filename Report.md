@@ -8,19 +8,19 @@
 
 ## Introduction
 
-*Background written in step 6; the research questions go in at the end of step 2, before anything is tested.*
+*Background written in step 6; the problem and its sub-tasks go in at the end of step 2, before anything is trained.*
 
 ## Methods
 
-*Written in step 4, one sub-heading per sub-question, in step with `Results`.*
+*Written in step 4, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
 
 ## Results
 
-*Figures go in as they are produced in step 3; the findings that go with them in step 4.*
+*Figures of the training data go in during step 3. In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
 
 ## Discussion
 
-*Written in step 5, organised by theme rather than by sub-question.*
+*Written in step 5, organised by theme: why the recommended configuration and not the others, how it makes predictions, what it can and cannot be used for, and the limits of the evaluation.*
 
 ## Disclaimer
 
