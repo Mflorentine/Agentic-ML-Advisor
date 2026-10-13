@@ -23,6 +23,9 @@ __pycache__/
 # Downloaded articles: licensed material, cited but not redistributed
 Sample Report/Attachments/literature/
 
+# The SML book is read at smlbook.org, not stored here (licence: personal use only)
+sml-book*.pdf
+
 # WHR/Gallup data: redistribution terms unclear, so the sample's source file and
 # its row-level derivatives are not committed. See Sample Report/Attachments/SOURCE.md.
 Sample Report/Attachments/DataForTable2.1.xls

@@ -49,7 +49,6 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [Appendix.md](Appendix.md) | Empty template. The running record: data, problem, workings, decision records, recommendation, log, code guide. |
 | `Attachments/` | Your data. Never modified. |
 | `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). |
-| `Evaluation/` | The evaluation of the advisor itself (planned). Not part of an analysis. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
 | [Sample Report/](Sample%20Report/) | A finished analysis, self-contained, as an illustration — with its own code, outputs and walkthrough. The source data is not included; see its `Attachments/SOURCE.md` to download it. |
 | [Sample Report/Analysis Steps.md](Sample%20Report/Analysis%20Steps.md) | A walkthrough of that analysis with the prompts used, for showing someone how the folder works. |

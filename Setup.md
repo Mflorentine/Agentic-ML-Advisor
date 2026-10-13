@@ -63,6 +63,7 @@ uv add <package>                 # add a dependency, updating uv.lock
 | seaborn | 0.13.2 |
 | pyarrow | 25.0.1 |
 | openpyxl | 3.1.5 |
+| scikit-learn | 1.9.1 |
 
 Plus `xlrd` for legacy `.xls`, `tabulate` for Markdown tables, and JupyterLab with `ipykernel`. Verified by `uv run python check_env.py` on 2026-09-01.
 

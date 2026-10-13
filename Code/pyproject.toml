@@ -28,6 +28,7 @@ dependencies = [
     # Notebooks
     "jupyterlab>=4.2",
     "ipykernel>=6.29",
+    "scikit-learn>=1.9.1",
 ]
 
 [tool.uv]

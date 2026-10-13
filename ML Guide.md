@@ -1,6 +1,6 @@
 # ML Guide
 
-A working guide to choosing, training and evaluating a supervised machine learning model, distilled from four chapters of Lindholm, Wahlström, Lindsten and Schön, *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft of 1 September 2026 (`sml-book-2nd-edition-draft-latest.pdf`, [smlbook.org](http://smlbook.org)). The chapters are 2 (supervised learning, k-NN, decision trees), 3 (linear and logistic regression, polynomial regression with L2 regularisation, generalised linear models), 4 (evaluating performance) and 13 (user aspects of machine learning).
+A working guide to choosing, training and evaluating a supervised machine learning model, distilled from four chapters of Lindholm, Wahlström, Lindsten and Schön, *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft of 1 September 2026, read at [smlbook.org](https://smlbook.org/). The chapters are 2 (supervised learning, k-NN, decision trees), 3 (linear and logistic regression, polynomial regression with L2 regularisation, generalised linear models), 4 (evaluating performance) and 13 (user aspects of machine learning).
 
 This is a set of notes written in our own words, not a substitute for the book. Every entry gives the printed page number it rests on, so the claim can be checked. **Printed page = PDF page − 10** (chapter 2 starts on printed p. 15, PDF p. 25). Where a line is our own inference or practice rather than something the book says, it is marked *(not from the book)*.
 
@@ -104,7 +104,7 @@ All seven are from chapters 2 and 3. Each card says what the book says the model
 
 - **What it does.** Generalises linear regression to outputs with other properties by choosing (i) a distribution for the output from the exponential family, (ii) a linear term θᵀx, and (iii) a link function connecting the linear term to the mean of the output (p. 63). Logistic regression is one example (p. 63).
 - **Poisson regression** is the worked example: for count outputs, the mean count is exp(θᵀx), which keeps it positive (Example 3.6, pp. 62–63).
-- **Other members named:** negative binomial regression (a more flexible model for counts) and exponential regression (for non-negative real outputs) (p. 63). *Negative binomial is documented but not implemented in this workspace (decided 10 October 2026): scikit-learn has no implementation and statsmodels has not been added. If counts look more variable than a Poisson model allows, flag it (section 23).*
+- **Other members named:** negative binomial regression (a more flexible model for counts) and exponential regression (for non-negative real outputs) (p. 63). *Negative binomial is documented but not implemented in this workspace (decided 10 October 2026): it is not yet implemented in this workspace, although statsmodels, which provides it, is in the environment. If counts look more variable than a Poisson model allows, flag it (section 23).*
 - **How it is learned.** By maximum likelihood, numerically; regularisation can be added (pp. 63–64).
 - **Suits** counts (number of events in an interval) and other outputs that are restricted in ways a normal linear model ignores, e.g. non-negative values (pp. 61–62).
 
@@ -573,7 +573,7 @@ If the evidence suggests one of these might help, record a flag (section 20) nam
 
 | Method | Status |
 | --- | --- |
-| Negative binomial GLM | In ch. 3 (p. 63), **documented but not implemented** (no scikit-learn implementation; statsmodels not added) |
+| Negative binomial GLM | In ch. 3 (p. 63), **documented but not implemented** (no scikit-learn implementation; statsmodels, which provides it, is in the environment but not yet used for it) |
 | L1 regularisation (LASSO), robust loss functions, hyperparameter optimisation beyond grid search | Chapter 5 |
 | Neural networks, deep learning | Chapters 6–7 |
 | Bagging, random forests, boosting; the bootstrap | Chapter 8 |
@@ -587,7 +587,7 @@ If the evidence suggests one of these might help, record a flag (section 20) nam
 
 ## Appendix to Part II — thresholds to validate
 
-Every number below is ours (`[I]`). Each is reported in the Decision Record wherever it is applied (under *Thresholds applied*). Each is validated in the evaluation phase against two alternative values, listed in the advisor evaluation framework (planned as `Evaluation/README.md`, section 7; not yet in the workspace) (decided 10 October 2026).
+Every number below is ours (`[I]`). Each is reported in the Decision Record wherever it is applied (under *Thresholds applied*). Each is validated in the evaluation phase against two alternative values, chosen when the advisor is evaluated (decided 10 October 2026).
 
 | Where | Threshold | Value |
 | --- | --- | --- |
