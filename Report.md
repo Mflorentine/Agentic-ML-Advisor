@@ -18,7 +18,23 @@ We compare a small set of model types from Lindholm et al.'s *Machine Learning �
 
 ## Results
 
-*Figures of the training data go in during step 3. In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
+Figures 1 to 3 describe the 239 training patients; the 60 held-out patients are not shown. In all three, blue marks patients who did not die during follow-up and orange those who died.
+
+![Figure 1](Code/outputs/figures/fig1_numeric_by_outcome.png)
+
+<small><b>Figure 1.</b> Distribution of the six numeric inputs among training patients who did not die (blue, n = 162) and who died (orange, n = 77). Each outline is a histogram whose bar heights are the share of that group, so the two outlines can be compared despite the different group sizes. Serum creatinine and creatinine phosphokinase are drawn on a logarithmic axis.</small>
+
+Each panel compares the shapes of two distributions, not their counts. Where the orange outline lies to one side of the blue one, patients who died tended to have values on that side.
+
+![Figure 2](Code/outputs/figures/fig2_death_share_binary.png)
+
+<small><b>Figure 2.</b> Share of training patients who died, within each level of the five yes/no inputs. The number inside each bar is the number of patients at that level. The dashed line is the share who died among all 239 training patients, 32.2 %.</small>
+
+![Figure 3](Code/outputs/figures/fig3_creatinine_ejection.png)
+
+<small><b>Figure 3.</b> Serum creatinine (logarithmic axis) against ejection fraction for each training patient, coloured by outcome. Ejection fraction takes only 16 distinct values among the training patients, so many points lie on the same horizontal lines and some overlap.</small>
+
+*In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
 
 ## Discussion
 

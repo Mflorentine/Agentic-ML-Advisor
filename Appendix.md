@@ -124,7 +124,24 @@ Decided on 14 October 2026 (DR-08). The method had to come from chapters 2, 3, 4
 
 ## Analysis
 
-*The workings, one sub-heading per sub-task, added as steps 3 and 4 proceed: exploration of the training data, cross-validation tables, learning curves, diagnostics, error analysis, checks that changed nothing, and anything computed but not reported.*
+### Sub-task 1 — predict `DEATH_EVENT` from the 11 inputs
+
+**Step 3: training data only (239 rows).** The test rows were not read.
+
+**Properties from the training rows** (interim core `Code/core.py`, version `e614fd79d15a…`; DR-10):
+- **P9 (separable):** no. Logistic regression with negligible regularisation (C = 10⁸) classifies 0.7699 of the training rows correctly, not 100 %. MOD-1 therefore does not apply.
+- **P10 (imbalance):** balanced. The smallest class is 77 of 239 = 0.3222, above the 20 % threshold.
+
+**Figures of the training data** (all in `Report.md`, *Results*, with light and dark versions in `Code/outputs/figures/`):
+- **Figure 1:** the six numeric inputs, as histogram outlines by outcome, with heights as the share of each group. Serum creatinine and CPK are on a log axis, for display only.
+- **Figure 2:** the share who died within each level of the five yes/no inputs, with the training share (32.2 %) as a reference line.
+- **Figure 3:** serum creatinine (log axis) against ejection fraction, one point per patient, coloured by outcome.
+
+The figures do not set P8, which stays `unknown` (DR-09, DR-10).
+
+**Figures as first drafted, changed before use.** In the first versions of Figures 1 and 3, the translucent fills mixed into an unexplained colour, the legend covered bars, the log axes showed 10⁰-style labels, and one count in Figure 2 collided with the reference line. All four were fixed before the figures entered the report. Only the presentation changed; no number did.
+
+**Input design, decided (DR-11):** `serum_creatinine` and `creatinine_phosphokinase` enter every model as their natural logarithm. The display log scale above didn't decide this; the user did, after the trade-offs were set out (Analysis Log row 20). The reasons are the skew of the two inputs in the training rows, not how they relate to the outcome: serum creatinine has a maximum of 9.0 against a median of 1.1 (skew 4.19), and CPK 7861 against 250 (skew 4.56). Both minimums are above zero (0.6 and 23), so no offset is needed. The transform is a fixed formula with nothing fitted, so it can't carry information from the test rows.
 
 ## Decision Records
 
@@ -492,7 +509,7 @@ Decided on 14 October 2026 (DR-08). The method had to come from chapters 2, 3, 4
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** asked — quoted above
-- **Supersedes / superseded by:** supersedes DR-05 (success criterion, baseline, P6; all other items of DR-05 stand)
+- **Supersedes / superseded by:** supersedes DR-05 (success criterion, baseline, P6; all other items of DR-05 stand); superseded in part by DR-11 (representation of two inputs; all other items stand)
 - **Links:** Problem Definition
 
 ### DR-09 · PROP · step 2
@@ -534,8 +551,102 @@ Decided on 14 October 2026 (DR-08). The method had to come from chapters 2, 3, 4
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** asked — DR-08
-- **Supersedes / superseded by:** supersedes DR-07
+- **Supersedes / superseded by:** supersedes DR-07; superseded by DR-10 (P9 and P10 added)
 - **Links:** DR-08
+
+### DR-10 · PROP · step 3
+
+- **Sub-task:** 1
+- **Date:** 2026-10-14
+- **Question:** Are the classes perfectly separable (P9), and are they imbalanced (P10), in the training data?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| P9 | no: training accuracy 0.7699 with negligible regularisation (C = 10⁸) | T | `Code/outputs/core_p9_p10.json` |
+| P10 | balanced: smallest class 77 of 239 (0.3222) | T | `Code/outputs/core_p9_p10.json` |
+| P1–P8 | unchanged from DR-09 | M | DR-09 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P9 test | not separable | [I] procedure | MOD-1 does not apply; unregularised `Logistic` stays admissible |
+| P10 test | balanced | [I] threshold | no change to metric or threshold handling |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P9 separability | 100 % training accuracy, C = 10⁸ | 76.99 % |
+| P10 imbalance | smallest class < 20 % | 32.22 % |
+
+- **Options considered:** n/a
+- **Expectation:** n/a
+- **Decision:** The full property set is: P1 binary, P2 ample (19.917), P3 few (11), P4 low (45 %), P5 inspectable (a preference), P6 yes (a strong preference, not a must-have), P7 no, P8 unknown, P9 no, P10 balanced.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+**Reference code**
+
+- Function: `core.p9_p10` · version `e614fd79d15a403a5dc0dd5703f2af37884a76eb075dc6aa798248cdcc4e2f30` (SHA-256 of `Code/core.py`; **interim core, not reviewed**; shown to the user before its output was used) · inputs: the 239 training rows from `Code/outputs/split.json`, 11 inputs · output: `Code/outputs/core_p9_p10.json`
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — "Yes, run core.py for P9 and P10 and record them in DR-10."
+- **Supersedes / superseded by:** supersedes DR-09
+- **Links:** `Code/core.py`, `Code/outputs/core_p9_p10.json`
+
+### DR-11 · FORM · step 3
+
+- **Sub-task:** 1
+- **Date:** 2026-10-14
+- **Question:** Should `serum_creatinine` and `creatinine_phosphokinase` enter the models raw or log-transformed (input design, `ML Guide.md` §9)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| `serum_creatinine`, training rows | min 0.6, median 1.1, max 9.0 (max ÷ median 8.2), skew 4.19 | T | step 3 check on the 239 training rows; Analysis |
+| `creatinine_phosphokinase`, training rows | min 23, median 250, max 7861 (max ÷ median 31.4), skew 4.56 | T | as above |
+| User decision | log both | M | quoted below |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Input design (§9): domain transformations allowed for every family, decided with the user | log both inputs | [B p.18] | the two inputs become log(value) in every configuration |
+| k-NN: normalise inputs, distances otherwise dominated by the largest range | the tails of the two inputs pull less on distances | [B pp.26–27] | affects k-NN |
+| Linear and logistic regression are not local | extreme values pull less on the fitted coefficients | [B→I p.47] | affects Logistic (± L2, ± poly); coefficients read per multiplicative change |
+| Trees split on one input at a threshold | a monotone transform leaves the splits' partition unchanged | [I] | no effect on Tree |
+| Polynomial terms | powers of log(value) rather than of value | [I] | changes the curve shapes available to `poly` |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** (a) log both; (b) keep both raw; (c) log one only.
+- **Expectation:** n/a (not a configuration axis; not compared by cross-validation).
+- **Decision:** log both, with the natural logarithm, in every configuration, applied as a fixed transform before scaling. The outcome was not used in the choice. The inputs stay the same 11 (P3 unchanged), and P1–P10 in DR-10 are unchanged.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** decided by the user — "Log both serum_creatinine and creatinine_phosphokinase as model inputs, because they are strongly skewed and the book allows it (p. 18) and says scaling matters for k-NN (pp. 26-27)."
+- **Supersedes / superseded by:** supersedes DR-08 in part (representation of two inputs only; all other items stand)
+- **Links:** Analysis (sub-task 1, step 3); `Code/outputs/split.json`
 
 ## Recommendation
 
@@ -562,6 +673,13 @@ Decided on 14 October 2026 (DR-08). The method had to come from chapters 2, 3, 4
 | 13 | P6 changed from a must-have to a strong preference, so all families stay in the comparison (DR-09 supersedes DR-07) | DR-09 |
 | 14 | Uncertainty method decided: spread of F2 across the outer folds, with n and positives, `[B→I]`; binomial intervals not used (DR-08) | DR-08 |
 | 15 | `Introduction` checked against the new criterion; its success sentence updated from the superseded 0.6 target. Step 2 closed | `Report.md` |
+| 16 | Step 3: interim core `Code/core.py` written (§11 P9–P10 only) and shown to the user before use (version `e614fd79d15a…`) | `Code/core.py` |
+| 17 | P9 = no (0.7699 training accuracy), P10 = balanced (0.3222), from the training rows (DR-10 supersedes DR-09) | `Code/outputs/core_p9_p10.json`; DR-10 |
+| 18 | Figures 1–3 proposed and approved; made from the 239 training rows; drafts revised for legibility before use (outlines instead of fills, legend placement, plain-number log axes, counts inside bars) | `Code/outputs/figures/` |
+| 19 | Figures 1–3 added to *Results* in `Report.md`, with captions | `Report.md` |
+| 20 | Input design proposed: log-transform `serum_creatinine` and `creatinine_phosphokinase` as model inputs, or keep them raw (`ML Guide.md` §9, p. 18). Affects Logistic, k-NN and polynomial terms; trees unaffected. **Open; step 3 stays open until the user decides (DR-11)** | Analysis |
+| 21 | Input design decided by the user: log both inputs (DR-11, supersedes DR-08 in part). Figures 1–3 kept as they are, the step 4 placeholder kept in *Results*, `sex` kept as woman/man (step 1 inference). Figure 3 caption corrected before commit: 16 distinct ejection-fraction values among the training rows, not 17 (the count for all 299 rows) | DR-11; `Report.md` |
+| 22 | Step 3 closed | — |
 
 ## Code Summary
 
@@ -569,8 +687,12 @@ Decided on 14 October 2026 (DR-08). The method had to come from chapters 2, 3, 4
 | --- | --- | --- | --- | --- |
 | `Code/01_describe_data.py` | Step 1 describing pass. Per column: documented meaning and unit, type, missing values, distinct values, min / median / max, zeros, 0/1 counts, non-integer values. Whole file: checksum, size, shape, duplicates, sort order. No random steps. | `Attachments/heart_failure_clinical_records_dataset.csv` | `Code/outputs/01_describe.json`, `Code/outputs/01_describe.md` | `cd Code && uv run python 01_describe_data.py` |
 | `Code/02_split.py` | Step 2 split: shuffled, stratified by `DEATH_EVENT`, 20 % test. Records the row indices, class counts, the inputs (11) and the column set aside (`time`). **Seed 2026.** After this, nothing reads the test rows until step 4g. | `Attachments/heart_failure_clinical_records_dataset.csv` | `Code/outputs/split.json` | `cd Code && uv run python 02_split.py` |
+| `Code/core.py` | **Interim core, not reviewed.** So far §11 P9 (separable) and P10 (imbalance), with `[I]` thresholds as named constants. Reads the training rows only. Version = SHA-256 of the file. §12–§19 are added before step 4b | `Attachments/…csv`, `Code/outputs/split.json` | `Code/outputs/core_p9_p10.json` | `cd Code && uv run python core.py p9p10` |
+| `Code/03_fig1_numeric_by_outcome.py` | Figure 1: histogram outlines of the six numeric inputs by outcome; log x-axis (display only) for serum creatinine and CPK | `Attachments/…csv`, `split.json` (training rows) | `Code/outputs/figures/fig1_numeric_by_outcome.png` (+ `dark/`) | `cd Code && uv run python 03_fig1_numeric_by_outcome.py` |
+| `Code/04_fig2_death_share_binary.py` | Figure 2: share who died within each level of the five yes/no inputs, with n per bar and the training share as a reference line | as above | `Code/outputs/figures/fig2_death_share_binary.png` (+ `dark/`) | `cd Code && uv run python 04_fig2_death_share_binary.py` |
+| `Code/05_fig3_creatinine_ejection.py` | Figure 3: serum creatinine (log axis) against ejection fraction, coloured by outcome | as above | `Code/outputs/figures/fig3_creatinine_ejection.png` (+ `dark/`) | `cd Code && uv run python 05_fig3_creatinine_ejection.py` |
 
-**Environment:** Python 3.12.15 with pandas 3.0.5 (both scripts) and scikit-learn 1.9.1 (`02_split.py`) (`Code/check_env.py`, 14 October 2026).
+**Environment:** Python 3.12.15 with pandas 3.0.5 (all scripts), scikit-learn 1.9.1 (`02_split.py`, `core.py`), and matplotlib 3.11.1 with `viz_style.py` (figure scripts) (`Code/check_env.py`, 14 October 2026).
 
 ## References
 
