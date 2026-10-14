@@ -13,7 +13,7 @@
 | Columns | `age`, `anaemia`, `creatinine_phosphokinase`, `diabetes`, `ejection_fraction`, `high_blood_pressure`, `platelets`, `serum_creatinine`, `serum_sodium`, `sex`, `smoking`, `time`, `DEATH_EVENT` |
 | SHA-256 | `9c73cea7468ff5d517801ec050fe9993da5912fce4b56f296f8df3b38dd75912` |
 
-The file is the original download and is never modified. The checksum is of the file as downloaded, with LF line endings. Git on Windows with `core.autocrlf = true` may check the file out with CRLF line endings, which changes the checksum without changing the data.
+The file is the original download and is never modified. The checksum is of the file as downloaded, with LF line endings. `.gitattributes` marks `Attachments/*.csv` as `-text`, so git never converts its line endings and the checksum holds on every platform.
 
 ## Citation
 
