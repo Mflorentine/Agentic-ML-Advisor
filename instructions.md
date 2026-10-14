@@ -9,7 +9,7 @@ Use this folder as the single source of truth for the analysis. Keep work in the
 | `Attachments/` | Source data, reference files, exports, and other inputs supplied for analysis. Do not modify originals. |
 | `Code/` | All executable analysis code and generated outputs. Arrives with the environment (`setup_env.sh`, `pyproject.toml`, `uv.lock`, `check_env.py`), `viz_style.py`, which carries the figure conventions, and `advisor/`, the deterministic core of the ML advisor (see `Machine Learning Scope and Reasoning`). Analysis scripts and `outputs/` are yours to add; `advisor/` is not edited as part of an analysis. |
 | `Setup.md` | How to install and run the workspace: Obsidian, `uv`, the Python environment, and the everyday commands. |
-| `Report.md` | The final report, built up across the steps rather than written at the end: the problem and its sub-tasks into the `Introduction` in step 2, figures into `Results` in step 3, the `Methods` and `Results` paragraphs in step 4, and the `Discussion` in step 5. Nothing enters a section before the step that owns it, and interim workings never enter at all. |
+| `Report.md` | The final report, built up across the steps rather than written at the end: the problem and its sub-tasks into the `Introduction` in step 2, figures into `Results` in step 3, the `Methods` and `Results` paragraphs in step 4, and the `Discussion` in step 5. Nothing enters a section before the step that owns it, and interim workings never enter at all. Its last section is `References`, listing only the works the report itself cites (`References in the Report`); its template note reads *Works cited in this report, copied from the References of Appendix.md. Always the last section.* |
 | `Appendix.md` | The running record of the work, written as you go from the first step. Eight sections in this order: `Data Summary` (the data actually used), `Problem Definition` (what is to be predicted, from what, and how that was arrived at), `Analysis` (the workings, one sub-heading per sub-task), `Decision Records` (the advisor's reasoning trace, one record per decision), `Recommendation` (the Recommendation Report for each sub-task), `Analysis Log` (a numbered row per step taken), `Code Summary` (a guide to the analysis code), and `References` last. Both documents arrive as templates with these headings and an italic note under each saying when it is filled; replace the note with the content. |
 | `ML Guide.md` | The advisor's knowledge and reasoning procedure, distilled from chapters 2, 3, 4 and 13 of Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*. Part I is what the book says, with page references; Part II is the procedure the advisor follows for every model decision. Read it before every model decision. Changed only under `Changing This Contract`. |
 | *The book* | Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft, read at [smlbook.org](https://smlbook.org/). Not stored in this repository. It is the source of `ML Guide.md`; open it for the detail behind a page reference. |
@@ -336,6 +336,14 @@ Run all Python through the workspace environment so results are reproducible. Fu
 - **Record every seed:** the split, the cross-validation folds, and any randomised step. A result that cannot be reproduced from its seeds is not reproducible.
 - **Prevent leakage.** Preprocessing is fitted on training data only, inside each fold. Columns that could carry the target are identified in step 1 and kept out. Grouped rows are kept together in splits and folds.
 - **The test set is used once per sub-task, and the baseline is always reported.** Both are conditions of a valid result, not good practice.
+
+## References in the Report
+
+- **`Report.md` ends with a `References` section**, after `Appendix`. It lists only the works the report itself cites, and nothing else.
+- **Every entry is cited in the text, and every citation has an entry.** Cite in author–date style: `(Smith, 2020)`, or `Smith (2020)` when the author is part of the sentence. A dataset without named authors is cited by its title.
+- **Copy each entry from the `References` of `Appendix.md`.** The Appendix holds the verified details. Never write an entry from memory. A work the report needs that isn't yet in the Appendix's `References` is opened, checked and added there first.
+- **Cite the book at the edition named in `ML Guide.md`**, linked to smlbook.org. Page references and provenance tags stay in the Appendix.
+- **Every entry is a link that resolves.** Check it before writing it.
 
 ## Markdown Formatting
 
