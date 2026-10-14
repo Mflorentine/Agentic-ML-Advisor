@@ -14,7 +14,11 @@ We compare a small set of model types from Lindholm et al.'s *Machine Learning â
 
 ## Methods
 
-*Written in step 4, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
+### Predicting death during follow-up
+
+For a yes/no outcome, the model types in scope are logistic regression, k-nearest neighbours and a classification tree. Logistic regression can also be given polynomial terms (the square, or the square and cube, of each numeric input), an L2 penalty, or both. Before any model was fitted, we ranked these options by a fixed set of rules that score how well each suits the problem as stated, for example our preference for models whose predictions can be inspected and that give probabilities. The ranking kept four for comparison: plain logistic regression, logistic regression with an L2 penalty, logistic regression with polynomial terms, and a tree. Serum creatinine and creatinine phosphokinase enter every model as their logarithms. We compared the four by nested cross-validation on the 239 training patients. The outer loop has 10 folds and is the same for every model. Within each outer training fold, a 5-fold inner loop tunes the model's settings: the tree's depth and minimum leaf size, the penalty strength, and the polynomial degree. Scaling is fitted within each fold, and every split keeps the share of deaths. Models are compared on F2 with a patient flagged when the predicted probability of death is above 0.5. From the models that clearly beat predicting no deaths, we take the one with the highest mean F2, together with any whose mean is within half the spread of the fold-by-fold differences, and choose the one with the fewest additions to its basic form.
+
+For the chosen model we then tuned the probability threshold for F2, using probabilities predicted for training patients by models that hadn't seen them. Because models were compared at 0.5 and only the chosen one was tuned, the comparison may not pick the model that would do best after tuning. The final model uses the setting chosen most often across the outer folds, so the cross-validation estimate describes the tuning procedure rather than exactly this setting. We refitted it on all 239 training patients and evaluated it once on the 60 held-out patients. Its uncertainty is the standard deviation of F2 across the 10 outer folds at the tuned thresholds.
 
 ## Results
 
@@ -34,7 +38,15 @@ Each panel compares the shapes of two distributions, not their counts. Where the
 
 <small><b>Figure 3.</b> Serum creatinine (logarithmic axis) against ejection fraction for each training patient, coloured by outcome. Ejection fraction takes only 16 distinct values among the training patients, so many points lie on the same horizontal lines and some overlap.</small>
 
-*In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precisionâ€“recall curves.*
+### Predicting death during follow-up
+
+In cross-validation the tree had the highest mean F2 (0.56), followed by logistic regression with polynomial terms (0.53), and plain and penalised logistic regression (both 0.48). Predicting no deaths scores 0, and flagging every patient scores 0.70. The tree and the logistic model with polynomial terms couldn't be told apart (difference 0.03, with a fold spread of 0.14), and the tree was chosen as the simpler of the two. The selection confidence is low. The tree is clearly ahead of predicting no deaths (by 0.56, spread 0.11) but not of the runner-up, and its validation error wasn't still falling as training data was added. The chosen tree has a depth of at most 3 and at least 20 training patients in each leaf, and it flags a patient when the predicted probability of death is above 0.2. On the 60 held-out patients, 19 of whom died, it reached an F2 of 0.68 (fold spread 0.09). It flagged 16 of the 19 deaths (recall 0.84), and 16 of the 42 patients it flagged died (precision 0.38). Success required an F2 above 0.79, which is the 0.70 that flagging everyone scores on the training patients plus the fold spread, so the criterion was not met. On the same 60 patients, predicting no deaths scores an F2 of 0 and flagging every patient 0.70.
+
+![Figure 4](Code/outputs/figures/fig4_pr_curve.png)
+
+<small><b>Figure 4.</b> Precision against recall for the recommended tree on the 60 held-out patients, 19 of whom died. Each marker is one threshold the tree can distinguish. The curve has few points because the tree gives only 5 distinct probabilities. The two ringed points are the tree at the chosen threshold of 0.2 and flagging every patient. The dashed line is the precision of a random classifier, the share of patients who died (0.32). The flag-everyone point lies on it by definition, since flagging everyone has full recall and precision equal to that share.</small>
+
+Moving right along the curve means a lower threshold: more patients are flagged, so recall rises and precision falls. The curve's last point, at full recall, is the tree flagging every patient.
 
 ## Discussion
 

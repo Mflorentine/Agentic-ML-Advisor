@@ -60,6 +60,7 @@ Run (from Code/):
   uv run python core.py diagnose "<cv entry label>"
   uv run python core.py recommend inputs/subtask1_props.json
   uv run python core.py final --approved "<the user's words>"
+  uv run python core.py explain   (verified rebuild of the final tree; writes its splits)
 """
 from __future__ import annotations
 
@@ -71,6 +72,7 @@ import warnings
 from collections import Counter
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin, clone
@@ -255,6 +257,14 @@ def test_data() -> tuple[pd.DataFrame, pd.Series, list[int]]:
     df = pd.read_csv(SRC)
     test = df.iloc[split["test_idx"]]
     return test[split["inputs"]], test[TARGET], list(split["test_idx"])
+
+
+def test_inputs() -> tuple[pd.DataFrame, list[int]]:
+    """The locked test rows' INPUTS only, no outcome. Called from `explain` only, to verify a
+    rebuild against the saved test probabilities; no metric is computed from them."""
+    split = json.loads(SPLIT.read_text(encoding="utf-8"))
+    df = pd.read_csv(SRC)
+    return df.iloc[split["test_idx"]][split["inputs"]], list(split["test_idx"])
 
 
 def load_props(path: str) -> dict:
@@ -905,6 +915,72 @@ def final(approval: str) -> dict:
 
 
 # ======================================================================================
+# §21 explanation: the final tree's splits (verified rebuild)
+# ======================================================================================
+
+def explain() -> dict:
+    """Rebuild the final model with the same code path and settings as `final`, verify it is
+    the same model, save it, and write the tree's nodes.
+
+    `final` kept the fitted model in memory only. The rebuild is accepted as the same model
+    only if its probabilities for the 60 test patients equal the saved `p_death` exactly.
+    That check reads the test INPUTS only: no outcome is read and no metric is computed.
+    """
+    rec = json.loads((OUT / "core_recommend.json").read_text(encoding="utf-8"))
+    entry, spec = rec["recommendation"], rec["final_fit"]
+    if entry["configuration"] != "Tree":
+        sys.exit("explain is implemented for the Tree only")
+    X, y, _ = training_data()
+    y = y.to_numpy()
+    use, params, thr = spec["inputs"], spec["hyperparameters"], spec["threshold"]
+    pipe, _ = build(entry["configuration"], use, n_inner_train(len(y)))          # as in `final`
+    model = clone(pipe).set_params(**params).fit(X[use].to_numpy(dtype=float), y)
+
+    Xt, test_idx = test_inputs()
+    p = prob1(model, Xt[use].to_numpy(dtype=float))
+    # round_trip: pandas' default float parser is not exact, which would fail a bitwise check
+    saved = pd.read_csv(OUT / "core_test_predictions.csv", float_precision="round_trip").set_index(
+        "row").loc[test_idx, "p_death"].to_numpy()
+    identical = bool(np.array_equal(p, saved))
+    if not identical:
+        sys.exit(f"rebuild differs from the saved predictions (max |diff| {np.max(np.abs(p - saved))}); not saved")
+    joblib.dump(model, OUT / "core_final_model.joblib")
+
+    tree = model.named_steps["m"].tree_
+    log_cols = set(LOG_INPUTS)
+    Xlog = model.named_steps["log"].transform(X[use].to_numpy(dtype=float))
+    paths = model.named_steps["m"].decision_path(Xlog).toarray().astype(bool)
+    depth = {0: 0}
+    nodes = []
+    for i in range(tree.node_count):
+        left, right = int(tree.children_left[i]), int(tree.children_right[i])
+        for child in (left, right):
+            if child >= 0:
+                depth[child] = depth[i] + 1
+        n = int(paths[:, i].sum())
+        deaths = int(y[paths[:, i]].sum())
+        node = {"node": i, "depth": depth[i], "n_train": n, "deaths": deaths, "death_share": deaths / n}
+        if left >= 0:
+            col = use[int(tree.feature[i])]
+            cut = float(tree.threshold[i])
+            node.update({"input": col, "goes_left_if": "<=", "cut_model_units": cut,
+                         "cut_original_units": float(np.exp(cut)) if col in log_cols else cut,
+                         "logged": col in log_cols, "left": left, "right": right})
+        else:
+            node.update({"leaf": True, "flagged": bool(deaths / n > thr)})
+        nodes.append(node)
+    return {"core_version_sha256": version(), "rebuild_of": {"recommend_version": rec["core_version_sha256"],
+                                                             "configuration": entry["configuration"],
+                                                             "hyperparameters": params, "threshold": thr},
+            "verification": {"test_rows": len(test_idx), "outcomes_read": False, "metric_computed": False,
+                             "probabilities_identical_to_saved": identical},
+            "model_file": "Code/outputs/core_final_model.joblib",
+            "note": "cut_original_units = exp(cut) for logged inputs: scikit-learn places cuts midway "
+                    "between log values, so this is the geometric mean of the two neighbouring values.",
+            "nodes": nodes}
+
+
+# ======================================================================================
 # Command line
 # ======================================================================================
 
@@ -919,6 +995,11 @@ def main(argv: list[str]) -> None:
     if not args:
         sys.exit(__doc__)
     cmd = args[0]
+    if cmd == "explain":
+        res = explain()
+        (OUT / "core_tree_splits.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(json.dumps(res, indent=2, ensure_ascii=False))
+        return
     if cmd == "final":
         if len(args) != 3 or args[1] != "--approved":
             sys.exit('usage: core.py final --approved "<the user\'s words>"')

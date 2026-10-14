@@ -1,0 +1,123 @@
+{
+  "core_version_sha256": "48840ebae0923ab6b62343a2cebffe72e088dccfdd6ddb48c8e2bd8ee0be2772",
+  "rebuild_of": {
+    "recommend_version": "434ff8cd3f80eab440c233892834f9dc1bab0db2a197a030a9865194dd2401a6",
+    "configuration": "Tree",
+    "hyperparameters": {
+      "m__max_depth": 3,
+      "m__min_samples_leaf": 20
+    },
+    "threshold": 0.2
+  },
+  "verification": {
+    "test_rows": 60,
+    "outcomes_read": false,
+    "metric_computed": false,
+    "probabilities_identical_to_saved": true
+  },
+  "model_file": "Code/outputs/core_final_model.joblib",
+  "note": "cut_original_units = exp(cut) for logged inputs: scikit-learn places cuts midway between log values, so this is the geometric mean of the two neighbouring values.",
+  "nodes": [
+    {
+      "node": 0,
+      "depth": 0,
+      "n_train": 239,
+      "deaths": 77,
+      "death_share": 0.32217573221757323,
+      "input": "ejection_fraction",
+      "goes_left_if": "<=",
+      "cut_model_units": 27.5,
+      "cut_original_units": 27.5,
+      "logged": false,
+      "left": 1,
+      "right": 4
+    },
+    {
+      "node": 1,
+      "depth": 1,
+      "n_train": 50,
+      "deaths": 33,
+      "death_share": 0.66,
+      "input": "ejection_fraction",
+      "goes_left_if": "<=",
+      "cut_model_units": 22.5,
+      "cut_original_units": 22.5,
+      "logged": false,
+      "left": 2,
+      "right": 3
+    },
+    {
+      "node": 2,
+      "depth": 2,
+      "n_train": 21,
+      "deaths": 18,
+      "death_share": 0.8571428571428571,
+      "leaf": true,
+      "flagged": true
+    },
+    {
+      "node": 3,
+      "depth": 2,
+      "n_train": 29,
+      "deaths": 15,
+      "death_share": 0.5172413793103449,
+      "leaf": true,
+      "flagged": true
+    },
+    {
+      "node": 4,
+      "depth": 1,
+      "n_train": 189,
+      "deaths": 44,
+      "death_share": 0.2328042328042328,
+      "input": "serum_creatinine",
+      "goes_left_if": "<=",
+      "cut_model_units": 0.5960513353347778,
+      "cut_original_units": 1.8149380507838473,
+      "logged": true,
+      "left": 5,
+      "right": 8
+    },
+    {
+      "node": 5,
+      "depth": 2,
+      "n_train": 167,
+      "deaths": 29,
+      "death_share": 0.17365269461077845,
+      "input": "serum_creatinine",
+      "goes_left_if": "<=",
+      "cut_model_units": -0.052680257707834244,
+      "cut_original_units": 0.9486832981653793,
+      "logged": true,
+      "left": 6,
+      "right": 7
+    },
+    {
+      "node": 6,
+      "depth": 3,
+      "n_train": 56,
+      "deaths": 2,
+      "death_share": 0.03571428571428571,
+      "leaf": true,
+      "flagged": false
+    },
+    {
+      "node": 7,
+      "depth": 3,
+      "n_train": 111,
+      "deaths": 27,
+      "death_share": 0.24324324324324326,
+      "leaf": true,
+      "flagged": true
+    },
+    {
+      "node": 8,
+      "depth": 2,
+      "n_train": 22,
+      "deaths": 15,
+      "death_share": 0.6818181818181818,
+      "leaf": true,
+      "flagged": true
+    }
+  ]
+}
