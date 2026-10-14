@@ -1,4 +1,4 @@
-# Data Analysis Workspace
+# Agentic ML Advisor: step-by-step guidance through the ML workflow
 
 A folder for working through a machine learning problem with an agent, one step at a time, and coming out with a recommended model and a report you can defend.
 
@@ -23,6 +23,22 @@ Every model choice is recorded as it is made. Each decision gets a Decision Reco
 
 [Report.md](Report.md) and [Appendix.md](Appendix.md) hold a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5 in this folder. The report is the argument; the appendix is the full record behind it, including every decision record.
 
+## Progress
+
+| Part of the brief | Status |
+| --- | --- |
+| Agentic system that guides users through ML problem-solving | Done: the five-step workflow in [instructions.md](instructions.md). |
+| Uses smlbook.org chapters 2, 4 and 13 (plus chapter 3, agreed with my supervisor) | Done: [ML Guide.md](ML%20Guide.md), with page references. |
+| Helps users choose ML techniques | Done for classification, using an interim core (`Code/core.py`); the reusable `Code/advisor/` is next. |
+| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Report.md](Report.md), [Appendix.md](Appendix.md)). |
+| Available online through GitHub | Done. |
+
+### Next steps
+
+- Build `Code/advisor/`.
+- Demonstrate on more datasets: a regression and a multiclass example.
+- Write the project report.
+
 ## The five steps
 
 | Step | What happens | What it fills in |
@@ -46,7 +62,7 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [ML Guide.md](ML%20Guide.md) | What the book says (Part I), the procedure the agent follows for every model decision (Part II), and the formats of its decision records and recommendation reports (Part III). Changed only with `FRAMEWORK`. |
 | [Report.md](Report.md) | The completed example analysis: the report on the heart failure data, sub-task 1. |
 | [Appendix.md](Appendix.md) | The completed example analysis: the running record for the same work — data, problem, workings, decision records, recommendation, log, code guide. |
-| `Attachments/` | Your data. Never modified. |
+| `Attachments/` | Your data. Never modified. Holds the heart failure data used by the example analysis; see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
 | `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core: the example analysis used `Code/core.py` (not reviewed), which `Code/advisor/` will replace. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
 
@@ -70,6 +86,8 @@ Commit as you go. The agent stages named files rather than everything, so an unf
 
 ## Licence
 
-This template — the contract, the documents and the code — is licensed under [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/). See [LICENSE](LICENSE).
+This workspace is based on the [human-agentic-data-analysis](https://github.com/Vivid-Insights/human-agentic-data-analysis) template by Vivid-Insights, licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). Changes in this repository are shared under the same licence; see [LICENSE](LICENSE).
 
-Third-party material is not covered: the book the guide is based on (read at [smlbook.org](https://smlbook.org/)) and any data you analyse remain under their owners' terms.
+The included dataset is the UCI Heart Failure Clinical Records dataset (CC BY 4.0), credited in [Attachments/SOURCE.md](Attachments/SOURCE.md). Any other data you analyse remains under its owners' terms.
+
+The book the guide is based on is read at [smlbook.org](https://smlbook.org/) and remains under its owners' terms.
