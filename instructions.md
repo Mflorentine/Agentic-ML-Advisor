@@ -7,14 +7,12 @@ Use this folder as the single source of truth for the analysis. Keep work in the
 | Location | Purpose |
 | --- | --- |
 | `Attachments/` | Source data, reference files, exports, and other inputs supplied for analysis. Do not modify originals. |
-| `Code/` | All executable analysis code, notebooks and generated outputs. Arrives with the environment (`setup_env.sh`, `pyproject.toml`, `uv.lock`, `check_env.py`), `viz_style.py`, which carries the figure conventions, and `advisor/`, the deterministic core of the ML advisor (see `Machine Learning Scope and Reasoning`). Analysis scripts and `outputs/` are yours to add; `advisor/` is not edited as part of an analysis. |
+| `Code/` | All executable analysis code and generated outputs. Arrives with the environment (`setup_env.sh`, `pyproject.toml`, `uv.lock`, `check_env.py`), `viz_style.py`, which carries the figure conventions, and `advisor/`, the deterministic core of the ML advisor (see `Machine Learning Scope and Reasoning`). Analysis scripts and `outputs/` are yours to add; `advisor/` is not edited as part of an analysis. |
 | `Setup.md` | How to install and run the workspace: Obsidian, `uv`, the Python environment, and the everyday commands. |
-| `Report.md` | The final report, built up across the steps rather than written at the end: the problem and its sub-tasks into the `Introduction` in step 2, figures into `Results` in step 3, the `Methods` and `Results` paragraphs in step 4, the `Discussion` in step 5, and the background and `Abstract` in step 6. Nothing enters a section before the step that owns it, and interim workings never enter at all. |
+| `Report.md` | The final report, built up across the steps rather than written at the end: the problem and its sub-tasks into the `Introduction` in step 2, figures into `Results` in step 3, the `Methods` and `Results` paragraphs in step 4, and the `Discussion` in step 5. Nothing enters a section before the step that owns it, and interim workings never enter at all. |
 | `Appendix.md` | The running record of the work, written as you go from the first step. Eight sections in this order: `Data Summary` (the data actually used), `Problem Definition` (what is to be predicted, from what, and how that was arrived at), `Analysis` (the workings, one sub-heading per sub-task), `Decision Records` (the advisor's reasoning trace, one record per decision), `Recommendation` (the Recommendation Report for each sub-task), `Analysis Log` (a numbered row per step taken), `Code Summary` (a guide to the analysis code), and `References` last. Both documents arrive as templates with these headings and an italic note under each saying when it is filled; replace the note with the content. |
 | `ML Guide.md` | The advisor's knowledge and reasoning procedure, distilled from chapters 2, 3, 4 and 13 of Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*. Part I is what the book says, with page references; Part II is the procedure the advisor follows for every model decision. Read it before every model decision. Changed only under `Changing This Contract`. |
 | *The book* | Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft, read at [smlbook.org](https://smlbook.org/). Not stored in this repository. It is the source of `ML Guide.md`; open it for the detail behind a page reference. |
-| `Sample Report/` | A finished analysis, kept as an illustration of what the documents look like when complete. Self-contained: its own `Code/` and `Attachments/` beside the two documents. Its source data is not committed, since the publisher gives no redistribution terms; `Sample Report/Attachments/SOURCE.md` says how to download it. Never edited as part of a new analysis. |
-| `Sample Report/Analysis Steps.md` | A walkthrough of the sample analysis with the prompts used, for showing someone how the folder works. Not part of a new analysis. |
 
 ## Machine Learning Scope and Reasoning
 
@@ -30,7 +28,7 @@ This workspace is for solving supervised machine learning problems with the user
 - **The expected shape of a relationship comes only from the user or the domain** (P8, §11). Linear, curved or interacting relationships are never inferred from the data before models are fitted; unless the user states an expectation, P8 is `unknown`. Record the user's words.
 - **The test set is locked at the end of step 2 and used once per sub-task**, in the final evaluation, after the user has approved the recommended configuration (step 4).
 - **Ask the user's experience with machine learning in step 1**, record it in the `Data Summary`, and match the depth of explanation to it. The experience level changes how much is explained, never what is reported.
-- **The reasoning is recorded as it happens.** Every decision is a Decision Record in `Appendix.md`, in the structure set out in `ML Guide.md` and the Appendix template. Each sub-task ends with a Recommendation Report in the `Recommendation` section of the Appendix, assembled from its Decision Records. Rule IDs, provenance tags and threshold values belong in the Appendix; `Report.md` stays readable prose and cites the book in author–date style where the argument rests on it.
+- **The reasoning is recorded as it happens.** Every decision is a Decision Record in `Appendix.md`, in the structure set out in `ML Guide.md` and the Appendix template. Each sub-task ends with a Recommendation Report in the `Recommendation` section of the Appendix, assembled from its Decision Records. Rule IDs, provenance tags and threshold values belong in the Appendix; `Report.md` stays readable prose.
 
 ## Step-by-Step Working
 
@@ -45,15 +43,10 @@ This workspace is for working through a data analysis **one step at a time, with
   - **Give the user something to answer.** *"Is step 2 done?"* asks them to audit the contract from memory. Name what the step covers, say which parts have been settled and which have not been discussed at all, and ask about those. *"We have the problem, the metric and three sub-tasks. We have not discussed what the second sub-task's success criterion should be, or whether the rows in this file are independent — is there anything else to settle before we close step 2?"*
   - **Name the next step only after the user has closed the current one.** Then say what it involves, and wait again before starting it.
   - **Being ready to move on is not a reason to move on.** Seeing the whole path to the answer is the condition this rule exists for, not an exception to it.
-  - **Put the check in writing, and wait for an answer rather than an absence of objection.** List what the step covered, which parts are settled, which were never discussed, and anything the comparison below turned up. Then stop. A user who says nothing has not closed the step, and a user who replies about one item on the list has not closed the others — ask again about the rest.
-  - **From step 3 onwards, read the sample before putting the question.** Open the part of `Sample Report/Happiness.md` that corresponds to the step just finished — the figures and captions in `Results` for step 3, the `Methods` and `Results` paragraphs for step 4, the `Discussion` for step 5, the `Introduction` background and the `Abstract` for step 6, the whole report read in order for step 7 — and compare it with what this analysis now has. Say what the comparison found: what the sample does that this report does not, what this report does that the sample had no need of, and which of those differences are worth acting on. Then put that list to the user along with the completeness question, so they are judging something concrete instead of auditing the contract from memory. The sample is a statistical analysis, so it has no counterpart for model selection or model evaluation. For those parts, compare against `ML Guide.md` Part II and the Decision Record and Recommendation Report structures instead, and say so.
-    - **Compare the shape, not the content.** How much of a caption explains the way to read the figure, how much of a method paragraph is choices rather than procedure, where a limitation sits relative to the conclusion it qualifies, what was left in the appendix rather than lifted into the report. Never the numbers, the prose or the subject matter: those belong to a different analysis and copying them is already forbidden.
-    - **A difference is not a fault.** The sample is an example and not a specification. This analysis may rightly have fewer sub-tasks, no phase portrait, or a structure the sample does not have at all. Propose the improvement, say what it would buy, and leave the decision to the user.
-    - **Say so when the comparison finds nothing.** *"The sample's result paragraphs each name the sub-task, give the estimate with its interval, and stop; ours do the same"* is worth the user's time. A comparison that reports nothing has to be distinguishable from one that was never made.
-    - **Step 8 compares the export rather than a section.** `Sample Report/Code/outputs/Happiness.docx` is what a finished conversion of one of these reports looks like; check the four things that break in conversion against it.
+  - **Put the check in writing, and wait for an answer rather than an absence of objection.** List what the step covered, which parts are settled, and which were never discussed. Then stop. A user who says nothing has not closed the step, and a user who replies about one item on the list has not closed the others — ask again about the rest.
 - **Work through sub-tasks one at a time.** Take the sub-tasks agreed in step 2 in order, and finish one — through to its final evaluation and Recommendation Report — before starting the next. Do not batch them, and do not answer a later one because it happens to fall out of the same code.
 - **Agree the method before applying it.** For each sub-task, the method is the admissible set, the prior ranking and the cross-validation protocol (step 4). Present them, with the property values they rest on, and get the user's agreement before any configuration is cross-validated. The diagnosis loop then runs within the agreed method (step 4 says which actions need the user), and the test set is used only after the user has approved the recommended configuration. If a method turns out to be unsound once started, stop and say so rather than quietly switching to another.
-- **`Report.md` is built up as the work proceeds, not written at the end.** Each step adds only its own part: the problem and its sub-tasks in step 2, the figures in step 3, the `Methods` and `Results` paragraphs in step 4, the `Discussion` in step 5, the background and `Abstract` in step 6. Nothing enters a section ahead of the step that owns it, and interim results, workings and observations always go in `Appendix.md` instead.
+- **`Report.md` is built up as the work proceeds, not written at the end.** Each step adds only its own part: the problem and its sub-tasks in step 2, the figures in step 3, the `Methods` and `Results` paragraphs in step 4, and the `Discussion` in step 5. Nothing enters a section ahead of the step that owns it, and interim results, workings and observations always go in `Appendix.md` instead.
 - **The `Disclaimer` section is already written, and it stays.** `Report.md` arrives with a disclaimer between `Discussion` and `Appendix` saying the report was written with the help of agentic AI at every stage. It is not a placeholder and no step fills it in.
   - Do not remove it, do not soften it, and do not move it further down. If the user rewrites the wording, keep theirs.
   - It is in the template from the start rather than added at the end for the same reason the problem and its sub-tasks go in early: a fact about how the document was produced should not depend on anyone remembering to disclose it once the work is done.
@@ -83,7 +76,7 @@ When the user prefixes a message with **FRAMEWORK**, they are changing this docu
 - If the change conflicts with something already written here, say so rather than leaving the contract self-contradictory.
 - **`ML Guide.md` Part II and `Code/advisor/` are part of this contract.** A message prefixed **FRAMEWORK** may change them too. A change to a rule, matrix entry or threshold in Part II is made in the guide and in the core together, in the same commit. That commit touches no analysis content, and the guide's version note records the change. An analysis in progress then re-runs the core from the earliest decision the change affects (`When Something Changes`).
 
-## The Eight Steps
+## The Five Steps
 
 Work proceeds through these steps in order. Each is one or more separate exchanges. **Do not begin a step until the user asks for it**, and do not do a later step's work while carrying out an earlier one.
 
@@ -173,11 +166,9 @@ Agree what is to be predicted, and how success will be judged, before any model 
   - **Every limitation has a proper place, and it is not here.** In `Methods`, beside the model whose defect it is. In `Discussion`, beside the conclusion it qualifies. Step 5 already requires the second of those.
   - **Naming the approach is not anticipating the result.** *"We ask whether a change in one variable follows the level of the other"* is method, and belongs. *"This cannot establish which came first"* is a conclusion, and does not. The test is whether the sentence would have to change if the numbers came out differently.
 - **The `Introduction` has a fixed shape.** In order:
-  1. **Background** — one or two paragraphs setting the scene: what is already known about the problem, what is unresolved, and why it is worth asking about, with references. This comes first, because a reader needs the problem before they need the method. Written in step 6, since it needs the literature rather than the data.
-  2. **Framing the problem** — two or three paragraphs: what is predicted and from what, how the output and inputs are measured, what a prediction is for and how success is judged, and the approach taken — comparing a small set of model types from the book by cross-validation, then evaluating the chosen one once on held-out data. Written in step 2, from the formulation already agreed.
-  3. **The sub-tasks**, as a numbered list.
+  1. **Framing the problem** — two or three paragraphs: what is predicted and from what, how the output and inputs are measured, what a prediction is for and how success is judged, and the approach taken — comparing a small set of model types from the book by cross-validation, then evaluating the chosen one once on held-out data. Written in step 2, from the formulation already agreed.
+  2. **The sub-tasks**, as a numbered list.
 - **Do not open with a sentence about the report.** *"This report develops a model to predict X"* describes the document rather than the problem, and tells a reader nothing they will not get from the sub-tasks a few lines later. Open on the problem itself — what is unresolved, and why anyone should care.
-- **Put the background placeholder in the opening position**, so that the gap sits where the background will go. Use exactly: `*Background and prior literature to be added later.*` Step 6 replaces it.
 
 ### Step 3 — Explore and visualise the training data
 
@@ -278,7 +269,7 @@ The rules that govern this step:
   - Statements about what an analysis *can and cannot establish* are different, and belong: they are claims about inference, not about how to feel. "This cannot distinguish the direction of causation" stays.
   - The user makes the normative calls. Give them the magnitudes, the intervals and the limitations.
   - **The selection confidence is the one summary judgement the report carries.** It is computed by the core from stated factors (§17), not chosen, and it is always reported with those factors so the reader can disagree.
-- **No emphasis in `Results`** — see the document-wide rule under `Writing`. Emphasis tells the reader which numbers matter, which is the reader's judgement to make.
+- **No emphasis in `Results`.** Emphasis tells the reader which numbers matter, which is the reader's judgement to make.
 
 ### Step 5 — Conclusions and limitations
 
@@ -297,80 +288,7 @@ Write the `Discussion` section of `Report.md`.
 - **No new analysis.** If a question arises that needs computing, say so and stop — that is a new step, not part of this one.
 - Interpretation belongs here; that is what the section is for. Grading the evidence still does not. Say what the data supports and what it cannot; do not tell the reader how much to be impressed.
 - Nothing enters the `Discussion` that is not already established in `Results` or `Appendix.md`.
-
-### Step 6 — Background and abstract
-
-By this point `Report.md` holds everything but these two. Steps 2 to 5 have put in the problem and its sub-tasks, the figures, the `Methods` and `Results` paragraphs and the `Discussion`. Step 6 adds the background and the `Abstract`, and nothing else — if a section still looks unfinished, that is the earlier step's work to complete, not this one's.
-
-**Help the user write the background.** It replaces the `*Background and prior literature to be added later.*` placeholder, and it is the one part of the report that does not come out of the analysis, so it cannot be written from the data.
-
-- **Do not write it alone from memory.** Everything else in the report is checkable against the generated output. A background is checkable only against the literature, and a plausible-sounding sentence about what a field has found is the easiest thing in the document to get wrong.
-- **Propose the structure first and agree it.** Say which claims the background needs to establish for the problem to make sense, and in what order. Usually a handful: what the outcome measure is and why it is taken seriously, what is already known about the relationship being tested, and what remains open — the gap the report addresses.
-- **Then find the sources and read them.** Search, open what the search returns, and take the claim from the source rather than from the abstract or from what you expected it to say. The rules in `References and Citation` apply in full: verify every bibliographic detail, check every link resolves, and never cite a work you have not opened.
-- **The book may be cited like any other source.** Where the background relies on what the book says about a method, cite it in author–date style (Lindholm et al., 2026), naming the edition used. Page references and provenance tags stay in the Appendix.
-- **Bring the user the sources before the prose.** Say what each one establishes and let them judge whether it belongs, whether it is the right authority, and whether they know a better one. They may well know the literature better than the search does.
-- **Choose the references for their relevance to the findings; write the text as though the findings were not yet in.** These pull in opposite directions and both matter. Knowing how the analysis came out is what tells you which literature is worth citing — a background assembled before the results is padded with work that turned out to be beside the point. But the prose must not carry the results, by statement or by implication.
-  - Cite the paper whose question the analysis ended up answering. Do not write a sentence that only makes sense to someone who already knows the answer.
-  - *"Whether the association survives adjustment for the main confounder has been contested (…)"* frames the question. *"The confounder accounts for much of the apparent effect (…)"* announces the result and does not belong, even with a citation attached to it.
-  - The test from step 2 applies here too: would the sentence have to change if the numbers had come out the other way? If so it is a finding, not background.
-- **The background explains why the questions were worth asking**, and the questions were fixed in step 2 so that the report could not drift toward whatever turned out to be interesting. Keep that protection: the background motivates the questions as asked, it does not quietly restate them to fit the answers.
-- **Mark what could not be supported.** If a claim the structure needs turns out to have no source behind it, say so and leave it out rather than softening it into something vague enough to pass. A gap the user can see is worth more than a sentence they cannot check.
-
-**Write the `Abstract` last**, once the background is settled and every other section is final.
-
-- **It is the one place that states the findings up front.** The rule against anticipating conclusions governs the `Introduction`; the abstract exists to give the answer before the argument, so the two are not in conflict.
-- **Follow this order, roughly a sentence to each.** One paragraph.
-  1. The field in general — what kind of question this is.
-  2. Narrowing to the specific question, and what is unresolved about it.
-  3–4. The problem and its sub-tasks, and the data and the approach used — choosing among model types by cross-validation and evaluating the chosen one on held-out data.
-  5–6. The results. A limitation belongs here too, attached to the result it qualifies rather than held back — a null that follows from the data rather than from the world is reported alongside the null, not after it.
-  7. A closing summary: what the reader should take away, in one sentence.
-- **Short sentences, to the point, no fluff.** Every sentence carries a fact, a finding or a limitation. A sentence that only announces what the next one will say comes out. So does any adjective that would survive the results being different.
-- **Avoid numbers.** State the direction and the rough size of what was found in words — *"about half the association remains once income is accounted for"* — and leave the estimates and intervals to `Results`. An abstract is read to decide whether to read the report, and a reader deciding that does not need three decimal places. Sample sizes, test statistics and confidence intervals do not belong here at all.
-- **Suggest a title once the abstract is written.** By then the report's argument is settled, which is the first point at which a title can describe it. Offer two or three, say what each puts first, and let the user choose — a title is the most visible authorial choice in the document and it is theirs. Keep them plain and literal; a title that states the subject is more use than one that is memorable.
-- **Nothing in it is new.** No figure reference, no finding that is not in `Results`, no caveat that is not in `Discussion`. If writing the abstract turns up something the report should have said, put it in the section it belongs to and then summarise it.
-- **Name the prior work you refer to.** *"Earlier work has found that…"* leaves the reader unable to check it or to know which literature is being disputed. Cite it: `Deaton (2008)` or `(Deaton, 2008)`. This is the one place a citation belongs in an abstract, and it comes with the usual obligation to state what that work actually found — including which measure was the outcome and which the predictor, since those are easy to swap round.
-- **No method plumbing.** Which section answers which question, what the source file is called, whether a model was fitted on a cross-section or a panel: all trivial, and all removed by a reader's eye before it reaches the findings. *"The data is the underlying panel of the World Happiness Report 2024; the first two questions are answered on a cross-section of countries and the third on a model of the year-on-year change in happiness"* was cut in full for this reason.
-- **Give the big picture, not the statistical detail.** The abstract says what was learned about the subject. Sample definitions, specifications, diagnostics and how a null came about belong further down. If a sentence would only interest someone who intends to reproduce the work, it is in the wrong section.
-- **Write it last for the obvious reason:** it is the only section that has to be true of every other one.
-
-### Step 7 — Read through
-
-Read the finished report from beginning to end and list what is wrong with it. This is a separate step because the faults it catches are invisible to every check made while writing: those are made section by section, and these faults only exist in sequence.
-
-- **Read it in order, in one pass, as a reader would.** Not section by section, and not searching for anything in particular. A term defined twice, a claim made in `Results` and contradicted in `Discussion`, a figure discussed before it appears — none of these are visible from inside the section that contains half of them.
-- **Check the argument runs end to end.** Each sub-task should be stated in the `Introduction`, its method given in `Methods`, its answer in `Results`, and its meaning in `Discussion`. One missing from any of the four is the commonest structural fault, and the easiest to miss once every section looks complete on its own.
-- **Check the machine learning record:**
-  - each sub-task has exactly one `FINAL` Decision Record, and the test set was used once for it;
-  - the baseline is reported beside every test result;
-  - preprocessing was fitted within folds, and folds matched the data's structure (ADM-3);
-  - the Decision Records pass the validity checks of the Decision Record structure;
-  - every recommendation, ranking and confidence level in the documents matches the core's recorded output;
-  - the Recommendation Report contains nothing that is not in a Decision Record;
-  - no flag is written as though it were a tested result.
-- **Re-check everything that goes stale.** Every number against the generated output, every figure reference against the figure it now points to, every cross-reference to another section. `When Something Changes` lists how these break.
-- **Check nothing is orphaned.** A figure never referred to in the text. A reference never cited. A citation with no reference. A heading with nothing under it. A defined term used once and never again.
-- **Check the `Abstract` against the report.** Every claim in it should be traceable to a section, and the emphasis it gives should match the emphasis the report gives.
-- **Check the references properly, not just that they exist.** Each one cited where it is used, each detail verified against the source, each link resolving, and the list in order. This is the last chance to catch a citation that says something the source does not.
-- **Report the list; do not fix as you go.** The point of the step is the list. Fixing while reading loses the thread of the argument, and it takes the decisions away from the user, who may want a fault left alone or handled differently.
-- **Record the outcome in the `Analysis Log`**, including when nothing was found. A read-through that reports nothing has to be distinguishable from one that never happened.
-
-### Step 8 — Export
-
-Turn the finished report into a file that can be sent to someone who does not have the vault.
-
-- **Ask which format.** Word for a reader who will comment on it, PDF through LaTeX for something to print or submit, or both. Do not assume, and do not produce every format because it is cheap to do so.
-- **`Report.md` remains the source of truth.** Never edit an exported file and never convert one back.
-- **Run the conversion from the vault root**, so the figure paths inside the document resolve, and record the exact command in the `Code Summary`. An export that cannot be repeated is not much better than a screenshot.
-- **Write the output where it cannot be mistaken for the source**, such as `Code/outputs/`. An exported `.docx` sitting beside `Report.md` will eventually be the one somebody edits.
-- **Four things break in conversion, and none of them stops it.** The exporter returns success and writes a plausible file in every case below, so each has to be checked by looking at the output.
-  - **Captions stop looking like captions.** They are wrapped in `<small>` and `<b>` because Obsidian will not parse Markdown inside HTML. Converting to Word or LaTeX keeps the words and discards the tags, so the caption arrives in body text at body size and a reader can no longer tell legend from argument. Convert captions to the target's own emphasis before exporting.
-  - **Characters the target's font cannot render are dropped in silence.** A default LaTeX font will not have Greek letters or superscript signs, so `ρ` and `⁻` vanish from the PDF — which matters, because that turns `p = 1 × 10⁻¹³` into `p = 1 × 1013`, a different number rather than a missing symbol. The exit code is still zero. Use an engine and font that cover the characters actually in the document, and search the output for every non-ASCII character the source contains.
-  - **Links to other documents survive as dead links.** Relative links to `Appendix.md` or `Setup.md` point into a vault the reader does not have. Strip them, or point them somewhere published.
-  - **The reference list is prose, not a bibliography.** It converts as ordinary paragraphs. That is usually what is wanted, but the target's citation machinery is not involved and will not renumber or reformat anything.
-- **Open the exported file and look at it.** Figures present and in the right order, captions attached to the right figures, tables not collapsed, equations legible, no numbers altered by a missing character.
-- **Do not install anything until the user has asked for a format that needs it.** Nothing in steps 1 to 7 requires an export tool, so the workspace does not ship with one. Word needs only a converter; PDF needs a LaTeX engine as well, which is a much larger install. Ask which format they want, then install what that format needs and nothing else.
-- **The tools are not fixed by this contract.** `pandoc` is the usual converter. Whatever is used, record it in `Setup.md` with its version, so the export can be reproduced.
+- **Suggest a title once the `Discussion` is written.** Offer two or three plain, literal titles, say what each puts first, and let the user choose.
 
 ## When Something Changes
 
@@ -400,18 +318,18 @@ A refit, a re-cleaned value, a dropped figure or a renumbering makes some senten
 Run all Python through the workspace environment so results are reproducible. Full instructions live in `Setup.md`; the rules that bind this work are:
 
 - Create or update the environment with `cd Code && ./setup_env.sh`. This resolves `uv.lock` and builds `Code/.venv`. Never install packages into the system Python.
-- Run code with `cd Code && uv run python <script>.py`, notebooks with `cd Code && uv run jupyter lab`.
+- Run code with `cd Code && uv run python <script>.py`.
 - Add a dependency with `cd Code && uv add <package>`, which updates `uv.lock`. Commit the changed lockfile, list the package in the `Code Summary` section of `Appendix.md` alongside the code that needs it, and update the version table in `Setup.md`.
 - `Code/check_env.py` prints the exact interpreter and package versions. Record that output in `Appendix.md` when environment versions could affect results.
 - **scikit-learn is the machine learning library**, and the deterministic core in `Code/advisor/` is built on it. Call the core through its documented entry points, not by re-implementing its steps in an analysis script. *(The entry points are defined when the core is implemented.)*
 - **Override the scikit-learn defaults that differ from the book's starting points** (`ML Guide.md` §9, implementation notes). The core does this; analysis scripts that fit models outside the core must do it too.
-- **statsmodels is in the environment (it came with the workspace template), but the negative binomial GLM is not implemented (§23).** Implementing it is a FRAMEWORK change.
+- **The negative binomial GLM is not implemented (§23).** No package in the environment provides it; adding one is a FRAMEWORK change.
 
 ## Analysis Standards
 
 - Preserve original attachment files. Write derived datasets, charts, tables, and exports under `Code/` unless a task specifically requires another location.
 - Never invent data, results, file contents, citations, or successful execution. Mark missing information and unverified assumptions clearly.
-- Prefer reproducible scripts or notebooks over manual calculations. Include commands, parameters, random seeds, and environment requirements when they affect results.
+- Prefer reproducible scripts over manual calculations. Include commands, parameters, random seeds, and environment requirements when they affect results.
 - Check row counts, missing values, types, ranges, duplicates, joins, and outliers as appropriate for each dataset. Document meaningful issues in the appendix.
 - Separate observed results, methodological assumptions, and recommendations. Quantify uncertainty and limitations where possible.
 - Do not expose credentials, access tokens, personal data, or other sensitive material in code or Markdown files.
@@ -427,80 +345,6 @@ These documents are read and edited in Obsidian, which soft-wraps text to the wi
 - One line per paragraph, list item, table row, heading, and blockquote paragraph. A bare `>` still separates paragraphs inside a blockquote.
 - Code blocks are exempt: wrap those as the language needs.
 - The same applies to Markdown written by scripts in `Code/`. Build each line as one string rather than emitting a wrapped block.
-
-## Writing
-
-The report is prose that a reader has to get information out of. **Aim for simple, plain text that brings the main points to the front.** Three faults recur and are worth naming.
-
-- **Say it plainly; no figures of speech.** *"The association is not simply the control variable wearing another name"* should be *"the association holds even when the control variable is accounted for."* Metaphor makes the reader decode a sentence instead of reading it, and it adds nothing a plain phrasing would not carry.
-- **No throat-clearing.** Do not announce what a sentence or paragraph is about to do and then do it. *"The panel model adds something a cross-section cannot"* is a promise, and the sentence after it is the content — keep the content and delete the promise. If a sentence could be removed without losing information, remove it.
-- **No abstract gesturing.** Sentences assembled from methodological abstractions sound like an argument without making one. *"Temporal precedence is not identification, though, and here it is weaker than it looks"* says nothing a reader can check. Name the concrete problem instead: which variable, what is wrong with it, and what follows. Prefer *"a predictor built partly from later observations cannot establish which came first."*
-
-A working test for all three: could a reader disagree with this sentence? If not, it is decoration.
-
-### Learning the user's style from their own rewrite
-
-The user may take a document away and rewrite it in the style they want, then hand it back. This is the most direct instruction about style available, and it is worth more than any adjective they could give instead.
-
-- **When they say they are starting a pass, stop editing that document until they say `done`.** They are working in it directly. Editing underneath them risks a conflict, and staging their half-finished sentences risks committing work they had not settled. Answer questions and work elsewhere, but leave the file alone.
-- **When they say `done`, read what they changed before writing anything.** `git diff` against the last commit is the record of the pass. Read it as a whole rather than sentence by sentence, because the pattern is the point.
-- **Derive rules from the edits and add them to this section.** State each as something checkable — a rule that can be applied or breached — not as an adjective. *"Give the number before the qualification"* is usable. *"Write more clearly"* is not.
-- **Cite the sentence each rule came from, before and after.** A rule without its example is unusable once the memory of the pass has gone, and the before/after is what makes the intent unambiguous.
-- **Say what was inferred from a single instance.** One changed sentence may be a preference or may be that sentence; distinguish the rules that recur from the ones observed once.
-- **Ask about anything that reads as deliberate but might be an accident.** A dropped qualifier can be a style choice or an oversight, and the difference matters when the sentence carries a result.
-- **Then apply the rules to the rest of the work**, including the documents the user did not rewrite by hand. The point of extracting the rules is that the user should not have to make the same edit twice.
-
-### Sentence and paragraph style
-
-These are the defaults. They came from watching a user rewrite a report by hand, and each is quoted before → after. The mechanism above is how they get changed.
-
-- **Write in the first person plural.** *"The question is one of association rather than cause"* → *"The questions we look at here are primarily of association rather than cause."* Then "we have investigated", "we found that", "what we can say is". The report is an account of work people did, not a description of results that arrived unattended.
-- **Contractions are fine.** *"so no analysis of this data can establish which direction a relationship runs"* → *"so we can't say which direction the relationship runs."*
-- **Split long sentences.** A sentence carrying three clauses joined by "and … so" reads better as two. Prefer two plain sentences to one balanced one.
-- **Merge one-sentence paragraphs into their neighbours.** A methods section went from three paragraphs to two, and another from four to two, with almost no words cut. It was the paragraph breaks that were wrong, not the content.
-- **Nothing in `Report.md` is bold unless the user asks for it.** Not a sentence, not a phrase, not a run-in heading, in any section. *"**The reverse direction.** The mirror model was fitted"* → *"A further model was fitted"*; *"**The second model.** Taken together"* → *"Taken together"*; *"consecutive **calendar** years"* → *"consecutive calendar years"*.
-  - The bold figure number that labels a caption — `<small><b>Figure 1.</b> …</small>` — is a label rather than emphasis, and stays.
-  - This applies to `Report.md` only. `Appendix.md` and the other working documents get scanned rather than read, and their bold lead-ins stay as they are.
-  - The reason is not consistency, it is that bold makes the argument for the reader. A report has to earn its emphasis through sentence order and word choice; typography is a shortcut around the writing.
-- **Cut the defence of the road not taken.** Deleted in full: *"Rebuilding the sample as 'most recent period with every variable present' was rejected: a unit whose latest period lacks one variable would have shifted to an earlier one…"* The reasoning belongs in `Appendix.md`. This is the same instinct as the rule against markers for work not done.
-- **Cut technical asides that no reported number rests on.** Deleted in full: *"The model is pooled, with no unit fixed effects. Adding them to a specification carrying the lagged outcome on the right-hand side would introduce dynamic panel bias and require a different estimator, not merely more dummies."*
-- **Refer back to the methods rather than restating a caveat.** *"The power of that test is limited by the outcome. Because the source interpolates…"* → *"However, as discussed in the methods, because the source interpolates…"*
-- **Do not state a measurement as though it were the definition.** *"Productivity is measured as output per hour"* → *"One way of measuring productivity is output per hour."* It turns a claim about the world into a statement about a choice, which is what it is.
-- **No figurative shorthand for a model or a method.** *"The mirror model"* → *"A further model."*
-- **No short sentence dropped in for emphasis.** *"Nothing comes to rest there."* was deleted, and nothing was lost with it.
-
-## References and Citation
-
-- **Cite in author–date style.** `(Smith et al., 2020)` in parentheses, or `Smith (2020)` when the author is part of the sentence. Disambiguate same-author-same-year works as `2020a`, `2020b`. Where two works share a first author and year but have different co-authors, name enough surnames to tell them apart rather than lettering them.
-- **Every document that cites anything carries a `## References` section as its last section.** That includes `Appendix.md`, which cites the sources behind the data.
-- **Every reference is a link.** Hyperlink the title, or the DOI where one exists, to a URL that resolves. Check it resolves before writing it — a dead reference is worse than none.
-- List alphabetically by first author. Use the corporate author for databases and reports without named authors.
-- **Cite the specific edition or version actually used**, not the series in general. Data sources are revised, and a claim traceable to the wrong vintage is not traceable at all.
-- **Verify the bibliographic details rather than writing them from memory** — volume, issue, pages, publisher, year. Never cite a work you have not opened.
-- **The book is cited at the edition actually used**, the online draft named in `ML Guide.md`, with its date, linked to smlbook.org. It appears in the `References` of `Appendix.md` whenever a Decision Record relies on it, and in `Report.md` when the text does.
-- **Page references and provenance tags are Appendix material.** A Decision Record cites `[B p.x]` or `[B→I p.x]`. The report cites the book in author–date style without tags.
-
-### Getting hold of paywalled sources
-
-Publishers block scripted requests. A `403` from a journal site is not a dead link — the same article opens normally in the user's browser, often through an institutional subscription. Ask them to fetch it.
-
-- **Ask for the download; do not work around the block.** Substituting a preprint, a working paper or an abstract for the article you mean to cite is not a workaround, it is citing a different document. Working-paper and published versions differ in title, wording, tables and sometimes in the specific claim being cited.
-- **Send a short list, not everything found.** Only the sources the argument actually rests on. For each, give the title, a DOI link and one line on what the citation needs from it, so the user can judge whether it is worth their time. Three or four is a reasonable ask; a dozen is not.
-- **Say where to put them.** Ask the user to save the files to their `Downloads` folder and to say when they are there. Move them into `Attachments/literature/` yourself, keeping the publisher's filename or renaming to first author and year.
-- **Keep the PDFs out of version control.** They are usually licensed material and the repository may be public. Add the folder to `.gitignore`, and record the citation in the documents rather than the file.
-- **Then read them and cite from the text.** Note in the `Analysis Log` which sources were read in full and which rest on an abstract, so a reader knows how far each citation was checked.
-- **An abstract is enough only for what the abstract states.** If the claim being cited appears verbatim there, say so and move on. If it needs a number, a caveat or a passage from the body, the article has to be opened.
-
-## The Sample Report
-
-`Sample Report/` holds one finished analysis — a question about World Happiness Report data, worked through the eight steps. It is there for one purpose: so a user who has not seen a report of this kind come together can look at what the documents contain when they are done.
-
-- **Offer it when it would help, and not otherwise.** If the user is unsure what a section is for, what a figure caption should say, or how much detail belongs in the appendix rather than the report, point them at the corresponding part of `Sample Report/Happiness.md` or `Sample Report/Happiness Appendix.md`. That is more use than describing it.
-- **Read it yourself before closing a step, from step 3 onwards.** This is a different use from offering it, and it is not optional — the rule is under `Step-by-Step Working`. Offering the sample is for when the user is unsure what a section is for; reading it is how you check your own work against a finished example before asking whether a step is done. Neither use licenses editing it.
-- **It is an example, not a specification.** The section headings in the templates are a sensible default, not a requirement. A different question may want different sub-headings, a different number of sub-tasks, no phase portrait, no growth model, or a structure the sample does not have at all. Follow the user's analysis, not the sample's shape.
-- **It is a statistical analysis, not a machine learning one.** Compare against it for the shape of the documents — captions, the balance of method and result paragraphs, what stays in the appendix. It has no counterpart for model selection, cross-validation, Decision Records or the Recommendation Report; for those, `ML Guide.md` and the Appendix template are the reference.
-- **Never edit it as part of a new analysis**, and never copy numbers, prose or figures out of it. Its scripts, outputs and (once downloaded) data are self-contained inside that folder so a new analysis has no reason to touch it.
-- **The rules in this document take precedence over anything the sample does.** The sample was written while these rules were still being worked out, so it may not follow all of them perfectly. Where they disagree, the rule is right and the sample is a historical artefact.
 
 ## Agent Operating Rules
 

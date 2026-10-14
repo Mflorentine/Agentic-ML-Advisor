@@ -21,7 +21,6 @@ REQUIRED = [
     ("openpyxl", "openpyxl"),
     ("tabulate", "tabulate"),
     ("scipy", "scipy"),
-    ("statsmodels", "statsmodels"),
     ("matplotlib", "matplotlib"),
     ("seaborn", "seaborn"),
     ("sklearn", "scikit-learn"),

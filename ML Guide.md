@@ -6,9 +6,9 @@ This is a set of notes written in our own words, not a substitute for the book. 
 
 The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours. **Part III (sections 24–25) fixes the record formats** the advisor writes into `Appendix.md`: the Decision Record and the Recommendation Report.
 
-**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
+**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added — chapter 3 is included with David's agreement; wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
 
-**Scope.** Only chapters 2, 3, 4 and 13. Every other method — L1/LASSO included — is flagged and not used (section 23).
+**Scope.** Only chapters 2, 3, 4 and 13. *(14 October 2026: chapter 3 is included with David's agreement.)* Every other method — L1/LASSO included — is flagged and not used (section 23).
 
 # Part I — What the book says
 
@@ -104,7 +104,7 @@ All seven are from chapters 2 and 3. Each card says what the book says the model
 
 - **What it does.** Generalises linear regression to outputs with other properties by choosing (i) a distribution for the output from the exponential family, (ii) a linear term θᵀx, and (iii) a link function connecting the linear term to the mean of the output (p. 63). Logistic regression is one example (p. 63).
 - **Poisson regression** is the worked example: for count outputs, the mean count is exp(θᵀx), which keeps it positive (Example 3.6, pp. 62–63).
-- **Other members named:** negative binomial regression (a more flexible model for counts) and exponential regression (for non-negative real outputs) (p. 63). *Negative binomial is documented but not implemented in this workspace (decided 10 October 2026): it is not yet implemented in this workspace, although statsmodels, which provides it, is in the environment. If counts look more variable than a Poisson model allows, flag it (section 23).*
+- **Other members named:** negative binomial regression (a more flexible model for counts) and exponential regression (for non-negative real outputs) (p. 63). *Negative binomial is documented but not implemented in this workspace (decided 10 October 2026): it is not implemented in this workspace, and statsmodels, which provides it, is not installed. If counts look more variable than a Poisson model allows, flag it (section 23).*
 - **How it is learned.** By maximum likelihood, numerically; regularisation can be added (pp. 63–64).
 - **Suits** counts (number of events in an interval) and other outputs that are restricted in ways a normal linear model ignores, e.g. non-negative values (pp. 61–62).
 
@@ -573,7 +573,7 @@ If the evidence suggests one of these might help, record a flag (section 20) nam
 
 | Method | Status |
 | --- | --- |
-| Negative binomial GLM | In ch. 3 (p. 63), **documented but not implemented** (no scikit-learn implementation; statsmodels, which provides it, is in the environment but not yet used for it) |
+| Negative binomial GLM | In ch. 3 (p. 63), **documented but not implemented** (no scikit-learn implementation; statsmodels, which provides it, is not installed) |
 | L1 regularisation (LASSO), robust loss functions, hyperparameter optimisation beyond grid search | Chapter 5 |
 | Neural networks, deep learning | Chapters 6–7 |
 | Bagging, random forests, boosting; the bootstrap | Chapter 8 |
@@ -674,7 +674,7 @@ Fields appear in this order. A field that does not apply is written `n/a`, never
 
 ### 24.5 Validity checks
 
-Applied by the advisor before writing a DR, in the step 7 read-through, and by the advisor evaluation afterwards.
+Applied by the advisor before writing a DR, and by the advisor evaluation afterwards.
 
 1. Every rule ID and matrix entry exists in the guide version in use, with the same provenance tag.
 2. Every `[B p.x]` and `[B→I p.x]` has a page within chapters 2, 3, 4 or 13. *(The exact printed page ranges of the four chapters are still to be recorded in this guide.)*

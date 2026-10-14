@@ -1,14 +1,10 @@
 # [Title]
 
-*Suggested at the end of step 6, once the argument is settled.*
-
-## Abstract
-
-*Written last, in step 6, after every other section is final.*
+*Chosen by the user at the end of step 5, from the titles suggested once the `Discussion` is written.*
 
 ## Introduction
 
-*Background written in step 6; the problem and its sub-tasks go in at the end of step 2, before anything is trained.*
+*The problem and its sub-tasks go in at the end of step 2, before anything is trained.*
 
 ## Methods
 
@@ -29,7 +25,3 @@ This report was written with the help of agentic AI at every stage: importing an
 ## Appendix
 
 *A pointer to [Appendix.md](Appendix.md), where the data, the decisions and the full workings are recorded.*
-
-## References
-
-*Added as sources are cited. Always the last section.*

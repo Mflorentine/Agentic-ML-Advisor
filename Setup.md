@@ -41,7 +41,6 @@ All Python runs inside the workspace environment, never the system Python:
 ```bash
 cd Code
 uv run python my_analysis.py     # run a script
-uv run jupyter lab               # notebooks
 uv run python check_env.py       # print interpreter and package versions
 uv add <package>                 # add a dependency, updating uv.lock
 ```
@@ -58,14 +57,13 @@ uv add <package>                 # add a dependency, updating uv.lock
 | pandas | 3.0.5 |
 | numpy | 2.5.2 |
 | scipy | 1.18.1 |
-| statsmodels | 0.15.0 |
 | matplotlib | 3.11.1 |
 | seaborn | 0.13.2 |
 | pyarrow | 25.0.1 |
 | openpyxl | 3.1.5 |
 | scikit-learn | 1.9.1 |
 
-Plus `xlrd` for legacy `.xls`, `tabulate` for Markdown tables, and JupyterLab with `ipykernel`. Verified by `uv run python check_env.py` on 2026-09-01.
+Plus `xlrd` for legacy `.xls` and `tabulate` for Markdown tables. Verified by `uv run python check_env.py` on 2026-10-14.
 
 Record this output in [Appendix.md](Appendix.md) whenever package versions could affect a result.
 
@@ -79,39 +77,6 @@ Record this output in [Appendix.md](Appendix.md) whenever package versions could
 | `Code/setup_env.sh` | Creates or updates `Code/.venv` from the lockfile, then verifies it. |
 | `Code/check_env.py` | Prints the interpreter path and installed versions; exits non-zero if anything is missing. |
 | `Code/.venv/` | The environment itself. Git-ignored and excluded from the Obsidian index — rebuild it, never commit it. |
-
-## Exporting the report (step 8 only)
-
-Nothing before step 8 needs these, so they are not installed as part of the setup above. Install them when you actually want a file to send someone, and only for the format you want.
-
-**Word (`.docx`)** needs a converter. [Pandoc](https://pandoc.org/installing.html) is the usual one:
-
-```bash
-brew install pandoc            # macOS
-sudo apt install pandoc        # Debian / Ubuntu
-```
-
-Then, from the vault root, so the figure paths in the document resolve:
-
-```bash
-pandoc Report.md --from markdown -o Code/outputs/report.docx
-```
-
-**PDF** needs a LaTeX engine as well as the converter, which is a considerably larger install. [Tectonic](https://tectonic-typesetting.github.io/) is a single self-contained binary and downloads only the packages a document actually uses:
-
-```bash
-brew install tectonic
-pandoc Report.md --from markdown --pdf-engine=tectonic -o Code/outputs/report.pdf
-```
-
-A full TeX distribution (MacTeX, TeX Live) works too and is several gigabytes.
-
-Two things to check in the output rather than trust:
-
-- **Captions.** They are wrapped in `<small>` and `<b>` so Obsidian renders them correctly. Converting keeps the words and drops the tags, so the caption arrives at body size and stops reading as a legend.
-- **Unusual characters.** A default LaTeX font has no Greek letters or superscript signs. They are dropped silently, the exit code is zero, and a p-value written `1 × 10⁻¹³` can come out as `1 × 1013` — a different number rather than a visible gap. Search the PDF for every non-ASCII character the source contains.
-
-Record whatever you install in the version table above, so the export can be reproduced.
 
 ## Troubleshooting
 
