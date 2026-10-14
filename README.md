@@ -47,7 +47,7 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [Report.md](Report.md) | The completed example analysis: the report on the heart failure data, sub-task 1. |
 | [Appendix.md](Appendix.md) | The completed example analysis: the running record for the same work — data, problem, workings, decision records, recommendation, log, code guide. |
 | `Attachments/` | Your data. Never modified. |
-| `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). |
+| `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core: the example analysis used `Code/core.py` (not reviewed), which `Code/advisor/` will replace. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
 
 ## Report and appendix
