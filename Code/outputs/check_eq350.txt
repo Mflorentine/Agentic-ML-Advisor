@@ -1,0 +1,6 @@
+core version e5e819e358426963350eb6d14f366877f4e3a896f0b09f9e85bfa2e6e853bd1a
+lambda | max|book - BookLogistic| | max|book - wrong C=1/(n lambda)|
+0.001 | 3.72e-04 | 5.02e-02
+0.01 | 2.90e-04 | 1.84e-01
+0.1 | 1.66e-04 | 1.80e-01
+1 | 4.30e-06 | 7.30e-02

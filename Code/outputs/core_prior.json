@@ -1,0 +1,184 @@
+{
+  "core_version_sha256": "e5e819e358426963350eb6d14f366877f4e3a896f0b09f9e85bfa2e6e853bd1a",
+  "inputs_passed": {
+    "subtask": 1,
+    "source": "DR-10 (PROP, latest) and DR-11 (input design); copied unchanged",
+    "P1": "binary",
+    "P2": "ample",
+    "P3": "few",
+    "P4": "low",
+    "P5": "inspectable",
+    "P5_must_have": false,
+    "P6": "yes",
+    "P6_must_have": false,
+    "P7": "no",
+    "P8": "unknown",
+    "P9": "no",
+    "P10": "balanced"
+  },
+  "admissible": [
+    "Logistic",
+    "Logistic + L2",
+    "Logistic + poly",
+    "Logistic + poly + L2",
+    "kNN",
+    "Tree"
+  ],
+  "order": [
+    {
+      "configuration": "Logistic",
+      "score": 2,
+      "addons": 0,
+      "entries": [
+        {
+          "entry": "P5=inspectable→Logistic",
+          "score": 1,
+          "provenance": "[B→I p.347]"
+        },
+        {
+          "entry": "P6=yes→Logistic",
+          "score": 1,
+          "provenance": "[B→I pp.50, 53–54]"
+        }
+      ],
+      "rank": 1,
+      "kept": true,
+      "role": "simple-first (SEQ-2)"
+    },
+    {
+      "configuration": "Logistic + L2",
+      "score": 2,
+      "addons": 1,
+      "entries": [
+        {
+          "entry": "P5=inspectable→Logistic",
+          "score": 1,
+          "provenance": "[B→I p.347]"
+        },
+        {
+          "entry": "P6=yes→Logistic",
+          "score": 1,
+          "provenance": "[B→I pp.50, 53–54]"
+        }
+      ],
+      "rank": 2,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "Tree",
+      "score": 1,
+      "addons": 0,
+      "entries": [
+        {
+          "entry": "P5=inspectable→Tree",
+          "score": 1,
+          "provenance": "[B→I p.347]"
+        }
+      ],
+      "rank": 3,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "Logistic + poly",
+      "score": 1,
+      "addons": 1,
+      "entries": [
+        {
+          "entry": "P5=inspectable→Logistic",
+          "score": 1,
+          "provenance": "[B→I p.347]"
+        },
+        {
+          "entry": "P5=inspectable→poly",
+          "score": -1,
+          "provenance": "[I]"
+        },
+        {
+          "entry": "P6=yes→Logistic",
+          "score": 1,
+          "provenance": "[B→I pp.50, 53–54]"
+        }
+      ],
+      "rank": 4,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "Logistic + poly + L2",
+      "score": 1,
+      "addons": 2,
+      "entries": [
+        {
+          "entry": "P5=inspectable→Logistic",
+          "score": 1,
+          "provenance": "[B→I p.347]"
+        },
+        {
+          "entry": "P5=inspectable→poly",
+          "score": -1,
+          "provenance": "[I]"
+        },
+        {
+          "entry": "P6=yes→Logistic",
+          "score": 1,
+          "provenance": "[B→I pp.50, 53–54]"
+        }
+      ],
+      "rank": 5,
+      "kept": false,
+      "role": "DISF"
+    },
+    {
+      "configuration": "kNN",
+      "score": 0,
+      "addons": 0,
+      "entries": [],
+      "rank": 6,
+      "kept": false,
+      "role": "DISF"
+    }
+  ],
+  "simple_first": "Logistic",
+  "kept": [
+    "Logistic",
+    "Logistic + L2",
+    "Tree",
+    "Logistic + poly"
+  ],
+  "baselines": [
+    "Baseline (most common class)",
+    "Flag everyone"
+  ],
+  "not_kept": [
+    {
+      "configuration": "Logistic + poly + L2",
+      "code": "DISF",
+      "score": 1,
+      "entries": [
+        {
+          "entry": "P5=inspectable→Logistic",
+          "score": 1,
+          "provenance": "[B→I p.347]"
+        },
+        {
+          "entry": "P5=inspectable→poly",
+          "score": -1,
+          "provenance": "[I]"
+        },
+        {
+          "entry": "P6=yes→Logistic",
+          "score": 1,
+          "provenance": "[B→I pp.50, 53–54]"
+        }
+      ]
+    },
+    {
+      "configuration": "kNN",
+      "code": "DISF",
+      "score": 0,
+      "entries": []
+    }
+  ]
+}

@@ -1,0 +1,1894 @@
+{
+  "cv_seed": 2026,
+  "outer_folds": 10,
+  "inner_folds": 5,
+  "stratified": true,
+  "outer_validation_folds": [
+    [
+      26,
+      28,
+      44,
+      46,
+      48,
+      52,
+      70,
+      78,
+      93,
+      94,
+      121,
+      138,
+      141,
+      144,
+      147,
+      181,
+      193,
+      208,
+      209,
+      212,
+      219,
+      223,
+      229,
+      233
+    ],
+    [
+      0,
+      3,
+      21,
+      22,
+      24,
+      29,
+      55,
+      64,
+      65,
+      79,
+      82,
+      101,
+      104,
+      108,
+      113,
+      125,
+      135,
+      159,
+      163,
+      190,
+      202,
+      211,
+      226,
+      234
+    ],
+    [
+      6,
+      7,
+      10,
+      18,
+      27,
+      30,
+      35,
+      38,
+      60,
+      68,
+      69,
+      83,
+      117,
+      124,
+      136,
+      156,
+      158,
+      160,
+      171,
+      199,
+      206,
+      214,
+      218,
+      225
+    ],
+    [
+      5,
+      39,
+      54,
+      77,
+      85,
+      95,
+      96,
+      102,
+      105,
+      127,
+      142,
+      145,
+      149,
+      167,
+      170,
+      172,
+      174,
+      175,
+      186,
+      187,
+      194,
+      196,
+      230,
+      237
+    ],
+    [
+      13,
+      15,
+      23,
+      34,
+      37,
+      41,
+      43,
+      61,
+      76,
+      80,
+      103,
+      109,
+      110,
+      115,
+      116,
+      132,
+      153,
+      177,
+      183,
+      188,
+      195,
+      203,
+      231,
+      235
+    ],
+    [
+      4,
+      25,
+      31,
+      32,
+      36,
+      49,
+      56,
+      58,
+      90,
+      99,
+      106,
+      118,
+      129,
+      168,
+      173,
+      180,
+      184,
+      192,
+      200,
+      213,
+      216,
+      220,
+      221,
+      232
+    ],
+    [
+      11,
+      12,
+      16,
+      45,
+      47,
+      51,
+      59,
+      73,
+      74,
+      75,
+      100,
+      111,
+      114,
+      128,
+      143,
+      146,
+      155,
+      162,
+      164,
+      165,
+      210,
+      217,
+      227,
+      228
+    ],
+    [
+      20,
+      33,
+      42,
+      53,
+      57,
+      62,
+      71,
+      86,
+      91,
+      98,
+      112,
+      120,
+      133,
+      137,
+      152,
+      157,
+      166,
+      182,
+      189,
+      198,
+      204,
+      207,
+      222,
+      236
+    ],
+    [
+      2,
+      8,
+      17,
+      19,
+      40,
+      66,
+      67,
+      72,
+      84,
+      92,
+      97,
+      122,
+      123,
+      126,
+      130,
+      140,
+      154,
+      161,
+      176,
+      179,
+      191,
+      197,
+      215,
+      224
+    ],
+    [
+      1,
+      9,
+      14,
+      50,
+      63,
+      81,
+      87,
+      88,
+      89,
+      107,
+      119,
+      131,
+      134,
+      139,
+      148,
+      150,
+      151,
+      169,
+      178,
+      185,
+      201,
+      205,
+      238
+    ]
+  ],
+  "entries": {
+    "Baseline (most common class)": {
+      "configuration": "Baseline (most common class)",
+      "structural": null,
+      "post_prior": false,
+      "dropped_inputs": [],
+      "grid": {},
+      "pipeline": "constant prediction",
+      "folds": [
+        {
+          "fold": 0,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.3209302325581395,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 1,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.3209302325581395,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 2,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.3209302325581395,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 3,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.3209302325581395,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 4,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.3209302325581395,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 5,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.3209302325581395,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 6,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.3209302325581395,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 7,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.32558139534883723,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 8,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.32558139534883723,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0,
+          "predicts": 0
+        },
+        {
+          "fold": 9,
+          "best_params": {},
+          "f2_val": 0.0,
+          "f2_train": 0.0,
+          "e_train": 0.32407407407407407,
+          "e_val": 0.30434782608695654,
+          "convergence_warnings": 0,
+          "predicts": 0
+        }
+      ],
+      "round": "round1"
+    },
+    "Flag everyone": {
+      "configuration": "Flag everyone",
+      "structural": null,
+      "post_prior": false,
+      "dropped_inputs": [],
+      "grid": {},
+      "pipeline": "constant prediction",
+      "folds": [
+        {
+          "fold": 0,
+          "best_params": {},
+          "f2_val": 0.7142857142857143,
+          "f2_train": 0.7026476578411406,
+          "e_train": 0.6790697674418604,
+          "e_val": 0.6666666666666666,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 1,
+          "best_params": {},
+          "f2_val": 0.7142857142857143,
+          "f2_train": 0.7026476578411406,
+          "e_train": 0.6790697674418604,
+          "e_val": 0.6666666666666666,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 2,
+          "best_params": {},
+          "f2_val": 0.7142857142857143,
+          "f2_train": 0.7026476578411406,
+          "e_train": 0.6790697674418604,
+          "e_val": 0.6666666666666666,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 3,
+          "best_params": {},
+          "f2_val": 0.7142857142857143,
+          "f2_train": 0.7026476578411406,
+          "e_train": 0.6790697674418604,
+          "e_val": 0.6666666666666666,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 4,
+          "best_params": {},
+          "f2_val": 0.7142857142857143,
+          "f2_train": 0.7026476578411406,
+          "e_train": 0.6790697674418604,
+          "e_val": 0.6666666666666666,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 5,
+          "best_params": {},
+          "f2_val": 0.7142857142857143,
+          "f2_train": 0.7026476578411406,
+          "e_train": 0.6790697674418604,
+          "e_val": 0.6666666666666666,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 6,
+          "best_params": {},
+          "f2_val": 0.7142857142857143,
+          "f2_train": 0.7026476578411406,
+          "e_train": 0.6790697674418604,
+          "e_val": 0.6666666666666666,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 7,
+          "best_params": {},
+          "f2_val": 0.6730769230769231,
+          "f2_train": 0.7070707070707071,
+          "e_train": 0.6744186046511628,
+          "e_val": 0.7083333333333334,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 8,
+          "best_params": {},
+          "f2_val": 0.6730769230769231,
+          "f2_train": 0.7070707070707071,
+          "e_train": 0.6744186046511628,
+          "e_val": 0.7083333333333334,
+          "convergence_warnings": 0,
+          "predicts": 1
+        },
+        {
+          "fold": 9,
+          "best_params": {},
+          "f2_val": 0.6862745098039216,
+          "f2_train": 0.7056451612903226,
+          "e_train": 0.6759259259259259,
+          "e_val": 0.6956521739130435,
+          "convergence_warnings": 0,
+          "predicts": 1
+        }
+      ],
+      "round": "round1"
+    },
+    "Logistic": {
+      "configuration": "Logistic",
+      "structural": "Logistic",
+      "post_prior": false,
+      "dropped_inputs": [],
+      "grid": {},
+      "pipeline": "Pipeline(steps=[('log', LogInputs(idx=(2, 7))), ('scale', StandardScaler()),\n                ('m', BookLogistic())])",
+      "folds": [
+        {
+          "fold": 0,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.39473684210526316,
+          "f2_train": 0.547112462006079,
+          "e_train": 0.23255813953488372,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 1,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.2777777777777778,
+          "f2_train": 0.5909090909090909,
+          "e_train": 0.20930232558139536,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 2,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.4166666666666667,
+          "f2_train": 0.5421686746987951,
+          "e_train": 0.24651162790697675,
+          "e_val": 0.25,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 3,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.625,
+          "f2_train": 0.4892966360856269,
+          "e_train": 0.26046511627906976,
+          "e_val": 0.25,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 4,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.7317073170731707,
+          "f2_train": 0.49382716049382713,
+          "e_train": 0.24651162790697675,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 5,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.39473684210526316,
+          "f2_train": 0.6006006006006006,
+          "e_train": 0.21395348837209302,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 6,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.6578947368421053,
+          "f2_train": 0.49230769230769234,
+          "e_train": 0.25116279069767444,
+          "e_val": 0.16666666666666666,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 7,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.1724137931034483,
+          "f2_train": 0.5505952380952381,
+          "e_train": 0.24186046511627907,
+          "e_val": 0.25,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 8,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.5555555555555556,
+          "f2_train": 0.5970149253731343,
+          "e_train": 0.20930232558139536,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 9,
+          "best_params": {},
+          "grid_used": {},
+          "f2_val": 0.5714285714285714,
+          "f2_train": 0.5287009063444109,
+          "e_train": 0.2361111111111111,
+          "e_val": 0.2608695652173913,
+          "convergence_warnings": 0
+        }
+      ],
+      "round": "round1"
+    },
+    "Logistic + L2": {
+      "configuration": "Logistic + L2",
+      "structural": "Logistic + L2",
+      "post_prior": false,
+      "dropped_inputs": [],
+      "grid": {
+        "m__lam": [
+          0.0001,
+          0.001,
+          0.01,
+          0.1,
+          1.0,
+          10.0,
+          100.0,
+          1000.0,
+          10000.0
+        ]
+      },
+      "pipeline": "Pipeline(steps=[('log', LogInputs(idx=(2, 7))), ('scale', StandardScaler()),\n                ('m', BookLogistic(lam=0.0001))])",
+      "folds": [
+        {
+          "fold": 0,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.39473684210526316,
+          "f2_train": 0.547112462006079,
+          "e_train": 0.23255813953488372,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 1,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.2777777777777778,
+          "f2_train": 0.5909090909090909,
+          "e_train": 0.20930232558139536,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 2,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.4166666666666667,
+          "f2_train": 0.5421686746987951,
+          "e_train": 0.24651162790697675,
+          "e_val": 0.25,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 3,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.625,
+          "f2_train": 0.4892966360856269,
+          "e_train": 0.26046511627906976,
+          "e_val": 0.25,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 4,
+          "best_params": {
+            "m__lam": 0.001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.7317073170731707,
+          "f2_train": 0.49382716049382713,
+          "e_train": 0.24651162790697675,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 5,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.39473684210526316,
+          "f2_train": 0.6006006006006006,
+          "e_train": 0.21395348837209302,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 6,
+          "best_params": {
+            "m__lam": 0.001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.6578947368421053,
+          "f2_train": 0.49382716049382713,
+          "e_train": 0.24651162790697675,
+          "e_val": 0.16666666666666666,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 7,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.1724137931034483,
+          "f2_train": 0.5505952380952381,
+          "e_train": 0.24186046511627907,
+          "e_val": 0.25,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 8,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.5555555555555556,
+          "f2_train": 0.5970149253731343,
+          "e_train": 0.20930232558139536,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 9,
+          "best_params": {
+            "m__lam": 0.0001
+          },
+          "grid_used": {
+            "m__lam": [
+              0.0001,
+              0.001,
+              0.01,
+              0.1,
+              1.0,
+              10.0,
+              100.0,
+              1000.0,
+              10000.0
+            ]
+          },
+          "f2_val": 0.5714285714285714,
+          "f2_train": 0.5287009063444109,
+          "e_train": 0.2361111111111111,
+          "e_val": 0.2608695652173913,
+          "convergence_warnings": 0
+        }
+      ],
+      "round": "round2"
+    },
+    "Tree": {
+      "configuration": "Tree",
+      "structural": "Tree",
+      "post_prior": false,
+      "dropped_inputs": [],
+      "grid": {
+        "m__max_depth": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          10,
+          15,
+          20
+        ],
+        "m__min_samples_leaf": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "pipeline": "Pipeline(steps=[('log', LogInputs(idx=(2, 7))),\n                ('m',\n                 DecisionTreeClassifier(max_depth=4, min_samples_leaf=5,\n                                        random_state=2026))])",
+      "folds": [
+        {
+          "fold": 0,
+          "best_params": {
+            "m__max_depth": 3,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.6818181818181818,
+          "f2_train": 0.6521739130434783,
+          "e_train": 0.22325581395348837,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 1,
+          "best_params": {
+            "m__max_depth": 4,
+            "m__min_samples_leaf": 5
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.40540540540540543,
+          "f2_train": 0.7658959537572254,
+          "e_train": 0.15348837209302327,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 2,
+          "best_params": {
+            "m__max_depth": 4,
+            "m__min_samples_leaf": 1
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.5128205128205128,
+          "f2_train": 0.7703488372093024,
+          "e_train": 0.14418604651162792,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 3,
+          "best_params": {
+            "m__max_depth": 3,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.6410256410256411,
+          "f2_train": 0.6304985337243402,
+          "e_train": 0.22325581395348837,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 4,
+          "best_params": {
+            "m__max_depth": 10,
+            "m__min_samples_leaf": 1
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.7317073170731707,
+          "f2_train": 0.9883720930232558,
+          "e_train": 0.004651162790697674,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 5,
+          "best_params": {
+            "m__max_depth": 8,
+            "m__min_samples_leaf": 5
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.5,
+          "f2_train": 0.7871720116618076,
+          "e_train": 0.13023255813953488,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 6,
+          "best_params": {
+            "m__max_depth": 3,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.6578947368421053,
+          "f2_train": 0.6432748538011696,
+          "e_train": 0.2186046511627907,
+          "e_val": 0.16666666666666666,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 7,
+          "best_params": {
+            "m__max_depth": 3,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.46875,
+          "f2_train": 0.6158357771260997,
+          "e_train": 0.2186046511627907,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 8,
+          "best_params": {
+            "m__max_depth": 2,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.5263157894736842,
+          "f2_train": 0.6695156695156695,
+          "e_train": 0.2186046511627907,
+          "e_val": 0.375,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 9,
+          "best_params": {
+            "m__max_depth": 4,
+            "m__min_samples_leaf": 5
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20
+            ]
+          },
+          "f2_val": 0.4411764705882353,
+          "f2_train": 0.6626506024096386,
+          "e_train": 0.1574074074074074,
+          "e_val": 0.30434782608695654,
+          "convergence_warnings": 0
+        }
+      ],
+      "round": "round2"
+    },
+    "Logistic + poly": {
+      "configuration": "Logistic + poly",
+      "structural": "Logistic + poly",
+      "post_prior": false,
+      "dropped_inputs": [],
+      "grid": {
+        "poly__degree": [
+          2,
+          3
+        ]
+      },
+      "pipeline": "Pipeline(steps=[('log', LogInputs(idx=(2, 7))),\n                ('poly', SeparatePowers(idx=(0, 2, 4, 6, 7, 8))),\n                ('scale', StandardScaler()), ('m', BookLogistic())])",
+      "folds": [
+        {
+          "fold": 0,
+          "best_params": {
+            "poly__degree": 3
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.36585365853658536,
+          "f2_train": 0.6606606606606606,
+          "e_train": 0.17674418604651163,
+          "e_val": 0.4583333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 1,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.39473684210526316,
+          "f2_train": 0.6379821958456974,
+          "e_train": 0.20465116279069767,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 2,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.40540540540540543,
+          "f2_train": 0.6042296072507553,
+          "e_train": 0.20465116279069767,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 3,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.6578947368421053,
+          "f2_train": 0.6006006006006006,
+          "e_train": 0.21395348837209302,
+          "e_val": 0.16666666666666666,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 4,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.625,
+          "f2_train": 0.6306306306306306,
+          "e_train": 0.19534883720930232,
+          "e_val": 0.25,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 5,
+          "best_params": {
+            "poly__degree": 3
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.39473684210526316,
+          "f2_train": 0.6736526946107785,
+          "e_train": 0.17209302325581396,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 6,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.6578947368421053,
+          "f2_train": 0.5487804878048781,
+          "e_train": 0.22790697674418606,
+          "e_val": 0.16666666666666666,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 7,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.4838709677419355,
+          "f2_train": 0.606508875739645,
+          "e_train": 0.21395348837209302,
+          "e_val": 0.16666666666666666,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 8,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.6944444444444444,
+          "f2_train": 0.6156156156156156,
+          "e_train": 0.19069767441860466,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0
+        },
+        {
+          "fold": 9,
+          "best_params": {
+            "poly__degree": 2
+          },
+          "grid_used": {
+            "poly__degree": [
+              2,
+              3
+            ]
+          },
+          "f2_val": 0.6060606060606061,
+          "f2_train": 0.5952380952380952,
+          "e_train": 0.21296296296296297,
+          "e_val": 0.17391304347826086,
+          "convergence_warnings": 0
+        }
+      ],
+      "round": "round2"
+    },
+    "Tree (min leaf to 50)": {
+      "configuration": "Tree",
+      "structural": "Tree",
+      "post_prior": true,
+      "dropped_inputs": [],
+      "grid": {
+        "m__max_depth": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          10,
+          15,
+          20
+        ],
+        "m__min_samples_leaf": [
+          1,
+          5,
+          10,
+          20,
+          30,
+          40,
+          50
+        ]
+      },
+      "pipeline": "Pipeline(steps=[('log', LogInputs(idx=(2, 7))),\n                ('m',\n                 DecisionTreeClassifier(max_depth=4, min_samples_leaf=5,\n                                        random_state=2026))])",
+      "folds": [
+        {
+          "fold": 0,
+          "best_params": {
+            "m__max_depth": 3,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.6818181818181818,
+          "f2_train": 0.6521739130434783,
+          "e_train": 0.22325581395348837,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 1,
+          "best_params": {
+            "m__max_depth": 4,
+            "m__min_samples_leaf": 5
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.40540540540540543,
+          "f2_train": 0.7658959537572254,
+          "e_train": 0.15348837209302327,
+          "e_val": 0.2916666666666667,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 2,
+          "best_params": {
+            "m__max_depth": 1,
+            "m__min_samples_leaf": 50
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.39473684210526316,
+          "f2_train": 0.590778097982709,
+          "e_train": 0.26976744186046514,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 3,
+          "best_params": {
+            "m__max_depth": 3,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.6410256410256411,
+          "f2_train": 0.6304985337243402,
+          "e_train": 0.22325581395348837,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 4,
+          "best_params": {
+            "m__max_depth": 2,
+            "m__min_samples_leaf": 40
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.625,
+          "f2_train": 0.5652173913043478,
+          "e_train": 0.27906976744186046,
+          "e_val": 0.25,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 5,
+          "best_params": {
+            "m__max_depth": 8,
+            "m__min_samples_leaf": 5
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.5,
+          "f2_train": 0.7871720116618076,
+          "e_train": 0.13023255813953488,
+          "e_val": 0.3333333333333333,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 6,
+          "best_params": {
+            "m__max_depth": 3,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.6578947368421053,
+          "f2_train": 0.6432748538011696,
+          "e_train": 0.2186046511627907,
+          "e_val": 0.16666666666666666,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 7,
+          "best_params": {
+            "m__max_depth": 2,
+            "m__min_samples_leaf": 30
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.3333333333333333,
+          "f2_train": 0.36741214057507987,
+          "e_train": 0.2651162790697674,
+          "e_val": 0.20833333333333334,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 8,
+          "best_params": {
+            "m__max_depth": 2,
+            "m__min_samples_leaf": 20
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.5263157894736842,
+          "f2_train": 0.6695156695156695,
+          "e_train": 0.2186046511627907,
+          "e_val": 0.375,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        },
+        {
+          "fold": 9,
+          "best_params": {
+            "m__max_depth": 4,
+            "m__min_samples_leaf": 5
+          },
+          "grid_used": {
+            "m__max_depth": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              10,
+              15,
+              20
+            ],
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          },
+          "f2_val": 0.4411764705882353,
+          "f2_train": 0.6626506024096386,
+          "e_train": 0.1574074074074074,
+          "e_val": 0.30434782608695654,
+          "convergence_warnings": 0,
+          "grid_override": {
+            "m__min_samples_leaf": [
+              1,
+              5,
+              10,
+              20,
+              30,
+              40,
+              50
+            ]
+          }
+        }
+      ],
+      "round": "post-prior 1"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+n = 60, positives = 19
+tn 15  fp 26  fn 3  tp 16
+precision 0.3810  recall 0.8421  F2 0.6780
+flag-everyone F2 on the test rows 0.6985

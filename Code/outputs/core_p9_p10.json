@@ -1,5 +1,5 @@
 {
-  "core_version_sha256": "e614fd79d15a403a5dc0dd5703f2af37884a76eb075dc6aa798248cdcc4e2f30",
+  "core_version_sha256": "e5e819e358426963350eb6d14f366877f4e3a896f0b09f9e85bfa2e6e853bd1a",
   "rows_used": "training only",
   "n_train": 239,
   "inputs": [
@@ -19,6 +19,10 @@
     "value": "no",
     "training_accuracy_negligible_regularisation": 0.7698744769874477,
     "C_used": 100000000.0,
+    "log_inputs": [
+      "serum_creatinine",
+      "creatinine_phosphokinase"
+    ],
     "threshold": "100 % training accuracy",
     "provenance": "[I] procedure"
   },

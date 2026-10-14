@@ -1,0 +1,79 @@
+{
+  "core_version_sha256": "e5e819e358426963350eb6d14f366877f4e3a896f0b09f9e85bfa2e6e853bd1a",
+  "round": "round1",
+  "added": [
+    "Baseline (most common class)",
+    "Flag everyone",
+    "Logistic"
+  ],
+  "table": {
+    "leader": "Logistic",
+    "C2_baseline": "Baseline (most common class)",
+    "rows": [
+      {
+        "configuration": "Baseline (most common class)",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": "n/a",
+        "cv_mean_f2": 0.0,
+        "fold_sd_f2": 0.0,
+        "e_train": 0.32217484926787254,
+        "e_val": 0.32210144927536233,
+        "convergence_warnings": 0,
+        "margin_vs_leader": {
+          "mean": -0.4797918102657822,
+          "spread": 0.17768553002312765
+        },
+        "margin_vs Flag everyone": {
+          "mean": -0.7032428355957768,
+          "spread": 0.018139903297223363,
+          "C2": "n/a"
+        }
+      },
+      {
+        "configuration": "Flag everyone",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": "n/a",
+        "cv_mean_f2": 0.7032428355957768,
+        "fold_sd_f2": 0.018139903297223363,
+        "e_train": 0.6778251507321275,
+        "e_val": 0.6778985507246377,
+        "convergence_warnings": 0,
+        "margin_vs_leader": {
+          "mean": 0.22345102532999456,
+          "spread": 0.1742142540442999
+        },
+        "margin_vs Baseline (most common class)": {
+          "mean": 0.7032428355957768,
+          "spread": 0.018139903297223363,
+          "C2": "clear"
+        }
+      },
+      {
+        "configuration": "Logistic",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": {
+          "params": {},
+          "folds": "10/10"
+        },
+        "cv_mean_f2": 0.4797918102657822,
+        "fold_sd_f2": 0.17768553002312765,
+        "e_train": 0.23477390180878555,
+        "e_val": 0.2677536231884058,
+        "convergence_warnings": 0,
+        "margin_vs Baseline (most common class)": {
+          "mean": 0.4797918102657822,
+          "spread": 0.17768553002312765,
+          "C2": "clear"
+        },
+        "margin_vs Flag everyone": {
+          "mean": -0.22345102532999456,
+          "spread": 0.1742142540442999,
+          "C2": "n/a"
+        }
+      }
+    ]
+  }
+}

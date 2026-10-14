@@ -1,0 +1,102 @@
+{
+  "core_version_sha256": "e5e819e358426963350eb6d14f366877f4e3a896f0b09f9e85bfa2e6e853bd1a",
+  "inputs_passed": {
+    "subtask": 1,
+    "source": "DR-10 (PROP, latest) and DR-11 (input design); copied unchanged",
+    "P1": "binary",
+    "P2": "ample",
+    "P3": "few",
+    "P4": "low",
+    "P5": "inspectable",
+    "P5_must_have": false,
+    "P6": "yes",
+    "P6_must_have": false,
+    "P7": "no",
+    "P8": "unknown",
+    "P9": "no",
+    "P10": "balanced"
+  },
+  "task_gate": {
+    "P1": "binary",
+    "families": [
+      "Logistic",
+      "Tree",
+      "kNN"
+    ],
+    "provenance": "[B pp.17, 49–57]"
+  },
+  "must_haves": {
+    "P5_must_have": false,
+    "P6_must_have": false
+  },
+  "MOD-1": {
+    "P9": "no",
+    "applies": false,
+    "provenance": "[B p.61]"
+  },
+  "MOD-2": {
+    "plain": {
+      "parameters": 12,
+      "n_train": 239,
+      "rank": 12,
+      "applies": false
+    },
+    "poly": {
+      "parameters": 24,
+      "n_train": 239,
+      "rank": 24,
+      "applies": false
+    },
+    "provenance": "[B→I pp.46–47, 65]"
+  },
+  "admissible": [
+    "Logistic",
+    "Logistic + L2",
+    "Logistic + poly",
+    "Logistic + poly + L2",
+    "kNN",
+    "Tree"
+  ],
+  "removed": [
+    {
+      "configuration": "Linear",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    },
+    {
+      "configuration": "Linear + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    },
+    {
+      "configuration": "Linear + poly",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    },
+    {
+      "configuration": "Linear + poly + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    },
+    {
+      "configuration": "Poisson",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    },
+    {
+      "configuration": "Poisson + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    },
+    {
+      "configuration": "Exponential",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    },
+    {
+      "configuration": "Exponential + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49–57]"
+    }
+  ]
+}
