@@ -1348,6 +1348,10 @@ Written for the user's recorded experience level, intermediate: terms are used w
 - **Selection at r = 0.5.** Configurations were compared at r = 0.5, and the threshold was tuned only on the chosen one. Selection at r = 0.5 may not have picked the configuration that would be best after threshold tuning (Analysis, step 4).
 - **The flag-everyone comparison.** At the tuned threshold, the CV estimate (0.6943) and the test F2 (0.6780) are both below the flag-everyone F2 on the same data: 0.7032 in CV, 0.6985 on the test rows. The test F2 comes from 60 patients, 19 of whom died.
 - **Inspection.** The tree can be inspected, but no bound on any single prediction follows from it for this binary outcome.
+- **The one group not flagged** (added in step 5, from DR-19 and part 9). That group is ejection fraction above 27.5 % and serum creatinine at or below 0.9487 mg/dL.
+  - Test patients: 18 were not flagged (tn 15 + fn 3), and 3 of them died, 3/18 = 0.1667.
+  - Training patients: 2 of 56 in that group died, 2/56 = 0.0357.
+  - So this evaluation does not show the group to be safe, and 18 patients are too few to estimate its death rate precisely. No interval is computed, because binomial intervals were not adopted (DR-08).
 
 **11. Improvement history.**
 - **Pass 1.**
@@ -1428,6 +1432,9 @@ Written for the user's recorded experience level, intermediate: terms are used w
 | 40 | 4h: core `explain` added (version `434ff8cd…` → `48840eba…`). Verified rebuild of the final tree: 60/60 test probabilities bit-identical to the saved ones (inputs only, no outcomes, no metric). The first check failed by ≤ 5.6 × 10⁻¹⁷ because of pandas' CSV float parser, and passed with round-trip parsing. Model saved; splits written to part 9 of the Recommendation Report: ejection fraction (27.5, 22.5) and serum creatinine (1.8149, 0.9487 mg/dL), 5 leaves, 4 flagged | `Code/outputs/core_tree_splits.json`, `Code/outputs/core_final_model.joblib` |
 | 41 | 4h: Figure 4 (precision–recall curve on the test patients) proposed and approved, made from `core_final.json`, label moved off the curve, and added to *Results* with its caption | `Code/08_fig4_pr_curve.py`, `Code/outputs/figures/fig4_pr_curve.png` (+ `dark/`) |
 | 42 | 4h: *Methods* and *Results* paragraphs for sub-task 1 written in `Report.md`. Every number checked against the core outputs. Wording corrected before review: "polynomial terms" rather than "squared and cubed terms" (the degree was tuned to 2 or 3); the 0.70 in the success sentence is the training-patient reference. The diagnosis pass changed nothing and is left out of the report | `Report.md` |
+| 43 | User reviewed 4h: *Methods*, *Results* and Figure 4 accepted. The factual comparison of the tree with the user's expected direction stays in part 9 of the Recommendation Report; its interpretation belongs to step 5. **Step 4 closed** | — |
+| 44 | Step 5: *Discussion* structure proposed and agreed (four paragraphs; each limitation beside the conclusion it qualifies). The user added two changes: describe the tree by what it does in practice, qualifying the low-risk group with the test patients; keep any reading of the prior disagreement tentative. The derived counts for the group not flagged (18 test patients, 3 died, 17 %) were added to Recommendation part 10 before use. *Discussion* written. Titles suggested; awaiting the user's review | `Report.md`; Recommendation part 10 |
+| 45 | User's review of the *Discussion*. Paragraph 2 now names the source of the expected direction, Chicco and Jurman (2020). Before citing it, the full text was checked: the direction is in Table 3 (medians for patients who died vs those who survived); the text itself states no direction. The reference note is updated. Paragraph 3 kept as written. Title chosen by the user (option 3). **Step 5 closed** | `Report.md`; References |
 
 ## Code Summary
 
@@ -1449,6 +1456,8 @@ Written for the user's recorded experience level, intermediate: terms are used w
 ## References
 
 - Ahmad, T., Munir, A., Bhatti, S. H., Aftab, M. and Raza, M. A. (2017). [Survival analysis of heart failure patients: a case study](https://doi.org/10.1371/journal.pone.0181001). *PLoS ONE*, 12(7), e0181001. The article itself was not opened; its data supplement ([S1 Data](https://doi.org/10.1371/journal.pone.0181001.s001)) was downloaded and compared (Analysis Log row 2).
-- Chicco, D. and Jurman, G. (2020). [Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone](https://doi.org/10.1186/s12911-020-1023-5). *BMC Medical Informatics and Decision Making*, 20, 16. The "Dataset" section was read.
+- Chicco, D. and Jurman, G. (2020). [Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone](https://doi.org/10.1186/s12911-020-1023-5). *BMC Medical Informatics and Decision Making*, 20, 16. The "Dataset" section was read in step 1. In step 5 the full text (open access, [PMC6998201](https://pmc.ncbi.nlm.nih.gov/articles/PMC6998201/); retrieved through the Europe PMC API) was checked for the direction cited in the `Discussion`:
+  - The direction appears in Table 3 only. Patients who died had a lower median ejection fraction (30 against 38 %) and a higher median serum creatinine (1.30 against 1.00 mg/dL) than those who survived, among all 299 patients.
+  - The text ranks the two measurements as the most important features without stating a direction, and Table 6 gives absolute correlations only.
 - Heart Failure Clinical Records [Dataset]. (2020). UCI Machine Learning Repository. [https://doi.org/10.24432/C5Z89R](https://doi.org/10.24432/C5Z89R).
 - Lindholm, A., Wahlström, N., Lindsten, F. and Schön, T. B. (2026). [*Machine Learning – A First Course for Engineers and Scientists*](https://smlbook.org/), 2nd edition, online draft version of 1 September 2026. Cambridge University Press (to be published). Read at smlbook.org; pp. 60–61 (eq. 3.48–3.50) were opened for the L2 check in step 4. Page references in the Decision Records come from `ML Guide.md`.
