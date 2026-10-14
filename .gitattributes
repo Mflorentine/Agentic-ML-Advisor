@@ -1,3 +1,7 @@
 # Source data is stored and checked out byte for byte, so checksums in
 # Attachments/SOURCE.md hold on every platform (no line-ending conversion).
 Attachments/*.csv -text
+
+# The interim core is identified by the SHA-256 of its bytes (Decision Records quote it),
+# so it is checked out byte for byte too.
+Code/core.py -text
