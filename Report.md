@@ -58,11 +58,11 @@ All of these results are averages over patients like those in the data. They say
 
 ## Disclaimer
 
-This report was written with the help of agentic AI at every stage: importing and describing the data, cleaning it, framing the questions, choosing and fitting the models, producing the figures, and drafting the text. Each step was directed and reviewed by the author, who agreed every method before it was applied, and each number reported here comes from code that can be re-run. The record of what was done, including what was tried and abandoned, is in the appendix.
+This report was written with the help of agentic AI at every stage: importing and describing the data, checking it, framing the questions, choosing and fitting the models, producing the figures, and drafting the text. Each step was directed and reviewed by the author, who agreed every method before it was applied, and each number reported here comes from code that can be re-run. The record of what was done, including what was tried and abandoned, is in the appendix.
 
 ## Appendix
 
-*A pointer to [Appendix.md](Appendix.md), where the data, the decisions and the full workings are recorded.*
+The data, the decisions and the full workings behind this report are recorded in [Appendix.md](Appendix.md).
 
 ## References
 
