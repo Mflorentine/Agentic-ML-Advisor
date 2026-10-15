@@ -70,7 +70,7 @@ flowchart LR
     S1["1 · Import<br/>the data"] --> S2["2 · Define the problem<br/>lock the test set"]
     S2 --> S3["3 · Explore"]
     S3 --> S4["4 · Select<br/>and train"]
-    S4 --> T[["Single test<br/>user approves"]]
+    S4 --> T[["4 · Single test<br/>user approves"]]
     T --> S5["5 · Conclusions"]
     T -. next sub-task .-> S3
 ```
