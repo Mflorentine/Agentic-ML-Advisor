@@ -56,7 +56,7 @@ The test set is locked at the end of step 2. Nothing reads it until the user has
 
 ### A. The step-by-step agentic workflow
 
-The demonstration ran all five steps on a heart failure dataset of 299 patients, predicting whether each patient died during follow-up. It produced 19 Decision Records and a 47-row Analysis Log ([Demonstration Appendix.md](Demonstration/Demonstration%20Appendix.md)). Three problems were caught before any model was trained, each by a check the contract requires.
+The demonstration ran all five steps on a heart failure dataset of 299 patients, predicting whether each patient died during follow-up. It produced 19 Decision Records and a 47-row Analysis Log ([Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md)). Three problems were caught before any model was trained, each by a check the contract requires.
 
 **A leaking input.** The step 1 check for columns that could leak the target flagged `time`, the length of follow-up, which ranged from 4 to 285 days. Follow-up ends either when the patient dies or when observation stops, so this value is fixed at the same moment as the outcome. The user set it aside, which left 11 inputs.
 
@@ -78,7 +78,7 @@ The decision threshold was then tuned on the training data, giving 0.2. Refitted
 
 ### C. Traceability and reproducibility
 
-As a worked example, take the test F2 of 0.68 in the Results of [Demonstration Report.md](Demonstration/Demonstration%20Report.md) and follow it back:
+As a worked example, take the test F2 of 0.68 in the Results of [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and follow it back:
 1. **Decision Record.** DR-19 gives the value as 0.6780 with evidence tag `TEST`, the fold spread 0.0865, the 60 test rows and 19 deaths, and the user's words approving the single evaluation. It also quotes the success criterion from DR-08 and shows the required value, 0.7903.
 2. **Rules.** The single test evaluation rests on the book (`[B pp.74, 328]`). The threshold tuning is a book fact turned into advice (`[B→I pp.53–54, 92–93]`). The success criterion is our own (`[I]`), with its uncertainty measure tagged `[B→I pp.71–73]`. A reader can see which parts of the claim come from the book and which are ours.
 3. **Code.** The record names `core.final` at version `434ff8cd…`. That is exactly the SHA-256 of `Code/core.py` in the step 4 commit (`74e4a6e`). The outputs are `core_final.json` and `core_test_predictions.csv`. A separate script, `07_recompute_test_metric.py`, recomputes F2, recall, precision and the confusion counts from the saved predictions without the core, and gives the same values.
@@ -100,7 +100,7 @@ This report was written with the help of agentic AI: designing the workflow, wri
 
 ## Appendix
 
-*Pointers to the material behind this report: [ML Guide.md](ML%20Guide.md), the advisor's knowledge and reasoning procedure; [instructions.md](instructions.md), the working contract; and [Demonstration/](Demonstration/), the worked example with its full record.*
+*Pointers to the material behind this report: [ML Guide.md](ML%20Guide.md), the advisor's knowledge and reasoning procedure; [instructions.md](instructions.md), the working contract; and [Demonstration/Heart Failure/](Demonstration/Heart%20Failure/), the worked example with its full record.*
 
 ## References
 

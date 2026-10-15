@@ -16,14 +16,14 @@ Every model choice is recorded as it is made. Each decision gets a Decision Reco
 
 1. Install the environment — [Setup.md](Setup.md) covers Obsidian, `uv` and Python.
 2. Put your data in `Attachments/`.
-3. Open a Claudian conversation and ask for step 1: import and describe the data.
+3. Open a Claudian conversation and ask for step 1: import and describe the data. The agent first asks for a name and copies the two templates in `Templates/` into a new folder, for example `Demonstration/Penguins/`; your report and appendix are written there.
 4. Work through the five steps, one request at a time.
 
 ## Example analysis
 
-[Demonstration/](Demonstration/) holds a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5 in this folder. Its [Demonstration Report.md](Demonstration/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Demonstration%20Appendix.md) is the full record behind it, including every decision record. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
+[Demonstration/Heart Failure/](Demonstration/Heart%20Failure/) holds a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5. Its [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md) is the full record behind it, including every decision record. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
 
-The `Report.md` and `Appendix.md` at the top of the folder are empty templates, for your own analysis.
+The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty templates. Each new analysis gets its own copy of both, in its own folder under `Demonstration/`.
 
 ## Progress
 
@@ -32,7 +32,7 @@ The `Report.md` and `Appendix.md` at the top of the folder are empty templates, 
 | Agentic system that guides users through ML problem-solving | Done: the five-step workflow in [instructions.md](instructions.md). |
 | Uses smlbook.org chapters 2, 4 and 13 (plus chapter 3, agreed with my supervisor) | Done: [ML Guide.md](ML%20Guide.md), with page references. |
 | Helps users choose ML techniques | Done for classification, using an interim core (`Code/core.py`); the reusable `Code/advisor/` is next. |
-| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/](Demonstration/)). |
+| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/Heart Failure/](Demonstration/Heart%20Failure/)). |
 | Available online through GitHub | Done. |
 
 ### Next steps
@@ -62,10 +62,9 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [CLAUDE.md](CLAUDE.md) | Imports the contract so the agent picks it up automatically. Nothing to edit here. |
 | [instructions.md](instructions.md) | The working contract. The agent reads this; you change it by prefixing a message with `FRAMEWORK`. |
 | [ML Guide.md](ML%20Guide.md) | What the book says (Part I), the procedure the agent follows for every model decision (Part II), and the formats of its decision records and recommendation reports (Part III). Changed only with `FRAMEWORK`. |
-| [Report.md](Report.md) | The report on your analysis. Arrives as a template and is filled in through steps 2–5. |
-| [Appendix.md](Appendix.md) | The running record of your analysis — data, problem, workings, decision records, recommendation, log, code guide. Arrives as a template and is filled from step 1. |
-| [Demonstration/](Demonstration/) | The finished heart failure analysis: [Demonstration Report.md](Demonstration/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Demonstration%20Appendix.md). Not edited by a new analysis. |
-| [Project Report.md](Project%20Report.md) | The report on the project itself — the advisor and this workspace — not on any analysis. Headings only so far, following the supervisor's structure. Not part of the five steps. |
+| [Templates/](Templates/) | The empty [Report.md](Templates/Report.md) and [Appendix.md](Templates/Appendix.md). Copied into each new analysis folder; not edited by an analysis. |
+| [Demonstration/](Demonstration/) | One folder per analysis, each with its own `Report.md` (the report, filled in through steps 2–5) and `Appendix.md` (the running record — data, problem, workings, decision records, recommendation, log, code guide — filled from step 1). [Heart Failure/](Demonstration/Heart%20Failure/) is the finished example: [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md). A finished analysis is not edited by a new one. |
+| [Project Report.md](Project%20Report.md) | The report on the project itself — the advisor and this workspace — not on any analysis, and the only report at the top level. Following the supervisor's structure; Methods and Results sketched so far. Not part of the five steps. |
 | `Attachments/` | Your data. Never modified. Holds the heart failure data used by the example analysis; see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
 | `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core: the example analysis used `Code/core.py` (not reviewed), which `Code/advisor/` will replace. The example's scripts and outputs stay here; a new analysis uses names that do not collide with them. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |

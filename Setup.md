@@ -1,6 +1,6 @@
 # Setup
 
-*Part of the [Data Analysis Workspace](README.md) — the analysis code this environment runs is described in [Appendix.md](Appendix.md#code-summary).*
+*Part of the [Data Analysis Workspace](README.md) — the analysis code this environment runs is described in the `Code Summary` of each analysis's `Appendix.md`, for example the [heart failure demonstration](Demonstration/Heart%20Failure/Demonstration%20Appendix.md#code-summary).*
 
 Everything needed to get the workspace running. Do this once per machine.
 
@@ -47,7 +47,7 @@ uv add <package>                 # add a dependency, updating uv.lock
 
 `uv run` syncs the environment against `uv.lock` before executing, so a stale `.venv` cannot silently change a result.
 
-**If you add a dependency**, commit the updated `uv.lock` so collaborators pick it up on their next `./setup_env.sh`, and note the addition in [Appendix — Code Summary](Appendix.md#code-summary).
+**If you add a dependency**, commit the updated `uv.lock` so collaborators pick it up on their next `./setup_env.sh`, and note the addition in the `Code Summary` of your analysis's `Appendix.md`.
 
 ## What the environment contains
 
@@ -65,7 +65,7 @@ uv add <package>                 # add a dependency, updating uv.lock
 
 Plus `xlrd` for legacy `.xls` and `tabulate` for Markdown tables. Verified by `uv run python check_env.py` on 2026-10-14.
 
-Record this output in [Appendix.md](Appendix.md) whenever package versions could affect a result.
+Record this output in your analysis's `Appendix.md` whenever package versions could affect a result.
 
 ## Files that define the environment
 

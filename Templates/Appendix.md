@@ -31,7 +31,7 @@
 
 ## Code Summary
 
-*The guide to the analysis code, kept current whenever code is added or changed. What each file does, how to run it, what it reads and produces, and any parameter or seed that affects the result. Installation belongs in [Setup.md](Setup.md), not here.*
+*The guide to the analysis code, kept current whenever code is added or changed. What each file does, how to run it, what it reads and produces, and any parameter or seed that affects the result. Installation belongs in `Setup.md` at the top of the workspace, not here.*
 
 ## References
 

@@ -22,17 +22,17 @@ For the chosen model we then tuned the probability threshold for F2, using proba
 
 Figures 1 to 3 describe the 239 training patients; the 60 held-out patients are not shown. In all three, blue marks patients who did not die during follow-up and orange those who died.
 
-![Figure 1](../Code/outputs/figures/fig1_numeric_by_outcome.png)
+![Figure 1](../../Code/outputs/figures/fig1_numeric_by_outcome.png)
 
 <small><b>Figure 1.</b> Distribution of the six numeric inputs among training patients who did not die (blue, n = 162) and who died (orange, n = 77). Each outline is a histogram whose bar heights are the share of that group, so the two outlines can be compared despite the different group sizes. Serum creatinine and creatinine phosphokinase are drawn on a logarithmic axis.</small>
 
 Each panel compares the shapes of two distributions, not their counts. Where the orange outline lies to one side of the blue one, patients who died tended to have values on that side.
 
-![Figure 2](../Code/outputs/figures/fig2_death_share_binary.png)
+![Figure 2](../../Code/outputs/figures/fig2_death_share_binary.png)
 
 <small><b>Figure 2.</b> Share of training patients who died, within each level of the five yes/no inputs. The number inside each bar is the number of patients at that level. The dashed line is the share who died among all 239 training patients, 32.2 %.</small>
 
-![Figure 3](../Code/outputs/figures/fig3_creatinine_ejection.png)
+![Figure 3](../../Code/outputs/figures/fig3_creatinine_ejection.png)
 
 <small><b>Figure 3.</b> Serum creatinine (logarithmic axis) against ejection fraction for each training patient, coloured by outcome. Ejection fraction takes only 16 distinct values among the training patients, so many points lie on the same horizontal lines and some overlap.</small>
 
@@ -40,7 +40,7 @@ Each panel compares the shapes of two distributions, not their counts. Where the
 
 In cross-validation the tree had the highest mean F2 (0.56), followed by logistic regression with polynomial terms (0.53), and plain and penalised logistic regression (both 0.48). Predicting no deaths scores 0, and flagging every patient scores 0.70. The tree and the logistic model with polynomial terms couldn't be told apart (difference 0.03, with a fold spread of 0.14), and the tree was chosen as the simpler of the two. The selection confidence is low. The tree is clearly ahead of predicting no deaths (by 0.56, spread 0.11) but not of the runner-up, and its validation error wasn't still falling as training data was added. The chosen tree has a depth of at most 3 and at least 20 training patients in each leaf, and it flags a patient when the predicted probability of death is above 0.2. On the 60 held-out patients, 19 of whom died, it reached an F2 of 0.68 (fold spread 0.09). It flagged 16 of the 19 deaths (recall 0.84), and 16 of the 42 patients it flagged died (precision 0.38). Success required an F2 above 0.79, which is the 0.70 that flagging everyone scores on the training patients plus the fold spread, so the criterion was not met. On the same 60 patients, predicting no deaths scores an F2 of 0 and flagging every patient 0.70.
 
-![Figure 4](../Code/outputs/figures/fig4_pr_curve.png)
+![Figure 4](../../Code/outputs/figures/fig4_pr_curve.png)
 
 <small><b>Figure 4.</b> Precision against recall for the recommended tree on the 60 held-out patients, 19 of whom died. Each marker is one threshold the tree can distinguish. The curve has few points because the tree gives only 5 distinct probabilities. The two ringed points are the tree at the chosen threshold of 0.2 and flagging every patient. The dashed line is the precision of a random classifier, the share of patients who died (0.32). The flag-everyone point lies on it by definition, since flagging everyone has full recall and precision equal to that share.</small>
 
