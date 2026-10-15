@@ -44,18 +44,21 @@ Only `train.csv` has the target, `price_range`. `test.csv` has no labels, so it 
 
 The files are the original download and are never modified.
 
-## `Sepsis dataset.csv`
+## `sepsis-physionet-2019/`
 
 | Item | Value |
 | --- | --- |
-| Source named by the user | PhysioNet, [Early Prediction of Sepsis from Clinical Data: the PhysioNet/Computing in Cardiology Challenge 2019](https://physionet.org/content/challenge-2019/), version 1.0.0 (5 August 2019) |
-| Downloaded | 15 October 2026, by the user |
-| Licence | The PhysioNet page gives the [Creative Commons Attribution 4.0 International Public License](https://creativecommons.org/licenses/by/4.0/) (checked 15 October 2026). This file is not in PhysioNet's own format (see below), so the licence of this particular copy is **to be confirmed** once its source is known. The file is listed in `.gitignore` and is never committed, because it holds patient-level records. |
-| Format | One CSV file, comma-separated, ASCII text, header row. PhysioNet distributes the training data as one pipe-separated `.psv` file per patient (training set A, 20,336 patients; training set B, 20,000). This file instead combines patients in one table, with an unnamed row-index first column and an added `Patient_ID` column, so it is a derived copy, and its origin is to be confirmed. |
-| Number of files | 1 |
-| Size | 54,525,952 bytes (exactly 52 MiB) |
-| Rows and columns | 546,123 lines after the header × 44 columns. **The file looks truncated:** its last line ends partway through a row (22 of 44 fields), and its size is an exact multiple of 1 MiB. The 546,122 complete rows cover 14,057 distinct `Patient_ID` values, against 40,336 patients in the PhysioNet training data. |
-| Columns | (unnamed index), `Hour`, `HR`, `O2Sat`, `Temp`, `SBP`, `MAP`, `DBP`, `Resp`, `EtCO2`, `BaseExcess`, `HCO3`, `FiO2`, `pH`, `PaCO2`, `SaO2`, `AST`, `BUN`, `Alkalinephos`, `Calcium`, `Chloride`, `Creatinine`, `Bilirubin_direct`, `Glucose`, `Lactate`, `Magnesium`, `Phosphate`, `Potassium`, `Bilirubin_total`, `TroponinI`, `Hct`, `Hgb`, `PTT`, `WBC`, `Fibrinogen`, `Platelets`, `Age`, `Gender`, `Unit1`, `Unit2`, `HospAdmTime`, `ICULOS`, `SepsisLabel`, `Patient_ID` |
-| SHA-256 | `af7f8236de8ebb21fdd75c579863c0ba6bffbaac202028955d43a0e370e37e3e` (one file, so one checksum; there are no separate training-set files to checksum) |
+| Source | PhysioNet, [Early Prediction of Sepsis from Clinical Data: the PhysioNet/Computing in Cardiology Challenge 2019](https://physionet.org/content/challenge-2019/), version 1.0.0 (5 August 2019): the training data in [`training/`](https://physionet.org/files/challenge-2019/1.0.0/training/), plus `LICENSE.txt` and `SHA256SUMS.txt` from [the project's files](https://physionet.org/files/challenge-2019/1.0.0/). |
+| Downloaded | 15 October 2026, by the agent at the user's request. `LICENSE.txt` and `SHA256SUMS.txt` came from physionet.org. The 40,336 patient files came from PhysioNet's open-data mirror on AWS (`s3://physionet-open/challenge-2019/1.0.0/training/`), because the physionet.org directory listings stop early (at `p017933` in set A and `p116380` in set B) and offer no zip. Each file was checked against the mirror's MD5 on download, and a random sample of 30 files (seed 2026) is byte-identical to the copies on physionet.org. |
+| Licence | **ODC Open Database License (ODbL)**, from `LICENSE.txt`. The dataset page gives a different licence, the [Creative Commons Attribution 4.0 International Public License](https://creativecommons.org/licenses/by/4.0/) (checked 15 October 2026). We follow the stricter terms (ODbL): PhysioNet is credited, the raw data is not redistributed, and any derived dataset is kept out of the repository unless shared under ODbL. The folder is listed in `.gitignore`. |
+| Format | One pipe-separated `.psv` file per patient, ASCII text, LF line endings, header row; one row per hour in the ICU |
+| Files | `training_setA/`: 20,336 files, `p000001.psv` to `p020643.psv` (307 numbers in that range are unused). `training_setB/`: 20,000 files, `p100001.psv` to `p120000.psv`. Plus `LICENSE.txt` (25,815 bytes) and `SHA256SUMS.txt`. |
+| Patients | 40,336, one per file, matching the dataset page (set A 20,336; set B 20,000) |
+| Size | 255,057,484 bytes for the 40,336 patient files, equal to the total listed on the mirror |
+| Rows and columns | 1,552,210 hourly rows (set A 790,215; set B 761,995) × 41 columns. Every file has the same header, every row has 41 fields, and every file ends on a complete line. |
+| Columns | `HR`, `O2Sat`, `Temp`, `SBP`, `MAP`, `DBP`, `Resp`, `EtCO2`, `BaseExcess`, `HCO3`, `FiO2`, `pH`, `PaCO2`, `SaO2`, `AST`, `BUN`, `Alkalinephos`, `Calcium`, `Chloride`, `Creatinine`, `Bilirubin_direct`, `Glucose`, `Lactate`, `Magnesium`, `Phosphate`, `Potassium`, `Bilirubin_total`, `TroponinI`, `Hct`, `Hgb`, `PTT`, `WBC`, `Fibrinogen`, `Platelets`, `Age`, `Gender`, `Unit1`, `Unit2`, `HospAdmTime`, `ICULOS`, `SepsisLabel` |
+| SHA-256 | PhysioNet's `SHA256SUMS.txt` covers only `LICENSE.txt` and two diagrams, not the training files; `LICENSE.txt` matches it. For the training data, a list of per-file SHA-256 checksums was written for each set, kept with the data in the ignored folder, and each list is fingerprinted here. `SHA256SUMS_training_setA.txt`: `ef8e0184be4b5bd28b7e0a1642fdcd9c8b04cf10b5dd4bd666156a71ab05697d`. `SHA256SUMS_training_setB.txt`: `ca9da41aa7154b5b02f4818de98fc157c03599a475abca5f63bffddacff96ca4`. Each list has one line per file, `<sha256>  training_setX/<file>`, sorted by file name, with LF line endings. |
+
+A copy from Kaggle (`tea340yashjoshi/sepsis-prediction-dataset`, a single combined CSV) was tried first and replaced: it was truncated at exactly 52 MiB, partway through a row, and covered 14,057 patients. It was deleted on 15 October 2026.
 
 Citation required by the PhysioNet page when the resource is used: Reyna et al. (2019), the dataset, version 1.0.0, [https://doi.org/10.13026/v64v-d857](https://doi.org/10.13026/v64v-d857); the original Challenge paper in *Critical Care Medicine* (2019); and the standard PhysioNet citation. Full entries to be copied from the page and checked before any report cites them.

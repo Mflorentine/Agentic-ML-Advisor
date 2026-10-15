@@ -26,8 +26,8 @@ sml-book*.pdf
 # Sample Report from the upstream template (removed in b1759cb); kept locally, not tracked
 Sample Report/
 
-# Patient-level sepsis data (PhysioNet Challenge 2019, 52 MiB): kept locally, never committed
-Attachments/Sepsis dataset.csv
+# Patient-level sepsis data (PhysioNet Challenge 2019, 40,336 files, ODbL): kept locally, never committed
+Attachments/sepsis-physionet-2019/
 
 # Mobile Price Classification (Kaggle): licence "Unknown", so not redistributed
 Attachments/Mobile Price/
