@@ -66,30 +66,16 @@ Two documents grow as the work proceeds. `Appendix.md` is the running record fro
 The contract can change during an analysis. A message that begins with FRAMEWORK edits `instructions.md` and applies the change to the analysis in progress, including work already done. It is committed separately from any analysis content, so that it can be carried over to the template.
 
 ```mermaid
-flowchart TD
-    S([User puts data in Attachments/]) --> S1["Step 1 · Import and scope the data<br/>analysis folder copied from Templates/,<br/>describe the data, ADM-1, ADM-3, ADM-4,<br/>user's ML experience"]
-    S1 --> Q1{"Recorded target<br/>to learn from?"}
-    Q1 -- no --> X([Stop: not a supervised problem])
-    Q1 -- yes --> S2["Step 2 · Define the ML problem<br/>ADM-2, output type, metric,<br/>success criterion, baseline,<br/>properties P1–P8"]
-    S2 --> L[["Split the data · lock the test set"]]
-    L --> S3["Step 3 · Explore the training data<br/>for one sub-task: figures,<br/>P9 separable, P10 imbalance,<br/>input design (log transforms, choice of inputs)"]
-    S3 --> A4["4a · Admissible set<br/>task gate, must-haves,<br/>compulsory modifiers"]
-    A4 --> B4["4b · Prior ranking<br/>user agrees the method<br/>and approves the core"]
-    B4 --> C4["4c–4d · Nested cross-validation<br/>round 1: baseline, simple-first<br/>round 2: other kept configurations"]
-    C4 --> E4{"4e · Diagnosis loop:<br/>a stopping rule S1–S6 applies?"}
-    E4 -- "no: one action per pass,<br/>some wait for the user" --> C4
-    E4 -- yes --> F4["4f · Recommendation<br/>and selection confidence"]
-    F4 --> P{"User approves<br/>using the test set?"}
-    P -- not yet --> F4
-    P -- yes --> G4[["4g · Single test evaluation, with the baseline<br/>the test set is used once"]]
-    G4 --> H4["4h · Write-up<br/>Recommendation Report,<br/>Methods and Results"]
-    H4 --> N{"Another sub-task?"}
-    N -- yes --> S3
-    N -- no --> S5["Step 5 · Conclusions and limitations"]
-    S5 --> END([Analysis complete])
+flowchart LR
+    S1["1 · Import<br/>the data"] --> S2["2 · Define the problem<br/>lock the test set"]
+    S2 --> S3["3 · Explore"]
+    S3 --> S4["4 · Select<br/>and train"]
+    S4 --> T[["Single test<br/>user approves"]]
+    T --> S5["5 · Conclusions"]
+    T -. next sub-task .-> S3
 ```
 
-<small><b>Figure 2.</b> The five-step workflow. After every step the agent records its decisions, asks the user whether anything is missing, and waits for the user to close the step before the next begins.</small>
+<small><b>Figure 2.</b> The five-step workflow. After every step the agent records its decisions, asks the user whether anything is missing, and waits for the user to close the step before the next begins. The stages of step 4 are described in Methods B.</small>
 
 ### B. The ML advisor grounded in smlbook.org
 
