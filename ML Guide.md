@@ -6,9 +6,9 @@ This is a set of notes written in our own words, not a substitute for the book. 
 
 The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours. **Part III (sections 24–25) fixes the record formats** the advisor writes into `Appendix.md`: the Decision Record and the Recommendation Report.
 
-**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added — chapter 3 is included with David's agreement; wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
+**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added — chapter 3 is included with the supervisor's agreement; wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
 
-**Scope.** Only chapters 2, 3, 4 and 13. *(14 October 2026: chapter 3 is included with David's agreement.)* Every other method — L1/LASSO included — is flagged and not used (section 23).
+**Scope.** Only chapters 2, 3, 4 and 13. *(14 October 2026: chapter 3 is included with the supervisor's agreement.)* Every other method — L1/LASSO included — is flagged and not used (section 23).
 
 # Part I — What the book says
 
