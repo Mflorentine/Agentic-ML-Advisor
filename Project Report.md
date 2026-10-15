@@ -72,7 +72,7 @@ flowchart TD
     Q1 -- no --> X([Stop: not a supervised problem])
     Q1 -- yes --> S2["Step 2 · Define the ML problem<br/>ADM-2, output type, metric,<br/>success criterion, baseline,<br/>properties P1–P8"]
     S2 --> L[["Split the data · lock the test set"]]
-    L --> S3["Step 3 · Explore the training data<br/>for one sub-task: figures,<br/>P9 separable, P10 imbalance"]
+    L --> S3["Step 3 · Explore the training data<br/>for one sub-task: figures,<br/>P9 separable, P10 imbalance,<br/>input design (log transforms, choice of inputs)"]
     S3 --> A4["4a · Admissible set<br/>task gate, must-haves,<br/>compulsory modifiers"]
     A4 --> B4["4b · Prior ranking<br/>user agrees the method<br/>and approves the core"]
     B4 --> C4["4c–4d · Nested cross-validation<br/>round 1: baseline, simple-first<br/>round 2: other kept configurations"]
