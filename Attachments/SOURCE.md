@@ -40,6 +40,8 @@ These details are taken from the UCI page; the paper itself has not been opened.
 | `test.csv` | 63,850 bytes · 1,000 data rows (plus the header) × 21 columns: `id` and the same 20 inputs, **with no `price_range`** · SHA-256 `e929f5999ffeedec84abf53cc8d35faa1bbd7e8ebd61826881aa62562d37adce` |
 | Columns (`train.csv`) | `battery_power`, `blue`, `clock_speed`, `dual_sim`, `fc`, `four_g`, `int_memory`, `m_dep`, `mobile_wt`, `n_cores`, `pc`, `px_height`, `px_width`, `ram`, `sc_h`, `sc_w`, `talk_time`, `three_g`, `touch_screen`, `wifi`, `price_range` |
 
+Only `train.csv` has the target, `price_range`. `test.csv` has no labels, so it cannot be used to evaluate a model; any training and test split comes from `train.csv`.
+
 The files are the original download and are never modified.
 
 ## `Sepsis dataset.csv`
