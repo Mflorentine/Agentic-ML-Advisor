@@ -4,7 +4,7 @@
 
 Use this folder as the single source of truth for the analysis. Keep work in the locations below.
 
-**Each analysis has its own folder.** A new analysis starts by copying `Templates/Report.md` and `Templates/Appendix.md` into a new folder under `Demonstration/` named for the analysis, for example `Demonstration/Penguins/`, and all its writing happens there. Ask the user for the name before creating the folder. Throughout this contract, `Report.md` and `Appendix.md` mean the copies in the current analysis folder; the templates themselves are not edited as part of an analysis. Code and data stay in `Code/` and `Attachments/`, shared by all analyses. Links inside the analysis folder's documents are relative to that folder, so a figure is linked as `../../Code/outputs/figures/…`. The only report at the top level of the workspace is `Project Report.md`.
+**Each analysis has its own folder.** Once the user has put the data in `Attachments/`, a new analysis starts by copying `Templates/Report.md` and `Templates/Appendix.md` into a new folder under `Demonstration/` named for the analysis, for example `Demonstration/Penguins/`, and all its writing happens there. Ask the user for the name before creating the folder. Throughout this contract, `Report.md` and `Appendix.md` mean the copies in the current analysis folder; the templates themselves are not edited as part of an analysis. Code and data stay in `Code/` and `Attachments/`, shared by all analyses. Links inside the analysis folder's documents are relative to that folder, so a figure is linked as `../../Code/outputs/figures/…`. The only report at the top level of the workspace is `Project Report.md`.
 
 | Location | Purpose |
 | --- | --- |
@@ -89,8 +89,8 @@ Work proceeds through these steps in order. Each is one or more separate exchang
 
 Get the data in and establish what will be used.
 
-- **Create the analysis folder first.** Ask the user for its name, then copy `Templates/Report.md` and `Templates/Appendix.md` into `Demonstration/<Name>/` (`Workspace Contract`). Everything this and later steps write goes into those copies.
-- Put source files in `Attachments/`. Never modify them.
+- **The data is already in `Attachments/`.** The user puts the source files there before asking for step 1. Never modify them.
+- **Then create the analysis folder.** Ask the user for its name, then copy `Templates/Report.md` and `Templates/Appendix.md` into `Demonstration/<Name>/` (`Workspace Contract`). Everything this and later steps write goes into those copies.
 - Record provenance: where the file came from, when, and a checksum. Say why this file and not another, if that was a choice.
 - **Ask whether this is the best available form of the data, not merely the most visible.** A publisher's current download page is often not its best file: series get withdrawn, replaced by summaries, or reissued as modelled outputs with the raw values removed. Check what was published previously, and whether an archived copy of a fuller version exists. Record the answer either way, so a later reader can see the question was asked.
 - **Describe the file before judging it.** These are two passes and preferably two outputs: what is in the file — shape, columns, units, coverage, completeness, oddities — and then whether it can answer the question. The describing pass draws no conclusions by design. Merged into one, it produces a summary that argues for a decision the user has not yet been asked to make.
@@ -183,6 +183,7 @@ Show what the training data looks like for each sub-task, before any model is fi
 - **Training data only.** Every figure and summary in this step uses the training rows. The test set stays locked.
 - **Compute P9 and P10 with the core** (`ML Guide.md` §11): whether the classes are perfectly separable, and whether they are imbalanced. Both come from the training data. Record them in a new `PROP` Decision Record that supersedes the step 2 one. The separability check fits a model, but only to establish a property, not to evaluate a candidate. It is run by `Code/advisor/`, and its result is not interpreted as a finding.
 - **Figures do not set P8.** A plot that looks linear or curved does not make it so for the advisor: P8 comes only from the user (§11). If a figure surprises the user, they may state or revise an expectation, and that is recorded with their words and the figure that prompted it.
+- **Decide the input design with the user** (`ML Guide.md` §9): domain transformations of inputs, such as a logarithm, and the choice of inputs. It is not a configuration axis and is not chosen by cross-validation. If it was not settled in step 2, settle it here, after setting out the trade-offs, and record it in a Decision Record with the user's words.
 - **Propose the chart before making it.** Say what it would plot, on which axes, over which rows, and what a reader would be able to see in it. Get the user's agreement before producing it. A chart is cheap to describe and expensive to argue about once it exists.
 - **Let the data's job choose the form.** Comparing magnitudes across categories is a bar chart; a relationship between two continuous measures is a scatter; movement over time is a line; a distribution is a histogram. Choose from what has to be shown, not from what is easiest to produce.
 - **Plot the observations before the model.** The data goes in first and the fitted line or curve on top. A figure showing only a fit hides how well it describes anything.
