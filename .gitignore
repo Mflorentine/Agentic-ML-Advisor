@@ -22,3 +22,6 @@ __pycache__/
 
 # The SML book is read at smlbook.org, not stored here (licence: personal use only)
 sml-book*.pdf
+
+# Sample Report from the upstream template (removed in b1759cb); kept locally, not tracked
+Sample Report/
