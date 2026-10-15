@@ -12,15 +12,84 @@
 
 ## Methods
 
+Figure 1 shows the main parts of the system and how they connect.
+
+```mermaid
+flowchart LR
+    U["User<br/>brings data, directs and closes each step"]
+    subgraph IF["Interface"]
+        O["Obsidian vault + Claudian<br/>(Claude Code)"]
+    end
+    subgraph AG["Agent"]
+        A["Claude agent<br/>one step per request"]
+    end
+    subgraph KN["Rules and knowledge"]
+        I["instructions.md<br/>working contract: five steps"]
+        G["ML Guide.md<br/>Part I: book knowledge<br/>Part II: reasoning procedure<br/>Part III: record formats"]
+        B[("smlbook.org<br/>chapters 2, 3, 4, 13")]
+    end
+    subgraph CO["Deterministic core"]
+        C["Code/core.py (interim)<br/>P9–P10, admissible set, prior ranking,<br/>nested CV, confidence,<br/>recommendation, single test"]
+    end
+    subgraph WS["Workspace files"]
+        D[("Attachments/<br/>data + SOURCE.md")]
+        T["Templates/<br/>Report.md, Appendix.md"]
+        R["Demonstration/Name/<br/>Report + Appendix<br/>with Decision Records"]
+        OUT[("Code/outputs/<br/>results and figures")]
+    end
+    GH[("Git + GitHub<br/>a commit at the close of each step")]
+
+    U <--> O
+    O <--> A
+    I --> A
+    G --> A
+    B -. distilled into .-> G
+    A -- runs --> C
+    D --> C
+    C --> OUT
+    T -- copied for each analysis --> R
+    A -- writes --> R
+    OUT --> R
+    R --> GH
+```
+
+<small><b>Figure 1.</b> System design: the user directs a Claude agent that follows the working contract (instructions.md) and the ML Guide, distilled from smlbook.org; the mechanical parts are computed by a deterministic core, and every analysis is recorded in its own folder and committed with git to a repository on GitHub.</small>
+
 ### A. The step-by-step agentic workflow
 
-The workflow is a written contract, [instructions.md](instructions.md), which the agent loads at the start of every session through the project's `CLAUDE.md`. It divides an analysis into five steps, taken in a fixed order: (1) import and describe the data; (2) define the machine learning problem and lock a test set; (3) explore the training data; (4) select, train and evaluate a model for each sub-task; (5) write the conclusions and limitations.
+The workflow is a written contract, [instructions.md](instructions.md), which the agent loads at the start of every session through the project's `CLAUDE.md`. It divides an analysis into five steps, taken in a fixed order: (1) import and describe the data; (2) define the machine learning problem and lock a test set; (3) explore the training data; (4) select, train and evaluate a model for each sub-task; (5) write the conclusions and limitations. Figure 2 shows the five steps in order, with the points at which the user must decide before the work goes on.
 
 The agent does one step per request. When the work is done, it says what changed and what it found. It then lists what the step covered, which parts are settled and which were never discussed, and asks whether anything is missing. It does not propose the next step. Only the user can close a step: an answer about one item does not close the others, and silence closes nothing. Within step 4, the user agrees the method before anything is cross-validated, and approves the single use of the test set.
 
 Two documents grow as the work proceeds. `Appendix.md` is the running record from step 1: the data, the problem, the workings, every decision, the recommendation and a numbered log of each step. `Report.md` receives only what each step owns: the problem and its sub-tasks in step 2, before any model is fitted; figures in step 3; the Methods and Results paragraphs in step 4; and the Discussion in step 5. A disclaimer that agentic AI was used is in the report template from the start.
 
 The contract can change during an analysis. A message that begins with FRAMEWORK edits `instructions.md` and applies the change to the analysis in progress, including work already done. It is committed separately from any analysis content, so that it can be carried over to the template.
+
+```mermaid
+flowchart TD
+    S([User puts data in Attachments/]) --> S1["Step 1 · Import and scope the data<br/>analysis folder copied from Templates/,<br/>describe the data, ADM-1, ADM-3, ADM-4,<br/>user's ML experience"]
+    S1 --> Q1{"Recorded target<br/>to learn from?"}
+    Q1 -- no --> X([Stop: not a supervised problem])
+    Q1 -- yes --> S2["Step 2 · Define the ML problem<br/>ADM-2, output type, metric,<br/>success criterion, baseline,<br/>properties P1–P8"]
+    S2 --> L[["Split the data · lock the test set"]]
+    L --> S3["Step 3 · Explore the training data<br/>for one sub-task: figures,<br/>P9 separable, P10 imbalance"]
+    S3 --> A4["4a · Admissible set<br/>task gate, must-haves,<br/>compulsory modifiers"]
+    A4 --> B4["4b · Prior ranking<br/>user agrees the method<br/>and approves the core"]
+    B4 --> C4["4c–4d · Nested cross-validation<br/>round 1: baseline, simple-first<br/>round 2: other kept configurations"]
+    C4 --> E4{"4e · Diagnosis loop:<br/>a stopping rule S1–S6 applies?"}
+    E4 -- "no: one action per pass,<br/>some wait for the user" --> C4
+    E4 -- yes --> F4["4f · Recommendation<br/>and selection confidence"]
+    F4 --> P{"User approves<br/>using the test set?"}
+    P -- not yet --> F4
+    P -- yes --> G4[["4g · Single test evaluation, with the baseline<br/>the test set is used once"]]
+    G4 --> H4["4h · Write-up<br/>Recommendation Report,<br/>Methods and Results"]
+    H4 --> N{"Another sub-task?"}
+    N -- yes --> S3
+    N -- no --> S5["Step 5 · Conclusions and limitations"]
+    S5 --> END([Analysis complete])
+```
+
+<small><b>Figure 2.</b> The five-step workflow. After every step the agent records its decisions, asks the user whether anything is missing, and waits for the user to close the step before the next begins.</small>
 
 ### B. The ML advisor grounded in smlbook.org
 
