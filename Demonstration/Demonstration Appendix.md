@@ -1,5 +1,7 @@
 # Appendix
 
+This analysis was carried out when these files were called Report.md and Appendix.md; they were renamed on 15 October 2026.
+
 *The running record. Filled from the first step, not at the end. Everything that does not belong in the report belongs here: the workings, the diagnostics, the decisions and what each one cost.*
 
 ## Data Summary
