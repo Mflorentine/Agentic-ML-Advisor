@@ -28,15 +28,15 @@
 
 ### A. The step-by-step agentic workflow
 
-*What the workflow produced when used end to end on the heart failure example, with evidence from [Examples/heart-failure/](Examples/heart-failure/).*
+*What the workflow produced when used end to end on the heart failure example, with evidence from [Demonstration/](Demonstration/).*
 
 ### B. The ML advisor grounded in smlbook.org
 
-*What the advisor recommended for the heart failure example and how its prior ranking compared with cross-validation, with evidence from [Examples/heart-failure/](Examples/heart-failure/).*
+*What the advisor recommended for the heart failure example and how its prior ranking compared with cross-validation, with evidence from [Demonstration/](Demonstration/).*
 
 ### C. Traceability and reproducibility
 
-*What a reader can trace and reproduce in the heart failure example — from a reported number back to its decision record, rule, code and data — with evidence from [Examples/heart-failure/](Examples/heart-failure/).*
+*What a reader can trace and reproduce in the heart failure example — from a reported number back to its decision record, rule, code and data — with evidence from [Demonstration/](Demonstration/).*
 
 ## Discussion
 
@@ -52,7 +52,7 @@ This report was written with the help of agentic AI: designing the workflow, wri
 
 ## Appendix
 
-*Pointers to the material behind this report: [ML Guide.md](ML%20Guide.md), the advisor's knowledge and reasoning procedure; [instructions.md](instructions.md), the working contract; and [Examples/heart-failure/](Examples/heart-failure/), the worked example with its full record.*
+*Pointers to the material behind this report: [ML Guide.md](ML%20Guide.md), the advisor's knowledge and reasoning procedure; [instructions.md](instructions.md), the working contract; and [Demonstration/](Demonstration/), the worked example with its full record.*
 
 ## References
 

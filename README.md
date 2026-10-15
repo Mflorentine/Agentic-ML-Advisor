@@ -21,7 +21,7 @@ Every model choice is recorded as it is made. Each decision gets a Decision Reco
 
 ## Example analysis
 
-[Examples/heart-failure/](Examples/heart-failure/) holds a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5 in this folder. Its [Report.md](Examples/heart-failure/Report.md) is the argument; its [Appendix.md](Examples/heart-failure/Appendix.md) is the full record behind it, including every decision record. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
+[Demonstration/](Demonstration/) holds a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5 in this folder. Its [Demonstration Report.md](Demonstration/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Demonstration%20Appendix.md) is the full record behind it, including every decision record. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
 
 The `Report.md` and `Appendix.md` at the top of the folder are empty templates, for your own analysis.
 
@@ -32,7 +32,7 @@ The `Report.md` and `Appendix.md` at the top of the folder are empty templates, 
 | Agentic system that guides users through ML problem-solving | Done: the five-step workflow in [instructions.md](instructions.md). |
 | Uses smlbook.org chapters 2, 4 and 13 (plus chapter 3, agreed with my supervisor) | Done: [ML Guide.md](ML%20Guide.md), with page references. |
 | Helps users choose ML techniques | Done for classification, using an interim core (`Code/core.py`); the reusable `Code/advisor/` is next. |
-| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Examples/heart-failure/](Examples/heart-failure/)). |
+| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/](Demonstration/)). |
 | Available online through GitHub | Done. |
 
 ### Next steps
@@ -64,7 +64,7 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [ML Guide.md](ML%20Guide.md) | What the book says (Part I), the procedure the agent follows for every model decision (Part II), and the formats of its decision records and recommendation reports (Part III). Changed only with `FRAMEWORK`. |
 | [Report.md](Report.md) | The report on your analysis. Arrives as a template and is filled in through steps 2–5. |
 | [Appendix.md](Appendix.md) | The running record of your analysis — data, problem, workings, decision records, recommendation, log, code guide. Arrives as a template and is filled from step 1. |
-| [Examples/](Examples/) | Finished analyses, one folder each, holding that analysis's report and appendix. [heart-failure/](Examples/heart-failure/) is the first. Not edited by a new analysis. |
+| [Demonstration/](Demonstration/) | The finished heart failure analysis: [Demonstration Report.md](Demonstration/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Demonstration%20Appendix.md). Not edited by a new analysis. |
 | [Project Report.md](Project%20Report.md) | The report on the project itself — the advisor and this workspace — not on any analysis. Headings only so far, following the supervisor's structure. Not part of the five steps. |
 | `Attachments/` | Your data. Never modified. Holds the heart failure data used by the example analysis; see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
 | `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core: the example analysis used `Code/core.py` (not reviewed), which `Code/advisor/` will replace. The example's scripts and outputs stay here; a new analysis uses names that do not collide with them. |
