@@ -8,7 +8,7 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "analysis-workspace"
+name = "agentic-ml-advisor"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

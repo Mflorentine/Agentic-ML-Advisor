@@ -36,6 +36,5 @@ cat <<'MSG'
 Environment ready at Code/.venv
 
 Run analysis code with:      cd Code && uv run python your_script.py
-Start a notebook with:       cd Code && uv run jupyter lab
 Add a package with:          cd Code && uv add <package>   (updates uv.lock)
 MSG

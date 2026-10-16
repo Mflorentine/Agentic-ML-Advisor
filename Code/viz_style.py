@@ -1,11 +1,11 @@
 """Chart styling shared by every figure in this analysis.
 
 One place defines the palette, ink and mark geometry so all figures read as one system.
-Colours are the validated default palette from the `dataviz` skill; the accessibility
-validator output is recorded in `palette_validation.txt`.
 
-Figures render twice - `outputs/figures/` on a light surface and `outputs/figures/dark/`
-on a dark one - both opaque. An Obsidian vault may be read in either theme and a PNG
+Each analysis writes its figures to its own outputs folder, for example `outputs/sepsis/`:
+set `FIGURES` to that folder before saving. The default, `outputs/figures/`, belongs to
+the Heart Failure analysis. Figures render twice - in that folder on a light surface and
+in its `dark/` subfolder on a dark one - both opaque. An Obsidian vault may be read in either theme and a PNG
 cannot adapt, while a transparent PNG with dark ink is illegible on a dark theme.
 """
 
@@ -14,10 +14,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-import textwrap
-
 import matplotlib as mpl
-import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
 
 CODE_DIR = Path(__file__).resolve().parent
@@ -94,53 +91,6 @@ def header(fig, headline: str) -> None:
              fontweight="bold", color=_active.text_primary)
 
 
-def label_extremes(ax, rows, xcol, ycol, text):
-    """Label the extreme point on each axis, each with a leader line and a ring.
-
-    `rows` maps a role — "min_x", "max_x", "min_y", "max_y" — to the row to label.
-    Each label is thrown into the empty corner nearest its own extreme, so no two
-    compete for the same space, and a leader line ties it to a ringed marker. At
-    the type sizes these figures use, an unconnected label floats free of any
-    point and the reader cannot tell which one it names.
-    """
-    place = {"min_x": (28, -22, "left"), "max_x": (-28, -22, "right"),
-             "min_y": (28, -22, "left"), "max_y": (-28, 22, "right")}
-    halo = [pe.withStroke(linewidth=2.6, foreground=_active.surface)]
-    # Axis limits must already be final: a label thrown outward from a point near
-    # the top or bottom lands on the tick labels, so it is flipped inward instead.
-    y0, y1 = ax.get_ylim()
-    span = (y1 - y0) or 1.0
-    xs, ys = [], []
-    for role, r in rows:
-        dx, dy, ha = place[role]
-        frac = (r[ycol] - y0) / span
-        if dy < 0 and frac < 0.12:
-            dy = -dy
-        elif dy > 0 and frac > 0.88:
-            dy = -dy
-        ax.annotate(text(r), (r[xcol], r[ycol]), textcoords="offset points",
-                    xytext=(dx, dy), fontsize=ANNOT, color=_active.text_secondary,
-                    path_effects=halo, zorder=5, ha=ha, va="center",
-                    arrowprops=dict(arrowstyle="-", lw=0.7, color=_active.muted,
-                                    shrinkA=1, shrinkB=4))
-        xs.append(r[xcol]); ys.append(r[ycol])
-    ax.scatter(xs, ys, s=42, facecolor="none", edgecolors=_active.text_primary,
-               linewidths=1.1, zorder=4)
-
-
-def pick_extremes(d, xcol, ycol, namecol):
-    """Rows for the four axis extremes, tagged by role, each country only once."""
-    roles = [("min_x", d.nsmallest(1, xcol)), ("max_x", d.nlargest(1, xcol)),
-             ("min_y", d.nsmallest(1, ycol)), ("max_y", d.nlargest(1, ycol))]
-    seen, out = set(), []
-    for role, row in roles:
-        name = row[namecol].iloc[0]
-        if name not in seen:
-            seen.add(name)
-            out.append((role, row.iloc[0]))
-    return out
-
-
 def layout(fig, top: float = 0.93) -> None:
     """Fit the axes into the figure, leaving room for the header and source note.
 
@@ -153,21 +103,6 @@ def layout(fig, top: float = 0.93) -> None:
 
 
 SOURCE_SIZE = 10
-
-
-def source_note(fig, text: str) -> None:
-    """Source line under the figure, wrapped to the figure's own width.
-
-    Saving with bbox_inches="tight" grows the canvas to fit any text that overruns
-    it, so an unwrapped note silently stretches the figure — and every element in
-    it then renders smaller once the image is scaled to the note's pane width.
-    """
-    chars = max(40, int(fig.get_figwidth() * 72 / (SOURCE_SIZE * 0.52)))
-    wrapped = textwrap.fill(text, chars)
-    fig.text(0.004, 0.004, wrapped, ha="left", va="bottom",
-             fontsize=SOURCE_SIZE, color=_active.muted)
-    # layout() reads this to reserve the right amount of room underneath.
-    fig._source_lines = wrapped.count("\n") + 1
 
 
 def save(fig, name: str) -> None:
