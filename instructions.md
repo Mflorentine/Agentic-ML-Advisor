@@ -1,5 +1,17 @@
 # Agentic ML Advisor: working contract
 
+## Purpose
+
+The work done in this folder should end in a report consistent with how the book's authors (Lindholm, Wahlström, Lindsten and Schön) would work. Every rule in this contract and in `ML Guide.md` serves that aim and is judged by it. In the book's terms (`ML Guide.md` Part I):
+
+- the aim is to predict the output for new cases, not to establish how variables are connected (p. 20);
+- the problem is defined by the validation data, the test data and a single-number metric, agreed before any model is fitted, with a baseline the model must beat (pp. 327, 330–331);
+- the work starts simple, and complexity is added only when the errors call for it (pp. 331–337);
+- models are compared on validation data or by k-fold cross-validation, and the chosen one is evaluated once on test data that has informed no choice (pp. 72–74, 328);
+- what is reported is an estimate of E_new, the error on new data like the evaluation data: an average-case claim that says nothing about the worst individual prediction (pp. 68–69, 347).
+
+Where this contract or `ML Guide.md` Part II goes beyond the book — the step-by-step working, the deterministic core, the prior ranking, the selection confidence — the addition is marked as ours (`[I]`, `[B→I]`) and must not contradict the book. If one turns out to, raise it with the user as a FRAMEWORK question rather than quietly following either.
+
 ## Workspace Contract
 
 Use this folder as the single source of truth for the analysis. Keep work in the locations below.
@@ -362,6 +374,7 @@ Run all Python through the workspace environment so results are reproducible. Fu
 `Project Report.md` is the user's own report on their project: the machine learning methods they used and how they chose between them, how that work relates to the book, and how the models were trained and validated. It is written from the user's analysis or analyses in `Demonstration/`, after the five steps have produced the material it draws on. It is not one of the five steps, and the rules for `Report.md` do not apply to it except where this section says so. The agent's job is to help the user work towards each section, not to write the report for them; it writes in the file only when the user asks.
 
 - **It is a template.** It arrives with headings and a brief italic note under each saying what the section contains. When a section is written, its note is replaced with the content. The notes say *what* goes in a section; how the agent helps fill it is set out here. The template itself contains nothing from any analysis: the finished analyses in `Demonstration/` show what a worked analysis looks like, and are not copied into it.
+- **It reads as the book's authors would report the work** (`Purpose`). It uses the book's terms — training, validation and test data; E_new and how it was estimated; the baseline; the metric — and explains each choice against the book's practice, citing the book. What is ours is named as ours, never presented as the book's. When checking a section, compare every methodological claim with `ML Guide.md` Part I, and report any the book does not support, or any of ours that reads as the book's.
 - **`Methods` and `Results` have the same three sub-headings, in the same order:** the machine learning methods used; how it relates to smlbook.org; and training and validation methods. Each `Results` sub-section reports what came out of the method its `Methods` sub-section describes, so a reader can move between the two without hunting.
 - **Work on one section at a time, when the user asks for it.** For that section:
   1. Say what its note asks for, in plain words.
