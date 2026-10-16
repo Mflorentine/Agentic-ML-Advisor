@@ -16,7 +16,7 @@ Every model choice is recorded as it is made. Each decision gets a Decision Reco
 
 1. Install the environment — [Setup.md](Setup.md) covers Obsidian, `uv` and Python.
 2. Put your data in `Attachments/`.
-3. Open a Claudian conversation and ask for step 1: import and describe the data. The agent first asks for a name and copies the two templates in `Templates/` into a new folder, for example `Demonstration/Penguins/`; your report and appendix are written there.
+3. Open a Claudian conversation and ask for step 1: import and describe the data. The agent first asks for a name and copies the two templates in `Templates/` into a new folder, for example `Demonstration/Sepsis/`; your report and appendix are written there.
 4. Work through the five steps, one request at a time.
 
 ## Example analysis
