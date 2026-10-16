@@ -4,7 +4,9 @@ From David, 16 October 2026.
 
 ## The aim
 
-The instructions should lead to a report that is consistent with how the book's authors (Lindholm, Wahlström, Lindsten and Schön) would work. This is now the `Purpose` section at the top of [instructions.md](instructions.md), and every rule in the contract and in [ML Guide.md](ML%20Guide.md) is to be judged by it. We still have a long way to go.
+**The most important thing is that the method stays as close to [smlbook.org](https://smlbook.org/) as possible.** The instructions should lead to a report that is consistent with how the book's authors (Lindholm, Wahlström, Lindsten and Schön) would work. This is now the `Purpose` section at the top of [instructions.md](instructions.md), and every rule in the contract and in [ML Guide.md](ML%20Guide.md) is to be judged by it. We still have a long way to go.
+
+When you change the method, move it towards the book, not away from it. Where the book gives advice, follow it and cite the page. Where we have to add something the book does not cover, keep the addition as small as possible, mark it as ours (`[I]` or `[B→I]`), and check that it does not contradict the book. A change that makes the workflow easier but takes it further from the book is not an improvement.
 
 ## What to do
 
