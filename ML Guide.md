@@ -6,7 +6,7 @@ This is a set of notes written in our own words, not a substitute for the book. 
 
 The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours. **Part III (sections 24–25) fixes the record formats** the advisor writes into `Appendix.md`: the Decision Record and the Recommendation Report.
 
-**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
+**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. 16 October 2026 (`FRAMEWORK`): the example folder in §24.1 is now `Demonstration/Sepsis/`; nothing else changed. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
 
 **Scope.** The chapters used are 2, 3, 4 and 13. Every other method — L1/LASSO included — is flagged and not used (section 23).
 
@@ -617,7 +617,7 @@ A Decision Record (DR) is the unit of the advisor's reasoning trace. Every decis
 
 ### 24.1 Where they live
 
-- **Location.** The `Decision Records` section of `Appendix.md`, after `Analysis` and before `Recommendation`. Here and in §25, `Appendix.md` and `Report.md` are the analysis's own copies of the templates in `Templates/`, kept in its folder under `Demonstration/` (for example `Demonstration/Penguins/`).
+- **Location.** The `Decision Records` section of `Appendix.md`, after `Analysis` and before `Recommendation`. Here and in §25, `Appendix.md` and `Report.md` are the analysis's own copies of the templates in `Templates/`, kept in its folder under `Demonstration/` (for example `Demonstration/Sepsis/`).
 - **One copy.** The Markdown in `Appendix.md` is the only copy.
 - **Relation to the Analysis Log.** The Analysis Log keeps one numbered row per step taken. A row that involved a decision names its DR IDs: the log says what was done, the DR says why.
 
