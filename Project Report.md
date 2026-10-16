@@ -4,7 +4,7 @@
 
 ## Abstract
 
-*The whole project in one paragraph: the problem it addresses, what was built in parts A, B and C, what the heart failure example showed, and the main limitation.*
+*The whole project in one paragraph: the problem it addresses, what was built in its three parts (the step-by-step agentic workflow, the ML advisor grounded in smlbook.org, and traceability and reproducibility), what the heart failure example showed, and the main limitation.*
 
 ## Introduction
 
@@ -55,7 +55,7 @@ flowchart LR
 
 <small><b>Figure 1.</b> System design: the user directs a Claude agent that follows the working contract (instructions.md) and the ML Guide, distilled from smlbook.org; the mechanical parts are computed by a deterministic core, and every analysis is recorded in its own folder and committed with git to a repository on GitHub.</small>
 
-### A. The step-by-step agentic workflow
+### The step-by-step agentic workflow
 
 The workflow is a written contract, [instructions.md](instructions.md), which the agent loads at the start of every session through the project's `CLAUDE.md`. It divides an analysis into five steps, taken in a fixed order: (1) import and describe the data; (2) define the machine learning problem and lock a test set; (3) explore the training data; (4) select, train and evaluate a model for each sub-task; (5) write the conclusions and limitations. Figure 2 shows the five steps in order, with the points at which the user must decide before the work goes on.
 
@@ -75,9 +75,9 @@ flowchart LR
     T -. next sub-task .-> S3
 ```
 
-<small><b>Figure 2.</b> The five-step workflow. After every step the agent records its decisions, asks the user whether anything is missing, and waits for the user to close the step before the next begins. The stages of step 4 are described in Methods B.</small>
+<small><b>Figure 2.</b> The five-step workflow. After every step the agent records its decisions, asks the user whether anything is missing, and waits for the user to close the step before the next begins. The stages of step 4 are described under the ML advisor, below.</small>
 
-### B. The ML advisor grounded in smlbook.org
+### The ML advisor grounded in smlbook.org
 
 The advisor's knowledge is [ML Guide.md](ML%20Guide.md), distilled from chapters 2, 3, 4 and 13 of the book at smlbook.org. It has three parts. Part I summarises what the book says, with page references. Part II is the reasoning procedure the advisor follows for every model decision. Part III fixes the record formats: the Decision Record and the Recommendation Report.
 
@@ -95,9 +95,9 @@ The solution space is 14 configurations: k-nearest neighbours, decision trees, l
 - **Recommendation:** among configurations that clearly beat the baseline, the best and any within noise of it are candidates, and the one with the fewest additions wins. A selection confidence is computed from three stated factors.
 - **Test evaluation:** a single evaluation on the held-out test set.
 
-The mechanical parts are computed by code, not by the agent: the admissible set, the prior ranking, the cross-validation, the confidence and the recommendation. The planned reviewed core, `Code/advisor/`, is not yet built. Until it is, the agent writes an interim script for each analysis, `Code/core.py`, which implements the needed sections of Part II with every `[I]` threshold as a named constant. The user sees the script before its first output is used. The agent passes property values to the script and copies its outputs into the records unchanged. If the agent disagrees with an output, it says so in the record and raises it with the user. It never substitutes its own result.
+The mechanical parts are computed by code, not by the agent: the admissible set, the prior ranking, the cross-validation, the confidence and the recommendation. The planned reviewed core, `Code/advisor/`, is not yet built. Until it is, the agent writes an interim script for each analysis in that analysis's own code folder (the heart failure example's is `Code/core.py`), which implements the needed sections of Part II with every `[I]` threshold as a named constant. The user sees the script before its first output is used. The agent passes property values to the script and copies its outputs into the records unchanged. If the agent disagrees with an output, it says so in the record and raises it with the user. It never substitutes its own result.
 
-### C. Traceability and reproducibility
+### Traceability and reproducibility
 
 Every decision is written at the time it is made as a Decision Record in `Appendix.md`, in a fixed format: the question, the evidence, the rules applied, the thresholds applied, the options, the agent's expectation, the decision, the reason each rejected configuration was ruled out, the user's involvement, and links to code and outputs. There are ten record types, from admissibility (`ADM`) to the final evaluation (`FINAL`). A record that is later reversed stays in place, marked as superseded. Each sub-task ends with a Recommendation Report in thirteen parts, assembled from its records.
 
@@ -109,7 +109,7 @@ The test set is locked at the end of step 2. Nothing reads it until the user has
 
 ## Results
 
-### A. The step-by-step agentic workflow
+### The step-by-step agentic workflow
 
 The demonstration ran all five steps on a heart failure dataset of 299 patients, predicting whether each patient died during follow-up. It produced 19 Decision Records and a 47-row Analysis Log ([Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md)). Three problems were caught before any model was trained, each by a check the contract requires.
 
@@ -119,7 +119,7 @@ The demonstration ran all five steps on a heart failure dataset of 299 patients,
 
 **A must-have that would have narrowed the comparison.** The user had made class probabilities with a tuned decision threshold a must-have. Under the guide's gates, only the logistic family meets that requirement, so k-nearest neighbours and decision trees would both have been excluded before any comparison. The agent raised this at the end of step 2, and the user changed the requirement to a strong preference (DR-09). The configuration eventually recommended was a tree.
 
-### B. The ML advisor grounded in smlbook.org
+### The ML advisor grounded in smlbook.org
 
 The output is binary, so the task gate excluded 8 of the 14 configurations, all of them regression models. That left 6: four logistic regression variants, k-nearest neighbours and a tree (DR-12). The prior ranking kept plain logistic regression, logistic regression with L2, the tree, and logistic regression with polynomial terms. It dropped the other two, which scored lower (DR-13).
 
@@ -131,7 +131,7 @@ The agent disagreed with one output of the core. Rerunning the grid search on al
 
 The decision threshold was then tuned on the training data, giving 0.2. Refitted on the 239 training patients and evaluated once on the 60 held-out patients, 19 of whom died, the tree reached an F2 of 0.68 (fold spread 0.09), with recall 0.84 and precision 0.38. Success required an F2 above 0.79, so the criterion was not met. On the same patients, flagging everyone scored 0.70 and predicting no deaths scored 0. The model, threshold and criterion were not changed after the result was seen (DR-19).
 
-### C. Traceability and reproducibility
+### Traceability and reproducibility
 
 As a worked example, take the test F2 of 0.68 in the Results of [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and follow it back:
 1. **Decision Record.** DR-19 gives the value as 0.6780 with evidence tag `TEST`, the fold spread 0.0865, the 60 test rows and 19 deaths, and the user's words approving the single evaluation. It also quotes the success criterion from DR-08 and shows the required value, 0.7903.
@@ -143,7 +143,7 @@ Steps 1, 2, 3 and 5 each have one commit. Step 4 has two: one for 4a–4g and on
 
 ## Discussion
 
-*What the project achieved, what the findings on A, B and C mean when taken together, and what the work makes possible next.*
+*What the project achieved, what the findings on the workflow, the advisor and traceability mean when taken together, and what the work makes possible next.*
 
 ## Limitations
 

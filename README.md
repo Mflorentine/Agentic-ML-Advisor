@@ -30,16 +30,16 @@ The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty template
 | Part of the brief | Status |
 | --- | --- |
 | Agentic system that guides users through ML problem-solving | Done: the five-step workflow in [instructions.md](instructions.md). |
-| Uses smlbook.org chapters 2, 4 and 13 (plus chapter 3, agreed with my supervisor) | Done: [ML Guide.md](ML%20Guide.md), with page references. |
+| Uses smlbook.org chapters 2, 3, 4 and 13 | Done: [ML Guide.md](ML%20Guide.md), with page references. |
 | Helps users choose ML techniques | Done for classification, using an interim core (`Code/core.py`); the reusable `Code/advisor/` is next. |
-| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/Heart Failure/](Demonstration/Heart%20Failure/)). |
+| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/Heart Failure/](Demonstration/Heart%20Failure/)). The sepsis demonstration is in progress ([Demonstration/Sepsis/](Demonstration/Sepsis/)). |
 | Available online through GitHub | Done. |
 
 ### Next steps
 
 - Build `Code/advisor/`.
-- Demonstrate on more datasets: a regression and a multiclass example.
-- Write the project report: [Project Report.md](Project%20Report.md) has the headings.
+- Finish the sepsis and Mobile Price demonstrations. All are classification problems, making three datasets in total with heart failure.
+- Finish the project report, [Project Report.md](Project%20Report.md).
 
 ## The five steps
 
@@ -66,7 +66,7 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [Demonstration/](Demonstration/) | One folder per analysis, each with its own `Report.md` (the report, filled in through steps 2–5) and `Appendix.md` (the running record — data, problem, workings, decision records, recommendation, log, code guide — filled from step 1). [Heart Failure/](Demonstration/Heart%20Failure/) is the finished example: [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md). A finished analysis is not edited by a new one. |
 | [Project Report.md](Project%20Report.md) | The report on the project itself — the advisor and this workspace — not on any analysis, and the only report at the top level. Following the supervisor's structure; Methods and Results sketched so far. Not part of the five steps. |
 | `Attachments/` | Your data. Never modified. Holds the heart failure data used by the example analysis; see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
-| `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core: the example analysis used `Code/core.py` (not reviewed), which `Code/advisor/` will replace. The example's scripts and outputs stay here; a new analysis uses names that do not collide with them. |
+| `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core in its own folder, for example `Code/sepsis/core.py`; the example analysis used `Code/core.py` (not reviewed), which is never changed and which `Code/advisor/` will replace. Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. The example's scripts and outputs stay here; a new analysis uses names that do not collide with them. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
 
 ## Report and appendix
