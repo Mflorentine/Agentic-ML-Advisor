@@ -31,3 +31,6 @@ Attachments/sepsis-physionet-2019/
 
 # Mobile Price Classification (Kaggle): licence "Unknown", so not redistributed
 Attachments/Mobile Price/
+
+# Patient-level derived sepsis tables (ODbL): kept locally, never committed
+Code/outputs/sepsis/private/

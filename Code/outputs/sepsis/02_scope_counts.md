@@ -1,0 +1,241 @@
+# Sepsis: counts for the step 1 decisions
+
+```
+{
+  "leakage_rows": {
+    "rows_before": 1552210,
+    "rows_set_aside": 27916,
+    "rows_after": 1524294,
+    "patients_before": 40336,
+    "patients_after": 39910,
+    "patients_with_no_rows_left": 426,
+    "septic_patients_before": 2932,
+    "septic_patients_with_rows_left": 2506,
+    "septic_rows_left_median": 37.0,
+    "by_set": {
+      "A": {
+        "rows_after": 773079,
+        "patients_after": 20133,
+        "septic_patients_with_rows_left": 1587
+      },
+      "B": {
+        "rows_after": 751215,
+        "patients_after": 19777,
+        "septic_patients_with_rows_left": 919
+      }
+    }
+  },
+  "fio2_bands_rows_kept": {
+    "[-1000000000.0, 0)": 2,
+    "[0, 0.21)": 358,
+    "[0.21, 1.0)": 112936,
+    "[1.0, 21)": 11048,
+    "[21, 100)": 0,
+    "[100, 1000000000.0)": 1
+  },
+  "fio2_exact_1": 11024,
+  "fio2_values_above_1": [
+    1.2,
+    1.3,
+    1.4,
+    1.7,
+    2.0,
+    5.05,
+    7.0,
+    10.0,
+    4000.0
+  ],
+  "candidate_rules_rows_kept": [
+    {
+      "column": "FiO2",
+      "low": 0.21,
+      "high": 1.0,
+      "values_present": 124345,
+      "would_set_missing": 385,
+      "by_set": {
+        "A": 318,
+        "B": 67
+      },
+      "patients_affected": 299,
+      "examples": [
+        -50.0,
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.08,
+        0.1,
+        0.11,
+        0.12,
+        0.13,
+        0.15,
+        0.2
+      ]
+    },
+    {
+      "column": "Temp",
+      "low": 25,
+      "high": 45,
+      "values_present": 515750,
+      "would_set_missing": 6,
+      "by_set": {
+        "A": 4,
+        "B": 2
+      },
+      "patients_affected": 6,
+      "examples": [
+        20.9,
+        21.0,
+        23.0,
+        23.6,
+        50.0
+      ]
+    },
+    {
+      "column": "Temp",
+      "low": 30,
+      "high": 43,
+      "values_present": 515750,
+      "would_set_missing": 18,
+      "by_set": {
+        "A": 16,
+        "B": 2
+      },
+      "patients_affected": 16,
+      "examples": [
+        20.9,
+        21.0,
+        23.0,
+        23.6,
+        26.6,
+        26.67,
+        27.9,
+        28.0,
+        29.6,
+        29.61,
+        29.8,
+        29.94,
+        50.0
+      ]
+    },
+    {
+      "column": "Potassium",
+      "low": null,
+      "high": 10,
+      "values_present": 140844,
+      "would_set_missing": 15,
+      "by_set": {
+        "A": 2,
+        "B": 13
+      },
+      "patients_affected": 15,
+      "examples": [
+        10.2,
+        10.4,
+        10.6,
+        10.75,
+        10.8,
+        11.5,
+        11.8,
+        13.0,
+        15.8,
+        27.5
+      ]
+    },
+    {
+      "column": "Potassium",
+      "low": null,
+      "high": 15,
+      "values_present": 140844,
+      "would_set_missing": 2,
+      "by_set": {
+        "A": 1,
+        "B": 1
+      },
+      "patients_affected": 2,
+      "examples": [
+        15.8,
+        27.5
+      ]
+    },
+    {
+      "column": "Hgb",
+      "low": null,
+      "high": 25,
+      "values_present": 111906,
+      "would_set_missing": 3,
+      "by_set": {
+        "A": 1,
+        "B": 2
+      },
+      "patients_affected": 3,
+      "examples": [
+        26.6,
+        30.0,
+        32.0
+      ]
+    },
+    {
+      "column": "Hct",
+      "low": null,
+      "high": 75,
+      "values_present": 134300,
+      "would_set_missing": 0,
+      "by_set": {
+        "A": 0,
+        "B": 0
+      },
+      "patients_affected": 0,
+      "examples": []
+    },
+    {
+      "column": "HCO3",
+      "low": 1,
+      "high": null,
+      "values_present": 63302,
+      "would_set_missing": 2,
+      "by_set": {
+        "A": 2,
+        "B": 0
+      },
+      "patients_affected": 2,
+      "examples": [
+        0.0
+      ]
+    },
+    {
+      "column": "BaseExcess",
+      "low": null,
+      "high": 40,
+      "values_present": 81289,
+      "would_set_missing": 3,
+      "by_set": {
+        "A": 3,
+        "B": 0
+      },
+      "patients_affected": 3,
+      "examples": [
+        44.0,
+        49.5,
+        100.0
+      ]
+    },
+    {
+      "column": "pH",
+      "low": 6.5,
+      "high": 8.0,
+      "values_present": 103843,
+      "would_set_missing": 0,
+      "by_set": {
+        "A": 0,
+        "B": 0
+      },
+      "patients_affected": 0,
+      "examples": []
+    }
+  ]
+}
+```
