@@ -339,7 +339,7 @@ Run all Python through the workspace environment so results are reproducible. Fu
 
 ## Analysis Standards
 
-- Preserve original attachment files. Write derived datasets, charts, tables, and exports under `Code/` unless a task specifically requires another location.
+- Preserve original attachment files. Write derived datasets, charts and tables under `Code/` unless a task specifically requires another location.
 - Never invent data, results, file contents, citations, or successful execution. Mark missing information and unverified assumptions clearly.
 - Prefer reproducible scripts over manual calculations. Include commands, parameters, random seeds, and environment requirements when they affect results.
 - Check row counts, missing values, types, ranges, duplicates, joins, and outliers as appropriate for each dataset. Document meaningful issues in the appendix.
