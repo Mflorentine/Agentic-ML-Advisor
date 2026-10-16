@@ -14,33 +14,34 @@
 
 *An overview figure of the system's parts and how they connect, then one sub-section per part.*
 
-### The step-by-step agentic workflow
+### The machine learning methods used
 
-*How the user and the agent work through an analysis: the steps, the points at which the user decides, and the documents that grow as the work proceeds.*
+*The model families and configurations the used, and how you chose between them for the given problem.*
 
-### The ML advisor grounded in smlbook.org
+### How it relates to smlbook.org
 
-*Where the advisor's knowledge comes from, how it moves from the properties of a problem to a recommended model, and which parts are computed by code rather than by the agent.*
+*Which chapters of the book you drew on and how it followed the book's advice. What else is added*
 
-### Traceability and reproducibility
+### Training and validation methods 
 
-*How decisions, values, files, code versions and seeds are recorded, so that a reported result can be traced back to its evidence.*
+*How the data is split, how candidate configurations are compared by cross-validation, and how the chosen one is evaluated once on held-out test data.*
+
 
 ## Results
 
-*What each part of the project did in use, with links to the worked analyses in Demonstration/ as evidence.*
+*What came out of each method, under the same sub-headings as Methods.*
 
-### The step-by-step agentic workflow
+### The machine learning methods used
 
-*Where the workflow's checks and decision points changed the course of an analysis.*
+*The configuration recommended for each problem, its test result against the baseline with its uncertainty, how the other configurations ranked, and how confident the selection was.*
 
-### The ML advisor grounded in smlbook.org
+### How it relates to smlbook.org
 
-*How the advisor's recommendations compared with its own expectations, and where the agent and the core disagreed.*
+*How much of each recommendation rested on the book's advice and how much on what was added, and whether cross-validation agreed with the ranking the book's guidance predicted.*
 
-### Traceability and reproducibility
+### Training and validation methods
 
-*Whether a reported result can be followed back to its decision records, rules, code version and data, and where the trail breaks.*
+*How many rows were used for training and testing, how much the results varied across cross-validation folds, and whether the success criterion was met in the single test evaluation.*
 
 ## Discussion
 
