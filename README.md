@@ -37,6 +37,8 @@ The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty template
 
 ### Next steps
 
+See [Note for Florentine.md](Note%20for%20Florentine.md) for how the method is to be improved by working through the three datasets.
+
 - Build `Code/advisor/`.
 - Finish the sepsis and Mobile Price demonstrations. All are classification problems, making three datasets in total with heart failure.
 - Finish the project report, [Project Report.md](Project%20Report.md).
