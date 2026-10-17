@@ -1,0 +1,89 @@
+{
+  "N": 6,
+  "H": 48,
+  "positive_if_label_onset_iculos_in": [
+    7,
+    54
+  ],
+  "A": {
+    "cohort": 19473,
+    "positive": 780,
+    "negative_observed_to_end": 2558,
+    "negative_observed_to_end_septic_later": 589,
+    "negative_not_observed_to_end": 16135,
+    "not_observed_last_iculos_quartiles": [
+      8.0,
+      25.0,
+      38.0,
+      45.0,
+      53.0
+    ],
+    "not_observed_record_ends_within_24h_after_N": 5818,
+    "keep_as_negative": {
+      "rows": 19473,
+      "positive": 780,
+      "positive_pct": 4.01
+    },
+    "exclude": {
+      "rows": 3338,
+      "positive": 780,
+      "positive_pct": 23.37
+    },
+    "kept_record_ends_by_N": 33,
+    "kept_record_ends_by_N_counted_positive": 33
+  },
+  "B": {
+    "cohort": 19615,
+    "positive": 450,
+    "negative_observed_to_end": 2284,
+    "negative_observed_to_end_septic_later": 361,
+    "negative_not_observed_to_end": 16881,
+    "not_observed_last_iculos_quartiles": [
+      8.0,
+      23.0,
+      37.0,
+      44.0,
+      53.0
+    ],
+    "not_observed_record_ends_within_24h_after_N": 6736,
+    "keep_as_negative": {
+      "rows": 19615,
+      "positive": 450,
+      "positive_pct": 2.29
+    },
+    "exclude": {
+      "rows": 2734,
+      "positive": 450,
+      "positive_pct": 16.46
+    },
+    "kept_record_ends_by_N": 13,
+    "kept_record_ends_by_N_counted_positive": 13
+  },
+  "all": {
+    "cohort": 39088,
+    "positive": 1230,
+    "negative_observed_to_end": 4842,
+    "negative_observed_to_end_septic_later": 950,
+    "negative_not_observed_to_end": 33016,
+    "not_observed_last_iculos_quartiles": [
+      8.0,
+      24.0,
+      37.0,
+      44.0,
+      53.0
+    ],
+    "not_observed_record_ends_within_24h_after_N": 12554,
+    "keep_as_negative": {
+      "rows": 39088,
+      "positive": 1230,
+      "positive_pct": 3.15
+    },
+    "exclude": {
+      "rows": 6072,
+      "positive": 1230,
+      "positive_pct": 20.26
+    },
+    "kept_record_ends_by_N": 46,
+    "kept_record_ends_by_N_counted_positive": 46
+  }
+}

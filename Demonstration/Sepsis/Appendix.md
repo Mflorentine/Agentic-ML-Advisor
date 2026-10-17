@@ -146,7 +146,64 @@
 
 ## Problem Definition
 
-*Written in step 2, before anything is trained. Three parts. `Discussion`: how the problem was arrived at, what was ruled out, and whether it is a prediction problem. `Problem`: what is predicted, from what, the output type, the agreed metric, the success criterion, the baseline and the achievable level, the must-have requirements, and any expectations the user states about the relationship (quoted). `Sub-tasks`: the separately answerable parts. Ends with the train/test split, its seed, and the statement that the test set is locked.*
+*Step 2, written 17–18 October 2026, before anything was trained: from metadata and patient counts only. No model has been fitted, and no relationship between inputs and outcome has been looked at. Step 2 closed 18 October 2026, with the test set locked (DR-08).*
+
+### Discussion
+
+**The problem, in the user's words** (17 October 2026): "Flag ICU patients at risk of developing sepsis, using only the data available in their first hours in the ICU, so that clinicians can monitor them more closely."
+
+**Prediction, not understanding (ADM-2, DR-04).** The user: "prediction for new patients, not understanding which measurements are connected to sepsis (p. 20)."
+
+**The target: one prediction per patient.** Two framings were put to the user:
+- (a) one prediction per patient, made from the first N ICU hours, of whether `SepsisLabel` switches on later;
+- (b) a prediction every hour, as in the Challenge, with a window of past values as inputs (the book's only sequence handling, pp. 38–39).
+
+The user chose (a), with N = 6 hours and a time limit: does `SepsisLabel` switch on within 48 hours after the window? This settles the time handling left open in DR-02. One row per patient keeps the rows independent, as the book assumes (p. 16). Framing (b) was not taken, because one patient's hours are not independent of each other.
+- *Why a time limit.* Without one, a positive could have its label switch on as late as hour 331, while non-septic patients are followed only until ICU discharge. "Sepsis at any later point" would then partly measure how long a patient stays.
+- *What a positive means.* `SepsisLabel` switches on 6 hours before `t_sepsis` (DR-01). A positive is therefore a patient whose label switches on at ICU hour 7 to 54, i.e. whose Sepsis-3 onset falls at hour 13 to 60.
+- *Window lengths compared.* Counts for N = 6 and N = 12 (`Code/outputs/sepsis/04_target_counts.json`): 39,088 and 39,310 patients have an hour in the window with the label not yet on, and 2,180 (5.58 %) and 1,953 (4.97 %) of them have the label switch on later at any time. The user chose N = 6.
+- *Outcome read from the label onset, not from record length.* Step 1 set aside every row from label onset, so a septic patient's kept record ends the hour before onset. For N = 6, 46 positives (33 in A, 13 in B) have a kept record ending at hour 6, because their label switches on at hour 7. They are counted as positives (`Code/outputs/sepsis/05_horizon_counts.json`). User: they "must be counted by their real outcome, not as short stays."
+- *Patients without sepsis whose record ends before hour 54: kept as negatives.* No sepsis was observed for them, but they were not followed for the full 48 hours: 33,016 of the 39,088 patients (84 %; median last hour 37). Two options were put to the user (Analysis Log, row 7):
+  - keep them as negatives, with the outcome read as "while still in the ICU": all 39,088 patients, 3.15 % positive, and the evaluation data stays the population met at hour 6 (pp. 328–329);
+  - exclude them, as rows with a missing output are dropped (p. 345): 6,072 patients, 20.26 % positive. But whether a patient stays to hour 54 is not known at hour 6, so the remaining group would not be the one the model meets in use (pp. 328–329).
+
+  The user: "Keep them as negatives; the outcome is 'the label switches on within 48 hours after the first 6 hours, while the patient is still in the ICU'. Record the gap as a limitation, and write a FLAG record noting that survival analysis would address it but is outside chapters 2, 3, 4 and 13." *Limitation:* sepsis after ICU discharge is not seen, and the files do not say why a stay ended (recovery, transfer or death), so some negatives may be patients who would have become positive. Survival analysis, which models outcomes whose follow-up ends early, is outside the book (DR-07).
+
+**The metric.** The user chose the area under the precision–recall curve (PR-AUC) to decide between models, "because at about 3% positives a fixed threshold of 0.5 would make the comparison meaningless." The book calls the precision–recall curve more informative than ROC for imbalanced problems (p. 92), and asks for one deciding metric with others monitored alongside (p. 330). Reported alongside: F2, precision and recall at a threshold chosen on the training data only. F2 weights recall twice as heavily as precision (p. 92), which is the user's statement that a missed case costs more than a false alarm. Accuracy was not chosen, because a classifier that flags nobody scores about 97 % on it (p. 91).
+
+**Earlier answers replaced.** A first set of answers (17 October) proposed a 90 / 10 split with seed 42, ROC-AUC among the secondary metrics, and calibrated probabilities. The user interrupted it and replaced it with the answers recorded here before anything was written or computed.
+
+**Validation and test data: both hospitals, split by patient.** The user: "mix both, splitting by patient, as the book advises that validation and test data should come from the data the model will meet in use (pp. 328–329), and as recorded in DR-03. Training on one hospital and testing on the other may become a separate sub-task later; not now." This settles the hospital question left open in DR-02 and DR-03.
+
+### Problem
+
+Agreed 17 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/sepsis/05_horizon_counts.json`.
+
+| Item | Agreed |
+| --- | --- |
+| **Rows** | One per patient: every patient with at least one kept hour in ICU hours 1–6 whose label has not switched on by hour 6. 39,088 patients (A 19,473, B 19,615). Not included: 965 patients with no kept hour in hours 1–6, and 283 whose label switches on within them. |
+| **Output y** | 1 if `SepsisLabel` switches on at ICU hour 7–54, i.e. within 48 hours after the window while the patient is still in the ICU (Sepsis-3 onset at hour 13–60); 0 otherwise, including patients who leave the ICU before hour 54 without it. Read from `label_onset_iculos`, never from record length. 1,230 positive (3.15 %): A 780 (4.01 %), B 450 (2.29 %). |
+| **Inputs x** | The 32 inputs kept in step 1, from ICU hours 1–6 only. How the six hours are summarised into one row, and how empty values are handled, is input design, decided in step 3 (§9). `ICULOS`, record length and anything after hour 6 are not inputs. |
+| **Output type (P1)** | Binary. |
+| **What a prediction is for** | To flag patients for closer monitoring by clinicians. A missed case costs more than a false alarm, as expressed by β = 2. |
+| **Deciding metric** | PR-AUC on the held-out patients, computed as average precision (see note below). |
+| **Monitored alongside** | F2 (β = 2), precision and recall at a decision threshold chosen by cross-validation on the training data only, after the configuration is selected (§16). |
+| **Baseline** | The most common training class: flag nobody (p. 331). Its scores are constant, so its PR-AUC equals the positive rate, which is the no-skill reference for PR-AUC (p. 92); its recall and F2 are 0, and its precision is undefined. |
+| **Success criterion** | Test PR-AUC above the no-skill level (the test set's positive rate) by more than the spread of PR-AUC across the outer cross-validation folds. The spread is the standard deviation, across the 10 outer folds, of the recommended configuration's PR-AUC: the uncertainty defined in step 4g `[B→I pp.71–73]`. |
+| **Achievable level** | Unknown. The Challenge scored hourly predictions with its own utility score, which is not comparable. |
+| **P5** | Inspectable, a strong preference, not a must-have. |
+| **P6** | Yes, a preference, not a must-have: probabilities and a tuned threshold. |
+| **P7** | No. |
+| **P8** | Unknown. |
+| **Split** | 20 % test, by patient (one row per patient), shuffled, stratified by outcome and hospital, seed 2026: 31,270 training patients (984 positive, 3.15 %) and 7,818 test patients (246 positive, 3.15 %). Cross-validation folds are stratified the same way. The test set is locked (DR-08, `Code/outputs/sepsis/06_split.json`). |
+
+*PR-AUC computed as average precision.* The book draws the precision–recall curve and its area (p. 92) but does not say how the area is computed. Average precision (scikit-learn's `average_precision_score`) sums precision at each recall step; the alternative, a trapezoid under the curve, interpolates between points and can overstate the area. Average precision is our choice `[I]`, proposed to the user on 17 October and confirmed: "Yes, compute PR-AUC as average precision, tagged [I]."
+
+### Sub-tasks
+
+1. **Sepsis within 48 hours from the first 6 ICU hours.** For each patient in the cohort, predict from ICU hours 1–6 whether `SepsisLabel` switches on within the next 48 hours while the patient is still in the ICU. Success: test PR-AUC above the test positive rate by more than the outer-fold spread of PR-AUC.
+
+Training on one hospital and testing on the other is not a sub-task now; the user may add it later.
 
 ## Analysis
 
@@ -283,6 +340,259 @@
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/outputs/sepsis/01_describe.json`
 
+### DR-04 · ADM · step 2
+
+- **Sub-task:** all
+- **Date:** 2026-10-17
+- **Question:** Is the main aim to predict the outcome for new cases, or to understand how the variables are connected (ADM-2)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| The user's problem | "Flag ICU patients at risk of developing sepsis, using only the data available in their first hours in the ICU, so that clinicians can monitor them more closely." | M | user, 17 October 2026 |
+| User's answer | "prediction for new patients, not understanding which measurements are connected to sepsis (p. 20)." | M | user, 17 October 2026 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| ADM-2 | predict | [B p.20] | continue; the workflow optimises prediction |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** predict · understand
+- **Expectation:** n/a
+- **Decision:** The aim is to predict sepsis for new ICU patients, so the work continues. Nothing in it establishes how any measurement is connected to sepsis.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — quoted above
+- **Supersedes / superseded by:** n/a
+- **Links:** n/a
+
+### DR-05 · FORM · step 2
+
+- **Sub-task:** 1
+- **Date:** 2026-10-17
+- **Question:** What is predicted, from what, judged by which metric, against which baseline, and what counts as success?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Target | "the label switches on within 48 hours after the first 6 hours, while the patient is still in the ICU" | M | user, 17 October 2026 |
+| Patients not followed to hour 54 | "Keep them as negatives … Record the gap as a limitation" | M | user, 17 October 2026 |
+| Cohort and outcome counts | 39,088 patients; 1,230 positive (3.15 %), A 780 (4.01 %), B 450 (2.29 %); 33,016 never-septic patients leave before hour 54 | M | `Code/outputs/sepsis/05_horizon_counts.json` |
+| Metric | "the area under the precision-recall curve (PR-AUC) decides between models (pp. 91-93) … Report alongside it (p. 330): F2 (beta = 2), precision and recall at a threshold chosen on the training data only." | M | user, 17 October 2026 |
+| Baseline | "most common class ("flag nobody", p. 331). Also report the no-skill reference for PR-AUC (the positive rate)." | M | user, 17 October 2026 |
+| Success criterion | "test PR-AUC clearly above the no-skill level, by more than the spread of PR-AUC across the outer cross-validation folds." | M | user, 17 October 2026 |
+| Achievable level | "unknown" | M | user, 17 October 2026 |
+| Must-haves and expectations | P5 "inspectable, a strong preference, not a must-have"; P6 "probabilities and a tuned threshold, a preference, not a must-have"; P7 "no"; P8 "unknown" | M | user, 17 October 2026 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P1 | binary | [B p.17] | classification task gate: Logistic, k-NN, Tree (§12) |
+| One deciding metric, others monitored | PR-AUC decides; F2, precision, recall monitored | [B p.330] | PR-AUC is the selection metric in §16 |
+| Imbalanced problems need more than the misclassification rate | accuracy not used | [B p.91] | — |
+| Precision–recall curve for imbalanced problems | PR-AUC chosen | [B→I p.92] | the book calls it more informative than ROC; using its area as the deciding metric is our step |
+| F_β for asymmetric problems | β = 2 | [B p.92] | used for the threshold and monitored |
+| SEQ-1 baseline | most common training class (flag nobody) | [B pp.330–331] | always cross-validated and reported |
+| No-skill reference for PR-AUC | the positive rate | [B p.92] | equals the baseline's PR-AUC, because the baseline's score is constant |
+| Decision threshold (§16) | tuned by CV on training data after selection, maximising F2 | [B→I pp.53–54, 92–93] | applies because P6 = yes |
+| Uncertainty of the test result (step 4g) | SD of PR-AUC across the outer folds | [B→I pp.71–73] | sets the margin in the success criterion |
+| PR-AUC computed as average precision | `UNLISTED [I]`: "the area under the precision–recall curve is computed as average precision, not by trapezoids" | [I] | confirmed by the user, 18 October: "Yes, compute PR-AUC as average precision, tagged [I]." |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| β in F_β | 2 | the user's choice |
+
+- **Options considered:** target: label switch at any later time · within 48 h after the window, short stays kept as negatives · within 48 h, short stays excluded; metric: PR-AUC · F2 · ROC-AUC · accuracy
+- **Expectation:** n/a
+- **Decision:** Predict, for each of the 39,088 patients, from ICU hours 1–6, whether `SepsisLabel` switches on at hour 7–54 while the patient is still in the ICU. Models are compared on PR-AUC against the flag-nobody baseline. Success means test PR-AUC exceeds the test positive rate by more than the outer-fold spread of PR-AUC.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — quoted above
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/sepsis_04_target_counts.py`, `Code/sepsis_05_horizon_counts.py`, `Code/outputs/sepsis/04_target_counts.json`, `Code/outputs/sepsis/05_horizon_counts.json`
+
+### DR-06 · PROP · step 2
+
+- **Sub-task:** 1
+- **Date:** 2026-10-17
+- **Question:** What are the property values known before any training data is looked at (P1–P8)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| P1 output type | binary | M | DR-05 |
+| P2 data-to-parameter ratio | ample. About 31,270 training patients (80 % of 39,088). With 32 inputs: 31,270 ÷ 33 ≈ 948. Provisional: the input count is fixed by the step 3 input design, but the ratio stays above 10 for any count below about 3,100 | M | `Code/outputs/sepsis/05_horizon_counts.json`; step 1 input count |
+| P3 number of inputs | many: 32 inputs per hour (33 if a missing unit gets its own category). Provisional, as for P2 | M | Data Summary, *Machine learning checks* |
+| P4 share of categorical inputs | low: 3 of 32 (9.4 %). Provisional, as for P2 | M | Data Summary, *Machine learning checks* |
+| P5 interpretability | inspectable, not a must-have: "inspectable, a strong preference, not a must-have" | M | user, 17 October 2026 |
+| P6 probabilities or tuned threshold | yes, not a must-have: "probabilities and a tuned threshold, a preference, not a must-have" | M | user, 17 October 2026 |
+| P7 beyond the training range | no: "P7: no." | M | user, 17 October 2026 |
+| P8 expected shape | unknown: "P8: unknown." | M | user, 17 October 2026 |
+| P9, P10 | not yet known; computed from the training data in step 3 | — | — |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P1 = binary | task gate | [B p.17] | Logistic, k-NN, Tree admissible (§12) |
+| P2 = ample | no entry | [I] threshold | no matrix entry applies |
+| P3 = many | holds (provisional) | [I] threshold | k-NN −1 `[I]`; + poly −1 `[B→I p.59]` |
+| P4 = low | no entry | [I] threshold | — |
+| P5 = inspectable (not a must-have) | holds | [B→I p.347] | +1 Logistic, Tree; + poly −1 `[I]`. "Strong" has no separate effect in the guide: P5 is either a must-have or not |
+| P6 = yes (not a must-have) | holds | [B→I pp.50, 53–54] | +1 Logistic; threshold tuned (§16) |
+| P7 = no | no entry | — | — |
+| P8 = unknown | no entry | — | contributes nothing (§11) |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited if ratio < 10 | 10 | ≈ 948 (provisional) |
+| P3 many if > 20 inputs | 20 | 32 (provisional) |
+| P4 high if ≥ 50 % categorical | 50 % | 9.4 % (provisional) |
+
+- **Options considered:** n/a
+- **Expectation:** n/a
+- **Decision:** P1 binary; P2 ample, P3 many and P4 low (all provisional until step 3); P5 inspectable and P6 yes, both preferences rather than must-haves; P7 no; P8 unknown.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — quoted above
+- **Supersedes / superseded by:** n/a; to be superseded by the step 3 `PROP` record (P2–P4 after input design, P9–P10)
+- **Links:** `Code/outputs/sepsis/05_horizon_counts.json`
+
+### DR-07 · FLAG · step 2
+
+- **Sub-task:** 1
+- **Date:** 2026-10-17
+- **Question:** Does the evidence suggest that a method outside the solution space might help?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Incomplete follow-up | 33,016 of 39,088 patients (84 %) leave the ICU before hour 54 without the label switching on, and are counted as negatives | M | `Code/outputs/sepsis/05_horizon_counts.json` |
+| User's instruction | "write a FLAG record noting that survival analysis would address it but is outside chapters 2, 3, 4 and 13." | M | user, 17 October 2026 |
+| The book | no chapter or section on survival analysis, censoring or time-to-event outcomes in the table of contents of the 2nd edition | M | smlbook.org, read 18 October 2026 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Flags (§20) | survival analysis recorded as a flag | [I] | not applied, not tested |
+| §23 | survival analysis is not listed | `UNLISTED [I]`: "survival analysis: not covered in the book" | the flag names it as outside the book |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** n/a
+- **Expectation:** n/a
+- **Decision:** Survival analysis is flagged as a method that might handle outcomes whose follow-up ends early. It is not covered in the book and is not used.
+
+**Flag**
+
+| Method | Chapter | Evidence it might help | Status |
+| --- | --- | --- | --- |
+| Survival (time-to-event) analysis, which handles outcomes whose follow-up ends early (censoring) | Not in the book (none of chapters 1–14) | 84 % of the cohort is not observed for the full 48 hours and is treated as negative | Not applied and not tested. Nothing here says it would have done better. |
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — quoted above
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/outputs/sepsis/05_horizon_counts.json`
+
+### DR-08 · SPLIT · step 2
+
+- **Sub-task:** 1
+- **Date:** 2026-10-18
+- **Question:** How are the patients split into training and test data, and how are the cross-validation folds made?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| User's instruction | "Make the split (20% test, by patient, stratified by outcome and hospital, seed 2026), lock the test set" | M | user, 18 October 2026 |
+| Folds | "stratify the cross-validation folds by outcome and hospital, the same as the test split. Record it now." | M | user, 18 October 2026 |
+| Unit | one row per patient (39,088 patients), so splitting by row is splitting by patient (DR-02) | M | `Code/outputs/sepsis/06_split.json` |
+| Training data | 31,270 patients, 984 positive (3.15 %); A 15,578 (624, 4.01 %), B 15,692 (360, 2.29 %) | M | `Code/outputs/sepsis/06_split.json` |
+| Test data | 7,818 patients, 246 positive (3.15 %); A 3,895 (156, 4.01 %), B 3,923 (90, 2.29 %) | M | `Code/outputs/sepsis/06_split.json` |
+| Split file | `Code/outputs/sepsis/private/cohort.csv.gz` (patient, set, y, split; not in git), SHA-256 `55dce9ca19702d3829c8ba36a164d2df126e709e3e5f5bd7b3dbffebfc889b4c`; a re-run gives the same checksum | M | `Code/outputs/sepsis/06_split.json` |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| ADM-3, group | split by patient | [B p.329] | no patient in both training and test data, or in more than one fold |
+| ADM-4 | validation and test data from both hospitals, like the intended use | [B pp.328–329] | hospitals mixed, not one held out (DR-03, Problem Definition) |
+| Shuffle before splitting | shuffled | [B pp.71, 73] | — |
+| Test set used once | locked | [B pp.74, 328] | nothing in steps 3 and 4 reads the test patients until step 4g |
+| Stratified folds (§16) | stratified by outcome and hospital | `[I]`, extended by the user from outcome to outcome × hospital: `UNLISTED [I]` "stratify the cross-validation folds by outcome and hospital, the same as the test split" | applies to the outer and inner folds in step 4 |
+| Test split stratified by outcome and hospital | four strata (A/B × 0/1) | `UNLISTED [I]` | the same positive share in each hospital in training and test |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| Test fraction | 20 % (the user's choice) | 7,818 of 39,088 |
+
+- **Options considered:** test fraction 10 % or 20 %; stratified by outcome only, or by outcome and hospital; one hospital held out (not taken, DR-03)
+- **Expectation:** n/a
+- **Decision:** 20 % of patients, shuffled with seed 2026 and stratified by outcome and hospital, form the test set, which is locked. Cross-validation folds are stratified the same way.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — quoted above
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/sepsis_06_split.py`, `Code/outputs/sepsis/06_split.json`, `06_split.md`
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -298,6 +608,11 @@
 | 3 | Step 1, decisions. The user answered ADM-1, ADM-3 and ADM-4 (DR-01, DR-02, DR-03) and decided scope, missing data, cleaning and leakage. Counted, without applying anything: the rows and patients left after setting aside rows from label onset (426 septic patients lose every row), the `FiO2` unit check (fraction scale), and the values each candidate cleaning rule would change. Proposed a variable drop list (7 columns) and cleaning thresholds for the user's approval. | `Code/outputs/sepsis/02_scope_counts.json`, `02_scope_counts.md` |
 | 4 | Step 1, decisions applied. The user approved dropping all seven columns under one rule (fewer than 10 % of patients in either hospital), and cleaning only clearly impossible values (`FiO2` outside [0.21, 1.0], `Temp` outside 25–45 °C, `Potassium` > 15, `Hgb` > 25). Not chosen: `Temp` 30–43 and `Potassium` > 10, which would also remove possible values. Calcium's low cluster, positive `HospAdmTime`, patients under 18 and `Age` = 100 are kept as-is and recorded. `ICULOS` is used only for ordering and time windows. Built the derived tables: 1,524,294 hours × 32 inputs; 39,910 patients with hours, 2,506 of whom later become septic. Cleaning changed 385 + 6 + 2 + 3 values, the same as row 3's counts. The positive-`HospAdmTime` count given to the user in conversation (64 rows) had not been computed and was wrong; the computed figure is 8,483 kept hours in 255 patients. Data Summary updated, and the dropped columns' descriptions removed. | `Code/outputs/sepsis/03_build_table.json`, `03_build_table.md`; `Code/outputs/sepsis/private/` (not in git) |
 | 5 | Step 1 closed (16 October 2026). | — |
+| 6 | Step 2. Counted, for a patient-level target from the first N ICU hours, the usable patients and positives for N = 6 and N = 12, by hospital (counts only, no model). The script was written in an earlier session before the framing was agreed; it is kept because the framing is used. The user answered ADM-2 (predict, DR-04), chose one prediction per patient from the first 6 hours with the outcome "label switches on within 48 hours after the window", and chose to mix both hospitals and split by patient. Hourly prediction (framing (b)) and training on one hospital and testing on the other were not taken; the latter may become a separate sub-task later. | `Code/outputs/sepsis/04_target_counts.json`, `04_target_counts.md` |
+| 7 | Step 2. Counted, for N = 6 and H = 48, the patients whose outcome is not observed for the full 48 hours (counts only, no model). Of the 39,088 patients in the cohort: 1,230 positive (label switches on at hour 7–54); 4,842 negatives observed to hour 54 (3,892 never septic with a record reaching hour 54, 950 whose label switches on after hour 54); 33,016 never-septic patients whose record ends before hour 54 (median last hour 37, quartiles 24 and 44; 12,554 end by hour 30). Kept as negatives: 39,088 rows, 3.15 % positive (A 4.01 %, B 2.29 %). Excluded: 6,072 rows, 20.26 % positive (A 23.37 %, B 16.46 %). The 46 positives whose kept record ends at hour 6 are counted as positives. Proposal put to the user; decision pending. | `Code/outputs/sepsis/05_horizon_counts.json`, `05_horizon_counts.md` |
+| 8 | Step 2. The user decided: patients who leave before hour 54 are kept as negatives (limitation; FLAG for survival analysis, DR-07); PR-AUC decides, with F2, precision and recall at a threshold tuned on training data monitored; baseline flag nobody, with the positive rate as the no-skill reference; success = test PR-AUC above the no-skill level by more than the outer-fold spread; achievable level unknown; P5 inspectable and P6 yes as preferences, P7 no, P8 unknown; test 20 %, by patient, stratified by outcome and hospital, seed 2026. An earlier set of answers (90 / 10, seed 42, ROC-AUC monitored, calibrated probabilities) was replaced by the user before anything was recorded. The choices were checked against the book and the guide. No conflict was found. Points raised with the user: how PR-AUC is computed (average precision proposed, `[I]`, open); the baseline's PR-AUC equals the no-skill reference; "strong" preference has no separate effect in the guide; §16 stratifies folds by outcome only; and §16 computes the diagnosis-loop errors E_train and E_val as the misclassification rate, which the book says misleads for imbalanced classes (p. 91) — a possible FRAMEWORK question before step 4e. Problem Definition written; DR-05 FORM, DR-06 PROP, DR-07 FLAG. Test set not yet split or locked. | `Demonstration/Sepsis/Appendix.md` |
+| 9 | Step 2. The user confirmed: PR-AUC computed as average precision `[I]`; baseline and no-skill reference kept as recorded; P5 a preference; cross-validation folds stratified by outcome and hospital, like the test split; the diagnosis-loop error measure to be raised as a FRAMEWORK change after step 2 closes. `sepsis_05_horizon_counts.py` refactored so its cohort is a function (`build_cohort`) the split also uses; re-run, output byte-identical. Made the split with `sepsis_06_split.py`: 31,270 training patients (984 positive, 3.15 %) and 7,818 test patients (246 positive, 3.15 %), the same positive share in each hospital in both parts (A 4.01 %, B 2.29 %). Re-run gives the same checksum. Test set locked (DR-08). | `Code/outputs/sepsis/06_split.json`, `06_split.md`; `Code/outputs/sepsis/private/cohort.csv.gz` (not in git) |
+| 10 | Step 2. Wrote the problem and its sub-task into the `Introduction` of `Report.md`. Step 2 closed (18 October 2026). | `Demonstration/Sepsis/Report.md` |
 
 ## Code Summary
 
@@ -308,10 +623,14 @@ Scripts for this analysis are prefixed `sepsis_` and write to `Code/outputs/seps
 | `Code/sepsis_01_describe_data.py` | Step 1 describing pass. Verifies every patient file against the SHA-256 lists, then describes rows, patients, stays, `ICULOS` continuity, label structure, per-column completeness (per row and per patient, overall and by set) and ranges, demographics, and the input count. No random steps, no seed. Takes about 45 minutes, mostly in per-patient `groupby().apply`. | `Attachments/sepsis-physionet-2019/training_setA/`, `training_setB/`, `SHA256SUMS_training_setA.txt`, `SHA256SUMS_training_setB.txt` | `Code/outputs/sepsis/01_describe.json`, `01_describe.md` | `cd Code && uv run python sepsis_01_describe_data.py` |
 | `Code/sepsis_02_scope_counts.py` | Step 1 decisions, counts only; changes nothing and writes no derived table. Counts the rows and patients left once every row from `SepsisLabel` onset is set aside, `FiO2` values by band (unit check), and the values each candidate cleaning rule (`CANDIDATES`, `[I]` thresholds) would set to missing in the kept rows. No random steps, no seed. A few minutes when the machine stays awake. | same patient files | `Code/outputs/sepsis/02_scope_counts.json`, `02_scope_counts.md` | `cd Code && uv run python sepsis_02_scope_counts.py` |
 | `Code/sepsis_03_build_table.py` | Applies the step 1 decisions to derived tables. Drops columns that fewer than `DROP_THRESHOLD_PCT` = 10 % `[I]` of patients in either hospital ever have, sets aside every row from `SepsisLabel` onset, and sets the `CLEAN_RULES` values `[I]` to missing. Fills nothing in. Writes gzip files with `mtime=0`, so checksums are reproducible. `NOT_INPUTS` = `ICULOS`. No random steps, no seed. About 20 minutes. | same patient files | `Code/outputs/sepsis/private/hours.csv.gz`, `patients.csv.gz` (not in git); `Code/outputs/sepsis/03_build_table.json`, `03_build_table.md` | `cd Code && uv run python sepsis_03_build_table.py` |
+| `Code/sepsis_04_target_counts.py` | Step 2, counts only. For candidate windows `WINDOWS` = 6 and 12 hours, counts by hospital the patients with a kept hour in the window, those whose label switches on within it (excluded), the remaining cohort and its positives (label switches on later, at any time), records ending by hour N, patients with no measurement in the window, the label-onset quartiles of the positives, and how many switch on within 24 h and 48 h after the window. No random steps, no seed. A minute or two. | `Code/outputs/sepsis/private/hours.csv.gz`, `patients.csv.gz` | `Code/outputs/sepsis/04_target_counts.json`, `04_target_counts.md` | `cd Code && uv run python sepsis_04_target_counts.py` |
+| `Code/sepsis_05_horizon_counts.py` | Step 2, counts only, for the agreed window `N` = 6 and horizon `H` = 48 hours. Same cohort as `sepsis_04` for N = 6. Classes each patient by `label_onset_iculos`, never by kept record length: positive (onset in hours 7–54), negative observed to hour 54, or never-septic with a record ending before hour 54. Gives the cohort size and positive share if those patients are kept as negatives or excluded, by hospital. Asserts that every patient falls in exactly one class. The cohort is built by `build_cohort()`, which `sepsis_06_split.py` imports. No random steps, no seed. About a minute. | same derived tables | `Code/outputs/sepsis/05_horizon_counts.json`, `05_horizon_counts.md` | `cd Code && uv run python sepsis_05_horizon_counts.py` |
+| `Code/sepsis_06_split.py` | Step 2, the train/test split. Takes the cohort from `build_cohort()` (one row per patient), sorts it by patient, and splits it with `train_test_split`: `TEST_FRACTION` = 0.2, shuffled, stratified by hospital × outcome, `SEED` = 2026. Writes each patient's `set`, `y` and `split`; later steps read only `split == "train"` until step 4g. Gzip with `mtime=0`, so the checksum is reproducible. About a minute. | same derived tables | `Code/outputs/sepsis/private/cohort.csv.gz` (not in git); `Code/outputs/sepsis/06_split.json`, `06_split.md` | `cd Code && uv run python sepsis_06_split.py` |
 
-Uses pandas and numpy from the existing environment; no new dependency.
+Uses pandas, numpy and scikit-learn (`sepsis_06`) from the existing environment; no new dependency.
 
 ## References
 
+- Lindholm, A., Wahlström, N., Lindsten, F. and Schön, T. B. (2026). [*Machine Learning – A First Course for Engineers and Scientists*](https://smlbook.org/), 2nd edition, online draft version of 1 September 2026. Cambridge University Press (to be published). Read at smlbook.org; the table of contents was checked on 18 October 2026 for survival analysis (DR-07). Page references in the Decision Records come from `ML Guide.md`.
 - Reyna, M., Josef, C., Jeter, R., Shashikumar, S., Moody, B., Westover, M. B., Sharma, A., Nemati, S. and Clifford, G. D. (2019). *Early Prediction of Sepsis from Clinical Data: the PhysioNet/Computing in Cardiology Challenge 2019* (version 1.0.0) [Dataset]. PhysioNet. [https://doi.org/10.13026/v64v-d857](https://doi.org/10.13026/v64v-d857). Units and the `SepsisLabel` definition are taken from this page (read 15 October 2026).
 - Reyna, M. A., Josef, C. S., Jeter, R., Shashikumar, S. P., Westover, M. B., Nemati, S., Clifford, G. D. and Sharma, A. (2020). Early prediction of sepsis from clinical data: the PhysioNet/Computing in Cardiology Challenge 2019. *Critical Care Medicine*, 48(2), 210–217. [https://pmc.ncbi.nlm.nih.gov/articles/PMC6964870/](https://pmc.ncbi.nlm.nih.gov/articles/PMC6964870/). Hospitals, inclusion rules, hourly binning and the hidden test sets are taken from its Methods (read 15 October 2026).
