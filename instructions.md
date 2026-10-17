@@ -1,5 +1,17 @@
 # Agentic ML Advisor: working contract
 
+## Purpose
+
+The work done in this folder should end in a report consistent with how the book's authors (Lindholm, Wahlström, Lindsten and Schön) would work. Every rule in this contract and in `ML Guide.md` serves that aim and is judged by it. In the book's terms (`ML Guide.md` Part I):
+
+- the aim is to predict the output for new cases, not to establish how variables are connected (p. 20);
+- the problem is defined by the validation data, the test data and a single-number metric, agreed before any model is fitted, with a baseline the model must beat (pp. 327, 330–331);
+- the work starts simple, and complexity is added only when the errors call for it (pp. 331–337);
+- models are compared on validation data or by k-fold cross-validation, and the chosen one is evaluated once on test data that has informed no choice (pp. 72–74, 328);
+- what is reported is an estimate of E_new, the error on new data like the evaluation data: an average-case claim that says nothing about the worst individual prediction (pp. 68–69, 347).
+
+Where this contract or `ML Guide.md` Part II goes beyond the book — the step-by-step working, the deterministic core, the prior ranking, the selection confidence — the addition is marked as ours (`[I]`, `[B→I]`) and must not contradict the book. If one turns out to, raise it with the user as a FRAMEWORK question rather than quietly following either.
+
 ## Workspace Contract
 
 Use this folder as the single source of truth for the analysis. Keep work in the locations below.
@@ -15,7 +27,7 @@ Use this folder as the single source of truth for the analysis. Keep work in the
 | `Report.md` (in the analysis folder) | The report on the user's own analysis, and nothing else. It arrives as a template and is built up across the steps rather than written at the end: the problem and its sub-tasks into the `Introduction` in step 2, figures into `Results` in step 3, the `Methods` and `Results` paragraphs in step 4, and the `Discussion` in step 5. Nothing enters a section before the step that owns it, and interim workings never enter at all. Its last section is `References`, listing only the works the report itself cites (`References in the Report`); its template note reads *Works cited in this report, copied from the References of Appendix.md. Always the last section.* |
 | `Appendix.md` (in the analysis folder) | The running record of the work, written as you go from the first step. Eight sections in this order: `Data Summary` (the data actually used), `Problem Definition` (what is to be predicted, from what, and how that was arrived at), `Analysis` (the workings, one sub-heading per sub-task), `Decision Records` (the advisor's reasoning trace, one record per decision), `Recommendation` (the Recommendation Report for each sub-task), `Analysis Log` (a numbered row per step taken), `Code Summary` (a guide to the analysis code), and `References` last. Both documents arrive as templates with these headings and an italic note under each saying when it is filled; replace the note with the content. |
 | `Demonstration/` | One folder per analysis. `Demonstration/Heart Failure/` holds the finished heart failure analysis, kept for reference, as `Demonstration Report.md` and `Demonstration Appendix.md`. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it stay valid; links inside the two documents are relative to their own folder. A finished analysis is not edited as part of a new one. |
-| `Project Report.md` | The report on the project itself (the advisor and this workspace), not on any analysis, and the only report at the top level. It is structured as follows: `Title`, `Abstract`, `Introduction`, `Methods` and `Results` (each with three sub-headings: the step-by-step agentic workflow; the ML advisor grounded in smlbook.org; and traceability and reproducibility), `Discussion`, `Limitations`, `Disclaimer`, `Appendix` and `References`, with an italic note under each heading saying what goes there. Its `Results` take the demonstration in `Demonstration/Heart Failure/` as evidence, and its `Disclaimer` is written and stays. It is not part of the five steps, and the other rules for `Report.md` do not apply to it. The agent writes in it only when the user asks. |
+| `Project Report.md` | The user's report on their project, and the only report at the top level. It is a template: headings, with a brief italic note under each saying what the section contains. How the agent helps the user fill it is set out in `The Project Report`. The agent writes in it only when the user asks. |
 | `ML Guide.md` | The advisor's knowledge and reasoning procedure, distilled from chapters 2, 3, 4 and 13 of Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*. Part I is what the book says, with page references; Part II is the procedure the advisor follows for every model decision. Read it before every model decision. Changed only under `Changing This Contract`. |
 | *The book* | Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft, read at [smlbook.org](https://smlbook.org/). Not stored in this repository. It is the source of `ML Guide.md`; open it for the detail behind a page reference. |
 
@@ -356,6 +368,34 @@ Run all Python through the workspace environment so results are reproducible. Fu
 - **Copy each entry from the `References` of `Appendix.md`.** The Appendix holds the verified details. Never write an entry from memory. A work the report needs that isn't yet in the Appendix's `References` is opened, checked and added there first.
 - **Cite the book at the edition named in `ML Guide.md`**, linked to smlbook.org. Page references and provenance tags stay in the Appendix.
 - **Every entry is a link that resolves.** Check it before writing it.
+
+## The Project Report
+
+`Project Report.md` is the user's own report on their project: the machine learning methods they used and how they chose between them, how that work relates to the book, and how the models were trained and validated. It is written from the user's analysis or analyses in `Demonstration/`, after the five steps have produced the material it draws on. It is not one of the five steps, and the rules for `Report.md` do not apply to it except where this section says so. The agent's job is to help the user work towards each section, not to write the report for them; it writes in the file only when the user asks.
+
+- **It is a template.** It arrives with headings and a brief italic note under each saying what the section contains. When a section is written, its note is replaced with the content. The notes say *what* goes in a section; how the agent helps fill it is set out here. The template itself contains nothing from any analysis: the finished analyses in `Demonstration/` show what a worked analysis looks like, and are not copied into it.
+- **It reads as the book's authors would report the work** (`Purpose`). It uses the book's terms — training, validation and test data; E_new and how it was estimated; the baseline; the metric — and explains each choice against the book's practice, citing the book. What is ours is named as ours, never presented as the book's. When checking a section, compare every methodological claim with `ML Guide.md` Part I, and report any the book does not support, or any of ours that reads as the book's.
+- **`Methods` and `Results` have the same three sub-headings, in the same order:** the machine learning methods used; how it relates to smlbook.org; and training and validation methods. Each `Results` sub-section reports what came out of the method its `Methods` sub-section describes, so a reader can move between the two without hunting.
+- **Work on one section at a time, when the user asks for it.** For that section:
+  1. Say what its note asks for, in plain words.
+  2. Point to where the material is: which documents, which Decision Records, which outputs. The sources for each section are listed below.
+  3. Say which of that material exists and which does not yet. A section whose material does not exist cannot be written yet; say which step would produce it.
+  4. Ask the user the questions only they can answer: what they want the reader to take from the section, how much to explain, and which of their choices they want to justify.
+  5. Then either the user writes the section and the agent checks it (`Check what the user has written`), or, if the user asks, the agent drafts it and the user edits.
+- **Where each section's material comes from:**
+  - *The machine learning methods used.* The model families in scope (`ML Guide.md` §9) and, from the user's analysis, the admissible set (`ADMSET`), the prior ranking (`PRIOR`), the cross-validation tables (`CV`), any diagnosis passes (`DX`) and the recommendation trace in `FINAL`. The Recommendation Report in each analysis's `Recommendation` section has it assembled. Ask the user how much of the selection procedure their reader needs, and which excluded configurations are worth naming.
+  - *How it relates to smlbook.org.* The chapters the guide draws on (2, 3, 4 and 13) and the page references in `ML Guide.md` Part I. The provenance tags in the user's Decision Records show which rules applied were the book's advice (`[B]`), a book fact turned into advice (`[B→I]`) and our own inference or threshold (`[I]`); the agent can tally these from the records on request. "What else is added" is the `[I]` rules and thresholds, the deterministic core and the workflow itself, plus any flags for methods outside the four chapters (§20).
+  - *Training and validation methods.* The `SPLIT` record (test fraction, grouping, seed), the cross-validation protocol (§16: nested, outer and inner folds, stratification or groups), any tuned decision threshold, and the single test evaluation and its uncertainty (step 4g) from `FINAL`.
+  - *Results: the machine learning methods used.* For each sub-task, the recommended configuration and its test result against the baseline, with its uncertainty, from `FINAL`; the cross-validation ranking from the `CV` tables; and the selection confidence with its factors (§17).
+  - *Results: how it relates to smlbook.org.* The tally of provenance tags behind each recommendation, and the *outcome vs expectation* field of the `PRIOR` record — whether cross-validation agreed with the ranking the guide predicted. A disagreement is reported as found.
+  - *Results: training and validation methods.* The training and test row counts (and positives, for classification) from `SPLIT` and `FINAL`, the spread of the metric across the outer folds, any tuned threshold, and whether the success criterion was met.
+  - *Results, Discussion and Limitations generally.* `Results` reports only what `Methods` describes. The rules on not grading the evidence, no emphasis in `Results`, and putting each limitation beside the conclusion it qualifies (steps 4 and 5) apply here too. `Discussion` and `Limitations` draw on the Recommendation Reports and the `Discussion` of each analysis's `Report.md`.
+  - *Title, Abstract and Introduction.* Written last, once the sections they summarise exist. The `Introduction` does not anticipate the results, as in step 2.
+- **Every number comes from the records or the generated output**, never from memory or a figure, and is checked against them before it enters the report.
+- **Figures** follow the rules for figures in step 3. A figure already made for an analysis is linked, not regenerated.
+- **The `Disclaimer` is written and stays**, under the same rule as the disclaimer in `Report.md`.
+- **`Appendix` points to the material behind the report**: the user's analysis folders in `Demonstration/`, `ML Guide.md` and `instructions.md`.
+- **`References` follows `References in the Report`**, copying entries from the `References` of the analyses' `Appendix.md`; a work not yet there is opened and checked before it is written.
 
 ## Markdown Formatting
 
