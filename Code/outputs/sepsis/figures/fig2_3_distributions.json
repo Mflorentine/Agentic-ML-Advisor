@@ -1,0 +1,168 @@
+{
+  "source": "private/train_table.csv.gz",
+  "n_train": 31270,
+  "panels": {
+    "HR": {
+      "patients_with_value": 31160,
+      "min": 26.0,
+      "max": 176.0,
+      "log_axis": false
+    },
+    "O2Sat": {
+      "patients_with_value": 31035,
+      "min": 20.0,
+      "max": 100.0,
+      "log_axis": false
+    },
+    "Temp": {
+      "patients_with_value": 28247,
+      "min": 26.67,
+      "max": 41.64,
+      "log_axis": false
+    },
+    "SBP": {
+      "patients_with_value": 30430,
+      "min": 30.0,
+      "max": 275.0,
+      "log_axis": false
+    },
+    "MAP": {
+      "patients_with_value": 30762,
+      "min": 20.0,
+      "max": 295.0,
+      "log_axis": false
+    },
+    "DBP": {
+      "patients_with_value": 24143,
+      "min": 20.0,
+      "max": 275.0,
+      "log_axis": false
+    },
+    "Resp": {
+      "patients_with_value": 30581,
+      "min": 1.0,
+      "max": 86.0,
+      "log_axis": false
+    },
+    "FiO2": {
+      "patients_with_value": 10533,
+      "min": 0.21,
+      "max": 1.0,
+      "log_axis": false
+    },
+    "pH": {
+      "patients_with_value": 10467,
+      "min": 6.78,
+      "max": 7.71,
+      "log_axis": false
+    },
+    "PaCO2": {
+      "patients_with_value": 10057,
+      "min": 12.0,
+      "max": 100.0,
+      "log_axis": false
+    },
+    "SaO2": {
+      "patients_with_value": 6052,
+      "min": 30.0,
+      "max": 100.0,
+      "log_axis": false
+    },
+    "AST": {
+      "patients_with_value": 4836,
+      "min": 5.0,
+      "max": 9840.0,
+      "log_axis": true
+    },
+    "BUN": {
+      "patients_with_value": 14149,
+      "min": 1.0,
+      "max": 268.0,
+      "log_axis": true
+    },
+    "Alkalinephos": {
+      "patients_with_value": 4802,
+      "min": 11.0,
+      "max": 3833.0,
+      "log_axis": true
+    },
+    "Calcium": {
+      "patients_with_value": 12386,
+      "min": 1.0,
+      "max": 20.6,
+      "log_axis": false
+    },
+    "Creatinine": {
+      "patients_with_value": 13288,
+      "min": 0.1,
+      "max": 41.9,
+      "log_axis": true
+    },
+    "Glucose": {
+      "patients_with_value": 20191,
+      "min": 15.0,
+      "max": 912.0,
+      "log_axis": true
+    },
+    "Lactate": {
+      "patients_with_value": 5684,
+      "min": 0.3,
+      "max": 27.0,
+      "log_axis": true
+    },
+    "Magnesium": {
+      "patients_with_value": 11211,
+      "min": 0.2,
+      "max": 9.7,
+      "log_axis": false
+    },
+    "Phosphate": {
+      "patients_with_value": 8258,
+      "min": 0.2,
+      "max": 16.5,
+      "log_axis": false
+    },
+    "Potassium": {
+      "patients_with_value": 16455,
+      "min": 1.4,
+      "max": 10.75,
+      "log_axis": false
+    },
+    "Bilirubin_total": {
+      "patients_with_value": 4704,
+      "min": 0.1,
+      "max": 46.4,
+      "log_axis": true
+    },
+    "Hct": {
+      "patients_with_value": 15694,
+      "min": 9.6,
+      "max": 71.7,
+      "log_axis": false
+    },
+    "Hgb": {
+      "patients_with_value": 14364,
+      "min": 2.3,
+      "max": 22.1,
+      "log_axis": false
+    },
+    "PTT": {
+      "patients_with_value": 8097,
+      "min": 17.1,
+      "max": 250.0,
+      "log_axis": true
+    },
+    "WBC": {
+      "patients_with_value": 13143,
+      "min": 0.1,
+      "max": 440.0,
+      "log_axis": true
+    },
+    "Platelets": {
+      "patients_with_value": 13139,
+      "min": 2.0,
+      "max": 1667.0,
+      "log_axis": true
+    }
+  }
+}

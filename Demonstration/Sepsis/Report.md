@@ -18,7 +18,23 @@ Missing a patient who develops sepsis is worse than a false alarm. Models are co
 
 ## Results
 
-*Figures of the training data go in during step 3. In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
+Figures 1 to 4 describe the 31,270 training patients; the 7,818 held-out patients are not shown. Where the two hospitals are shown separately, hospital A is blue and hospital B orange.
+
+![Figure 1](../../Code/outputs/sepsis/figures/fig1_coverage.png)
+
+<small><b>Figure 1.</b> Share of the 31,270 training patients with at least one value of each of the 27 clinical columns in ICU hours 1–6, for hospital A (15,578 patients, blue) and hospital B (15,692 patients, orange). Columns are ordered by the share over both hospitals, from HR (99.65 %) to Bilirubin_total (15.04 %). A patient without a value has it filled with the training median, and that column's "measured" indicator set to 0.</small>
+
+![Figure 2](../../Code/outputs/sepsis/figures/fig2_vitals.png)
+
+<small><b>Figure 2.</b> Distribution of the last value in ICU hours 1–6 of each vital sign, over the training patients who have one: from 24,143 patients for DBP to 31,160 for HR, of 31,270. Each panel spans its full range in 40 bins of equal width and has its own vertical scale. Patients without a value are not drawn.</small>
+
+![Figure 3](../../Code/outputs/sepsis/figures/fig3_labs.png)
+
+<small><b>Figure 3.</b> As Figure 2, for the 20 laboratory values: from 4,704 patients with a value for Bilirubin_total to 20,191 for Glucose. The ten inputs that enter the models on a log scale are drawn on a log axis, with bins of equal width on that scale. FiO2 is stored as a fraction. Magnesium and Lactate are labelled with their documented units, although their values fit mg/dL and mmol/L respectively (Data Summary).</small>
+
+![Figure 4](../../Code/outputs/sepsis/figures/fig4_onset.png)
+
+<small><b>Figure 4.</b> Number of the 984 training positives whose sepsis label switches on in each ICU hour from 7 to 54, for hospital A (624 positives, blue) and hospital B (360, orange); each point is one hour. The label switches on 6 hours before the estimated Sepsis-3 onset, so hour h corresponds to onset at hour h + 6. Median hour 21 in A (quartiles 13 and 35) and 26 in B (quartiles 15 and 39).</small>
 
 ## Discussion
 

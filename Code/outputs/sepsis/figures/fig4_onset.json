@@ -1,0 +1,31 @@
+{
+  "A": {
+    "positives": 624,
+    "median_hour": 21.0,
+    "quartiles": [
+      13.0,
+      35.0
+    ],
+    "hour_with_most": 8,
+    "most": 36
+  },
+  "B": {
+    "positives": 360,
+    "median_hour": 26.0,
+    "quartiles": [
+      15.0,
+      39.0
+    ],
+    "hour_with_most": 13,
+    "most": 20
+  },
+  "all": {
+    "positives": 984,
+    "median_hour": 24.0,
+    "quartiles": [
+      13.0,
+      37.0
+    ],
+    "share_hours_7_to_12_pct": 20.9
+  }
+}

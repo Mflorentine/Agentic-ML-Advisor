@@ -209,7 +209,15 @@ Training on one hospital and testing on the other is not a sub-task now; the use
 
 ## Analysis
 
-*The workings, one sub-heading per sub-task, added as steps 3 and 4 proceed: exploration of the training data, cross-validation tables, learning curves, diagnostics, error analysis, checks that changed nothing, and anything computed but not reported.*
+### Sub-task 1 — Sepsis within 48 hours from the first 6 ICU hours
+
+**Training table (step 3).** Built by `Code/sepsis_07_train_table.py` with the input design of DR-09, from the training patients only (`Code/outputs/sepsis/07_train_table.json`).
+- 31,270 patients, 984 positive: A 15,578 (624), B 15,692 (360).
+- 58 input columns: 27 last values, 27 "measured in hours 1–6" indicators, `Age`, `Gender`, `HospAdmTime` and `Unit`. After one-hot encoding of `Unit`: 60 columns.
+- `Unit`: MICU 9,585, SICU 9,579, unknown 12,106.
+- Share of training patients with at least one value in hours 1–6: the vitals 90–100 % (`DBP` 77 %: A 55 %, B 99 %); the labs 15–65 %, lowest `Bilirubin_total` 15.0 %, `Alkalinephos` 15.4 %, `AST` 15.5 %, highest `Glucose` 64.6 %. The hospitals differ most for `PTT` (A 39.5 %, B 12.4 %), `FiO2`, `pH` and `PaCO2` (A 45–49 %, B 19 %), and `Hct` (A 61.5 %, B 39.0 %).
+- 38 training patients have no clinical value at all in hours 1–6; every one of their last values is filled.
+- Every last value of the ten log inputs is positive (smallest: `Creatinine`, `WBC` and `Bilirubin_total` 0.1).
 
 ## Decision Records
 
@@ -493,7 +501,7 @@ Training on one hospital and testing on the other is not a sub-task now; the use
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** asked — quoted above
-- **Supersedes / superseded by:** n/a; to be superseded by the step 3 `PROP` record (P2–P4 after input design, P9–P10)
+- **Supersedes / superseded by:** superseded by DR-10 (P2–P4 after input design, P9–P10)
 - **Links:** `Code/outputs/sepsis/05_horizon_counts.json`
 
 ### DR-07 · FLAG · step 2
@@ -595,6 +603,127 @@ Training on one hospital and testing on the other is not a sub-task now; the use
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/sepsis_06_split.py`, `Code/outputs/sepsis/06_split.json`, `06_split.md`
 
+### DR-09 · FORM · step 3
+
+- **Sub-task:** 1
+- **Date:** 2026-10-18
+- **Question:** How do each patient's first 6 ICU hours become one row of inputs (input design, §9)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| User's decision and reason | Option A + D: "Last value, because it is the simplest summary and what a clinician sees at hour 6 (start simple, p. 331); indicators, because the missingness is systematic (p. 345)." | M | user, 18 October 2026 |
+| Filling | "(i), the training-fold median, fitted inside each fold, the same for every model family." | M | user, 18 October 2026 |
+| Logarithms | "on the ten labs you listed, tagged [I] as domain judgement, not chosen from the outcome": `AST`, `Alkalinephos`, `Bilirubin_total`, `Creatinine`, `BUN`, `Lactate`, `WBC`, `Glucose`, `Platelets`, `PTT` | M | user, 18 October 2026 |
+| Unit | "Unit as one categorical input: MICU, SICU or unknown." | M | user, 18 October 2026 |
+| Hospital | "Hospital is not an input, as decided in step 1." | M | user, 18 October 2026 |
+| Systematic missingness | labs recorded in under 10 % of hours (Data Summary); recording differs between hospitals | M | Data Summary; DR-03 |
+| Options put to the user | A last value · B mean · C min and max · D measured indicators; filling (i) median + indicators, (ii) median only, (iii) drop rarely measured columns | M | conversation, 18 October 2026 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Input design (§9) | decided with the user, not a configuration axis, not chosen by CV | [B p.18] | one design for every family |
+| Summary features and transforms are a design choice | last value per column; natural log of ten labs | [B p.18] | — |
+| Start simple | the simplest summary first | [B p.331] | richer summaries only if the errors call for them, as a recorded change |
+| Systematic missingness | measured indicators kept beside filled values | [B→I p.345] | the book warns that dropping or imputing systematically missing values creates a mismatch; adding indicators is ours |
+| Imputation builds in assumptions | training-fold median, same for every family | [B p.345] | — |
+| Missingness handled directly by a method | not used (no native NaN handling in trees) | [B→I p.346] | the families are compared on the same filled inputs |
+| REQ-1 | median and encoding fitted inside each fold | [B p.27] + [I] | `preprocessor()` in `Code/sepsis/core.py` |
+| REQ-6 | `Unit` one-hot encoded (3 levels) | [B p.49] | — |
+| Which inputs get a log | the ten labs | `UNLISTED [I]`: "domain judgement, not chosen from the outcome" | applies to Logistic and k-NN; trees are unaffected |
+| Which summary (last value) | A + D | `UNLISTED [I]` | — |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** A last value · B mean · C min and max (or worst value) · D measured indicators; filling (i) · (ii) · (iii); hospital as an input or not
+- **Expectation:** n/a
+- **Decision:** Each patient's row holds the last value of each of the 27 clinical columns in hours 1–6 (ten of them on a log scale, empty values filled with the training-fold median), a 0/1 indicator per clinical column for whether it was measured in hours 1–6, `Age`, `Gender`, `HospAdmTime`, and `Unit` (MICU, SICU or unknown); hospital is not an input.
+- **Limitation (user's instruction):** the indicators partly capture clinical ordering habits (a lab is drawn when a clinician is concerned) and hospital practice (recording differs between A and B), not only the patient's physiology.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — quoted above
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/sepsis_07_train_table.py`, `Code/outputs/sepsis/07_train_table.json`, `Code/sepsis/core.py` (`preprocessor()`)
+
+### DR-10 · PROP · step 3
+
+- **Sub-task:** 1
+- **Date:** 2026-10-18
+- **Question:** What are the property values P1–P10 once the input design is fixed and P9–P10 are computed from the training patients?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| P1 output type | binary (unchanged) | M | DR-05 |
+| P2 data-to-parameter ratio | 31,270 training patients ÷ (60 input columns after encoding + 1) = 512.6 | M | `Code/outputs/sepsis/07_train_table.json`; `core_p9_p10.json` (`input_columns_after_encoding`: 60) |
+| P3 number of inputs | 60 columns after encoding (27 last values, 27 indicators, `Age`, `Gender`, `HospAdmTime`, `Unit` as 3) | M | `Code/outputs/sepsis/core_p9_p10.json` |
+| P4 share of categorical inputs | 29 of 58 original input columns = 50.0 %: the 27 indicators, `Gender` and `Unit`. User: "count the 27 indicators as categorical, following the book (pp. 16-17) and consistent with Gender in step 1." | M | `Code/outputs/sepsis/07_train_table.json` (`categorical_input_columns`); user, 18 October 2026 |
+| P5, P6, P7, P8 | unchanged from DR-06: P5 inspectable (not a must-have), P6 yes (not a must-have), P7 no, P8 unknown | M | DR-06 |
+| P9 classes perfectly separable | no: training accuracy 0.9685 (`0.9685001598976655`) with negligible regularisation (C = 1e8, converged in 30 iterations) | T | `Code/outputs/sepsis/core_p9_p10.json` |
+| P10 class imbalance | imbalanced: smallest class 984 of 31,270 = 3.15 % (`0.03146786056923569`) | T | `Code/outputs/sepsis/core_p9_p10.json` |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P1 = binary | task gate | [B p.17] | Logistic, k-NN, Tree admissible (§12) |
+| P2 = ample | no entry | [I] threshold | — |
+| P3 = many | holds | [I] threshold | k-NN −1 `[I]`; + poly −1 `[B→I p.59]` |
+| P4 = high | holds, exactly at the threshold | [I] threshold | k-NN −1 `[I]` |
+| Categorical = finite set of values without natural order; yes/no is a modelling choice | the 27 0/1 indicators counted as categorical | [B pp.16–17] | P4 = high |
+| P5 = inspectable (not a must-have) | holds | [B→I p.347] | +1 Logistic, Tree; + poly −1 `[I]` |
+| P6 = yes (not a must-have) | holds | [B→I pp.50, 53–54] | +1 Logistic; threshold tuned (§16) |
+| P7 = no, P8 = unknown | no entry | — | — |
+| P9 = no | MOD-1 does not apply | [I] procedure | `Logistic` and `Logistic + poly` stay admissible |
+| P10 = imbalanced | holds | [I] threshold | no matrix row (§13); metric and threshold already set for it (DR-05); diagnosis errors are 1 − PR-AUC (`ML Guide.md` §16, `ddda293`) |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited if ratio < 10 | 10 | 512.6 |
+| P3 many if > 20 inputs | 20 | 60 |
+| P4 high if ≥ 50 % categorical | 50 % | 50.0 % (29 of 58) |
+| P9 separable if training accuracy = 100 % with negligible regularisation | 100 %, C = 1e8 | 96.85 % |
+| P10 imbalanced if smallest class < 20 % | 20 % | 3.15 % |
+
+- **Options considered:** P4 counting the indicators as categorical (high) or not (low, 2 of 31)
+- **Expectation:** n/a
+- **Decision:** P1 binary, P2 ample, P3 many, P4 high, P5 inspectable and P6 yes (both preferences, not must-haves), P7 no, P8 unknown, P9 no, P10 imbalanced.
+- **Note on P4 (user's instruction):** P4 sits exactly on its `[I]` threshold (29 of 58 = 50.0 %), so a one-column change to the inputs would flip it: one categorical column fewer, or one numerical column more, gives low. P4 = high adds −1 to k-NN in the prior (§13), on top of the −1 from P3 = many.
+- **Note on P9:** the fit establishes a property only. It is not a candidate model, and its accuracy is not a result.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+**Reference code**
+
+- Function: `p9_p10` (`cd Code && uv run python sepsis/core.py p9p10`) · version: interim core, not reviewed, SHA-256 `43af578e16c91ab05f0f1ce439acf92aa6a21811669d7d2e92368eb0963b30b7` · inputs: the training table, DR-09 design · output: `Code/outputs/sepsis/core_p9_p10.json`, copied above unchanged.
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — the core, interpretations (a)–(c), and P4: "count the 27 indicators as categorical"
+- **Supersedes / superseded by:** supersedes DR-06
+- **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_p9_p10.json`, `Code/outputs/sepsis/07_train_table.json`
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -616,6 +745,10 @@ Training on one hospital and testing on the other is not a sub-task now; the use
 | 9 | Step 2. The user confirmed: PR-AUC computed as average precision `[I]`; baseline and no-skill reference kept as recorded; P5 a preference; cross-validation folds stratified by outcome and hospital, like the test split; the diagnosis-loop error measure to be raised as a FRAMEWORK change after step 2 closes. `sepsis_05_horizon_counts.py` refactored so its cohort is a function (`build_cohort`) the split also uses; re-run, output byte-identical. Made the split with `sepsis_06_split.py`: 31,270 training patients (984 positive, 3.15 %) and 7,818 test patients (246 positive, 3.15 %), the same positive share in each hospital in both parts (A 4.01 %, B 2.29 %). Re-run gives the same checksum. Test set locked (DR-08). | `Code/outputs/sepsis/06_split.json`, `06_split.md`; `Code/outputs/sepsis/private/cohort.csv.gz` (not in git) |
 | 10 | Step 2. Wrote the problem and its sub-task into the `Introduction` of `Report.md`. Step 2 closed (18 October 2026). | `Demonstration/Sepsis/Report.md` |
 | 11 | After step 2, `FRAMEWORK` change to `ML Guide.md` §16 and §18 (commit `ddda293`). What prompted it: with 3.15 % positives, flagging nobody already has a misclassification rate of about 3 %, so diagnosis-loop errors measured that way would say almost nothing about over- or underfitting, and the book warns that the misclassification rate misleads for imbalanced classes (p. 91). Now, when P10 = imbalanced, E_train, E_val and the learning curve (and so C3) are measured as 1 − the deciding metric, here 1 − PR-AUC. The user kept the `[I]` ratios for O3 and O4 unchanged. Open point: on the 1 − PR-AUC scale E_train is large for any model that is not near perfect, so O4 (underfitting, E_train ≥ 2 × gap) may fire too often; if it does in step 4e, raise it as a `FRAMEWORK` question with the evidence. No Sepsis record is affected: no interim core or cross-validation exists yet. | `ML Guide.md` |
+| 12 | Step 3 started (18 October 2026). Proposed four input designs (last value, mean, min/max, measured indicators), three ways of filling empty values, logarithms on ten labs, `Unit` as one category and hospital as a possible input, with their trade-offs and the book's pp. 18, 331, 345–346; and four figures. The user chose last value + indicators, training-fold median, the ten logs, `Unit` in three levels, hospital not an input, and figures 1–3 (not figure 4, inputs by outcome) (DR-09). Built the training table from the training patients only: 31,270 patients, 984 positive, 58 input columns (60 after encoding); 38 patients have no clinical value in hours 1–6. Wrote the interim core `Code/sepsis/core.py` (input design and P9–P10 only), SHA-256 `43af578e16c91ab05f0f1ce439acf92aa6a21811669d7d2e92368eb0963b30b7`; shown to the user before it is run. | `Code/outputs/sepsis/07_train_table.json`, `07_train_table.md`; `Code/outputs/sepsis/private/train_table.csv.gz` (not in git); `Code/sepsis/core.py` |
+| 13 | Step 3. The user approved the core, its interpretations (a)–(c), and counting the 27 indicators as categorical (pp. 16–17). Ran `sepsis/core.py p9p10` on the training patients: P9 = no (training accuracy 0.9685 with negligible regularisation), P10 = imbalanced (3.15 %). With the input design fixed: P2 ample (512.6), P3 many (60), P4 high (29 of 58 = 50.0 %, exactly at the threshold). DR-10 PROP supersedes DR-06. | `Code/outputs/sepsis/core_p9_p10.json` |
+| 14 | Step 3. Made the agreed figures from the training patients only, light and dark: coverage by hospital (Figure 1), last-value distributions split into vitals (Figure 2) and labs (Figure 3) so the type stays readable, and label-onset hour by hospital (Figure 4). Colours fixed per variable: hospital A blue, B orange, all training patients green; validated with the palette checker (light: green below 3:1 contrast, used only for filled bars with labelled axes). Fixed overlapping tick labels on the log axes before showing them. Shown to the user before adding to `Results`. | `Code/outputs/sepsis/figures/` |
+| 15 | Step 3. The user approved all four figures and captions; added to `Results` in `Report.md` with a line saying they describe the training patients only. Captions checked against `fig1_coverage.json`, `fig2_3_distributions.json` and `fig4_onset.json`. No figure prompted a change to P8, which stays `unknown` (DR-10). Step 3 closed (18 October 2026). | `Demonstration/Sepsis/Report.md` |
 
 ## Code Summary
 
@@ -629,6 +762,11 @@ Scripts for this analysis are prefixed `sepsis_` and write to `Code/outputs/seps
 | `Code/sepsis_04_target_counts.py` | Step 2, counts only. For candidate windows `WINDOWS` = 6 and 12 hours, counts by hospital the patients with a kept hour in the window, those whose label switches on within it (excluded), the remaining cohort and its positives (label switches on later, at any time), records ending by hour N, patients with no measurement in the window, the label-onset quartiles of the positives, and how many switch on within 24 h and 48 h after the window. No random steps, no seed. A minute or two. | `Code/outputs/sepsis/private/hours.csv.gz`, `patients.csv.gz` | `Code/outputs/sepsis/04_target_counts.json`, `04_target_counts.md` | `cd Code && uv run python sepsis_04_target_counts.py` |
 | `Code/sepsis_05_horizon_counts.py` | Step 2, counts only, for the agreed window `N` = 6 and horizon `H` = 48 hours. Same cohort as `sepsis_04` for N = 6. Classes each patient by `label_onset_iculos`, never by kept record length: positive (onset in hours 7–54), negative observed to hour 54, or never-septic with a record ending before hour 54. Gives the cohort size and positive share if those patients are kept as negatives or excluded, by hospital. Asserts that every patient falls in exactly one class. The cohort is built by `build_cohort()`, which `sepsis_06_split.py` imports. No random steps, no seed. About a minute. | same derived tables | `Code/outputs/sepsis/05_horizon_counts.json`, `05_horizon_counts.md` | `cd Code && uv run python sepsis_05_horizon_counts.py` |
 | `Code/sepsis_06_split.py` | Step 2, the train/test split. Takes the cohort from `build_cohort()` (one row per patient), sorts it by patient, and splits it with `train_test_split`: `TEST_FRACTION` = 0.2, shuffled, stratified by hospital × outcome, `SEED` = 2026. Writes each patient's `set`, `y` and `split`; later steps read only `split == "train"` until step 4g. Gzip with `mtime=0`, so the checksum is reproducible. About a minute. | same derived tables | `Code/outputs/sepsis/private/cohort.csv.gz` (not in git); `Code/outputs/sepsis/06_split.json`, `06_split.md` | `cd Code && uv run python sepsis_06_split.py` |
+| `Code/sepsis_07_train_table.py` | Step 3. Builds one row per training patient with the DR-09 input design: last value of each of the 27 clinical columns in ICU hours 1–6, a 0/1 "measured" indicator per clinical column, `Age`, `Gender`, `HospAdmTime`, and `Unit` (MICU, SICU, unknown) from the last non-empty `Unit1`/`Unit2` in hours 1–6. Leaves empty values empty (filling is in the core's pipeline). Keeps only `split == "train"` patients, filtering the hourly file as soon as it is read. Also counts coverage by hospital and the label-onset hours of the training positives, for the figures. No random steps, no seed. A minute or two. | `Code/outputs/sepsis/private/hours.csv.gz`, `patients.csv.gz`, `cohort.csv.gz` | `Code/outputs/sepsis/private/train_table.csv.gz` (not in git); `Code/outputs/sepsis/07_train_table.json`, `07_train_table.md` | `cd Code && uv run python sepsis_07_train_table.py` |
+| `Code/sepsis/core.py` | Interim core, not reviewed. So far: `preprocessor()`, the DR-09 pipeline shared by every model family (log of ten labs, then training-fold median; median for the other clinical columns; indicators and `Age`, `Gender`, `HospAdmTime` as they are; `Unit` one-hot), and §11 P9 and P10 on the training patients. `[I]` thresholds are named constants. Writes its SHA-256 into every output. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/core_p9_p10.json` | `cd Code && uv run python sepsis/core.py p9p10` |
+| `Code/sepsis_08_fig1_coverage.py` | Figure 1: share of training patients with at least one value of each clinical column in hours 1–6, by hospital (horizontal bars, A blue, B orange). Reads the counts; computes nothing new. Light and dark versions. | `Code/outputs/sepsis/07_train_table.json` | `Code/outputs/sepsis/figures/fig1_coverage.png`, `dark/fig1_coverage.png`, `fig1_coverage.json` | `cd Code && uv run python sepsis_08_fig1_coverage.py` |
+| `Code/sepsis_09_fig2_3_distributions.py` | Figures 2 (seven vitals) and 3 (twenty labs): histograms of the last value in hours 1–6 over the training patients who have one, 40 bins over each panel's full range, the ten DR-09 log inputs on a log axis. Not split by outcome. Writes each panel's count, minimum and maximum for the captions. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/figures/fig2_vitals.png`, `fig3_labs.png` (+ `dark/`), `fig2_3_distributions.json` | `cd Code && uv run python sepsis_09_fig2_3_distributions.py` |
+| `Code/sepsis_10_fig4_onset.py` | Figure 4: number of training positives whose label switches on in each ICU hour 7–54, by hospital (lines, A blue, B orange). Writes the medians and quartiles for the caption. | `Code/outputs/sepsis/07_train_table.json` | `Code/outputs/sepsis/figures/fig4_onset.png` (+ `dark/`), `fig4_onset.json` | `cd Code && uv run python sepsis_10_fig4_onset.py` |
 
 Uses pandas, numpy and scikit-learn (`sepsis_06`) from the existing environment; no new dependency.
 
