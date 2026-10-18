@@ -6,7 +6,7 @@ This is a set of notes written in our own words, not a substitute for the book. 
 
 The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours. **Part III (sections 24–25) fixes the record formats** the advisor writes into `Appendix.md`: the Decision Record and the Recommendation Report.
 
-**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. 16 October 2026 (`FRAMEWORK`): the example folder in §24.1 is now `Demonstration/Sepsis/`; nothing else changed. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
+**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. 16 October 2026 (`FRAMEWORK`): the example folder in §24.1 is now `Demonstration/Sepsis/`; nothing else changed. 18 October 2026 (`FRAMEWORK`): when P10 = imbalanced, the diagnosis loop measures E_train, E_val and the learning curve as 1 − the deciding metric instead of the misclassification rate, following the book's warning that the misclassification rate misleads for imbalanced classes (p. 91) (§16, §18 O2). Prompted by the Sepsis analysis, where 3 % of patients are positive. Records made under the earlier version stay valid for what they record. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
 
 **Scope.** The chapters used are 2, 3, 4 and 13. Every other method — L1/LASSO included — is flagged and not used (section 23).
 
@@ -427,7 +427,7 @@ SEQ-3 is how "add-ons come later" (p. 331) is honoured. The basic pipeline is sh
 | Direction | All margins expressed so that positive = better | `[I]` |
 | Margin | For configurations A and B: the mean over the 10 outer folds of (A's fold score − B's fold score) | `[I]` |
 | Spread | The standard deviation (not the standard error) of those 10 fold differences. The fold estimates are not independent, because the training sets overlap; using the SD rather than the SE is deliberately cautious. | `[I]` |
-| Diagnosis errors | E_train and E_val computed with the book's default error function (misclassification rate or squared error, p. 67), whatever the selection metric | `[I]` |
+| Diagnosis errors | E_train and E_val computed with the book's default error function (misclassification rate or squared error, p. 67), whatever the selection metric, except when P10 = imbalanced. Then they are computed with the deciding metric agreed in step 2, written as an error so that lower is better: 1 − metric for a metric that is at most 1 and higher-is-better (e.g. 1 − PR-AUC, 1 − F2). The learning curve, and so C3, uses the same error. | `[I]`; the imbalanced case `[B→I p.91]`: the book says the misclassification rate can look good for a classifier that always predicts the majority class; using the deciding metric in its place, and 1 − metric as the error, is ours |
 | Learning curve | For the leading configuration only: training fractions 10 %, 20 %, …, 100 % on the outer folds | `[B pp.334–336]` |
 | Decision threshold | Default 0.5 (p. 53). Tuned only if P6 = yes, after model selection, by CV on training data, with the trade-off chosen by the user. | `[B→I pp.53–54, 92–93]` |
 
@@ -456,12 +456,12 @@ SEQ-3 is how "add-ons come later" (p. 331) is honoured. The basic pipeline is sh
 
 The loop runs on cross-validation only and ends before the test set is used. Hyperparameters are already tuned inside each configuration, so the loop acts on **configurations, inputs and data**, not on k, λ or depth directly.
 
-**Observations**, computed for the leading configuration using E_train, E_val and gap = E_val − E_train (section 16):
+**Observations**, computed for the leading configuration using E_train, E_val and gap = E_val − E_train, with the error function set in section 16: the book's default, or 1 − the deciding metric when P10 = imbalanced:
 
 | ID | Observation | Test |
 | --- | --- | --- |
 | O1 | Doesn't beat the baseline | C2 = not clear |
-| O2 | Training error already above what the application needs | E_train worse than the success criterion, when the criterion is in the same units |
+| O2 | Training error already above what the application needs | E_train worse than the success criterion, when the criterion is in the same units (when P10 = imbalanced and the criterion is stated in the deciding metric, it is compared as 1 − the criterion's value) |
 | O3 | Overfitting | gap ≥ 2 × E_train `[B→I p.334]` + `[I]` ratio |
 | O4 | Underfitting | E_train ≥ 2 × gap `[B→I p.334]` + `[I]` ratio |
 | O5 | Tuned hyperparameter at the edge of its grid | the selected value is the smallest or largest in the grid in most outer folds `[I]` |
