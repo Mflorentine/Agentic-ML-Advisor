@@ -25,7 +25,7 @@ The same page names the original authors' paper as the introductory paper for th
 
 - Chicco, D. and Jurman, G. (2020). Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone. *BMC Medical Informatics and Decision Making*, 20, 16. [https://doi.org/10.1186/s12911-020-1023-5](https://doi.org/10.1186/s12911-020-1023-5).
 
-These details are taken from the UCI page; the paper itself has not been opened.
+These details are taken from the UCI page. The paper's Dataset section was read in step 1 of the Heart Failure analysis, and its full text was checked in step 5 (see the References in [Demonstration Appendix.md](../Demonstration/Heart%20Failure/Demonstration%20Appendix.md)).
 
 ## `Mobile Price/` (`train.csv`, `test.csv`)
 

@@ -1308,6 +1308,7 @@ Written for the user's recorded experience level, intermediate: terms are used w
 - **BASE:** none.
 - **OUTP:** `Logistic` and `Logistic + L2`, each 0.0769 below `Tree` with spread 0.1357 (≥ 0.5 × spread).
 - **SIMP:** `Logistic + poly`, 0.0281 below `Tree` with spread 0.1422 (< 0.5 × spread), and one add-on against none.
+- **Post-prior (no code assigned by the core):** `Tree (min leaf to 50)`, 0.0360 below `Tree` with spread 0.0584 (≥ 0.5 × spread, so not a candidate; see part 2). The core's why-not list in `Code/outputs/core_recommend.json` does not include it, so this entry is recorded here rather than copied from the core.
 - **Flags:** none.
 
 **8. Confidence.**
@@ -1439,6 +1440,7 @@ Written for the user's recorded experience level, intermediate: terms are used w
 | 45 | User's review of the *Discussion*. Paragraph 2 now names the source of the expected direction, Chicco and Jurman (2020). Before citing it, the full text was checked: the direction is in Table 3 (medians for patients who died vs those who survived); the text itself states no direction. The reference note is updated. Paragraph 3 kept as written. Title chosen by the user (option 3). **Step 5 closed** | `Report.md`; References |
 | 46 | Image links in `Report.md` checked before publishing. All four resolve relative to the report's folder (`Code/outputs/figures/…`). All eight PNGs (light and dark) are valid and identical to their committed copies, and none is git-ignored. Nothing changed | — |
 | 47 | FRAMEWORK change (contract commit `a976de7` [`16e7a7e`]): `Report.md` ends with a `References` section listing only the works it cites, copied from this Appendix. Applied: the section was added with the book, Chicco and Jurman (2020) and the UCI dataset, details copied from the References below and links checked. In-text citations were added where missing: the UCI dataset in the Introduction, and the year for the book | `Report.md` |
+| 48 | 26 October 2026, after the user's review of the finished analysis. *Methods* in `Demonstration Report.md` now states: k-NN was ranked out before fitting; the learning-curve check behind the selection confidence; the fold spread as this analysis's own measure, not a confidence interval; and flagging everyone as this analysis's own success bar. The Recommendation Report's part 7 now lists `Tree (min leaf to 50)` as a post-prior variant with no code assigned by the core, because the core's why-not list omits it. The note in `Attachments/SOURCE.md` on whether the Chicco and Jurman paper was opened now matches step 5. No number, figure, decision record or core output was changed | `Demonstration Report.md`, `Demonstration Appendix.md`, `Attachments/SOURCE.md` |
 
 Commit IDs in this log are the current ones on `florentine-demo`, with the original ID in brackets. The IDs changed on 14 October 2026 when commit messages were rewritten; the content of each commit is unchanged.
 
