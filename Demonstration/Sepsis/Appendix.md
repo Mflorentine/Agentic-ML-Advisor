@@ -657,7 +657,7 @@ Training on one hospital and testing on the other is not a sub-task now; the use
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** asked — quoted above
-- **Supersedes / superseded by:** n/a
+- **Supersedes / superseded by:** superseded by DR-19 (the median rule extended to `Age`, `Gender`, `HospAdmTime`, 27 October 2026)
 - **Links:** `Code/sepsis_07_train_table.py`, `Code/outputs/sepsis/07_train_table.json`, `Code/sepsis/core.py` (`preprocessor()`)
 
 ### DR-10 · PROP · step 3
@@ -1227,9 +1227,134 @@ As DR-10, with the same results: no property value changed.
 
 - **Confidence:** Low — C1 none · C2 clear · C3 adequate — rule: Low if C1 = none or C2 = not clear · prior agreement agree · grounding [B] 0 / [B→I] 2 / [I] 0 · breadth note n/a (4 compared)
 - **Outcome vs expectation:** agree (choice as expected; the test result is pending)
-- **User involvement:** asked — threshold trade-off: "F2, as in DR-05"; test-set approval pending
-- **Supersedes / superseded by:** n/a
+- **User involvement:** asked — threshold trade-off: "F2, as in DR-05"; approved using the test set: "Approve: commit 4f, then test"
+- **Supersedes / superseded by:** superseded by DR-20 (the same recommendation re-run under the core changed for DR-19, before the test set was evaluated)
 - **Links:** `Code/sepsis/core.py` (`recommend`, `tune_threshold`), `Code/outputs/sepsis/core_recommend.json`, DR-12 to DR-17
+
+### DR-19 · FORM · step 4
+
+- **Sub-task:** 1
+- **Date:** 2026-10-27
+- **Question:** How are empty values of `Age`, `Gender` and `HospAdmTime` filled, now that a test patient has one?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| What was found | building the test table (`sepsis_12`, after the user's approval at 4f) stopped on its own check: one test patient has `HospAdmTime` empty in every hour of the stay. No training patient has `Age`, `Gender` or `HospAdmTime` empty. The script stopped before writing anything; no outcome was read | M | Analysis Log row 30 |
+| DR-09 | fills empty last values of the 27 clinical columns with the training-fold median; it says nothing about the three constant inputs, which were never empty in training | M | DR-09 |
+| Options put to the user, without a recommendation | training median inside the core (a core change: new SHA-256, superseding record, re-run `recommend`); training median written into the test table by `sepsis_12`; drop the patient from the test set (7,817) | M | conversation, 27 October 2026 |
+| User's choice | "Training median, in the core" | M | user, 27 October 2026 |
+| Core change | `preprocessor()`: `Age`, `Gender`, `HospAdmTime` now go through `SimpleImputer(strategy="median")` instead of passing through. SHA-256 `10a7e36c…` → `22353007…` | — | `Code/sepsis/core.py` |
+| Check that training results cannot change | on the training patients, the new preprocessing equals the old exactly: over all 31,270 patients, and in each of the 10 outer folds (fitted on the training part, applied to the validation part); the design keeps its 60 columns in the same order | T | check run 27 October 2026 (Analysis Log row 30) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Imputation builds in assumptions | training-fold median, now for the constant inputs too | [B p.345] | the one empty `HospAdmTime` gets the training median at test time |
+| REQ-1 | the median is fitted inside the pipeline, on training data only | [B p.27] + [I] | — |
+| Input design (§9) | decided with the user | [B p.18] | DR-09 extended |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** as above
+- **Expectation:** no change to any training-data result; `recommend` re-run to match the new core version
+- **Decision:** DR-09 stands, extended: empty `Age`, `Gender` and `HospAdmTime` are filled with the training(-fold) median, inside the pipeline.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** agree: the re-run of `recommend` under the new core differs from DR-18's output only in the version line (DR-20)
+- **User involvement:** asked — "Training median, in the core"; approved the core change and the plan: "Approve and proceed"
+- **Supersedes / superseded by:** supersedes DR-09
+- **Links:** `Code/sepsis/core.py` (`preprocessor()`), `Code/sepsis_12_test_table.py`, DR-09
+
+### DR-20 · FINAL · step 4
+
+- **Sub-task:** 1
+- **Date:** 2026-10-27
+- **Question:** The recommendation of DR-18 under the core changed for DR-19, and its single evaluation on the test set: how does `Logistic + L2` do on new patients, and is the success criterion met?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Recommendation re-run | `recommend` with core `22353007…`: output identical to DR-18's in every value; only `core_version_sha256` differs | CV | `git diff` of `Code/outputs/sepsis/core_recommend.json` against `c13b934` |
+| Recommendation, threshold, confidence | as DR-18: `Logistic + L2`, λ = 10⁻³, threshold 0.040; selection confidence Low (C1 none, C2 clear, C3 adequate); prior agreement agree; grounding 2 `[B→I]` | CV | `Code/outputs/sepsis/core_recommend.json`; DR-18 |
+| User's approval to use the test set | "Approve: commit 4f, then test"; after the DR-19 change: "Approve and proceed" | M | user, 27 October 2026; quoted in `core_final.json` |
+| Test table | 7,818 test patients (A 3,895, B 3,923), 246 positive; built with the training table's construction, which was first shown to rebuild the stored training table exactly; one empty `HospAdmTime`, filled by the core with the training median (DR-19); log inputs all > 0, `Unit` levels all known | M | `Code/outputs/sepsis/12_test_table.json`; test table SHA-256 `4f1dd8d3…` |
+| Final fit | `Logistic + L2`, λ = 10⁻³, refitted on all 31,270 training patients | — | `Code/outputs/sepsis/core_final.json` |
+| **Test PR-AUC** (average precision) | **0.0847** (`0.08468650120390753`) | TEST | same |
+| Uncertainty | SD of PR-AUC across the outer folds, 0.0156 `[B→I pp.71–73]`; n_test 7,818, 246 positives. Each outer fold holds about 3,127 patients, while the test set holds 7,818, so this spread approximates the test result's uncertainty rather than measuring it (step 4g) | CV / TEST | same; DR-14 |
+| Baseline (flag nobody) on the test set | PR-AUC 0.0315 (the test positive rate, `0.031465848042977744`); F2 0, recall 0, precision undefined | TEST | same |
+| At the decision threshold 0.040 | F2 0.2326, precision 0.0764, recall 0.4756; confusion matrix TP 117, FP 1,414, FN 129, TN 6,158 | TEST | same |
+| Success criterion (DR-05) | test PR-AUC > test positive rate + fold SD: 0.0847 > 0.0315 + 0.0156 = 0.0471 → met | TEST | same |
+| Independent recomputation | from the saved test predictions, with separate scikit-learn calls: PR-AUC 0.084687, F2 0.232604, precision 0.076421, recall 0.475610, the same confusion matrix; the recomputed predicted classes equal the saved ones | TEST | `Code/outputs/sepsis/private/core_test_predictions.csv.gz` (not in git) |
+| CV estimate for comparison | `Logistic + L2` mean PR-AUC 0.0930, fold SD 0.0156 (DR-14); at the threshold, F2 0.2204, precision 0.0723, recall 0.4582 (DR-18) | CV | DR-14, DR-18 |
+| Precision–recall curve | computed on the test set (§5.5 calls for it when classes are imbalanced, p. 92) | TEST | `Code/outputs/sepsis/core_final.json` (`pr_curve`) |
+
+**§19 trace**
+
+1. **Eligible:** all four configurations (C2 clear).
+2. **Candidates:** `Logistic + L2` (0.0930), `Logistic + poly + L2` (0.0907; margin 0.0023 < 0.5 × 0.0077).
+3. **Choice:** `Logistic + L2`, fewer add-ons (1 against 2).
+4. **Test once:** test PR-AUC 0.0847 against the baseline's 0.0315 on the same 7,818 patients; success criterion met (required > 0.0471).
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §19.4 test once | evaluated once, refitted on all training patients | [B pp.74, 328] | the test set is not used again for this sub-task |
+| SEQ-1 baseline reported beside the result | flag nobody, PR-AUC 0.0315 | [B pp.330–331] | — |
+| Uncertainty of the test result (step 4g) | fold SD 0.0156, with n_test and positives | [B→I pp.71–73] | — |
+| §5.5 precision–recall curve for imbalanced classes | computed | [B→I p.92] | — |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| Success: test PR-AUC > positive rate + fold SD | 0.0471 | 0.0847 |
+| Decision threshold | 0.040 | — |
+
+- **Options considered:** as DR-18
+- **Expectation:** DR-13 expected `Logistic + L2` above the baseline; no test-set expectation was stated.
+- **Decision:** sub-task 1 is answered by `Logistic + L2` (λ = 10⁻³, threshold 0.040): test PR-AUC 0.0847 (fold SD 0.0156; 7,818 test patients, 246 positive) against 0.0315 for flagging nobody; the success criterion is met. The test set is not used again for this sub-task.
+
+**Why not** (all 14 structural configurations except the recommendation; as DR-18)
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] (DR-12) |
+| `Logistic` | EXCL | MOD-2: 61 parameters, rank 60 [B→I pp.46–47, 65] (DR-12) |
+| `Logistic + poly` | EXCL | MOD-2: 119 parameters, rank 118 [B→I pp.46–47, 65] (DR-12) |
+| `Logistic + poly + L2` | SIMP | margin 0.0023 < 0.5 × spread 0.0077; 2 add-ons against 1 |
+| `kNN` | OUTP | margin 0.0225, spread 0.0118 |
+| `Tree` | OUTP | margin 0.0252, spread 0.0151 |
+
+**Flags**
+
+| Method | Chapter | Evidence | Status |
+| --- | --- | --- | --- |
+| Survival analysis | not covered in the book | patients who leave the ICU before hour 54 are counted as negatives (DR-07) | not applied, not tested |
+
+**Reference code**
+
+- Functions: `recommend` and `final` (`cd Code && uv run python sepsis/core.py recommend sepsis/props_dr11.json`; `… final --approved "…"`) · version: interim core, not reviewed, SHA-256 `223530074b4c9687c199965bfb79a980caa26ef3bbb07a50c96cb556bf693158` · inputs: DR-11 property values; the CV store; the test table (`4f1dd8d3…`) · outputs: `Code/outputs/sepsis/core_recommend.json`, `core_final.json`, `private/core_test_predictions.csv.gz`, copied above unchanged, rounded to 4 decimals.
+
+- **Confidence:** Low — C1 none · C2 clear · C3 adequate — rule: Low if C1 = none or C2 = not clear · prior agreement agree · grounding [B] 0 / [B→I] 2 / [I] 0 · breadth note n/a (4 compared)
+- **Outcome vs expectation:** agree (above the baseline, as DR-13 expected)
+- **User involvement:** approved using the test set ("Approve: commit 4f, then test"; "Approve and proceed")
+- **Supersedes / superseded by:** supersedes DR-18
+- **Links:** `Code/sepsis/core.py` (`recommend`, `final`), `Code/sepsis_12_test_table.py`, `Code/outputs/sepsis/core_final.json`, `12_test_table.json`, DR-14 to DR-19
 
 ## Recommendation
 
@@ -1270,6 +1395,8 @@ As DR-10, with the same results: no property value changed.
 | 27 | Step 4e started, sub-task 1 (27 October 2026): diagnosis pass 1 on `Logistic + L2` with the approved core (`dbae21d4…`). First run stopped at the 70 % learning-curve point when a joblib worker process died (`WinError 6`, `BrokenProcessPool`); nothing was written; re-run unchanged (about 21 minutes), and its 10 %–60 % points equal the first run's. Result: E_train 0.9040, E_val 0.9070, gap 0.0029; O1, O2, O3, O5, O6 do not hold (C3 adequate); O4 (underfitting) holds, so DX-5. DX-5's polynomial part does not apply (P3 = many) and k-NN and Tree were already compared, so its remaining part — whether more input variables exist — needs the user; the loop stops. O4 holds for all four configurations (E_train ÷ gap 15.7 to 306.9), the case Analysis Log row 11 said to raise as a `FRAMEWORK` question; raised with the user. Both put as options without a recommendation: the user chose "No new inputs; stop the loop" (S5, the loop ends after one pass) and "Keep §18 as written" (no `FRAMEWORK` change; row 11's open point closed for this analysis). | `Code/outputs/sepsis/core_diagnose_Logistic___L2.json`; DR-16 |
 | 28 | Step 4e, sub-task 1 (27 October 2026). The user then changed §18 O4 under `FRAMEWORK` (superseding the "Keep §18 as written" choice in row 27): when P10 = imbalanced and errors are 1 − the deciding metric, O4 needs the ratio test and the O2 comparison. The agent checked the cited pages against the book (2nd edition draft of 1 September 2026, printed pp. 331–337, read from smlbook.org and not kept): the user's reason cited pp. 334–335 for judging underfitting against the desired performance, which those pages do not state (p. 333: big training error with small gap; p. 335: Fig. 13.2 "High training error?"; p. 331: performance against a reference level); the user chose the tag `[B→I pp.331, 333, 335]`. The agent also pointed out that O4 then never drives an action ahead of O2; the user kept the rule as written. Commits: DR-16 and its output (`5e0915e`), `ML Guide.md` alone (`0d68044`). Core updated (`observations()` only), SHA-256 `dbae21d4…` → `10a7e36c…`; diagnosis re-run (about 19 minutes): errors and learning curve unchanged (E_train 0.9040, E_val 0.9070, gap 0.0029); O4 true → false (ratio test true, O2 comparison false); no observation holds. Put to the user without a recommendation (DX-7 needs the criterion not met, and the criterion is assessed at 4g): the user chose "Stop the loop (S5), go to 4f". DR-17 supersedes DR-16. Resolves the open point in row 11. | `Code/outputs/sepsis/core_diagnose_Logistic___L2.json`; DR-17; `ML Guide.md` §18 |
 | 29 | Step 4f, sub-task 1 (27 October 2026). Put the threshold trade-off to the user as three options without a recommendation; the user chose "F2, as in DR-05". Ran `recommend` with the core `10a7e36c…` (about 20 minutes). Recommended `Logistic + L2`, λ = 10⁻³ (7 of 10 folds), decision threshold 0.040; candidates `Logistic + L2` and `Logistic + poly + L2` (margin 0.0023, spread 0.0077), chosen by fewer add-ons. Selection confidence Low: C1 none, C2 clear, C3 adequate. Prior agreement agree; grounding 2 `[B→I]`; breadth note does not apply (4 compared). Nested CV at the tuned threshold: F2 0.2204 (SD 0.0182), precision 0.0723 (0.0050), recall 0.4582 (0.0737). Why-not: 10 `EXCL`, `Logistic + poly + L2` `SIMP`, `kNN` and `Tree` `OUTP`. Uncertainty for 4g: SD of PR-AUC 0.0156. Wrote `Code/sepsis_12_test_table.py` for 4g (not run): it builds the test rows with the training table's construction and first checks that this construction reproduces the stored training table exactly. | `Code/outputs/sepsis/core_recommend.json`; DR-18 |
+| 30 | Step 4g, sub-task 1 (27 October 2026). Committed the 4f records (`c13b934`) before the test set was touched, as the user approved. `sepsis_12` rebuilt the training table identically, then stopped on its own check: one test patient has `HospAdmTime` empty in every hour (no training patient has an empty `Age`, `Gender` or `HospAdmTime`); nothing was written and no outcome was read. Put to the user as three options without a recommendation; the user chose "Training median, in the core" (DR-19, superseding DR-09). Core `preprocessor()` now median-fills the three constant inputs; checked on the training patients that the new preprocessing equals the old exactly (all patients, and each outer fold fitted on its training part); SHA-256 `10a7e36c…` → `22353007…`; the user approved the change and the plan ("Approve and proceed"). `recommend` re-run (about 20 minutes): identical to DR-18 except the version line. `sepsis_12` then stopped again on the same check, copied from `sepsis_07`; changed it to keep the check for the training rebuild only and to count the test gaps instead (1 `HospAdmTime`). Test table built: 7,818 patients (A 3,895, B 3,923), 246 positive, as in DR-08. Checked the test inputs only (no outcomes): no log input ≤ 0, all `Unit` levels known. | `Code/outputs/sepsis/12_test_table.json`, `core_recommend.json`; DR-19 |
+| 31 | Step 4g, sub-task 1 (27 October 2026): the single test-set evaluation (`final`, core `22353007…`, the user's approval quoted). `Logistic + L2`, λ = 10⁻³, refitted on all 31,270 training patients: test PR-AUC 0.0847 (fold SD 0.0156; 7,818 test patients, 246 positive) against 0.0315 for flagging nobody; success criterion met (> 0.0471). At threshold 0.040: F2 0.2326, precision 0.0764, recall 0.4756; TP 117, FP 1,414, FN 129, TN 6,158. Recomputed from the saved predictions with separate calls: the same values. The test set is not used again for this sub-task. | `Code/outputs/sepsis/core_final.json`; `private/core_test_predictions.csv.gz` (not in git); DR-20 |
 
 ## Code Summary
 
@@ -1284,12 +1411,12 @@ Scripts for this analysis are prefixed `sepsis_` and write to `Code/outputs/seps
 | `Code/sepsis_05_horizon_counts.py` | Step 2, counts only, for the agreed window `N` = 6 and horizon `H` = 48 hours. Same cohort as `sepsis_04` for N = 6. Classes each patient by `label_onset_iculos`, never by kept record length: positive (onset in hours 7–54), negative observed to hour 54, or never-septic with a record ending before hour 54. Gives the cohort size and positive share if those patients are kept as negatives or excluded, by hospital. Asserts that every patient falls in exactly one class. The cohort is built by `build_cohort()`, which `sepsis_06_split.py` imports. No random steps, no seed. About a minute. | same derived tables | `Code/outputs/sepsis/05_horizon_counts.json`, `05_horizon_counts.md` | `cd Code && uv run python sepsis_05_horizon_counts.py` |
 | `Code/sepsis_06_split.py` | Step 2, the train/test split. Takes the cohort from `build_cohort()` (one row per patient), sorts it by patient, and splits it with `train_test_split`: `TEST_FRACTION` = 0.2, shuffled, stratified by hospital × outcome, `SEED` = 2026. Writes each patient's `set`, `y` and `split`; later steps read only `split == "train"` until step 4g. Gzip with `mtime=0`, so the checksum is reproducible. About a minute. | same derived tables | `Code/outputs/sepsis/private/cohort.csv.gz` (not in git); `Code/outputs/sepsis/06_split.json`, `06_split.md` | `cd Code && uv run python sepsis_06_split.py` |
 | `Code/sepsis_07_train_table.py` | Step 3. Builds one row per training patient with the DR-09 input design: last value of each of the 27 clinical columns in ICU hours 1–6, a 0/1 "measured" indicator per clinical column, `Age`, `Gender`, `HospAdmTime`, and `Unit` (MICU, SICU, unknown) from the last non-empty `Unit1`/`Unit2` in hours 1–6. Leaves empty values empty (filling is in the core's pipeline). Keeps only `split == "train"` patients, filtering the hourly file as soon as it is read. Also counts coverage by hospital and the label-onset hours of the training positives, for the figures. No random steps, no seed. A minute or two. | `Code/outputs/sepsis/private/hours.csv.gz`, `patients.csv.gz`, `cohort.csv.gz` | `Code/outputs/sepsis/private/train_table.csv.gz` (not in git); `Code/outputs/sepsis/07_train_table.json`, `07_train_table.md` | `cd Code && uv run python sepsis_07_train_table.py` |
-| `Code/sepsis/core.py` | Interim core, not reviewed. So far: `preprocessor()`, the DR-09 pipeline shared by every model family (log of ten labs, then training-fold median; median for the other clinical columns; indicators and `Age`, `Gender`, `HospAdmTime` as they are; `Unit` one-hot), and §11 P9 and P10 on the training patients; since step 4a, the 14 configurations (§9) and `admissible_set` (§12: task gate, must-have gates, MOD-1, and MOD-2 via `mod2_check`, which reports the rank of the design matrix and the columns behind any collinearity). since step 4b, §13–§15 prior ranking (`prior`), §16 nested CV (`cv round1`, `cv round2`, `cv add` for post-prior configurations; outer 10 / inner 5 folds stratified by outcome × hospital, `CV_SEED` = 2026, tuned on PR-AUC; results accumulate in `core_cv_store.json` with each patient's outer fold and the training table's checksum), §18 observations and learning curve (`diagnose`; since 27 October 2026 O4 needs the ratio test and the O2 comparison, following the `FRAMEWORK` change to §18, SHA-256 `10a7e36c…`), §16/§17/§19/§20 threshold, confidence, recommendation and why-not codes (`recommend`), and the single test-set evaluation (`final --approved "…"`, which reads `private/test_table.csv.gz`, built only at 4g). `[I]` thresholds and grids are named constants; interpretations a–s are in the docstring. Writes its SHA-256 into every output. Seeds: `CV_SEED` = 2026 for folds, learning-curve subsets and tree tie-breaks. Seconds for `prior`; minutes to tens of minutes per configuration for CV. | `Code/outputs/sepsis/private/train_table.csv.gz`; a properties file such as `Code/sepsis/props_dr11.json` (the DR-11 values); `final` also `private/test_table.csv.gz` | `Code/outputs/sepsis/core_p9_p10.json`, `core_admset.json`, `core_prior.json`, `core_cv_store.json`, `core_cv_round1.json`, `core_cv_round2.json`, `core_diagnose_*.json`, `core_recommend.json`, `core_final.json`; `private/core_test_predictions.csv.gz` (not in git) | `cd Code && uv run python sepsis/core.py <command> …` (commands in the docstring) |
+| `Code/sepsis/core.py` | Interim core, not reviewed. So far: `preprocessor()`, the DR-09 pipeline shared by every model family (log of ten labs, then training-fold median; median for the other clinical columns; indicators as they are; `Age`, `Gender`, `HospAdmTime` training-fold median since 27 October 2026 (DR-19, SHA-256 `22353007…`; before, passed through as they were); `Unit` one-hot), and §11 P9 and P10 on the training patients; since step 4a, the 14 configurations (§9) and `admissible_set` (§12: task gate, must-have gates, MOD-1, and MOD-2 via `mod2_check`, which reports the rank of the design matrix and the columns behind any collinearity). since step 4b, §13–§15 prior ranking (`prior`), §16 nested CV (`cv round1`, `cv round2`, `cv add` for post-prior configurations; outer 10 / inner 5 folds stratified by outcome × hospital, `CV_SEED` = 2026, tuned on PR-AUC; results accumulate in `core_cv_store.json` with each patient's outer fold and the training table's checksum), §18 observations and learning curve (`diagnose`; since 27 October 2026 O4 needs the ratio test and the O2 comparison, following the `FRAMEWORK` change to §18, SHA-256 `10a7e36c…`), §16/§17/§19/§20 threshold, confidence, recommendation and why-not codes (`recommend`), and the single test-set evaluation (`final --approved "…"`, which reads `private/test_table.csv.gz`, built only at 4g). `[I]` thresholds and grids are named constants; interpretations a–s are in the docstring. Writes its SHA-256 into every output. Seeds: `CV_SEED` = 2026 for folds, learning-curve subsets and tree tie-breaks. Seconds for `prior`; minutes to tens of minutes per configuration for CV. | `Code/outputs/sepsis/private/train_table.csv.gz`; a properties file such as `Code/sepsis/props_dr11.json` (the DR-11 values); `final` also `private/test_table.csv.gz` | `Code/outputs/sepsis/core_p9_p10.json`, `core_admset.json`, `core_prior.json`, `core_cv_store.json`, `core_cv_round1.json`, `core_cv_round2.json`, `core_diagnose_*.json`, `core_recommend.json`, `core_final.json`; `private/core_test_predictions.csv.gz` (not in git) | `cd Code && uv run python sepsis/core.py <command> …` (commands in the docstring) |
 | `Code/sepsis_08_fig1_coverage.py` | Figure 1: share of training patients with at least one value of each clinical column in hours 1–6, by hospital (horizontal bars, A blue, B orange). Reads the counts; computes nothing new. Light and dark versions. | `Code/outputs/sepsis/07_train_table.json` | `Code/outputs/sepsis/figures/fig1_coverage.png`, `dark/fig1_coverage.png`, `fig1_coverage.json` | `cd Code && uv run python sepsis_08_fig1_coverage.py` |
 | `Code/sepsis_09_fig2_3_distributions.py` | Figures 2 (seven vitals) and 3 (twenty labs): histograms of the last value in hours 1–6 over the training patients who have one, 40 bins over each panel's full range, the ten DR-09 log inputs on a log axis. Not split by outcome. Writes each panel's count, minimum and maximum for the captions. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/figures/fig2_vitals.png`, `fig3_labs.png` (+ `dark/`), `fig2_3_distributions.json` | `cd Code && uv run python sepsis_09_fig2_3_distributions.py` |
 | `Code/sepsis_10_fig4_onset.py` | Figure 4: number of training positives whose label switches on in each ICU hour 7–54, by hospital (lines, A blue, B orange). Writes the medians and quartiles for the caption. | `Code/outputs/sepsis/07_train_table.json` | `Code/outputs/sepsis/figures/fig4_onset.png` (+ `dark/`), `fig4_onset.json` | `cd Code && uv run python sepsis_10_fig4_onset.py` |
 | `Code/sepsis_11_calcium_ptt_counts.py` | After step 3, counts only. (a) Training patients whose last `Calcium` is below `CALCIUM_LOW` = 2.0 mg/dL `[I]`, by hospital, with the counts at 1.75, 2.5, 3.0 and 3.5 and a binned distribution. (b) Last `PTT` values of exactly 150 and 250 s, and above 150, by hospital. Changes nothing. No random steps, no seed. Its committed outputs describe the training table before the `Calcium` rule (Analysis Log rows 16–17) and were deliberately not regenerated (user's decision, 27 October 2026); run now, it reads the cleaned table and gives different `Calcium` counts. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/11_calcium_ptt_counts.json`, `11_calcium_ptt_counts.md` | `cd Code && uv run python sepsis_11_calcium_ptt_counts.py` |
-| `Code/sepsis_12_test_table.py` | Step 4g, run only after the user approves using the test set. Builds one row per test patient with `build(split)`, the construction of `sepsis_07` (DR-09 design); before writing, rebuilds the training table with the same function and checks it equals the stored one exactly. Checks no patient is in both tables. Computes no metric. No random steps, no seed. | `Code/outputs/sepsis/private/hours.csv.gz`, `cohort.csv.gz`, `train_table.csv.gz` | `Code/outputs/sepsis/private/test_table.csv.gz` (not in git); `Code/outputs/sepsis/12_test_table.json` | `cd Code && uv run python sepsis_12_test_table.py` |
+| `Code/sepsis_12_test_table.py` | Step 4g, run only after the user approves using the test set. Builds one row per test patient with `build(split)`, the construction of `sepsis_07` (DR-09 design); before writing, rebuilds the training table with the same function and checks it equals the stored one exactly. Checks no patient is in both tables. Requires `Age`, `Gender`, `HospAdmTime` to be non-empty for the training rebuild only; for the test rows it counts the gaps (the core fills them with the training median, DR-19). Computes no metric. No random steps, no seed. About half a minute. | `Code/outputs/sepsis/private/hours.csv.gz`, `cohort.csv.gz`, `train_table.csv.gz` | `Code/outputs/sepsis/private/test_table.csv.gz` (not in git); `Code/outputs/sepsis/12_test_table.json` | `cd Code && uv run python sepsis_12_test_table.py` |
 
 Uses pandas, numpy and scikit-learn (`sepsis_06`) from the existing environment; no new dependency.
 

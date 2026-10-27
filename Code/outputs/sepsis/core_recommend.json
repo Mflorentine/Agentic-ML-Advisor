@@ -1,5 +1,5 @@
 {
-  "core_version_sha256": "10a7e36c200cdf52823fa78f5ea9f3e7c57d9c3580bdc7e24ecefdcfc19fd1b6",
+  "core_version_sha256": "223530074b4c9687c199965bfb79a980caa26ef3bbb07a50c96cb556bf693158",
   "properties_file": "sepsis/props_dr11.json",
   "recommendation": {
     "entry": "Logistic + L2",

@@ -259,7 +259,10 @@ def preprocessor(drop: tuple = ()) -> ColumnTransformer:
         ("log_then_median", Pipeline([("log", FunctionTransformer(np.log)),
                                       ("median", SimpleImputer(strategy="median"))]), keep(LOG_INPUTS)),
         ("median", SimpleImputer(strategy="median"), keep(other_clinical)),
-        ("as_is", "passthrough", keep(MEASURED + CONSTANT)),
+        ("as_is", "passthrough", keep(MEASURED)),
+        # DR-19 (27 October 2026): Age, Gender, HospAdmTime filled with the training(-fold) median, as the
+        # clinical columns are; no training patient has one empty, so training results do not change
+        ("constant_median", SimpleImputer(strategy="median"), keep(CONSTANT)),
         ("unit", OneHotEncoder(categories=[UNIT_LEVELS]), keep(["Unit"])),
     ]
     return ColumnTransformer([p for p in parts if p[2]], verbose_feature_names_out=False)

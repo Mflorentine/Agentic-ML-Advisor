@@ -44,7 +44,9 @@ def build(split: str, hours: pd.DataFrame, cohort: pd.DataFrame) -> pd.DataFrame
     unit[u2 == 1] = "SICU"
     assert not ((u1 == 1) & (u2 == 1)).any()
     table = pats[["set", "y"]].join([last, measured, const, unit.rename("Unit")], how="left")
-    assert len(table) == len(pats) and table[CONSTANT].notna().all().all()
+    assert len(table) == len(pats)
+    if split == "train":                                    # as in sepsis_07; test rows may have gaps, which the
+        assert table[CONSTANT].notna().all().all()          # core fills with the training median (DR-19)
     return table.reset_index()
 
 
@@ -65,6 +67,7 @@ def main() -> None:
         "positive": int(test.y.sum()),
         "patients_by_set": {s: int((test.set == s).sum()) for s in ("A", "B")},
         "columns": list(test.columns),
+        "empty_constant_inputs": {c: int(test[c].isna().sum()) for c in CONSTANT},   # filled by the core (DR-19)
         "training_table_rebuilt_identically": True,
         "train_table_sha256": hashlib.sha256((PRIVATE / "train_table.csv.gz").read_bytes()).hexdigest(),
     }
