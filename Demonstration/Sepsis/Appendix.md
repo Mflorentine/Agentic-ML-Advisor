@@ -902,7 +902,7 @@ As DR-10, with the same results: no property value changed.
 - Function: `prior_ranking` (`cd Code && uv run python sepsis/core.py prior sepsis/props_dr11.json`) · version: interim core, not reviewed, SHA-256 `dbae21d4e80f8a31b7b75addd2c359bab47a82c12ffb969ea67c2c3b7cc9b5bc` (extended for 4b–4g from `f505ef87…`; `admissible_set` and `p9_p10` unchanged; approved by the user before this run) · inputs: DR-11 property values in `Code/sepsis/props_dr11.json` · output: `Code/outputs/sepsis/core_prior.json`, copied above unchanged.
 
 - **Confidence:** n/a
-- **Outcome vs expectation:** pending (filled in at 4d, after round 2)
+- **Outcome vs expectation:** partial (filled in at 4d, from DR-14 and DR-15). As expected: the two logistic configurations lead and are within noise of each other (`Logistic + L2` 0.0930, `Logistic + poly + L2` 0.0907; margin 0.0023, spread 0.0077), and all four clearly beat the baseline. Not as expected: `kNN` (0.0706) ranks above `Tree` (0.0678), the reverse of the expected order; the margin between them is 0.0028 with spread 0.0088 (computed by the agent from the stored fold values, not a core output).
 - **User involvement:** approved the extended core (§13–§19, interpretations g–s) before it was run; approved the method — the admissible set (DR-12), this ranking and the kept configurations, the §16 protocol and the survival-analysis flag (DR-07) — chosen as "Agree; close 4b" from three options without a recommendation, 27 October 2026
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_prior.json`, DR-11, DR-12
@@ -966,6 +966,68 @@ As DR-10, with the same results: no property value changed.
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_cv_round1.json`, `Code/outputs/sepsis/core_cv_store.json`, DR-13
 
+### DR-15 · CV · step 4
+
+- **Sub-task:** 1
+- **Date:** 2026-10-27
+- **Question:** Round 2 (§15, SEQ-3): how do the remaining kept configurations — `Tree`, `Logistic + poly + L2`, `kNN` — do on the same folds?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| `Tree`, per outer fold: tuned depth / min leaf · PR-AUC train · PR-AUC val | 0: 4/20 · 0.0970 · 0.0670; 1: 6/5 · 0.1468 · 0.0572; 2: 6/20 · 0.1242 · 0.0615; 3: 4/20 · 0.0953 · 0.0731; 4: 5/10 · 0.1145 · 0.0530; 5: 6/5 · 0.1604 · 0.0524; 6: 8/20 · 0.1706 · 0.0874; 7: 4/10 · 0.0943 · 0.0977; 8: 5/20 · 0.1136 · 0.0680; 9: 5/5 · 0.1196 · 0.0604 | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| `Logistic + poly + L2`, per outer fold: λ / degree · PR-AUC train · PR-AUC val · converged | 0: 10⁻²/2 · 0.0947 · 0.0877 · yes; 1: 10⁻²/2 · 0.0953 · 0.0887 · yes; 2: 10⁻³/3 · 0.1077 · 0.0797 · yes; 3: 10⁻³/3 · 0.1067 · 0.0846 · yes; 4: 10⁻⁴/2 · 0.1030 · 0.0756 · yes; 5: 10⁻³/2 · 0.1030 · 0.0729 · yes; 6: 10⁻³/3 · 0.1008 · 0.1283 · yes; 7: 10⁻³/2 · 0.0993 · 0.1041 · yes; 8: 10⁻⁴/2 · 0.0999 · 0.1071 · yes; 9: 10⁻³/3 · 0.1066 · 0.0785 · yes | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| `kNN`, per outer fold: k · PR-AUC train · PR-AUC val | 0: 51 · 0.1216 · 0.0694; 1: 51 · 0.1199 · 0.0747; 2: 51 · 0.1194 · 0.0686; 3: 51 · 0.1200 · 0.0642; 4: 51 · 0.1217 · 0.0621; 5: 51 · 0.1260 · 0.0519; 6: 51 · 0.1158 · 0.1006; 7: 51 · 0.1170 · 0.0909; 8: 51 · 0.1196 · 0.0631; 9: 51 · 0.1230 · 0.0601 | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| Hyperparameters at a grid edge | `kNN`: k = 51, the largest in the grid, in 10 of 10 folds. `Logistic + poly + L2`: λ = 10⁻⁴, the smallest, in 2 of 10. `Tree`: depth never at an edge (4–8); minimum leaf 20, the largest, in 5 of 10 | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| Convergence | all `Logistic + poly + L2` refits converged; `Tree` and `kNN` have no iterative fit | CV | `Code/outputs/sepsis/core_cv_round2.json` |
+| Means recomputed from the ten fold values | `Tree` 0.0678, `Logistic + poly + L2` 0.0907, `kNN` 0.0706, as in the core's table | CV | the per-fold values above |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §14 SEQ-3 | round 2 run because `Logistic + L2` clearly beat the baseline (DR-14) | [B pp.331–332] | — |
+| §16 protocol | the same stored outer folds as round 1 (checked against the training table's checksum and each patient's fold) | [B pp.72–73]; [I] | margins are paired by fold |
+| §17 C2 | `Tree`, `Logistic + poly + L2`, `kNN` all clear | [I] threshold | all four configurations clearly beat the baseline |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear if margin ≥ 1 × spread | 1 × spread | `Tree` 0.0363 vs 0.0148; `Logistic + poly + L2` 0.0593 vs 0.0174; `kNN` 0.0391 vs 0.0147 |
+
+**CV table** (all configurations; outer 10, inner 5, stratified by outcome × hospital, seed 2026; metric PR-AUC as average precision)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean PR-AUC | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `Logistic + L2` | no | λ = 10⁻³ (7 of 10) | 0.0930 | 0.0156 | leader | +0.0615 (0.0156), clear | 0.9040 | 0.9070 |
+| `Logistic + poly + L2` | no | λ = 10⁻³, degree 3 (4 of 10) | 0.0907 | 0.0174 | −0.0023 (0.0077) | +0.0593 (0.0174), clear | 0.8983 | 0.9093 |
+| `kNN` | no | k = 51 (10 of 10) | 0.0706 | 0.0148 | −0.0225 (0.0118) | +0.0391 (0.0147), clear | 0.8796 | 0.9294 |
+| `Tree` | no | depth 4, min leaf 20 (2 of 10) | 0.0678 | 0.0148 | −0.0252 (0.0151) | +0.0363 (0.0148), clear | 0.8764 | 0.9322 |
+| Baseline (flag nobody) | no | — | 0.0315 | 0.0002 | −0.0615 (0.0156) | — | 0.9685 | 0.9685 |
+
+- **Options considered:** none: §15 fixes what round 2 runs
+- **Expectation:** DR-13: the two logistic configurations at the top, close; then `Tree`; `kNN` last; all above the baseline.
+- **Outcome vs expectation:** partial — top two and all above the baseline as expected; `kNN` above `Tree`, the reverse of the expected order (DR-13). Recorded as found.
+- **Decision:** the leader is `Logistic + L2` (0.0930). Round 2 is complete; the diagnosis loop (4e) starts with the leader when the user asks. The grid edges above are recorded as facts; whether O5 holds is checked by the core in 4e for the leading configuration.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `run_cv` via `cd Code && uv run python sepsis/core.py cv round2 sepsis/props_dr11.json` · version: interim core, not reviewed, SHA-256 `dbae21d4e80f8a31b7b75addd2c359bab47a82c12ffb969ea67c2c3b7cc9b5bc` (approved at 4b) · inputs: DR-11 property values; the training table (`44d64dd4…`); the stored folds from round 1; `CV_SEED` 2026 · output: `Code/outputs/sepsis/core_cv_round2.json` and `core_cv_store.json`, copied above unchanged, rounded to 4 decimals. Run time about 35 minutes.
+
+- **Confidence:** n/a (computed at 4f)
+- **Outcome vs expectation:** partial (see above; DR-13 updated)
+- **User involvement:** asked to continue to round 2
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_cv_round2.json`, `Code/outputs/sepsis/core_cv_store.json`, DR-13, DR-14
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1001,6 +1063,7 @@ As DR-10, with the same results: no property value changed.
 | 23 | Step 4 started, sub-task 1 (27 October 2026); 4a, the admissible set. Checked the labels before 4a: nothing beyond the limitation already recorded in DR-01. Extended the interim core with §9 and §12 (`admissible_set`, `mod2_check`, interpretations d–f), SHA-256 `43af578e…` → `f505ef87…`, `p9_p10` unchanged; wrote the DR-11 values to `Code/sepsis/props_dr11.json`. Showed the extension to the user, who approved it before it was run. Result: task gate leaves `Logistic`, `kNN`, `Tree`; no must-haves; MOD-1 does not apply; MOD-2 applies because the three one-hot `Unit` columns sum to the intercept (rank 60 of 61, 118 of 119 with powers), the only collinearity. Put the `Unit` encoding to the user as three options without a recommendation; the user chose "Keep 3 columns (DR-09 as is)". Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree` (DR-12). At the end of 4a the user asked to revisit whether P5 is a must-have; put as three options without a recommendation, the user kept "inspectable" as a preference, so DR-11 and DR-12 stand. | `Code/outputs/sepsis/core_admset.json`; DR-12 |
 | 24 | Step 4b, sub-task 1 (27 October 2026). Extended the interim core with §13–§19 so the user's approval at 4b covers the whole core: prior ranking, nested CV with a stored fold assignment, diagnosis observations and learning curve, decision threshold, confidence, recommendation, why-not codes, and the single test-set evaluation (`final`, which needs the user's quoted approval and refuses a second run). Interpretations g–s added to the docstring; `preprocessor()` gained an optional `drop` argument (no change by default). Checked before showing it: it compiles, and each admissible configuration's pipeline runs on synthetic data; nothing was fitted on patients. SHA-256 `f505ef87…` → `dbae21d4…`; the user approved it, then `prior` was run: `Logistic + L2` +2 (simple-first), `Tree` +1, `Logistic + poly + L2` 0, `kNN` −2; all four kept, no `DISF` (DR-13, with the advisor's expectation of the CV order). Presented the property values, kept configurations, §16 protocol and the survival-analysis flag; the user agreed the method ("Agree; close 4b"). Step 4b closed. | `Code/outputs/sepsis/core_prior.json`; DR-13 |
 | 25 | Step 4c, sub-task 1 (27 October 2026): cross-validation round 1 with the approved core (`dbae21d4…`), about 2 minutes. Baseline (flag nobody) mean PR-AUC 0.0315 (fold SD 0.0002); `Logistic + L2` 0.0930 (fold SD 0.0156), E_train 0.9040, E_val 0.9070; margin over the baseline +0.0615 with spread 0.0156, so C2 = clear and DX-1 is not triggered. Tuned λ 10⁻³ in 7 folds and 10⁻² in 3, never at a grid edge; all folds converged. Mean recomputed from the ten fold values: 0.0930, as in the core's table. Round 2 not started. | `Code/outputs/sepsis/core_cv_round1.json`, `core_cv_store.json`; DR-14 |
+| 26 | Step 4d, sub-task 1 (27 October 2026): cross-validation round 2 with the approved core (`dbae21d4…`) on the stored folds, about 35 minutes. Mean PR-AUC (fold SD): `Logistic + poly + L2` 0.0907 (0.0174), `kNN` 0.0706 (0.0148), `Tree` 0.0678 (0.0148); all clearly beat the baseline (C2). Leader still `Logistic + L2` (0.0930); `Logistic + poly + L2` is 0.0023 behind with spread 0.0077. Grid edges: `kNN` k = 51 in 10 of 10 folds; `Logistic + poly + L2` λ = 10⁻⁴ in 2 of 10; `Tree` minimum leaf 20 in 5 of 10. All logistic refits converged. Means recomputed from the fold values: as in the core's table. DR-13 outcome vs expectation filled in: partial (`kNN` above `Tree`, the reverse of the expectation). | `Code/outputs/sepsis/core_cv_round2.json`, `core_cv_store.json`; DR-15 |
 
 ## Code Summary
 
