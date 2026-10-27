@@ -1146,6 +1146,91 @@ As DR-10, with the same results: no property value changed.
 - **Supersedes / superseded by:** supersedes DR-16
 - **Links:** `Code/sepsis/core.py` (`observations`), `Code/outputs/sepsis/core_diagnose_Logistic___L2.json`, `ML Guide.md` §18, DR-16, Analysis Log row 11
 
+### DR-18 · FINAL · step 4
+
+- **Sub-task:** 1
+- **Date:** 2026-10-27
+- **Question:** Which configuration does the recommendation rule (§19) choose, how confident is the selection (§17), at which decision threshold, and — once the user approves — how does it do on the test set?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| CV results | the CV table of DR-15 (round 1 and 2, same folds) | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| Diagnosis | no observation holds; loop stopped (S5) | CV | DR-17 |
+| Threshold trade-off | "F2, as in DR-05", chosen from three options without a recommendation (F2; F1; a fixed minimum recall) | M | user, 27 October 2026 |
+| Recommendation | `Logistic + L2`, λ = 10⁻³ (the most common setting, 7 of 10 outer folds; interpretation r), decision threshold r = 0.040 | CV | `Code/outputs/sepsis/core_recommend.json` |
+| Selection confidence | Low — C1 none (runner-up `Logistic + poly + L2`, margin 0.0023, spread 0.0077); C2 clear (margin over the baseline 0.0615, spread 0.0156); C3 adequate (E_val 80 % − 100 % = 0.0015 < 0.5 × 0.0156) | CV | same |
+| Prior agreement | agree: the CV winner among the prior-kept configurations is `Logistic + L2`, the prior's first | CV | same |
+| Grounding | 2 matrix entries, both `[B→I]`: P5 = inspectable → Logistic `[B→I p.347]`; P6 = yes → Logistic `[B→I pp.50, 53–54]` | — | same |
+| Selection breadth | 4 configurations compared; the note (> 10) does not apply | — | same |
+| Decision threshold, nested CV at r chosen inside each outer fold | r per outer fold 0.040, 0.045, 0.035, 0.040, 0.045, 0.035, 0.035, 0.040, 0.045, 0.040; F2 0.2204 (SD 0.0182), precision 0.0723 (SD 0.0050), recall 0.4582 (SD 0.0737) | CV | same |
+| Final threshold, on all training patients' inner out-of-fold probabilities | 0.040 | CV | same |
+| Uncertainty for 4g | SD of PR-AUC across the outer folds for `Logistic + L2`: 0.0156 `[B→I pp.71–73]` | CV | same |
+| Training positive rate | 0.0315 (984 of 31,270) | T | same |
+
+**§19 trace**
+
+1. **Eligible** (C2 = clear; no must-haves in DR-11): `Logistic + L2` (+0.0615, spread 0.0156), `Logistic + poly + L2` (+0.0593, 0.0174), `kNN` (+0.0391, 0.0147), `Tree` (+0.0363, 0.0148) — all four.
+2. **Candidates** (best CV mean, plus any within 0.5 × spread of it): `Logistic + L2` (0.0930, best); `Logistic + poly + L2` (0.0907; margin 0.0023 < 0.5 × 0.0077 = 0.0039).
+3. **Choice** (fewest add-ons, then prior score, then CV mean): `Logistic + L2` (1 add-on, prior score +2) over `Logistic + poly + L2` (2 add-ons, prior score 0); decided at the first step, add-ons.
+4. **Test once:** pending the user's approval (step 4g).
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §19.1 eligible = C2 clear and every must-have met | all four eligible | [I] (C2 threshold) | — |
+| §19.2 candidates within the noise margin | `Logistic + L2`, `Logistic + poly + L2` | [I] threshold 0.5 × spread | — |
+| §19.3 fewest add-ons | `Logistic + L2` | [B p.332] | recommended |
+| §17 C1, C2, C3 and the level rule | C1 none, C2 clear, C3 adequate → Low | [I]; C3 [B→I pp.334–336] + [I] | reported with its factors |
+| §16 decision threshold (P6 = yes) | tuned after selection, maximising F2, nested | [B→I pp.53–54, 92–93] | r = 0.040 |
+| Final hyperparameters (interpretation r) | the most common setting across the outer folds | [I] | λ = 10⁻³ |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C1 clear ≥ 1 × spread, moderate ≥ 0.5 × spread | 0.0077 / 0.0039 | 0.0023 → none |
+| C2 clear ≥ 1 × spread | 0.0156 | 0.0615 |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0078 | 0.0015 |
+| §19 within noise < 0.5 × spread | 0.0039 | 0.0023 |
+| Breadth note > 10 configurations | 10 | 4 |
+| Threshold grid | 0.005 to 0.500, step 0.005 | chosen 0.040 |
+
+- **Options considered:** the four eligible configurations; the threshold trade-off (F2, F1, a fixed minimum recall)
+- **Expectation:** DR-13: the two logistic configurations close at the top, "quite possibly within noise"; no expectation about the choice or the confidence level was stated.
+- **Decision:** recommend `Logistic + L2` with λ = 10⁻³ and decision threshold 0.040, selection confidence Low (C1 none). The test set is used only after the user approves.
+
+**Why not** (all 14 structural configurations except the recommendation)
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] (DR-12) |
+| `Logistic` | EXCL | MOD-2: 61 parameters, rank 60 (the three `Unit` columns and the intercept) [B→I pp.46–47, 65] (DR-12) |
+| `Logistic + poly` | EXCL | MOD-2: 119 parameters, rank 118 [B→I pp.46–47, 65] (DR-12) |
+| `Logistic + poly + L2` | SIMP | margin 0.0023 < 0.5 × spread 0.0077; 2 add-ons against the recommendation's 1 |
+| `kNN` | OUTP | margin 0.0225, spread 0.0118 (≥ 1 × spread) |
+| `Tree` | OUTP | margin 0.0252, spread 0.0151 (≥ 1 × spread) |
+
+**Flags**
+
+| Method | Chapter | Evidence | Status |
+| --- | --- | --- | --- |
+| Survival analysis | not covered in the book | patients who leave the ICU before hour 54 are counted as negatives (DR-07) | not applied, not tested |
+
+**Reference code**
+
+- Function: `recommend` (`cd Code && uv run python sepsis/core.py recommend sepsis/props_dr11.json`) · version: interim core, not reviewed, SHA-256 `10a7e36c200cdf52823fa78f5ea9f3e7c57d9c3580bdc7e24ecefdcfc19fd1b6` · inputs: DR-11 property values; the CV store (DR-14, DR-15); F2 as the threshold trade-off · output: `Code/outputs/sepsis/core_recommend.json`, copied above unchanged, rounded to 4 decimals. Run time about 20 minutes (learning curve and threshold tuning).
+
+**Test-set result** — pending (step 4g, after the user's approval).
+
+- **Confidence:** Low — C1 none · C2 clear · C3 adequate — rule: Low if C1 = none or C2 = not clear · prior agreement agree · grounding [B] 0 / [B→I] 2 / [I] 0 · breadth note n/a (4 compared)
+- **Outcome vs expectation:** agree (choice as expected; the test result is pending)
+- **User involvement:** asked — threshold trade-off: "F2, as in DR-05"; test-set approval pending
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/sepsis/core.py` (`recommend`, `tune_threshold`), `Code/outputs/sepsis/core_recommend.json`, DR-12 to DR-17
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1184,6 +1269,7 @@ As DR-10, with the same results: no property value changed.
 | 26 | Step 4d, sub-task 1 (27 October 2026): cross-validation round 2 with the approved core (`dbae21d4…`) on the stored folds, about 35 minutes. Mean PR-AUC (fold SD): `Logistic + poly + L2` 0.0907 (0.0174), `kNN` 0.0706 (0.0148), `Tree` 0.0678 (0.0148); all clearly beat the baseline (C2). Leader still `Logistic + L2` (0.0930); `Logistic + poly + L2` is 0.0023 behind with spread 0.0077. Grid edges: `kNN` k = 51 in 10 of 10 folds; `Logistic + poly + L2` λ = 10⁻⁴ in 2 of 10; `Tree` minimum leaf 20 in 5 of 10. All logistic refits converged. Means recomputed from the fold values: as in the core's table. DR-13 outcome vs expectation filled in: partial (`kNN` above `Tree`, the reverse of the expectation). | `Code/outputs/sepsis/core_cv_round2.json`, `core_cv_store.json`; DR-15 |
 | 27 | Step 4e started, sub-task 1 (27 October 2026): diagnosis pass 1 on `Logistic + L2` with the approved core (`dbae21d4…`). First run stopped at the 70 % learning-curve point when a joblib worker process died (`WinError 6`, `BrokenProcessPool`); nothing was written; re-run unchanged (about 21 minutes), and its 10 %–60 % points equal the first run's. Result: E_train 0.9040, E_val 0.9070, gap 0.0029; O1, O2, O3, O5, O6 do not hold (C3 adequate); O4 (underfitting) holds, so DX-5. DX-5's polynomial part does not apply (P3 = many) and k-NN and Tree were already compared, so its remaining part — whether more input variables exist — needs the user; the loop stops. O4 holds for all four configurations (E_train ÷ gap 15.7 to 306.9), the case Analysis Log row 11 said to raise as a `FRAMEWORK` question; raised with the user. Both put as options without a recommendation: the user chose "No new inputs; stop the loop" (S5, the loop ends after one pass) and "Keep §18 as written" (no `FRAMEWORK` change; row 11's open point closed for this analysis). | `Code/outputs/sepsis/core_diagnose_Logistic___L2.json`; DR-16 |
 | 28 | Step 4e, sub-task 1 (27 October 2026). The user then changed §18 O4 under `FRAMEWORK` (superseding the "Keep §18 as written" choice in row 27): when P10 = imbalanced and errors are 1 − the deciding metric, O4 needs the ratio test and the O2 comparison. The agent checked the cited pages against the book (2nd edition draft of 1 September 2026, printed pp. 331–337, read from smlbook.org and not kept): the user's reason cited pp. 334–335 for judging underfitting against the desired performance, which those pages do not state (p. 333: big training error with small gap; p. 335: Fig. 13.2 "High training error?"; p. 331: performance against a reference level); the user chose the tag `[B→I pp.331, 333, 335]`. The agent also pointed out that O4 then never drives an action ahead of O2; the user kept the rule as written. Commits: DR-16 and its output (`5e0915e`), `ML Guide.md` alone (`0d68044`). Core updated (`observations()` only), SHA-256 `dbae21d4…` → `10a7e36c…`; diagnosis re-run (about 19 minutes): errors and learning curve unchanged (E_train 0.9040, E_val 0.9070, gap 0.0029); O4 true → false (ratio test true, O2 comparison false); no observation holds. Put to the user without a recommendation (DX-7 needs the criterion not met, and the criterion is assessed at 4g): the user chose "Stop the loop (S5), go to 4f". DR-17 supersedes DR-16. Resolves the open point in row 11. | `Code/outputs/sepsis/core_diagnose_Logistic___L2.json`; DR-17; `ML Guide.md` §18 |
+| 29 | Step 4f, sub-task 1 (27 October 2026). Put the threshold trade-off to the user as three options without a recommendation; the user chose "F2, as in DR-05". Ran `recommend` with the core `10a7e36c…` (about 20 minutes). Recommended `Logistic + L2`, λ = 10⁻³ (7 of 10 folds), decision threshold 0.040; candidates `Logistic + L2` and `Logistic + poly + L2` (margin 0.0023, spread 0.0077), chosen by fewer add-ons. Selection confidence Low: C1 none, C2 clear, C3 adequate. Prior agreement agree; grounding 2 `[B→I]`; breadth note does not apply (4 compared). Nested CV at the tuned threshold: F2 0.2204 (SD 0.0182), precision 0.0723 (0.0050), recall 0.4582 (0.0737). Why-not: 10 `EXCL`, `Logistic + poly + L2` `SIMP`, `kNN` and `Tree` `OUTP`. Uncertainty for 4g: SD of PR-AUC 0.0156. Wrote `Code/sepsis_12_test_table.py` for 4g (not run): it builds the test rows with the training table's construction and first checks that this construction reproduces the stored training table exactly. | `Code/outputs/sepsis/core_recommend.json`; DR-18 |
 
 ## Code Summary
 
@@ -1203,6 +1289,7 @@ Scripts for this analysis are prefixed `sepsis_` and write to `Code/outputs/seps
 | `Code/sepsis_09_fig2_3_distributions.py` | Figures 2 (seven vitals) and 3 (twenty labs): histograms of the last value in hours 1–6 over the training patients who have one, 40 bins over each panel's full range, the ten DR-09 log inputs on a log axis. Not split by outcome. Writes each panel's count, minimum and maximum for the captions. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/figures/fig2_vitals.png`, `fig3_labs.png` (+ `dark/`), `fig2_3_distributions.json` | `cd Code && uv run python sepsis_09_fig2_3_distributions.py` |
 | `Code/sepsis_10_fig4_onset.py` | Figure 4: number of training positives whose label switches on in each ICU hour 7–54, by hospital (lines, A blue, B orange). Writes the medians and quartiles for the caption. | `Code/outputs/sepsis/07_train_table.json` | `Code/outputs/sepsis/figures/fig4_onset.png` (+ `dark/`), `fig4_onset.json` | `cd Code && uv run python sepsis_10_fig4_onset.py` |
 | `Code/sepsis_11_calcium_ptt_counts.py` | After step 3, counts only. (a) Training patients whose last `Calcium` is below `CALCIUM_LOW` = 2.0 mg/dL `[I]`, by hospital, with the counts at 1.75, 2.5, 3.0 and 3.5 and a binned distribution. (b) Last `PTT` values of exactly 150 and 250 s, and above 150, by hospital. Changes nothing. No random steps, no seed. Its committed outputs describe the training table before the `Calcium` rule (Analysis Log rows 16–17) and were deliberately not regenerated (user's decision, 27 October 2026); run now, it reads the cleaned table and gives different `Calcium` counts. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/11_calcium_ptt_counts.json`, `11_calcium_ptt_counts.md` | `cd Code && uv run python sepsis_11_calcium_ptt_counts.py` |
+| `Code/sepsis_12_test_table.py` | Step 4g, run only after the user approves using the test set. Builds one row per test patient with `build(split)`, the construction of `sepsis_07` (DR-09 design); before writing, rebuilds the training table with the same function and checks it equals the stored one exactly. Checks no patient is in both tables. Computes no metric. No random steps, no seed. | `Code/outputs/sepsis/private/hours.csv.gz`, `cohort.csv.gz`, `train_table.csv.gz` | `Code/outputs/sepsis/private/test_table.csv.gz` (not in git); `Code/outputs/sepsis/12_test_table.json` | `cd Code && uv run python sepsis_12_test_table.py` |
 
 Uses pandas, numpy and scikit-learn (`sepsis_06`) from the existing environment; no new dependency.
 
