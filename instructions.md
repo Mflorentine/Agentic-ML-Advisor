@@ -268,7 +268,7 @@ Get the user's agreement before anything is cross-validated. This is the step's 
 
 The test set is not used again for this sub-task. If the result leads anyone to want a different model, that is a new sub-task with a new split, recorded as such.
 
-The uncertainty of the test result is the spread (standard deviation) of the agreed metric across the outer cross-validation folds, for the recommended configuration and threshold, reported with the number of test rows and, for classification, the number of positives. It rests on the book's k-fold cross-validation and its point that a hold-out estimate varies less the larger the hold-out set; using the fold spread as the uncertainty is our step, `[B→I pp.71–73]`. This is the method the Heart Failure analysis used.
+The uncertainty of the test result is the spread (standard deviation) of the agreed metric across the outer cross-validation folds, for the recommended configuration and threshold, reported with the number of test rows and, for classification, the number of positives. It rests on the book's k-fold cross-validation and its point that a hold-out estimate varies less the larger the hold-out set; using the fold spread as the uncertainty is our step, `[B→I pp.71–73]`. Each outer fold is about a tenth of the training data, while the test set is a different size, so the fold spread approximates the uncertainty of the test result rather than measuring it. This is the method the Heart Failure analysis used.
 
 **4h — Write up.** Assemble the Recommendation Report in the `Recommendation` section of `Appendix.md` from the Decision Records. Then add the `Methods` and `Results` paragraphs for the sub-task to `Report.md`, and the evaluation figures to `Results`.
 
