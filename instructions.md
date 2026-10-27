@@ -86,6 +86,14 @@ This workspace is for working through a data analysis **one step at a time, with
   - **Report the error; do not quietly correct it.** Quote the sentence, say what is wrong, give the right value or phrasing, and leave the change to them. Silently fixing their prose is a form of undoing it.
   - **Separate an error from a disagreement.** A number that does not match the output is wrong. A claim the analysis does not support is wrong. A phrasing you would not have chosen is theirs, and saying so is noise.
   - **Say plainly when it is all correct.** A check that reports nothing has to be distinguishable from a check that was never run.
+- **The agent does all the coding; the user decides, approves and directs.** The agent writes, runs and checks every script and the interim core. The user is never asked to write, edit or run code. Showing code to the user for approval, as at step 4b, is unchanged. Installing the workspace by following `Setup.md` is outside this rule.
+- **Put every decision that is the user's to make to the user as a choice.** Where the contract says the agent acts without asking — writing its own sections of the documents, the diagnosis loop's actions on configurations — it still does.
+  - Give 2 to 4 numbered options, each with its trade-off in one line and its book page where there is one, then a final option, *"Something else (describe it)"*. The user can answer with a number.
+  - Use Claude Code's question tool where it is available, so the options can be clicked; its own "Other" option is the "Something else" option. Otherwise write the numbered list in the chat.
+  - Mark a recommended option only where the contract allows a recommendation. Where it does not — for example the admissibility answers or the must-haves, which only the user can supply, or anything that would choose a model before step 4 — give the options without a recommendation and say why.
+  - One decision per question. If a step needs several decisions, ask them in order, or as a short numbered set when they are independent.
+  - At the end of a step, the written check under *Ask whether the step is complete* comes first. The options then name what is still unsettled and include closing the step, with no option marked as recommended: a recommended "close" is the nod that check exists to prevent.
+  - Keep the question open where the answer must be in the user's own words: the problem they want to solve (step 2), their experience with machine learning (step 1), and any expectation about P8. Record their words.
 - The steps below are the agreed order of work. Announce which step you are on when it is not obvious.
 
 ## Changing This Contract
