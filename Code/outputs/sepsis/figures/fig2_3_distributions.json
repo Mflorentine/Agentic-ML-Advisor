@@ -87,8 +87,8 @@
       "log_axis": true
     },
     "Calcium": {
-      "patients_with_value": 12386,
-      "min": 1.0,
+      "patients_with_value": 10967,
+      "min": 2.05,
       "max": 20.6,
       "log_axis": false
     },

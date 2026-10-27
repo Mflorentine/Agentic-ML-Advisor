@@ -30,7 +30,10 @@ PRIVATE = OUT / "private"
 
 DROP_THRESHOLD_PCT = 10  # [I] a column is dropped if fewer than this % of patients in either hospital ever have it
 # [I] clearly impossible values; a value outside [low, high] is set to missing. None = no bound on that side.
-CLEAN_RULES = {"FiO2": (0.21, 1.0), "Temp": (25, 45), "Potassium": (None, 15), "Hgb": (None, 25)}
+CLEAN_RULES = {"FiO2": (0.21, 1.0), "Temp": (25, 45), "Potassium": (None, 15), "Hgb": (None, 25),
+               # user's decision, 27 October 2026 (Analysis Log rows 16-17, 21): below any plausible total calcium
+               # in mg/dL, and below the gap in the data at 2-3.5; B's peak at 4.0-5.25 is kept
+               "Calcium": (2.0, None)}
 NOT_INPUTS = ["ICULOS"]  # kept only to order each stay and define time windows; never an input
 
 

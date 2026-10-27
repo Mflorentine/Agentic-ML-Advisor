@@ -64,9 +64,9 @@
   ],
   "P9": {
     "value": "no",
-    "training_accuracy_negligible_regularisation": 0.9685001598976655,
+    "training_accuracy_negligible_regularisation": 0.9684362008314679,
     "C_used": 100000000.0,
-    "converged_iterations": 30,
+    "converged_iterations": 28,
     "max_iter": 100000,
     "threshold": "100 % training accuracy",
     "provenance": "[I] procedure"

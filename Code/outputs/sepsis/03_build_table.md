@@ -73,6 +73,16 @@
         "B": 2
       },
       "patients": 3
+    },
+    "Calcium": {
+      "low": 2.0,
+      "high": null,
+      "set_to_missing": 9464,
+      "by_set": {
+        "A": 1,
+        "B": 9463
+      },
+      "patients": 3835
     }
   },
   "kept_as_is": {
@@ -183,7 +193,7 @@
     }
   },
   "sha256": {
-    "private/hours.csv.gz": "f86128f3be3c87bf84aee2abf5f7c8852af7f5227c495133ea4b7dba8dd2b86e",
+    "private/hours.csv.gz": "b0459127633daf450c6eb50eecd301ed44201c98d09c129ab55c8368a6630e07",
     "private/patients.csv.gz": "0d8ab8d4a46df453298d725f3a6b61855dd355cc9b10c4685715cffd144d1535"
   }
 }
