@@ -1028,6 +1028,65 @@ As DR-10, with the same results: no property value changed.
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_cv_round2.json`, `Code/outputs/sepsis/core_cv_store.json`, DR-13, DR-14
 
+### DR-16 · DX · step 4
+
+- **Sub-task:** 1
+- **Date:** 2026-10-27
+- **Question:** Diagnosis pass 1 (§18) on the leading configuration, `Logistic + L2`: which observation holds first, and which action follows?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Errors (1 − PR-AUC, §16, P10 = imbalanced) | E_train 0.9040, E_val 0.9070, gap 0.0029 | CV | `Code/outputs/sepsis/core_diagnose_Logistic___L2.json` |
+| Learning curve, E_val mean (fold SD) at 10 %, 20 % … 100 % | 0.9250 (0.0130), 0.9165 (0.0122), 0.9126 (0.0123), 0.9139 (0.0117), 0.9119 (0.0105), 0.9104 (0.0144), 0.9093 (0.0152), 0.9084 (0.0161), 0.9072 (0.0153), 0.9070 (0.0156) | CV | same |
+| Learning curve, E_train mean at 10 % … 100 % | 0.8366, 0.8684, 0.8864, 0.8957, 0.8979, 0.8989, 0.9013, 0.9028, 0.9040, 0.9040 | CV | same |
+| E_train ÷ gap for every configuration (from the CV table; computed by the agent, not a core output) | `Logistic + L2` 306.9; `Logistic + poly + L2` 81.8; `kNN` 17.6; `Tree` 15.7. O4's test (E_train ≥ 2 × gap) holds for all four; O3's (gap ≥ 2 × E_train) for none | CV | `Code/outputs/sepsis/core_cv_round2.json` |
+| First run | stopped at the 70 % learning-curve point: a joblib worker process died (`OSError: [WinError 6] The handle is invalid`, `BrokenProcessPool`); no output was written. Re-run unchanged with the same core; the 10 %–60 % points of the first run equal those of the re-run | — | Analysis Log row 27 |
+
+**Observation → action**
+
+| Observation | Holds | Test values |
+| --- | --- | --- |
+| O1 doesn't beat the baseline | no | C2 = clear (DR-14) |
+| O2 training error above what the application needs | no | E_train 0.9040 < 1 − (training positive rate 0.0315 + fold SD 0.0156) = 0.9529 (interpretation o) |
+| O5 tuned hyperparameter at a grid edge | no | λ at an edge in 0 of 10 folds |
+| O3 overfitting | no | gap 0.0029 < 2 × E_train |
+| **O4 underfitting** | **yes** — first that holds | E_train 0.9040 ≥ 2 × gap 0.0059 |
+| O6 more data likely to help | no | C3 adequate: E_val(80 %) − E_val(100 %) = 0.0015 < 0.5 × 0.0156 |
+
+- **Action:** DX-5 (O4), more flexibility `[B pp.333–334]`. Its three parts: (i) add polynomial terms only if P3 = few — P3 = many, so not taken; `Logistic + poly + L2` has in any case been compared (DR-15, within noise of the leader); (ii) add k-NN or Tree if not already compared — both were compared in round 2, so nothing to add; (iii) ask whether more input variables exist — this needs the user, so the loop stops here. DX-9 `[B p.334]`: E_train ≫ gap, so more data is not suggested, consistent with O6 not holding.
+- **The open point from Analysis Log row 11 applies:** on the 1 − PR-AUC scale E_train is large for any model that is not near perfect, and O4 holds for every configuration compared, including the most flexible (`Tree`, `kNN` with gaps of 0.056 and 0.050). Row 11 asked for this to be raised as a `FRAMEWORK` question with the evidence if it happened; it is raised with the user now. The agent does not change the rule or skip the observation (§7).
+
+**Stopping check**
+
+- S1 (criterion met): not assessed until 4g, as in the Heart Failure analysis. S2 (achievable level): unknown (DR-05). S3 (two passes without gain): first pass. S4 (out of scope): not yet. S5 (user stops it): applies — asked whether more input variables exist, the user chose "No new inputs; stop the loop". S6 (five passes): no. The loop stops under S5 after one pass.
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| O3 overfitting: gap ≥ 2 × E_train | 2 × 0.9040 = 1.8081 | 0.0029 |
+| O4 underfitting: E_train ≥ 2 × gap | 2 × 0.0029 = 0.0059 | 0.9040 |
+| O5 edge in most folds | > 5 of 10 | 0 |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0078 | 0.0015 |
+
+- **Options considered:** the three parts of DX-5, above. Put to the user for part (iii), without a recommendation: no new inputs, stop the loop; richer summaries of hours 1–6 (DR-09 option C); restore columns dropped in step 1. For the O4 rule, without a recommendation: keep §18 as written; change it under `FRAMEWORK`; defer to after Sepsis.
+- **Expectation:** none was stated to the user before this pass. Analysis Log row 11 (18 October) had anticipated that O4 might hold on the 1 − PR-AUC scale whatever the model; it did.
+- **Decision:** O4 → DX-5. Parts (i) and (ii) do not apply; for part (iii) the user chose "No new inputs; stop the loop", so the loop ends under S5 with the four configurations as compared. On the O4 rule the user chose "Keep §18 as written": O4 stands as computed, and this record notes that on the 1 − PR-AUC scale it holds for all four configurations. The open point in Analysis Log row 11 is closed for this analysis.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a (no expectation stated; see above)
+- **User involvement:** asked to start 4e; asked — DX-5 part (iii): "No new inputs; stop the loop"; the O4 rule: "Keep §18 as written" (later superseded: the user changed O4 under `FRAMEWORK` the same day)
+- **Supersedes / superseded by:** superseded by DR-17 (pass 1 re-run under the `FRAMEWORK` change to §18 O4, 27 October 2026)
+- **Links:** `Code/sepsis/core.py` (`observations`, `learning_curve`), `Code/outputs/sepsis/core_diagnose_Logistic___L2.json`, DR-15, Analysis Log row 11
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1064,6 +1123,7 @@ As DR-10, with the same results: no property value changed.
 | 24 | Step 4b, sub-task 1 (27 October 2026). Extended the interim core with §13–§19 so the user's approval at 4b covers the whole core: prior ranking, nested CV with a stored fold assignment, diagnosis observations and learning curve, decision threshold, confidence, recommendation, why-not codes, and the single test-set evaluation (`final`, which needs the user's quoted approval and refuses a second run). Interpretations g–s added to the docstring; `preprocessor()` gained an optional `drop` argument (no change by default). Checked before showing it: it compiles, and each admissible configuration's pipeline runs on synthetic data; nothing was fitted on patients. SHA-256 `f505ef87…` → `dbae21d4…`; the user approved it, then `prior` was run: `Logistic + L2` +2 (simple-first), `Tree` +1, `Logistic + poly + L2` 0, `kNN` −2; all four kept, no `DISF` (DR-13, with the advisor's expectation of the CV order). Presented the property values, kept configurations, §16 protocol and the survival-analysis flag; the user agreed the method ("Agree; close 4b"). Step 4b closed. | `Code/outputs/sepsis/core_prior.json`; DR-13 |
 | 25 | Step 4c, sub-task 1 (27 October 2026): cross-validation round 1 with the approved core (`dbae21d4…`), about 2 minutes. Baseline (flag nobody) mean PR-AUC 0.0315 (fold SD 0.0002); `Logistic + L2` 0.0930 (fold SD 0.0156), E_train 0.9040, E_val 0.9070; margin over the baseline +0.0615 with spread 0.0156, so C2 = clear and DX-1 is not triggered. Tuned λ 10⁻³ in 7 folds and 10⁻² in 3, never at a grid edge; all folds converged. Mean recomputed from the ten fold values: 0.0930, as in the core's table. Round 2 not started. | `Code/outputs/sepsis/core_cv_round1.json`, `core_cv_store.json`; DR-14 |
 | 26 | Step 4d, sub-task 1 (27 October 2026): cross-validation round 2 with the approved core (`dbae21d4…`) on the stored folds, about 35 minutes. Mean PR-AUC (fold SD): `Logistic + poly + L2` 0.0907 (0.0174), `kNN` 0.0706 (0.0148), `Tree` 0.0678 (0.0148); all clearly beat the baseline (C2). Leader still `Logistic + L2` (0.0930); `Logistic + poly + L2` is 0.0023 behind with spread 0.0077. Grid edges: `kNN` k = 51 in 10 of 10 folds; `Logistic + poly + L2` λ = 10⁻⁴ in 2 of 10; `Tree` minimum leaf 20 in 5 of 10. All logistic refits converged. Means recomputed from the fold values: as in the core's table. DR-13 outcome vs expectation filled in: partial (`kNN` above `Tree`, the reverse of the expectation). | `Code/outputs/sepsis/core_cv_round2.json`, `core_cv_store.json`; DR-15 |
+| 27 | Step 4e started, sub-task 1 (27 October 2026): diagnosis pass 1 on `Logistic + L2` with the approved core (`dbae21d4…`). First run stopped at the 70 % learning-curve point when a joblib worker process died (`WinError 6`, `BrokenProcessPool`); nothing was written; re-run unchanged (about 21 minutes), and its 10 %–60 % points equal the first run's. Result: E_train 0.9040, E_val 0.9070, gap 0.0029; O1, O2, O3, O5, O6 do not hold (C3 adequate); O4 (underfitting) holds, so DX-5. DX-5's polynomial part does not apply (P3 = many) and k-NN and Tree were already compared, so its remaining part — whether more input variables exist — needs the user; the loop stops. O4 holds for all four configurations (E_train ÷ gap 15.7 to 306.9), the case Analysis Log row 11 said to raise as a `FRAMEWORK` question; raised with the user. Both put as options without a recommendation: the user chose "No new inputs; stop the loop" (S5, the loop ends after one pass) and "Keep §18 as written" (no `FRAMEWORK` change; row 11's open point closed for this analysis). | `Code/outputs/sepsis/core_diagnose_Logistic___L2.json`; DR-16 |
 
 ## Code Summary
 
