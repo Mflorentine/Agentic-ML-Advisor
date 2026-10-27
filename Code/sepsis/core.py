@@ -87,6 +87,7 @@ Run (from Code/):
   uv run python sepsis/core.py diagnose "<cv entry label>"
   uv run python sepsis/core.py recommend sepsis/props_dr11.json
   uv run python sepsis/core.py final --approved "<the user's words>"
+  uv run python sepsis/core.py explain   (§21: verified rebuild of the final model; writes its weights)
 """
 from __future__ import annotations
 
@@ -961,6 +962,56 @@ def final(approval: str) -> dict:
             "predictions_file": "Code/outputs/sepsis/private/core_test_predictions.csv.gz (not in git)"}
 
 
+# ======================================================================================
+# §21 explanation: the final logistic model's weights (verified rebuild)
+# ======================================================================================
+
+def explain() -> dict:
+    """Rebuild the final model with the same code path and settings as `final`, verify it is the same
+    model, and write its weights (§21: logistic coefficients on the log-odds scale).
+
+    `final` kept the fitted model in memory only. The rebuild is accepted as the same model only if its
+    probabilities for the test patients equal the saved ones exactly. That check reads the test INPUTS and
+    the saved probabilities only: no outcome is read and no metric is computed.
+    """
+    rec = json.loads((OUT / "core_recommend.json").read_text(encoding="utf-8"))
+    spec, name = rec["final_fit"], rec["recommendation"]["configuration"]
+    if CONFIG[name]["family"] != "Logistic" or CONFIG[name]["poly"]:
+        sys.exit("explain is implemented for Logistic without polynomial terms only")
+    X, y, _ = training_cv()
+    drop = tuple(spec["dropped_inputs"])
+    pipe, _ = build(name, n_inner_train(len(y)), drop, spec["grid_override"])          # as in `final`
+    model = clone(pipe).set_params(**spec["hyperparameters"]).fit(X, y)
+
+    test = pd.read_csv(TEST_TABLE, usecols=["patient"] + INPUTS)                       # inputs only
+    p = prob1(model, test[INPUTS])
+    saved = pd.read_csv(OUT / "private" / "core_test_predictions.csv.gz", usecols=["patient", "p"],
+                        float_precision="round_trip").set_index("patient").loc[test.patient, "p"].to_numpy()
+    identical = bool(np.array_equal(p, saved))
+    if not identical:
+        sys.exit(f"rebuild differs from the saved predictions (max |diff| {np.max(np.abs(p - saved))}); not written")
+
+    names = design_names(drop)
+    lr, scale = model.named_steps["m"].model_, model.named_steps["scale"]
+    coef = lr.coef_[0]
+    weights = [{"column": n, "weight_standardised": float(w), "column_mean": float(mu), "column_sd": float(sd),
+                "weight_per_unit": float(w / sd) if sd > 0 else None,
+                "unit": "log of the value" if n in LOG_INPUTS else ("0/1" if n.startswith(("measured_", "Unit_"))
+                                                                    or n == "Gender" else "the value")}
+               for n, w, mu, sd in zip(names, coef, scale.mean_, scale.scale_)]
+    weights.sort(key=lambda r: -abs(r["weight_standardised"]))
+    return {"rebuild_of": {"recommend_version": rec["core_version_sha256"], "configuration": name,
+                           "hyperparameters": spec["hyperparameters"], "threshold": spec["threshold"]},
+            "verification": {"test_patients": int(len(test)), "outcomes_read": False, "metric_computed": False,
+                             "probabilities_identical_to_saved": identical},
+            "lambda": spec["hyperparameters"].get("m__lam"), "C_used": float(model.named_steps["m"].C_),
+            "intercept": float(lr.intercept_[0]),
+            "note": "weight_standardised: change in log-odds per 1 SD of the design column (after the DR-09 log "
+                    "and median), others fixed; weight_per_unit = weight_standardised / column_sd. Sorted by "
+                    "absolute standardised weight. Not causal effects (§21).",
+            "weights": weights}
+
+
 def write(name: str, result: dict) -> None:
     result = {"core_version_sha256": version(), **result}
     (OUT / name).write_text(json.dumps(result, indent=2, default=float), encoding="utf-8")
@@ -1012,6 +1063,8 @@ def main(argv: list[str]) -> None:
     elif args[0] == "final" and len(args) == 3 and args[1] == "--approved":
         res = final(args[2])
         write("core_final.json", res)
+    elif args[0] == "explain" and len(args) == 1:
+        write("core_weights.json", explain())
     else:
         sys.exit(__doc__)
 

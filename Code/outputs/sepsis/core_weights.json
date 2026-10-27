@@ -1,0 +1,503 @@
+{
+  "core_version_sha256": "7a848f3ed1ba4384d9d5dc3ad36fbc845e7b204455feff1e77091a74ccda71ed",
+  "rebuild_of": {
+    "recommend_version": "223530074b4c9687c199965bfb79a980caa26ef3bbb07a50c96cb556bf693158",
+    "configuration": "Logistic + L2",
+    "hyperparameters": {
+      "m__lam": 0.001
+    },
+    "threshold": 0.04
+  },
+  "verification": {
+    "test_patients": 7818,
+    "outcomes_read": false,
+    "metric_computed": false,
+    "probabilities_identical_to_saved": true
+  },
+  "lambda": 0.001,
+  "C_used": 0.01598976654940838,
+  "intercept": -3.6691258206767503,
+  "note": "weight_standardised: change in log-odds per 1 SD of the design column (after the DR-09 log and median), others fixed; weight_per_unit = weight_standardised / column_sd. Sorted by absolute standardised weight. Not causal effects (\u00a721).",
+  "weights": [
+    {
+      "column": "measured_FiO2",
+      "weight_standardised": 0.2925834715880472,
+      "column_mean": 0.3368404221298369,
+      "column_sd": 0.4726298257084077,
+      "weight_per_unit": 0.6190541850580514,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_SBP",
+      "weight_standardised": -0.22944648347761695,
+      "column_mean": 0.9731371921969939,
+      "column_sd": 0.161682396567927,
+      "weight_per_unit": -1.4191185209282848,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Calcium",
+      "weight_standardised": 0.19398408335951867,
+      "column_mean": 0.3507195394947234,
+      "column_sd": 0.47719528928033134,
+      "weight_per_unit": 0.406508797796538,
+      "unit": "0/1"
+    },
+    {
+      "column": "MAP",
+      "weight_standardised": -0.18457875421598935,
+      "column_mean": 82.31426095299017,
+      "column_sd": 16.193015463291047,
+      "weight_per_unit": -0.011398664728902556,
+      "unit": "the value"
+    },
+    {
+      "column": "HR",
+      "weight_standardised": 0.1769256602862492,
+      "column_mean": 83.7055644387592,
+      "column_sd": 17.441819896019357,
+      "weight_per_unit": 0.010143761450410797,
+      "unit": "the value"
+    },
+    {
+      "column": "Resp",
+      "weight_standardised": 0.16816932260510148,
+      "column_mean": 18.059114166933163,
+      "column_sd": 4.941367455159459,
+      "weight_per_unit": 0.03403295224068185,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_WBC",
+      "weight_standardised": 0.16486547061626117,
+      "column_mean": 0.42030700351774863,
+      "column_sd": 0.4936081708315048,
+      "weight_per_unit": 0.33400069196289434,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_MAP",
+      "weight_standardised": 0.14425408728072284,
+      "column_mean": 0.983754397185801,
+      "column_sd": 0.12641868217713842,
+      "weight_per_unit": 1.1410820362657583,
+      "unit": "0/1"
+    },
+    {
+      "column": "Unit_SICU",
+      "weight_standardised": -0.13428422708952434,
+      "column_mean": 0.30633194755356574,
+      "column_sd": 0.4609692890654965,
+      "weight_per_unit": -0.2913084022620098,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Lactate",
+      "weight_standardised": 0.11955228012857101,
+      "column_mean": 0.18177166613367446,
+      "column_sd": 0.3856562297235256,
+      "weight_per_unit": 0.30999701525443335,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Glucose",
+      "weight_standardised": -0.09405838409539817,
+      "column_mean": 0.6456987527982091,
+      "column_sd": 0.4783010280492166,
+      "weight_per_unit": -0.19665101803987692,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_BUN",
+      "weight_standardised": -0.09170928603149385,
+      "column_mean": 0.4524784138151583,
+      "column_sd": 0.4977365757572547,
+      "weight_per_unit": -0.18425265591938397,
+      "unit": "0/1"
+    },
+    {
+      "column": "Gender",
+      "weight_standardised": 0.07933177370832772,
+      "column_mean": 0.5569875279820915,
+      "column_sd": 0.4967418058251961,
+      "weight_per_unit": 0.15970424228043462,
+      "unit": "0/1"
+    },
+    {
+      "column": "FiO2",
+      "weight_standardised": 0.07598825780726358,
+      "column_mean": 0.5132369683402442,
+      "column_sd": 0.11694096292241508,
+      "weight_per_unit": 0.6498001718839811,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_Alkalinephos",
+      "weight_standardised": 0.07441765935443076,
+      "column_mean": 0.15356571794051807,
+      "column_sd": 0.36053195172397084,
+      "weight_per_unit": 0.206410718935131,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Hgb",
+      "weight_standardised": -0.0734493111930832,
+      "column_mean": 0.4593540134314039,
+      "column_sd": 0.4983451652978858,
+      "weight_per_unit": -0.1473864227200416,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Creatinine",
+      "weight_standardised": -0.07196896131184073,
+      "column_mean": 0.42494403581707707,
+      "column_sd": 0.4943345044000542,
+      "weight_per_unit": -0.14558757414513354,
+      "unit": "0/1"
+    },
+    {
+      "column": "Creatinine",
+      "weight_standardised": 0.06936132998055616,
+      "column_mean": -0.03394978646996345,
+      "column_sd": 0.4431769517818553,
+      "weight_per_unit": 0.15650933493197058,
+      "unit": "log of the value"
+    },
+    {
+      "column": "measured_Resp",
+      "weight_standardised": -0.0691089113510361,
+      "column_mean": 0.9779661016949153,
+      "column_sd": 0.14679375201474643,
+      "weight_per_unit": -0.47078918824892246,
+      "unit": "0/1"
+    },
+    {
+      "column": "Unit_MICU",
+      "weight_standardised": 0.06798148631310416,
+      "column_mean": 0.3065238247521586,
+      "column_sd": 0.4610498558848046,
+      "weight_per_unit": 0.14744931691311414,
+      "unit": "0/1"
+    },
+    {
+      "column": "SBP",
+      "weight_standardised": 0.06677130044007554,
+      "column_mean": 122.32026511032937,
+      "column_sd": 22.578152749431663,
+      "weight_per_unit": 0.0029573411598854695,
+      "unit": "the value"
+    },
+    {
+      "column": "Unit_unknown",
+      "weight_standardised": 0.06273502938462383,
+      "column_mean": 0.38714422769427564,
+      "column_sd": 0.48709708955946784,
+      "weight_per_unit": 0.12879368554914092,
+      "unit": "0/1"
+    },
+    {
+      "column": "Potassium",
+      "weight_standardised": -0.05798128807690765,
+      "column_mean": 4.052600255836274,
+      "column_sd": 0.47768461633500386,
+      "weight_per_unit": -0.12137985209103935,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_PTT",
+      "weight_standardised": 0.05635027908885274,
+      "column_mean": 0.2589382795011193,
+      "column_sd": 0.4380516486787218,
+      "weight_per_unit": 0.12863843626389695,
+      "unit": "0/1"
+    },
+    {
+      "column": "BUN",
+      "weight_standardised": 0.05261822376473576,
+      "column_mean": 2.819862998315938,
+      "column_sd": 0.44939083093619886,
+      "weight_per_unit": 0.11708788907668234,
+      "unit": "log of the value"
+    },
+    {
+      "column": "DBP",
+      "weight_standardised": -0.05244576978329925,
+      "column_mean": 64.18422801407101,
+      "column_sd": 12.068925536722128,
+      "weight_per_unit": -0.004345521034471749,
+      "unit": "the value"
+    },
+    {
+      "column": "HospAdmTime",
+      "weight_standardised": -0.04852604189574377,
+      "column_mean": -50.93009721778323,
+      "column_sd": 134.21504886596657,
+      "weight_per_unit": -0.0003615544032190023,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_SaO2",
+      "weight_standardised": -0.04603936896754697,
+      "column_mean": 0.19354013431403902,
+      "column_sd": 0.39507258918282756,
+      "weight_per_unit": -0.11653394902130594,
+      "unit": "0/1"
+    },
+    {
+      "column": "Calcium",
+      "weight_standardised": -0.04560313583017375,
+      "column_mean": 8.3655733930259,
+      "column_sd": 0.7018880989102354,
+      "weight_per_unit": -0.06497208871467978,
+      "unit": "the value"
+    },
+    {
+      "column": "Lactate",
+      "weight_standardised": 0.03972927008905224,
+      "column_mean": 0.6435731297621857,
+      "column_sd": 0.26617538787747347,
+      "weight_per_unit": 0.1492597433814599,
+      "unit": "log of the value"
+    },
+    {
+      "column": "Temp",
+      "weight_standardised": 0.038673848192628764,
+      "column_mean": 36.73056156059887,
+      "column_sd": 0.6988087295661787,
+      "weight_per_unit": 0.055342537315808196,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_Bilirubin_total",
+      "weight_standardised": 0.036941334523951354,
+      "column_mean": 0.15043172369683402,
+      "column_sd": 0.35749408415017453,
+      "weight_per_unit": 0.10333411421832985,
+      "unit": "0/1"
+    },
+    {
+      "column": "Phosphate",
+      "weight_standardised": -0.036369341542411886,
+      "column_mean": 3.4594355612394234,
+      "column_sd": 0.714072277647906,
+      "weight_per_unit": -0.050932297304986315,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_Phosphate",
+      "weight_standardised": 0.035684293601544265,
+      "column_mean": 0.2640869843300288,
+      "column_sd": 0.44084583363972374,
+      "weight_per_unit": 0.08094506260142371,
+      "unit": "0/1"
+    },
+    {
+      "column": "pH",
+      "weight_standardised": 0.03565663317006162,
+      "column_mean": 7.370004796927719,
+      "column_sd": 0.04209690014255692,
+      "weight_per_unit": 0.8470132729325441,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_Hct",
+      "weight_standardised": -0.035315385194622,
+      "column_mean": 0.5018867924528302,
+      "column_sd": 0.49999644000167115,
+      "weight_per_unit": -0.0706312732836737,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Potassium",
+      "weight_standardised": -0.034319577635304334,
+      "column_mean": 0.5262232171410297,
+      "column_sd": 0.49931186935905386,
+      "weight_per_unit": -0.06873375087069122,
+      "unit": "0/1"
+    },
+    {
+      "column": "O2Sat",
+      "weight_standardised": -0.0316547262111956,
+      "column_mean": 97.60091141669332,
+      "column_sd": 3.0357707736435935,
+      "weight_per_unit": -0.010427245194538503,
+      "unit": "the value"
+    },
+    {
+      "column": "Magnesium",
+      "weight_standardised": -0.030216418520244242,
+      "column_mean": 1.917823792773282,
+      "column_sd": 0.2612782781527041,
+      "weight_per_unit": -0.11564841415015853,
+      "unit": "the value"
+    },
+    {
+      "column": "Age",
+      "weight_standardised": 0.029076984022714775,
+      "column_mean": 61.65800383754401,
+      "column_sd": 16.50536969539196,
+      "weight_per_unit": 0.0017616681455388796,
+      "unit": "the value"
+    },
+    {
+      "column": "PTT",
+      "weight_standardised": 0.02770286855602072,
+      "column_mean": 3.4769804216875433,
+      "column_sd": 0.1974979793889271,
+      "weight_per_unit": 0.14026912397653576,
+      "unit": "log of the value"
+    },
+    {
+      "column": "Glucose",
+      "weight_standardised": -0.027042692341391776,
+      "column_mean": 4.88581427596328,
+      "column_sd": 0.2672479699449822,
+      "weight_per_unit": -0.10118951454321244,
+      "unit": "log of the value"
+    },
+    {
+      "column": "measured_PaCO2",
+      "weight_standardised": 0.024906009311042122,
+      "column_mean": 0.3216181643748001,
+      "column_sd": 0.46709733537975595,
+      "weight_per_unit": 0.05332081222598546,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_O2Sat",
+      "weight_standardised": -0.02439134848047734,
+      "column_mean": 0.9924848097217781,
+      "column_sd": 0.08636383614283841,
+      "weight_per_unit": -0.2824254869843453,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Temp",
+      "weight_standardised": 0.022131440112157244,
+      "column_mean": 0.9033258714422769,
+      "column_sd": 0.29551352156096283,
+      "weight_per_unit": 0.07489146349464638,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_Platelets",
+      "weight_standardised": -0.021874260185870586,
+      "column_mean": 0.42017908538535337,
+      "column_sd": 0.49358750145235564,
+      "weight_per_unit": -0.044316884283955145,
+      "unit": "0/1"
+    },
+    {
+      "column": "SaO2",
+      "weight_standardised": -0.020350455992390982,
+      "column_mean": 96.66060281419895,
+      "column_sd": 4.934341253430198,
+      "weight_per_unit": -0.004124249813132399,
+      "unit": "the value"
+    },
+    {
+      "column": "Alkalinephos",
+      "weight_standardised": -0.019876956785269028,
+      "column_mean": 4.30136018034677,
+      "column_sd": 0.2296102242294605,
+      "weight_per_unit": -0.08656825649630058,
+      "unit": "log of the value"
+    },
+    {
+      "column": "measured_pH",
+      "weight_standardised": 0.016280532264824538,
+      "column_mean": 0.334729772945315,
+      "column_sd": 0.4718959123041347,
+      "weight_per_unit": 0.034500261265945895,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_DBP",
+      "weight_standardised": 0.01369392777967188,
+      "column_mean": 0.772081867604733,
+      "column_sd": 0.4194895199177869,
+      "weight_per_unit": 0.032644266732469666,
+      "unit": "0/1"
+    },
+    {
+      "column": "measured_AST",
+      "weight_standardised": -0.013344719830883256,
+      "column_mean": 0.15465302206587783,
+      "column_sd": 0.36157359531886,
+      "weight_per_unit": -0.03690734059027452,
+      "unit": "0/1"
+    },
+    {
+      "column": "Platelets",
+      "weight_standardised": 0.013101789364467998,
+      "column_mean": 5.272196365833471,
+      "column_sd": 0.32440324003083365,
+      "weight_per_unit": 0.04038735668368389,
+      "unit": "log of the value"
+    },
+    {
+      "column": "Bilirubin_total",
+      "weight_standardised": -0.012261613313624731,
+      "column_mean": -0.3338812202764005,
+      "column_sd": 0.33086052499890595,
+      "weight_per_unit": -0.03705976502837646,
+      "unit": "log of the value"
+    },
+    {
+      "column": "measured_Magnesium",
+      "weight_standardised": 0.007946373585791078,
+      "column_mean": 0.3585225455708347,
+      "column_sd": 0.47956660631063747,
+      "weight_per_unit": 0.0165699059968405,
+      "unit": "0/1"
+    },
+    {
+      "column": "Hgb",
+      "weight_standardised": -0.0025414935935330766,
+      "column_mean": 10.837014390786115,
+      "column_sd": 1.443778253894637,
+      "weight_per_unit": -0.001760307434107224,
+      "unit": "the value"
+    },
+    {
+      "column": "AST",
+      "weight_standardised": 0.0024563711668060153,
+      "column_mean": 3.484022786669252,
+      "column_sd": 0.46130154801620354,
+      "weight_per_unit": 0.005324870851549221,
+      "unit": "log of the value"
+    },
+    {
+      "column": "Hct",
+      "weight_standardised": -0.000779683962136754,
+      "column_mean": 32.15308378637679,
+      "column_sd": 4.2805476119707695,
+      "weight_per_unit": -0.00018214584506812356,
+      "unit": "the value"
+    },
+    {
+      "column": "measured_HR",
+      "weight_standardised": 0.000622660477964323,
+      "column_mean": 0.9964822513591302,
+      "column_sd": 0.0592061997207104,
+      "weight_per_unit": 0.01051681210585309,
+      "unit": "0/1"
+    },
+    {
+      "column": "PaCO2",
+      "weight_standardised": -0.00045770017430011374,
+      "column_mean": 40.31911256795652,
+      "column_sd": 5.117669154207172,
+      "weight_per_unit": -8.943528010673456e-05,
+      "unit": "the value"
+    },
+    {
+      "column": "WBC",
+      "weight_standardised": -0.0002527989065932089,
+      "column_mean": 2.3504017356991076,
+      "column_sd": 0.33527893184208724,
+      "weight_per_unit": -0.0007539958004646546,
+      "unit": "log of the value"
+    }
+  ]
+}
