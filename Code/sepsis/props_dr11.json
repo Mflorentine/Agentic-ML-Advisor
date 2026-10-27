@@ -1,0 +1,15 @@
+{
+  "record": "DR-11 (PROP, step 3, 27 October 2026), Demonstration/Sepsis/Appendix.md",
+  "P1": "binary",
+  "P2": "ample",
+  "P3": "many",
+  "P4": "high",
+  "P5": "inspectable",
+  "P5_must_have": false,
+  "P6": "yes",
+  "P6_must_have": false,
+  "P7": "no",
+  "P8": "unknown",
+  "P9": "no",
+  "P10": "imbalanced"
+}

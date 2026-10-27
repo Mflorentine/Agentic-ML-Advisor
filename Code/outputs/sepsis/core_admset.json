@@ -1,0 +1,136 @@
+{
+  "core_version_sha256": "f505ef87a99b9e40fa65ded60c62c9f9432dfb2c0d28c640a35a9644d24636fd",
+  "rows_used": "training patients only",
+  "n_train": 31270,
+  "properties_file": "sepsis/props_dr11.json",
+  "properties_used": {
+    "record": "DR-11 (PROP, step 3, 27 October 2026), Demonstration/Sepsis/Appendix.md",
+    "P1": "binary",
+    "P2": "ample",
+    "P3": "many",
+    "P4": "high",
+    "P5": "inspectable",
+    "P5_must_have": false,
+    "P6": "yes",
+    "P6_must_have": false,
+    "P7": "no",
+    "P8": "unknown",
+    "P9": "no",
+    "P10": "imbalanced"
+  },
+  "task_gate": {
+    "P1": "binary",
+    "families": [
+      "Logistic",
+      "Tree",
+      "kNN"
+    ],
+    "provenance": "[B pp.17, 49\u201357]"
+  },
+  "must_haves": {
+    "P5_must_have": false,
+    "P6_must_have": false
+  },
+  "MOD-1": {
+    "P9": "no",
+    "applies": false,
+    "provenance": "[B p.61]"
+  },
+  "MOD-2": {
+    "plain": {
+      "columns": 61,
+      "rows": 31270,
+      "rank": 60,
+      "null_directions": [
+        {
+          "singular_value": 1.9269058588701525e-12,
+          "columns": {
+            "Unit_unknown": 0.599,
+            "Unit_MICU": 0.567,
+            "Unit_SICU": 0.566
+          }
+        }
+      ],
+      "parameters": 61,
+      "n_train": 31270,
+      "applies": true
+    },
+    "poly": {
+      "columns": 119,
+      "rows": 31270,
+      "rank": 118,
+      "null_directions": [
+        {
+          "singular_value": 2.0547382075466797e-12,
+          "columns": {
+            "Unit_unknown": 0.599,
+            "Unit_MICU": 0.567,
+            "Unit_SICU": 0.566
+          }
+        }
+      ],
+      "parameters": 119,
+      "n_train": 31270,
+      "applies": true
+    },
+    "provenance": "[B\u2192I pp.46\u201347, 65]"
+  },
+  "admissible": [
+    "Logistic + L2",
+    "Logistic + poly + L2",
+    "kNN",
+    "Tree"
+  ],
+  "removed": [
+    {
+      "configuration": "Linear",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Linear + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Linear + poly",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Linear + poly + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Logistic",
+      "code": "EXCL",
+      "evidence": "MOD-2: 61 parameters, rank 60, n_train 31270 [B\u2192I pp.46\u201347, 65]"
+    },
+    {
+      "configuration": "Logistic + poly",
+      "code": "EXCL",
+      "evidence": "MOD-2: 119 parameters, rank 118, n_train 31270 [B\u2192I pp.46\u201347, 65]"
+    },
+    {
+      "configuration": "Poisson",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Poisson + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Exponential",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Exponential + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    }
+  ]
+}

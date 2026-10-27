@@ -793,6 +793,64 @@ As DR-10, with the same results: no property value changed.
 - **Supersedes / superseded by:** supersedes DR-10
 - **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_p9_p10.json`, `Code/outputs/sepsis/07_train_table.json`, `Code/outputs/sepsis/03_build_table.json`
 
+### DR-12 · ADMSET · step 4
+
+- **Sub-task:** 1
+- **Date:** 2026-10-27
+- **Question:** Which of the 14 structural configurations (§9) are admissible for sub-task 1, given the property values in DR-11?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Property values passed to the core | P1 binary, P2 ample, P3 many, P4 high, P5 inspectable (not a must-have), P6 yes (not a must-have), P7 no, P8 unknown, P9 no, P10 imbalanced | M / T | DR-11; `Code/sepsis/props_dr11.json` |
+| Labels checked before 4a | `SepsisLabel` is built by rule (Sepsis-3), partly from the kinds of measurement that are inputs, and shifted 6 h earlier; inputs come from ICU hours 1–6 and the outcome is the label switching on at hour 7–54. Recorded as a limitation and accepted by the user in step 1; nothing new found | M | DR-01; Data Summary, `Target and leakage` |
+| MOD-2, without powers | design matrix with intercept: 61 columns, rank 60, n_train 31,270. One null direction (singular value 1.93e-12): `Unit_unknown` 0.599, `Unit_MICU` 0.567, `Unit_SICU` 0.566 | T | `Code/outputs/sepsis/core_admset.json` |
+| MOD-2, with powers 2–3 of the 29 numerical inputs | 119 columns, rank 118, n_train 31,270. The same single null direction (singular value 2.05e-12), the three `Unit` columns | T | `Code/outputs/sepsis/core_admset.json` |
+| `Unit` encoding | "Keep 3 columns (DR-09 as is)", chosen from three options without a recommendation: keep 3 columns; 2 columns with one level as reference; reference coding for `Logistic` only | M | user, 27 October 2026 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Task gate, P1 = binary | Logistic, k-NN, Tree admissible | [B pp.17, 49–57] | 8 configurations removed: the four `Linear`, both `Poisson`, both `Exponential` |
+| Must-have gates (P5, P6) | not applied: neither is a must-have | [B→I p.347]; [B→I pp.50, 53–54] | none removed |
+| MOD-1 | P9 = no: does not apply | [B p.61] | none removed |
+| MOD-2 | applies: the three one-hot `Unit` columns sum to the intercept (exact collinearity), with and without powers | [B→I pp.46–47, 65] | `Logistic` and `Logistic + poly` removed; their `+ L2` versions remain |
+| REQ-6 | `Unit` one-hot encoded with all three levels, as in DR-09 | [B p.49] | the source of the collinearity; kept by the user's choice |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| MOD-2 exact collinearity (interpretation e) | rank < columns at numpy `matrix_rank` default tolerance | rank 60 of 61; 118 of 119 |
+| MOD-2 parameters ≥ n_train | 31,270 | 61; 119 |
+| Largest polynomial degree checked (§16 grid) | 3 | — |
+
+- **Options considered:** for `Unit`: 3 one-hot columns (DR-09); 2 columns with a reference level, which would remove the collinearity and admit all six binary-task configurations; reference coding for `Logistic` without L2 only, which would give the families different designs
+- **Expectation:** stated before the run: MOD-2 would very likely apply because of `Unit`, removing `Logistic` and `Logistic + poly`; the run would show any other collinearity. Outcome: as expected, and `Unit` is the only collinearity.
+- **Decision:** admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree`. DR-09 stands; `Unit` keeps three one-hot columns. Under §14 SEQ-2 the simple-first configuration will be `Logistic + L2`, because MOD-2 removed `Logistic` (applied in 4b).
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] |
+| `Poisson`, `Poisson + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] |
+| `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] |
+| `Logistic` | EXCL | MOD-2: 61 parameters, rank 60, n_train 31,270 (the three `Unit` columns and the intercept) [B→I pp.46–47, 65] |
+| `Logistic + poly` | EXCL | MOD-2: 119 parameters, rank 118, n_train 31,270 (the same) [B→I pp.46–47, 65] |
+
+**Reference code**
+
+- Function: `admissible_set` (`cd Code && uv run python sepsis/core.py admset sepsis/props_dr11.json`) · version: interim core, not reviewed, SHA-256 `f505ef87a99b9e40fa65ded60c62c9f9432dfb2c0d28c640a35a9644d24636fd` (extended for 4a from `43af578e…`; `p9_p10` unchanged, so DR-11 stays valid) · inputs: DR-11 property values in `Code/sepsis/props_dr11.json`; the training table; interpretations d–f in the core's docstring · output: `Code/outputs/sepsis/core_admset.json`, copied above unchanged.
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** agree (see Expectation)
+- **User involvement:** approved the 4a extension of the core before it was run; asked — `Unit` encoding: "Keep 3 columns (DR-09 as is)"; asked again at the end of 4a whether P5 should become a must-have (three options: keep as a preference; must-have with similar cases acceptable for k-NN; must-have without), and chose "Keep as a preference", so DR-11 stands
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/sepsis/core.py`, `Code/sepsis/props_dr11.json`, `Code/outputs/sepsis/core_admset.json`, DR-09, DR-11
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -825,6 +883,7 @@ As DR-10, with the same results: no property value changed.
 | 20 | `FRAMEWORK` change to `instructions.md`, `Step-by-Step Working` (commit `492bfea`), 27 October 2026, at the user's request. The agent does all the coding and the user decides, approves and directs (installing the workspace per `Setup.md` excepted); every decision that is the user's to make is put as 2 to 4 numbered options with one-line trade-offs and book pages, plus "Something else", recommending only where the contract allows; one decision per question; at the end of a step the written completeness check comes first and the options carry no recommendation; the problem, the experience level and any P8 expectation stay open questions, in the user's words. Checked against the contract: four clashes found (step closure, P8 named in two bullets, "every decision" against the agent's own writing and the diagnosis loop, `Setup.md`); the user chose a resolution for each, written into the rule. Effect on this analysis: none on the records. The user has not been asked to write or run code, and the answers already recorded keep their wording. From now on, decisions are put as options, starting with the pending scope of the `Calcium` rule (rows 16–17). | `instructions.md`, `Step-by-Step Working` |
 | 21 | After step 3, 27 October 2026. Scope of the `Calcium` rule decided, put as four options without a recommendation (the evidence did not settle whether B's values are wrong): below 2.0 mg/dL only; below 2.0 and B's (4.0, 5.25] peak; check the documentation first; leave as is. The user chose "below 2.0 mg/dL only": `Calcium` values below 2.0 mg/dL are set to missing as a step 1 cleaning rule, in every hour, for all patients; B's (4.0, 5.25] peak (271 training patients by last value) is kept. The agent's suggestion that some of B's values may be ionised rather than total calcium was given as context only; it is unverified and not a finding. Asked again later the same day with the same options, the user kept "below 2.0 mg/dL only". Applying it means re-running the pipeline from the table build. | — |
 | 22 | After step 3, 27 October 2026. Applied the `Calcium` rule: added `"Calcium": (2.0, None)` to `CLEAN_RULES` in `sepsis_03_build_table.py` and re-ran `sepsis_03` to `sepsis_07`, the core (`p9p10`) and `sepsis_08` to `sepsis_10`; `sepsis_11` not re-run (user's choice: its outputs stay as the pre-rule record behind rows 16–17). Before → after: `Calcium` values set to missing 0 → 9,464 (A 1, B 9,463; 3,835 patients; all cleaning 396 → 9,860); training patients with a last `Calcium` value 12,386 → 10,967; `Calcium` coverage all 39.61 → 35.07 %, B 47.60 → 38.55 %, A 31.56 % unchanged; smallest last `Calcium` 1.0 → 2.05 mg/dL; P9 training accuracy 0.9685 → 0.9684 (iterations 30 → 28), still no; `hours.csv.gz` SHA-256 `f86128f3…` → `b0459127…`; `train_table.csv.gz` `fbc5c540…` → `44d64dd4…`. Unchanged, checked: the split (`cohort.csv.gz` `55dce9ca…`, as in `06_split.json`), `patients.csv.gz`, the outputs of `sepsis_04` to `sepsis_06`; training patients 31,270, positives 984, 58 input columns, 60 after encoding; P2–P4 and P10; the core (`43af578e…`); Figures 2 and 4 (byte-identical). Figures 1 and 3 regenerated (Calcium bar and panel); both captions checked against `fig1_coverage.json` and `fig2_3_distributions.json` and still correct. No property changed; the user chose a new record, DR-11, superseding DR-10, because DR-10's P9 evidence no longer matched its output. Data Summary: `Calcium` added under `Cleaning`, its `Accepted as-is` entry marked superseded, B's 4.0–5.25 peak added as accepted as-is, new `hours.csv.gz` checksum. | `Code/outputs/sepsis/03_build_table.json`, `07_train_table.json`, `core_p9_p10.json`, `figures/`; DR-11 |
+| 23 | Step 4 started, sub-task 1 (27 October 2026); 4a, the admissible set. Checked the labels before 4a: nothing beyond the limitation already recorded in DR-01. Extended the interim core with §9 and §12 (`admissible_set`, `mod2_check`, interpretations d–f), SHA-256 `43af578e…` → `f505ef87…`, `p9_p10` unchanged; wrote the DR-11 values to `Code/sepsis/props_dr11.json`. Showed the extension to the user, who approved it before it was run. Result: task gate leaves `Logistic`, `kNN`, `Tree`; no must-haves; MOD-1 does not apply; MOD-2 applies because the three one-hot `Unit` columns sum to the intercept (rank 60 of 61, 118 of 119 with powers), the only collinearity. Put the `Unit` encoding to the user as three options without a recommendation; the user chose "Keep 3 columns (DR-09 as is)". Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree` (DR-12). At the end of 4a the user asked to revisit whether P5 is a must-have; put as three options without a recommendation, the user kept "inspectable" as a preference, so DR-11 and DR-12 stand. | `Code/outputs/sepsis/core_admset.json`; DR-12 |
 
 ## Code Summary
 
@@ -839,7 +898,7 @@ Scripts for this analysis are prefixed `sepsis_` and write to `Code/outputs/seps
 | `Code/sepsis_05_horizon_counts.py` | Step 2, counts only, for the agreed window `N` = 6 and horizon `H` = 48 hours. Same cohort as `sepsis_04` for N = 6. Classes each patient by `label_onset_iculos`, never by kept record length: positive (onset in hours 7–54), negative observed to hour 54, or never-septic with a record ending before hour 54. Gives the cohort size and positive share if those patients are kept as negatives or excluded, by hospital. Asserts that every patient falls in exactly one class. The cohort is built by `build_cohort()`, which `sepsis_06_split.py` imports. No random steps, no seed. About a minute. | same derived tables | `Code/outputs/sepsis/05_horizon_counts.json`, `05_horizon_counts.md` | `cd Code && uv run python sepsis_05_horizon_counts.py` |
 | `Code/sepsis_06_split.py` | Step 2, the train/test split. Takes the cohort from `build_cohort()` (one row per patient), sorts it by patient, and splits it with `train_test_split`: `TEST_FRACTION` = 0.2, shuffled, stratified by hospital × outcome, `SEED` = 2026. Writes each patient's `set`, `y` and `split`; later steps read only `split == "train"` until step 4g. Gzip with `mtime=0`, so the checksum is reproducible. About a minute. | same derived tables | `Code/outputs/sepsis/private/cohort.csv.gz` (not in git); `Code/outputs/sepsis/06_split.json`, `06_split.md` | `cd Code && uv run python sepsis_06_split.py` |
 | `Code/sepsis_07_train_table.py` | Step 3. Builds one row per training patient with the DR-09 input design: last value of each of the 27 clinical columns in ICU hours 1–6, a 0/1 "measured" indicator per clinical column, `Age`, `Gender`, `HospAdmTime`, and `Unit` (MICU, SICU, unknown) from the last non-empty `Unit1`/`Unit2` in hours 1–6. Leaves empty values empty (filling is in the core's pipeline). Keeps only `split == "train"` patients, filtering the hourly file as soon as it is read. Also counts coverage by hospital and the label-onset hours of the training positives, for the figures. No random steps, no seed. A minute or two. | `Code/outputs/sepsis/private/hours.csv.gz`, `patients.csv.gz`, `cohort.csv.gz` | `Code/outputs/sepsis/private/train_table.csv.gz` (not in git); `Code/outputs/sepsis/07_train_table.json`, `07_train_table.md` | `cd Code && uv run python sepsis_07_train_table.py` |
-| `Code/sepsis/core.py` | Interim core, not reviewed. So far: `preprocessor()`, the DR-09 pipeline shared by every model family (log of ten labs, then training-fold median; median for the other clinical columns; indicators and `Age`, `Gender`, `HospAdmTime` as they are; `Unit` one-hot), and §11 P9 and P10 on the training patients. `[I]` thresholds are named constants. Writes its SHA-256 into every output. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/core_p9_p10.json` | `cd Code && uv run python sepsis/core.py p9p10` |
+| `Code/sepsis/core.py` | Interim core, not reviewed. So far: `preprocessor()`, the DR-09 pipeline shared by every model family (log of ten labs, then training-fold median; median for the other clinical columns; indicators and `Age`, `Gender`, `HospAdmTime` as they are; `Unit` one-hot), and §11 P9 and P10 on the training patients; since step 4a, the 14 configurations (§9) and `admissible_set` (§12: task gate, must-have gates, MOD-1, and MOD-2 via `mod2_check`, which reports the rank of the design matrix and the columns behind any collinearity). `[I]` thresholds are named constants; interpretations a–f are in the docstring. Writes its SHA-256 into every output. No random steps. Seconds. | `Code/outputs/sepsis/private/train_table.csv.gz`; for `admset`, a properties file such as `Code/sepsis/props_dr11.json` (the DR-11 values) | `Code/outputs/sepsis/core_p9_p10.json`; `core_admset.json` | `cd Code && uv run python sepsis/core.py p9p10`; `cd Code && uv run python sepsis/core.py admset sepsis/props_dr11.json` |
 | `Code/sepsis_08_fig1_coverage.py` | Figure 1: share of training patients with at least one value of each clinical column in hours 1–6, by hospital (horizontal bars, A blue, B orange). Reads the counts; computes nothing new. Light and dark versions. | `Code/outputs/sepsis/07_train_table.json` | `Code/outputs/sepsis/figures/fig1_coverage.png`, `dark/fig1_coverage.png`, `fig1_coverage.json` | `cd Code && uv run python sepsis_08_fig1_coverage.py` |
 | `Code/sepsis_09_fig2_3_distributions.py` | Figures 2 (seven vitals) and 3 (twenty labs): histograms of the last value in hours 1–6 over the training patients who have one, 40 bins over each panel's full range, the ten DR-09 log inputs on a log axis. Not split by outcome. Writes each panel's count, minimum and maximum for the captions. | `Code/outputs/sepsis/private/train_table.csv.gz` | `Code/outputs/sepsis/figures/fig2_vitals.png`, `fig3_labs.png` (+ `dark/`), `fig2_3_distributions.json` | `cd Code && uv run python sepsis_09_fig2_3_distributions.py` |
 | `Code/sepsis_10_fig4_onset.py` | Figure 4: number of training positives whose label switches on in each ICU hour 7–54, by hospital (lines, A blue, B orange). Writes the medians and quartiles for the caption. | `Code/outputs/sepsis/07_train_table.json` | `Code/outputs/sepsis/figures/fig4_onset.png` (+ `dark/`), `fig4_onset.json` | `cd Code && uv run python sepsis_10_fig4_onset.py` |
