@@ -1,0 +1,50 @@
+{
+  "core_version_sha256": "dbae21d4e80f8a31b7b75addd2c359bab47a82c12ffb969ea67c2c3b7cc9b5bc",
+  "round": "round1",
+  "added": [
+    "Baseline (flag nobody)",
+    "Logistic + L2"
+  ],
+  "table": {
+    "metric": "PR-AUC (average precision)",
+    "leader": "Logistic + L2",
+    "rows": [
+      {
+        "configuration": "Baseline (flag nobody)",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": "n/a",
+        "cv_mean_pr_auc": 0.03146786056923569,
+        "fold_sd_pr_auc": 0.0001651415988149439,
+        "e_train": 0.9685321394307642,
+        "e_val": 0.9685321394307642,
+        "not_converged_folds": 0,
+        "margin_vs_leader": {
+          "mean": -0.06154770908214515,
+          "spread": 0.015593392435413156
+        }
+      },
+      {
+        "configuration": "Logistic + L2",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__lam": 0.001
+          },
+          "folds": "7/10"
+        },
+        "cv_mean_pr_auc": 0.09301556965138083,
+        "fold_sd_pr_auc": 0.015601390988199208,
+        "e_train": 0.9040386196694502,
+        "e_val": 0.9069844303486192,
+        "not_converged_folds": 0,
+        "margin_vs_baseline": {
+          "mean": 0.06154770908214515,
+          "spread": 0.015593392435413156,
+          "C2": "clear"
+        }
+      }
+    ]
+  }
+}

@@ -907,6 +907,65 @@ As DR-10, with the same results: no property value changed.
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_prior.json`, DR-11, DR-12
 
+### DR-14 · CV · step 4
+
+- **Sub-task:** 1
+- **Date:** 2026-10-27
+- **Question:** Round 1 (SEQ-3): does the simple-first configuration, `Logistic + L2`, clearly beat the baseline under the agreed nested cross-validation?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Baseline (flag nobody), per outer fold | PR-AUC val 0.0313 (folds 0–3, 8, 9) and 0.0317 (folds 4–7): each fold's positive rate | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| `Logistic + L2`, per outer fold: tuned λ · PR-AUC train · PR-AUC val · converged | 0: 10⁻² · 0.0943 · 0.0841 · yes; 1: 10⁻³ · 0.0949 · 0.1017 · yes; 2: 10⁻² · 0.0940 · 0.0913 · yes; 3: 10⁻³ · 0.0981 · 0.0774 · yes; 4: 10⁻³ · 0.0987 · 0.0778 · yes; 5: 10⁻³ · 0.0989 · 0.0782 · yes; 6: 10⁻² · 0.0902 · 0.1230 · yes; 7: 10⁻³ · 0.0966 · 0.0969 · yes; 8: 10⁻³ · 0.0959 · 0.1126 · yes; 9: 10⁻³ · 0.0980 · 0.0870 · yes | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| Tuned λ | 10⁻³ in 7 of 10 outer folds, 10⁻² in 3; never at an edge of the grid (10⁻⁴ or 10⁴) | CV | `Code/outputs/sepsis/core_cv_store.json` |
+| Convergence | all 10 outer refits converged (0 folds not converged) | CV | `Code/outputs/sepsis/core_cv_round1.json` |
+| Mean PR-AUC recomputed from the ten fold values | 0.0930, the same as the core's table | CV | the per-fold values above |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §14 SEQ-3 | baseline and simple-first first | [B pp.331–332] | round 2 only once `Logistic + L2` clearly beats the baseline |
+| §16 protocol | outer 10 / inner 5 folds, stratified by outcome × hospital, `CV_SEED` 2026; inner grid search on PR-AUC | [B pp.72–73]; [I]; [I] (further-variable rule) | as agreed in DR-13 |
+| §17 C2 | margin 0.0615 ≥ 1 × spread 0.0156: clear | [I] threshold | `Logistic + L2` clearly beats the baseline; DX-1 not triggered |
+| §16 diagnosis errors, P10 = imbalanced | E = 1 − PR-AUC | [B→I p.91] + [I] | E_train, E_val below |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear if margin ≥ 1 × spread | 1 × 0.0156 = 0.0156 | 0.0615 |
+| §16 outer / inner folds | 10 / 5 | — |
+
+**CV table** (outer 10, inner 5, stratified by outcome × hospital, seed 2026; metric PR-AUC as average precision)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean PR-AUC | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (flag nobody) | no | — | 0.0315 | 0.0002 | −0.0615 (0.0156) | — | 0.9685 | 0.9685 |
+| `Logistic + L2` | no | λ = 10⁻³ (7 of 10 folds) | 0.0930 | 0.0156 | leader | +0.0615 (0.0156), C2 clear | 0.9040 | 0.9070 |
+
+- **Options considered:** none: SEQ-3 fixes what round 1 runs
+- **Expectation:** that `Logistic + L2` would be above the baseline (DR-13). Outcome: it is, by 0.0615 PR-AUC, about 3.9 times the spread.
+- **Decision:** `Logistic + L2` clearly beats the baseline (C2 = clear), so DX-1 is not triggered and round 2 may go ahead when the user asks.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `run_cv` via `cd Code && uv run python sepsis/core.py cv round1 sepsis/props_dr11.json` · version: interim core, not reviewed, SHA-256 `dbae21d4e80f8a31b7b75addd2c359bab47a82c12ffb969ea67c2c3b7cc9b5bc` (approved at 4b) · inputs: DR-11 property values; the training table (`train_table.csv.gz` SHA-256 `44d64dd4…`, recorded in the store); `CV_SEED` 2026 · output: `Code/outputs/sepsis/core_cv_round1.json` and `core_cv_store.json` (per-fold values and each patient's outer fold), copied above unchanged, rounded to 4 decimals. Run time about 2 minutes.
+
+- **Confidence:** n/a (computed at 4f)
+- **Outcome vs expectation:** agree (round 1 only; the order of all four is compared at 4d)
+- **User involvement:** asked for round 1 only, with round 2 not started
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/sepsis/core.py`, `Code/outputs/sepsis/core_cv_round1.json`, `Code/outputs/sepsis/core_cv_store.json`, DR-13
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -941,6 +1000,7 @@ As DR-10, with the same results: no property value changed.
 | 22 | After step 3, 27 October 2026. Applied the `Calcium` rule: added `"Calcium": (2.0, None)` to `CLEAN_RULES` in `sepsis_03_build_table.py` and re-ran `sepsis_03` to `sepsis_07`, the core (`p9p10`) and `sepsis_08` to `sepsis_10`; `sepsis_11` not re-run (user's choice: its outputs stay as the pre-rule record behind rows 16–17). Before → after: `Calcium` values set to missing 0 → 9,464 (A 1, B 9,463; 3,835 patients; all cleaning 396 → 9,860); training patients with a last `Calcium` value 12,386 → 10,967; `Calcium` coverage all 39.61 → 35.07 %, B 47.60 → 38.55 %, A 31.56 % unchanged; smallest last `Calcium` 1.0 → 2.05 mg/dL; P9 training accuracy 0.9685 → 0.9684 (iterations 30 → 28), still no; `hours.csv.gz` SHA-256 `f86128f3…` → `b0459127…`; `train_table.csv.gz` `fbc5c540…` → `44d64dd4…`. Unchanged, checked: the split (`cohort.csv.gz` `55dce9ca…`, as in `06_split.json`), `patients.csv.gz`, the outputs of `sepsis_04` to `sepsis_06`; training patients 31,270, positives 984, 58 input columns, 60 after encoding; P2–P4 and P10; the core (`43af578e…`); Figures 2 and 4 (byte-identical). Figures 1 and 3 regenerated (Calcium bar and panel); both captions checked against `fig1_coverage.json` and `fig2_3_distributions.json` and still correct. No property changed; the user chose a new record, DR-11, superseding DR-10, because DR-10's P9 evidence no longer matched its output. Data Summary: `Calcium` added under `Cleaning`, its `Accepted as-is` entry marked superseded, B's 4.0–5.25 peak added as accepted as-is, new `hours.csv.gz` checksum. | `Code/outputs/sepsis/03_build_table.json`, `07_train_table.json`, `core_p9_p10.json`, `figures/`; DR-11 |
 | 23 | Step 4 started, sub-task 1 (27 October 2026); 4a, the admissible set. Checked the labels before 4a: nothing beyond the limitation already recorded in DR-01. Extended the interim core with §9 and §12 (`admissible_set`, `mod2_check`, interpretations d–f), SHA-256 `43af578e…` → `f505ef87…`, `p9_p10` unchanged; wrote the DR-11 values to `Code/sepsis/props_dr11.json`. Showed the extension to the user, who approved it before it was run. Result: task gate leaves `Logistic`, `kNN`, `Tree`; no must-haves; MOD-1 does not apply; MOD-2 applies because the three one-hot `Unit` columns sum to the intercept (rank 60 of 61, 118 of 119 with powers), the only collinearity. Put the `Unit` encoding to the user as three options without a recommendation; the user chose "Keep 3 columns (DR-09 as is)". Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree` (DR-12). At the end of 4a the user asked to revisit whether P5 is a must-have; put as three options without a recommendation, the user kept "inspectable" as a preference, so DR-11 and DR-12 stand. | `Code/outputs/sepsis/core_admset.json`; DR-12 |
 | 24 | Step 4b, sub-task 1 (27 October 2026). Extended the interim core with §13–§19 so the user's approval at 4b covers the whole core: prior ranking, nested CV with a stored fold assignment, diagnosis observations and learning curve, decision threshold, confidence, recommendation, why-not codes, and the single test-set evaluation (`final`, which needs the user's quoted approval and refuses a second run). Interpretations g–s added to the docstring; `preprocessor()` gained an optional `drop` argument (no change by default). Checked before showing it: it compiles, and each admissible configuration's pipeline runs on synthetic data; nothing was fitted on patients. SHA-256 `f505ef87…` → `dbae21d4…`; the user approved it, then `prior` was run: `Logistic + L2` +2 (simple-first), `Tree` +1, `Logistic + poly + L2` 0, `kNN` −2; all four kept, no `DISF` (DR-13, with the advisor's expectation of the CV order). Presented the property values, kept configurations, §16 protocol and the survival-analysis flag; the user agreed the method ("Agree; close 4b"). Step 4b closed. | `Code/outputs/sepsis/core_prior.json`; DR-13 |
+| 25 | Step 4c, sub-task 1 (27 October 2026): cross-validation round 1 with the approved core (`dbae21d4…`), about 2 minutes. Baseline (flag nobody) mean PR-AUC 0.0315 (fold SD 0.0002); `Logistic + L2` 0.0930 (fold SD 0.0156), E_train 0.9040, E_val 0.9070; margin over the baseline +0.0615 with spread 0.0156, so C2 = clear and DX-1 is not triggered. Tuned λ 10⁻³ in 7 folds and 10⁻² in 3, never at a grid edge; all folds converged. Mean recomputed from the ten fold values: 0.0930, as in the core's table. Round 2 not started. | `Code/outputs/sepsis/core_cv_round1.json`, `core_cv_store.json`; DR-14 |
 
 ## Code Summary
 
