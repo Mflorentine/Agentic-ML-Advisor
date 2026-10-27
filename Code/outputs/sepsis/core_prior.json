@@ -1,0 +1,121 @@
+{
+  "core_version_sha256": "dbae21d4e80f8a31b7b75addd2c359bab47a82c12ffb969ea67c2c3b7cc9b5bc",
+  "properties_file": "sepsis/props_dr11.json",
+  "properties_used": {
+    "record": "DR-11 (PROP, step 3, 27 October 2026), Demonstration/Sepsis/Appendix.md",
+    "P1": "binary",
+    "P2": "ample",
+    "P3": "many",
+    "P4": "high",
+    "P5": "inspectable",
+    "P5_must_have": false,
+    "P6": "yes",
+    "P6_must_have": false,
+    "P7": "no",
+    "P8": "unknown",
+    "P9": "no",
+    "P10": "imbalanced"
+  },
+  "admissible": [
+    "Logistic + L2",
+    "Logistic + poly + L2",
+    "kNN",
+    "Tree"
+  ],
+  "order": [
+    {
+      "configuration": "Logistic + L2",
+      "score": 2,
+      "addons": 1,
+      "entries": [
+        {
+          "entry": "P5=inspectable\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I p.347]"
+        },
+        {
+          "entry": "P6=yes\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I pp.50, 53\u201354]"
+        }
+      ],
+      "rank": 1,
+      "kept": true,
+      "role": "simple-first (SEQ-2)"
+    },
+    {
+      "configuration": "Tree",
+      "score": 1,
+      "addons": 0,
+      "entries": [
+        {
+          "entry": "P5=inspectable\u2192Tree",
+          "score": 1,
+          "provenance": "[B\u2192I p.347]"
+        }
+      ],
+      "rank": 2,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "Logistic + poly + L2",
+      "score": 0,
+      "addons": 2,
+      "entries": [
+        {
+          "entry": "P3=many\u2192poly",
+          "score": -1,
+          "provenance": "[B\u2192I p.59]"
+        },
+        {
+          "entry": "P5=inspectable\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I p.347]"
+        },
+        {
+          "entry": "P5=inspectable\u2192poly",
+          "score": -1,
+          "provenance": "[I]"
+        },
+        {
+          "entry": "P6=yes\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I pp.50, 53\u201354]"
+        }
+      ],
+      "rank": 3,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "kNN",
+      "score": -2,
+      "addons": 0,
+      "entries": [
+        {
+          "entry": "P3=many\u2192kNN",
+          "score": -1,
+          "provenance": "[I]"
+        },
+        {
+          "entry": "P4=high\u2192kNN",
+          "score": -1,
+          "provenance": "[I]"
+        }
+      ],
+      "rank": 4,
+      "kept": true,
+      "role": "kept"
+    }
+  ],
+  "simple_first": "Logistic + L2",
+  "kept": [
+    "Logistic + L2",
+    "Tree",
+    "Logistic + poly + L2",
+    "kNN"
+  ],
+  "baseline": "Baseline (flag nobody)",
+  "not_kept": []
+}
