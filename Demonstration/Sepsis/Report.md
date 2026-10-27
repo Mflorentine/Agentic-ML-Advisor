@@ -64,7 +64,7 @@ This report was written with the help of agentic AI at every stage: importing an
 
 ## Appendix
 
-*A pointer to [Appendix.md](Appendix.md), where the data, the decisions and the full workings are recorded.*
+The data, the decisions and the full workings behind this report are recorded in [Appendix.md](Appendix.md).
 
 ## References
 
