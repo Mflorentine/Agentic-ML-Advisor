@@ -762,7 +762,11 @@ def observations(key: str, store: dict, X, y, strata) -> dict:
                "compared_with": f"1 - (training positive rate {rate:.4f} + fold SD {table['fold_sd_pr_auc']:.4f})",
                "note": "interpretation o"},
         "O3": {"holds": gap >= O3_RATIO * e_train, "gap": gap, "e_train": e_train},
-        "O4": {"holds": e_train >= O4_RATIO * gap, "gap": gap, "e_train": e_train},
+        # §18 O4, P10 = imbalanced (errors are 1 - PR-AUC): ratio test AND the O2 comparison
+        # [B→I pp.331, 333, 335] (ML Guide.md version note, 27 October 2026)
+        "O4": {"holds": bool(e_train >= O4_RATIO * gap and e_train >= 1 - criterion),
+               "ratio_test": bool(e_train >= O4_RATIO * gap), "o2_comparison": bool(e_train >= 1 - criterion),
+               "gap": gap, "e_train": e_train},
         "O5": {"holds": any(v["holds"] for v in o5.values()), "by_parameter": o5},
         "O6": {"holds": lc["C3"]["value"] == "limited", "C3": lc["C3"]},
     }

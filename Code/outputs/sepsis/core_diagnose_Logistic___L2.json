@@ -1,5 +1,5 @@
 {
-  "core_version_sha256": "dbae21d4e80f8a31b7b75addd2c359bab47a82c12ffb969ea67c2c3b7cc9b5bc",
+  "core_version_sha256": "10a7e36c200cdf52823fa78f5ea9f3e7c57d9c3580bdc7e24ecefdcfc19fd1b6",
   "configuration": "Logistic + L2",
   "error": "1 - PR-AUC (P10 = imbalanced)",
   "e_train": 0.9040386196694502,
@@ -23,7 +23,9 @@
       "e_train": 0.9040386196694502
     },
     "O4": {
-      "holds": true,
+      "holds": false,
+      "ratio_test": true,
+      "o2_comparison": false,
       "gap": 0.002945810679168992,
       "e_train": 0.9040386196694502
     },
@@ -53,7 +55,7 @@
     "O4",
     "O6"
   ],
-  "first_that_holds": "O4",
+  "first_that_holds": null,
   "learning_curve": [
     {
       "fraction": 0.1,
