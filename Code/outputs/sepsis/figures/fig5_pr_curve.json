@@ -1,0 +1,13 @@
+{
+  "source": "core_final.json",
+  "core_version_sha256": "223530074b4c9687c199965bfb79a980caa26ef3bbb07a50c96cb556bf693158",
+  "configuration": "Logistic + L2",
+  "n_test": 7818,
+  "test_positives": 246,
+  "test_pr_auc": 0.08468650120390753,
+  "test_positive_rate": 0.031465848042977744,
+  "threshold": 0.04,
+  "recall_at_threshold": 0.47560975609756095,
+  "precision_at_threshold": 0.07642064010450686,
+  "curve_points": 7819
+}

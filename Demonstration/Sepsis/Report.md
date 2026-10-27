@@ -14,11 +14,13 @@ Missing a patient who develops sepsis is worse than a false alarm. Models are co
 
 ## Methods
 
-*Written in step 4, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
+### 1. Sepsis within 48 hours from the first six ICU hours
+
+Each patient's first six ICU hours are summarised as one row: the last value of each of the 27 vital signs and laboratory values, ten of the laboratory values on a logarithmic scale, and for each of the 27 whether it was measured at all. An empty value is filled with the median over the training patients; the same applies to age, sex and the time from hospital to ICU admission, which was empty for one held-out patient. The models compared are the types in Lindholm et al. (2026) that suit a yes/no outcome: logistic regression with L2 regularisation, the same with squares and cubes of the numerical inputs added, k-nearest neighbours, and a decision tree. Logistic regression without regularisation was not fitted, because the three indicator columns for the type of ICU always sum to one and so duplicate the intercept. The models were compared on the 31,270 training patients by nested cross-validation, with ten outer folds that keep the share of sepsis cases from each hospital the same in every fold. Inside each outer training fold, each model's regularisation strength, number of neighbours or tree size was tuned by five-fold cross-validation on the area under the precision–recall curve. Among the models whose mean margin over flagging nobody exceeded the variation of that margin across the folds, models within half the variation of the best were treated as indistinguishable from it, and the one with the fewest additions to the basic model was chosen. The selection confidence is computed from three factors: the margin over the runner-up, the margin over flagging nobody, and whether the validation error was still falling when the last fifth of the training data was added. The decision threshold was then chosen by cross-validation on the training patients to maximise F2. The chosen model was refitted on all training patients and evaluated once on the 7,818 held-out patients. The uncertainty reported with that result is the standard deviation of the model's area under the curve across the ten outer folds; each fold holds about a tenth of the training patients, fewer than the held-out set, so this approximates the uncertainty of the held-out result rather than measuring it.
 
 ## Results
 
-Figures 1 to 4 describe the 31,270 training patients; the 7,818 held-out patients are not shown. Where the two hospitals are shown separately, hospital A is blue and hospital B orange.
+Figures 1 to 4 describe the 31,270 training patients; the 7,818 held-out patients appear only in Figures 5 and 6. Where the two hospitals are shown separately, hospital A is blue and hospital B orange.
 
 ![Figure 1](../../Code/outputs/sepsis/figures/fig1_coverage.png)
 
@@ -35,6 +37,18 @@ Figures 1 to 4 describe the 31,270 training patients; the 7,818 held-out patient
 ![Figure 4](../../Code/outputs/sepsis/figures/fig4_onset.png)
 
 <small><b>Figure 4.</b> Number of the 984 training positives whose sepsis label switches on in each ICU hour from 7 to 54, for hospital A (624 positives, blue) and hospital B (360, orange); each point is one hour. The label switches on 6 hours before the estimated Sepsis-3 onset, so hour h corresponds to onset at hour h + 6. Median hour 21 in A (quartiles 13 and 35) and 26 in B (quartiles 15 and 39).</small>
+
+### 1. Sepsis within 48 hours from the first six ICU hours
+
+The recommended model is logistic regression with L2 regularisation (λ = 10⁻³) and a decision threshold of 0.040. On the 7,818 held-out patients, 246 of whom had the sepsis label switch on within the period, its area under the precision–recall curve is 0.0847, with a standard deviation of 0.0156 across the cross-validation folds; flagging nobody scores 0.0315, the share of positives (Figure 5). The success criterion required more than 0.0471, and it is met. At the threshold, 1,531 patients are flagged, 117 of them positive: precision 0.0764, recall 0.4756 and F2 0.2326 (Figure 6). In cross-validation, the mean areas under the curve were 0.0930 for logistic regression with L2, 0.0907 for the same with squares and cubes, 0.0706 for k-nearest neighbours, 0.0678 for the decision tree and 0.0315 for flagging nobody. The selection confidence is low: the margin over the runner-up, 0.0023, is less than half its spread across the folds, 0.0077; the margin over flagging nobody, 0.0615, exceeds its spread of 0.0156; and adding the last fifth of the training data lowered the validation error by 0.0015, less than half its fold spread.
+
+![Figure 5](../../Code/outputs/sepsis/figures/fig5_pr_curve.png)
+
+<small><b>Figure 5.</b> Precision against recall of logistic regression with L2 regularisation on the 7,818 held-out patients (246 positive), over all decision thresholds (purple); each step is one change in which patients are flagged, and by convention the curve starts at precision 1 at recall 0. The grey line is the share of positives, 0.0315: the precision of flagging patients at random, and the area under the curve of flagging nobody. The marked point is the chosen threshold, 0.040: recall 0.4756, precision 0.0764. The area under the purple curve is 0.0847.</small>
+
+![Figure 6](../../Code/outputs/sepsis/figures/fig6_confusion.png)
+
+<small><b>Figure 6.</b> The 7,818 held-out patients by whether they were flagged at the threshold of 0.040 (columns) and whether their sepsis label switched on within the period (rows), with the number of patients in each cell.</small>
 
 ## Discussion
 

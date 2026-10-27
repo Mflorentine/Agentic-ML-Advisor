@@ -1,0 +1,14 @@
+{
+  "source": "core_final.json",
+  "core_version_sha256": "223530074b4c9687c199965bfb79a980caa26ef3bbb07a50c96cb556bf693158",
+  "threshold": 0.04,
+  "n_test": 7818,
+  "test_positives": 246,
+  "confusion_matrix": {
+    "tn": 6158,
+    "fp": 1414,
+    "fn": 129,
+    "tp": 117
+  },
+  "flagged": 1531
+}
