@@ -1,0 +1,187 @@
+{
+  "core_version_sha256": "93fc3491804f41aeb4e683766b0ccbc2503517dbfbb5d4a5dd5e744f44bb7241",
+  "rebuild_of": {
+    "recommend_version": "93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a",
+    "configuration": "Logistic",
+    "hyperparameters": {
+      "m__lam": null
+    },
+    "threshold": 0.1
+  },
+  "verification": {
+    "test_patients": 60,
+    "outcomes_read": false,
+    "metric_computed": false,
+    "probabilities_identical_to_saved": true
+  },
+  "lambda": null,
+  "C_used": Infinity,
+  "intercept": -1.036147342001802,
+  "note": "weight_standardised: change in the log-odds of death per 1 SD of the column, others fixed; weight_per_unit = weight_standardised / column_sd. Sorted by absolute standardised weight. Not causal effects (\u00a721).",
+  "weights": [
+    {
+      "column": "ejection_fraction",
+      "unit": "the value as recorded",
+      "weight_standardised": -0.9348906775990791,
+      "column_mean": 37.86192468619247,
+      "column_sd": 12.00600329518675,
+      "weight_per_unit": -0.07786860078356635
+    },
+    {
+      "column": "age",
+      "unit": "the value as recorded",
+      "weight_standardised": 0.7027171198522874,
+      "column_mean": 61.072527196652715,
+      "column_sd": 12.014106874065913,
+      "weight_per_unit": 0.05849099955729527
+    },
+    {
+      "column": "serum_creatinine",
+      "unit": "the value as recorded",
+      "weight_standardised": 0.5781817129222032,
+      "column_mean": 1.3869037656903769,
+      "column_sd": 0.9523986647829679,
+      "weight_per_unit": 0.6070795080901956
+    },
+    {
+      "column": "serum_sodium",
+      "unit": "the value as recorded",
+      "weight_standardised": -0.32668293878527305,
+      "column_mean": 136.3765690376569,
+      "column_sd": 4.588556252193431,
+      "weight_per_unit": -0.07119514741245929
+    },
+    {
+      "column": "creatinine_phosphokinase",
+      "unit": "the value as recorded",
+      "weight_standardised": 0.2927188664990465,
+      "column_mean": 552.6485355648535,
+      "column_sd": 913.0172391489717,
+      "weight_per_unit": 0.00032060606738585934
+    },
+    {
+      "column": "anaemia",
+      "unit": "0/1",
+      "weight_standardised": 0.2860419397001074,
+      "column_mean": 0.4225941422594142,
+      "column_sd": 0.4939719963595545,
+      "weight_per_unit": 0.5790650923699365
+    },
+    {
+      "column": "high_blood_pressure",
+      "unit": "0/1",
+      "weight_standardised": 0.265182772951021,
+      "column_mean": 0.35564853556485354,
+      "column_sd": 0.47870936351342436,
+      "weight_per_unit": 0.5539535951516531
+    },
+    {
+      "column": "sex",
+      "unit": "0/1",
+      "weight_standardised": -0.21896964079530562,
+      "column_mean": 0.6694560669456067,
+      "column_sd": 0.47040901498092635,
+      "weight_per_unit": -0.4654877645237819
+    },
+    {
+      "column": "smoking",
+      "unit": "0/1",
+      "weight_standardised": 0.07478829274290537,
+      "column_mean": 0.3263598326359833,
+      "column_sd": 0.4688806802138436,
+      "weight_per_unit": 0.15950389064611595
+    },
+    {
+      "column": "diabetes",
+      "unit": "0/1",
+      "weight_standardised": 0.05048024294892122,
+      "column_mean": 0.41422594142259417,
+      "column_sd": 0.49258787122213993,
+      "weight_per_unit": 0.1024796709339934
+    },
+    {
+      "column": "platelets",
+      "unit": "the value as recorded",
+      "weight_standardised": -0.011382877453122213,
+      "column_mean": 263982.85594142263,
+      "column_sd": 99621.87863870276,
+      "weight_per_unit": -1.142608190958166e-07
+    }
+  ],
+  "worked_example": {
+    "patient": "constructed: numerical inputs at their training medians, indicators at their most common training value",
+    "inputs": {
+      "age": 60.0,
+      "creatinine_phosphokinase": 250.0,
+      "ejection_fraction": 38.0,
+      "platelets": 255000.0,
+      "serum_creatinine": 1.1,
+      "serum_sodium": 137.0,
+      "anaemia": 0.0,
+      "diabetes": 0.0,
+      "high_blood_pressure": 0.0,
+      "sex": 1.0,
+      "smoking": 0.0
+    },
+    "log_odds": -2.114287344404011,
+    "probability_of_death": 0.1077159028494156,
+    "flagged_at_threshold": true,
+    "contributions": [
+      {
+        "column": "anaemia",
+        "standardised_value": -0.8555022255792301,
+        "contribution": -0.2447095160224418
+      },
+      {
+        "column": "high_blood_pressure",
+        "standardised_value": -0.7429320641539533,
+        "contribution": -0.19701278488657117
+      },
+      {
+        "column": "serum_creatinine",
+        "standardised_value": -0.3012433514443831,
+        "contribution": -0.17417339694453868
+      },
+      {
+        "column": "sex",
+        "standardised_value": 0.7026734661277609,
+        "contribution": -0.15386415647438817
+      },
+      {
+        "column": "creatinine_phosphokinase",
+        "standardised_value": -0.33148173176549645,
+        "contribution": -0.09703095678753709
+      },
+      {
+        "column": "age",
+        "standardised_value": -0.08927232027275459,
+        "contribution": -0.06273318778460106
+      },
+      {
+        "column": "smoking",
+        "standardised_value": -0.6960402644168224,
+        "contribution": -0.05205566305605457
+      },
+      {
+        "column": "serum_sodium",
+        "standardised_value": 0.13586647478606792,
+        "contribution": -0.04438525926550787
+      },
+      {
+        "column": "diabetes",
+        "standardised_value": -0.8409178658720826,
+        "contribution": -0.04244973816931108
+      },
+      {
+        "column": "ejection_fraction",
+        "standardised_value": 0.01150052273123133,
+        "contribution": -0.010751731488944469
+      },
+      {
+        "column": "platelets",
+        "standardised_value": -0.09016950959136825,
+        "contribution": 0.0010263884776866728
+      }
+    ]
+  }
+}

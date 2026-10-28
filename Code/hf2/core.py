@@ -18,6 +18,8 @@ Contents so far:
                  misclassification rate at r = 0.5 (P10 = balanced)          (step 4e)
   §16, §17, §19  decision threshold (P6 = yes), C1-C3, recommendation, why-not (step 4f)
   §19.4          the single test-set evaluation                                (step 4g)
+  §21            explain: verified rebuild of the final model, its weights, and a
+                 worked example on a constructed typical patient               (step 5)
 
 Only the classification families (Logistic, k-NN, Tree) have estimators, because sub-task 1 is
 binary; §12 and §13 cover all 14 configurations, so the others are excluded and coded, never fitted.
@@ -110,6 +112,7 @@ Run (from Code/):
   uv run python hf2/core.py diagnose "<cv entry label>"
   uv run python hf2/core.py recommend hf2/props_dr09.json
   uv run python hf2/core.py final --approved "<the user's words>"
+  uv run python hf2/core.py explain   (§21: verified rebuild of the final model; writes its weights)
 """
 from __future__ import annotations
 
@@ -988,6 +991,73 @@ def final(approval: str) -> dict:
             "confusion_test": {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)}}
 
 
+# ======================================================================================
+# §21 explanation: verified rebuild of the final model
+# ======================================================================================
+
+def explain() -> dict:
+    """Rebuild the final model with the same code path and settings as `final`, verify it is the same model,
+    and write its weights (§21: logistic coefficients on the log-odds scale), with a worked example.
+
+    `final` kept the fitted model in memory only. The rebuild is accepted as the same model only if its
+    probabilities for the 60 test patients equal the saved ones exactly. That check reads the test INPUTS and
+    the saved probabilities only: no outcome is read and no metric is computed.
+
+    Worked example: a constructed "typical patient", not a row of the data: each numerical input at its
+    training median, each 0/1 indicator at its most common training value (ties to 0).
+    """
+    rec = json.loads((OUT / "core_recommend.json").read_text(encoding="utf-8"))
+    spec, name = rec["final_fit"], rec["recommendation"]["configuration"]
+    if CONFIG[name]["family"] != "Logistic" or CONFIG[name]["poly"]:
+        sys.exit("explain is implemented for Logistic without polynomial terms only")
+    X, y = training_cv()
+    drop = tuple(spec["dropped_inputs"])
+    pipe, _ = build(name, n_inner_train(len(y)), drop, spec["grid_override"])          # as in `final`
+    model = clone(pipe).set_params(**spec["hyperparameters"]).fit(X, y)
+
+    split = json.loads(SPLIT.read_text(encoding="utf-8"))
+    test_x = pd.read_csv(SRC, usecols=INPUTS).loc[split["test_idx"], INPUTS]           # inputs only
+    p = prob1(model, test_x)
+    saved = (pd.read_csv(OUT / "core_test_predictions.csv", usecols=["row", "p"], float_precision="round_trip")
+             .set_index("row").loc[split["test_idx"], "p"].to_numpy())
+    identical = bool(np.array_equal(p, saved))
+    if not identical:
+        sys.exit(f"rebuild differs from the saved probabilities (max |diff| {np.max(np.abs(p - saved))}); not written")
+
+    names = design_names(drop)
+    lr, scale, design = model.named_steps["m"].model_, model.named_steps["scale"], model.named_steps["design"]
+    coef = lr.coef_[0]
+    weights = [{"column": n, "unit": "0/1" if n in CATEGORICAL else "the value as recorded",
+                "weight_standardised": float(w), "column_mean": float(mu), "column_sd": float(sd),
+                "weight_per_unit": float(w / sd) if sd > 0 else None}
+               for n, w, mu, sd in zip(names, coef, scale.mean_, scale.scale_)]
+    weights.sort(key=lambda r: -abs(r["weight_standardised"]))
+
+    typical = {c: float(X[c].median()) for c in NUMERICAL}
+    typical.update({c: float(X[c].value_counts().sort_index().idxmax()) for c in CATEGORICAL})
+    row = pd.DataFrame([typical])[INPUTS]
+    z = scale.transform(design.transform(row))[0]
+    score = float(lr.decision_function(z.reshape(1, -1))[0])
+    prob = float(lr.predict_proba(z.reshape(1, -1))[0, 1])
+    contributions = sorted(({"column": n, "standardised_value": float(z[j]), "contribution": float(coef[j] * z[j])}
+                            for j, n in enumerate(names)), key=lambda r: -abs(r["contribution"]))
+    return {"rebuild_of": {"recommend_version": rec["core_version_sha256"], "configuration": name,
+                           "hyperparameters": spec["hyperparameters"], "threshold": spec["threshold"]},
+            "verification": {"test_patients": int(len(test_x)), "outcomes_read": False, "metric_computed": False,
+                             "probabilities_identical_to_saved": identical},
+            "lambda": spec["hyperparameters"].get("m__lam"), "C_used": float(model.named_steps["m"].C_),
+            "intercept": float(lr.intercept_[0]),
+            "note": "weight_standardised: change in the log-odds of death per 1 SD of the column, others fixed; "
+                    "weight_per_unit = weight_standardised / column_sd. Sorted by absolute standardised weight. "
+                    "Not causal effects (§21).",
+            "weights": weights,
+            "worked_example": {"patient": "constructed: numerical inputs at their training medians, indicators at "
+                                          "their most common training value", "inputs": typical,
+                               "log_odds": score, "probability_of_death": prob,
+                               "flagged_at_threshold": bool(prob > spec["threshold"]),
+                               "contributions": contributions}}
+
+
 def write(name: str, result: dict) -> None:
     result = {"core_version_sha256": version(), **result}
     (OUT / name).write_text(json.dumps(result, indent=2, default=float), encoding="utf-8")
@@ -1046,6 +1116,8 @@ def main(argv: list[str]) -> None:
         write("core_recommend.json", {"properties_file": args[1], **recommend(load_props(args[1]), X, y)})
     elif args[0] == "final" and len(args) == 3 and args[1] == "--approved":
         write("core_final.json", final(args[2]))
+    elif args[0] == "explain" and len(args) == 1:
+        write("core_weights.json", explain())
     else:
         sys.exit(__doc__)
 

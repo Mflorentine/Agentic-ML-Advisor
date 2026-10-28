@@ -180,6 +180,18 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 
   These are recorded as counts, not findings (P8 stays unknown).
 
+**Step 5: derived comparisons, from numbers already reported** (no test row read, no model fitted)
+
+- **F2 of flagging every patient.** If every patient is flagged, recall is 1 and precision is the share of deaths p, so F2 = 5p / (4p + 1) (F_β with β = 2, p. 92). This follows from the share of deaths alone.
+  - Test set: p = 19 / 60 = 0.3167, so F2 = 0.6985.
+  - Training patients: p = 77 / 239 = 0.3222, so F2 = 0.7038.
+- **Against it, the recommended model at its threshold r = 0.10:**
+  - test F2 0.6400 (DR-17; 49 of 60 flagged), which is 0.0585 below flagging everyone on the same patients;
+  - nested CV F2 0.7127 (SD 0.0614), which is 0.0089 above the training figure (0.7038).
+- **The model's ranking, threshold-free:** test PR-AUC 0.6983, against 0.3167 for flagging nobody (DR-17).
+- **The flag-everyone F2 is not part of the agreed formulation.** The deciding metric is PR-AUC, and F2 is monitored at the tuned threshold (DR-05). It is recorded as context for reading the F2 figures.
+- **The earlier analysis on the same 60 test patients.** Demonstration/Heart Failure/Demonstration Appendix.md, DR-19 (FINAL): the recommended `Tree` (depth 3, minimum leaf 20) at threshold r = 0.2 had test F2 0.6780 (recall 0.8421, precision 0.3810; tn 15, fp 26, fn 3, tp 16). That analysis decided on F2 rather than PR-AUC, and its success criterion was not met. The two analyses agreed different metrics and success criteria, so their results are recorded side by side, not ranked. The full comparison is left to the Project Report.
+
 ## Decision Records
 
 ### DR-01 · ADM · step 1
@@ -1268,7 +1280,34 @@ Flags: none.
 - **The decision.** A patient is flagged if the probability is above 0.10, a threshold chosen to favour catching deaths over avoiding false alarms (F2).
 - **Its boundary.** Because the score is a weighted sum, the boundary between flagged and not flagged is a straight line, more precisely a flat plane, in the space of the inputs (p. 55).
 - **What the weights can say.** They give the direction and relative size of each input's pull on the log-odds of death, with the others held fixed. They are not causes (ADM-2: prediction only).
-- **Pending.** The fitted weights and one worked example of a prediction have not been computed. The core's `final` does not save the fitted model. Producing them needs a verified rebuild through the core (an `explain` command, as in the Mobile Price analysis), which is a core change and is raised with the user before step 5.
+- **The fitted weights** (completed in step 5, from `Code/outputs/hf2/core_weights.json`).
+  - **Source.** The core's `explain` command (version `93fc3491…`; additions only, shown to the user before it ran: "Run explain") rebuilt the final model with the same code and settings as `final`. It accepted the rebuild only because its probabilities equal the saved ones for all 60 test patients. That check read the test inputs and the saved probabilities only: no outcome was read and no metric computed.
+  - **Penalty and constant.** No regularisation (C = ∞). The constant (intercept) is −1.0361.
+  - **How to read the table.** Each weight is the change in the log-odds of death for a patient one standard deviation above the training mean on that input, with the others fixed. "Per unit" divides by that SD. A positive weight raises the predicted risk. The weights are not causes (ADM-2, DR-04).
+
+| Input | SD (training) | Weight (standardised) | Weight per unit |
+| --- | --- | --- | --- |
+| `ejection_fraction` (%) | 12.01 | −0.9349 | −0.0779 per % |
+| `age` (years) | 12.01 | +0.7027 | +0.0585 per year |
+| `serum_creatinine` (mg/dL) | 0.9524 | +0.5782 | +0.6071 per mg/dL |
+| `serum_sodium` (mEq/L) | 4.589 | −0.3267 | −0.0712 per mEq/L |
+| `creatinine_phosphokinase` (mcg/L) | 913 | +0.2927 | +0.00032 per mcg/L |
+| `anaemia` (0/1) | 0.494 | +0.2860 | +0.5791 for 1 vs 0 |
+| `high_blood_pressure` (0/1) | 0.4787 | +0.2652 | +0.5540 for 1 vs 0 |
+| `sex` (0/1; coding undocumented) | 0.4704 | −0.2190 | −0.4655 for 1 vs 0 |
+| `smoking` (0/1) | 0.4689 | +0.0748 | +0.1595 for 1 vs 0 |
+| `diabetes` (0/1) | 0.4926 | +0.0505 | +0.1025 for 1 vs 0 |
+| `platelets` (unit uncertain) | 99,620 | −0.0114 | −1.14 × 10⁻⁷ per unit as recorded |
+
+  - **What the table shows** (reading the output, not new analysis): ejection fraction, age and serum creatinine have the largest standardised weights. A lower ejection fraction, an older age and a higher serum creatinine each raise the predicted risk. Platelets, diabetes and smoking have the smallest.
+
+- **Worked example** (a constructed typical patient, not a real row).
+  - **The patient.** Each numerical input is at its training median: age 60, ejection fraction 38 %, serum creatinine 1.1 mg/dL, serum sodium 137 mEq/L, CPK 250 mcg/L, platelets 255,000 as recorded. Each yes/no input is at its most common training value: no anaemia, no diabetes, no high blood pressure, no smoking, sex = 1.
+  - **Step 1, standardise.** Each value is put on the training scale; for example, ejection fraction 38 % is 0.01 SD above the training mean.
+  - **Step 2, score.** The log-odds is the constant plus the sum of weight × standardised value: −1.0361 + (−1.0781) = −2.1143. The largest contributions are anaemia = 0 (−0.2447), high blood pressure = 0 (−0.1970), serum creatinine below the mean (−0.1742) and sex = 1 (−0.1539).
+  - **Step 3, probability.** The logistic function turns the log-odds into a probability: 0.1077.
+  - **Step 4, decide.** 0.1077 is above the threshold 0.10, so this patient is **flagged**.
+  - **Trust limits (§21).** These weights describe this fitted model on patients like the training patients, and hold only while new patients resemble them. They say nothing about why some patients die.
 
 **10. Use and limits** (draft, turned into prose in step 5).
 - **What the result covers.** The model ranks patients like these by their risk of dying during follow-up, and flags those above r = 0.10. The PR-AUC of 0.6983 is an average over patients like the 60 test patients (E_new, pp. 68–69). It says nothing about the worst single prediction, and it holds only while new patients resemble these: NYHA III–IV, Faisalabad, 2015 (ADM-4, §6.6).
@@ -1348,6 +1387,8 @@ Flags: none.
 | 25 | Step 4g. The user approved ("1"). The core's `final` refitted `Logistic` on the 239 training patients and evaluated it once on the 60 test patients (19 deaths): test PR-AUC 0.6983, fold SD 0.0938, baseline 0.3167; success criterion met (0.6045 > 0.3167). At r = 0.10: 49 flagged, tp 16, fp 33, fn 3, tn 8; precision 0.3265, recall 0.8421, F2 0.6400. An independent recomputation (average precision by definition, without scikit-learn) agrees exactly. | `Code/outputs/hf2/core_final.json`, `core_test_predictions.csv`, `Code/hf2_07_recompute_test_metric.py`, `Code/outputs/hf2/recompute_test_metric.txt`, DR-17 |
 | 26 | Step 4h. The user chose all four evaluation figures: Figure 4 (CV comparison), Figure 5 (learning curve of `Logistic`), Figure 6 (test precision–recall curve) and Figure 7 (test confusion matrix), each drawn only from the core's outputs, in light and dark versions, in the model colour (purple). One revision before Figure 6 entered the report: the curve first drew points where precision changes at unchanged recall, which made spikes. Now only the points where recall rises are drawn, the ones average precision counts. The drawn curve integrates to the reported 0.6983 before and after. The Recommendation Report for sub-task 1 was assembled from DR-01 to DR-17, with part 13's provenance counts from a script over the *Rules applied* tables. The `Methods` and `Results` paragraphs and Figures 4–7 were added to `Report.md`. Part 9 lacks the fitted weights and a worked example, because the core does not save the final model; this is raised with the user. | `Code/hf2_08_fig4_cv_comparison.py` … `hf2_11_fig7_confusion.py`, `Code/outputs/hf2/figures/`, `Recommendation`, `Report.md` |
 | 27 | Step 4 closed by the user ("close step 4"). Four items listed at the close were not taken up: an `explain` command for part 9's fitted weights and worked example; where to write the comparison with the earlier analysis's result on the same test set; whether the low threshold (test precision 0.3265 against a share of deaths of 0.3167) is discussed as a limitation; changes to Figures 4–7. | — |
+| 28 | Step 5. `explain` was added to the core (additions only, 72 lines; `93225b44…` → `93fc3491…`) and shown to the user before it ran ("Run explain"). It rebuilt `Logistic` as `final` did, and accepted it because its probabilities equal the saved ones for all 60 test patients; no outcome was read and no metric computed. Weights and a worked example on a constructed typical patient were written. Recommendation Report part 9 was completed, with the sums checked against the output. `final` is untouched and would still refuse a second run. | `Code/hf2/core.py`, `Code/outputs/hf2/core_weights.json`, `Recommendation` |
+| 29 | Step 5, at the user's request: a derived comparison was recorded in `Analysis`. F2 of flagging every patient = 5p / (4p + 1): 0.6985 on the test set and 0.7038 in training. Against it: the model's test F2 0.6400 and nested CV F2 0.7127. Also recorded is the earlier analysis's result on the same test set, from its Appendix DR-19 (`Tree`, r = 0.2, F2 0.6780). It is computed from reported numbers only; no test row was read. Asked how the `Discussion` should use it, the user chose "Use as context" over "Appendix only". | `Analysis` |
 
 ## Code Summary
 
