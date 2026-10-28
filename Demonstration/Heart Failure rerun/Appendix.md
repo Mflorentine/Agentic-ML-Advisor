@@ -663,6 +663,82 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_admset.json`, DR-09
 
+### DR-11 · PRIOR · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** Which admissible configurations should be cross-validated, and in what expected order?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Admissible set | `Logistic`, `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`, `kNN`, `Tree` | T | DR-10 |
+| P1 · P2 · P3 · P4 | binary · ample (19.92) · few (11) · low (45 %) | M | DR-09 |
+| P5 · P6 · P7 · P8 | none · yes (not a must-have) · no · unknown | M | DR-09; user's words in DR-05 |
+| P9 · P10 | no · balanced (no row in the matrix) | T | DR-09 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P6=yes→Logistic | holds (not a must-have) | [B→I pp.50, 53–54] | +1 on all four Logistic configurations |
+| §13 other entries | none applies (P2 ample, P3 few, P4 low, P5 none, P7 no, P8 unknown) | — | — |
+| §15 order | score, then fewer add-ons; ties share a rank | [I] (§15 procedure) | `Logistic` 1; `Logistic + L2` = `Logistic + poly` 2; `Logistic + poly + L2` 4; `kNN` = `Tree` 5 |
+| SEQ-1 | baseline = flag nobody | [B pp.330–331] | kept |
+| SEQ-2 | simple-first = `Logistic` (MOD-1 and MOD-2 did not remove it) | [B p.331] | kept |
+| §15 keep | simple-first + 3 highest-ranked others (+ ties at the cut, rank 4) | [I] | `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2` kept; `kNN`, `Tree` not kept |
+| SEQ-3 | round 1 = baseline and `Logistic`; round 2 only once `Logistic` clearly beats the baseline | [B pp.331–332] | sets the order of 4c and 4d |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | 19.92 |
+| P3 many inputs | > 20 | 11 |
+| P4 high categorical share | ≥ 50 % | 45 % |
+| Kept besides baseline and simple-first | 3 (+ ties) | 5 others admissible |
+
+- **Options considered:** the six admissible configurations
+- **Expectation** (written before any cross-validation; ours, not the prior's `[I]`):
+  - `Logistic` and `Logistic + L2` will lead, quite possibly within noise of each other: with 19.9 rows per parameter, L2 should change the fit only a little.
+  - The polynomial versions will be lower, and `Logistic + poly` without L2 the lowest of the four. Squares and cubes double the columns from 12 to 24 for 239 patients, and without regularisation that invites overfitting (pp. 59–60).
+  - Since the prior's order differs only by add-ons, agreement with it at rank 1 or 2 is likely if this expectation holds.
+- **Decision:** Cross-validate the baseline and `Logistic` in round 1, then `Logistic + L2`, `Logistic + poly` and `Logistic + poly + L2` in round 2, on the same folds. `kNN` and `Tree` are not kept. They can enter later only through the diagnosis loop (DX-5, if underfitting is found), as post-prior entries.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `kNN` | DISF | prior score 0 (no matrix entry), rank 5 |
+| `Tree` | DISF | prior score 0 (no matrix entry), rank 5 |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = binary (DR-10) |
+
+**Cross-validation protocol agreed (§16)**
+
+- **Outer folds:** 10, stratified by `DEATH_EVENT`, shuffled, seed 2026. The same folds are used for every configuration, and they are stored with the checksums of the data file and `split.json`.
+- **Inner folds:** 5-fold grid search within each outer training fold, on PR-AUC (average precision). The grids are:
+  - λ ∈ {10⁻⁴, …, 10⁴};
+  - degree ∈ {2, 3};
+  - k ∈ {1, …, 51} (for configurations added later);
+  - tree depth ∈ {1, …, 20} × minimum leaf size ∈ {1, 5, 10, 20} (for configurations added later).
+  - `Logistic` and `Logistic + poly` are unregularised (C = ∞).
+- **Deciding metric:** PR-AUC. Margins are means of fold differences, and the spread is the SD of those differences.
+- **Diagnosis errors:** the misclassification rate at r = 0.5 (P10 = balanced).
+- **Decision threshold:** after selection, nested, maximising F2 over r ∈ {0.01, …, 0.99}. The trade-off is confirmed with the user at 4f.
+- **`N_JOBS`:** 1.
+- **Flags:** none.
+
+**Reference code**
+
+- Function: `prior_ranking` (`cd Code && uv run python hf2/core.py prior hf2/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a`. It was extended for 4b from `77878347…` with §13–§19 and interpretations i–z; `p9_p10` and `admissible_set` are unchanged, so DR-09 and DR-10 stay valid · inputs: DR-09 property values in `Code/hf2/props_dr09.json` · output: `Code/outputs/hf2/core_prior.json`, copied above unchanged
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** pending (round-2 `CV` record)
+- **User involvement:** approved — the user saw the §13–§19 extension before any output was used ("Run the prior"), and then agreed the method: "Agree the method"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_prior.json`, DR-09, DR-10
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -690,6 +766,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 15 | Step 3, at the user's decision: the yes/no input counts figure was dropped from `Results`, because its counts already appear in the labels of Figure 3 (deaths / patients for each value). The image and its caption were removed, and "Figures 1 to 4" became "Figures 1 to 3". The remaining figures keep their numbers, so no renumbering was needed. In the appendix, references to the figure by number were reworded. `Code/hf2_06_fig4_indicator_counts.py` and its images (`Code/outputs/hf2/figures/fig4_indicator_counts.png`, `dark/`, `.json`) are kept, as the contract asks. | `Report.md`, `Appendix.md` |
 | 16 | Step 3 closed: the user moved on to step 4. Items listed at the close and not taken up: whether to keep the remaining figures as they stand; an expectation for P8 (it stays `unknown`); how the platelet panel is shown, given its uncertain unit. | — |
 | 17 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `77878347…`) was shown and approved ("Run it"). Admissible: `Logistic`, `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 and MOD-2 did not apply. | `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_admset.json`, DR-10 |
+| 18 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `93225b44…`; interpretations i–z, including the new §19 rule on input drops and `N_JOBS = 1`) and shown to the user before any output was used ("Run the prior"). Prior: P6=yes→Logistic is the only entry (+1 on all Logistic configurations). Kept: `Logistic` (simple-first), `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`; `kNN` and `Tree` are DISF (score 0). The expectation is recorded. The method was presented and agreed ("Agree the method"). | `Code/hf2/core.py`, `Code/outputs/hf2/core_prior.json`, DR-11 |
 
 ## Code Summary
 
@@ -699,7 +776,7 @@ All scripts run from `Code/` with `uv run python <script>.py`. Names start with 
 | --- | --- | --- | --- | --- |
 | `Code/hf2_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 and checks it against `SOURCE.md`. Describes each column: meaning, unit and type from the UCI variable table, the paper's range, distinct values, percentiles, zeros, non-integer values and 0/1 counts. Counts duplicates, class counts, row order and `time` by `DEATH_EVENT`. Draws no conclusions. | `Attachments/heart_failure_clinical_records_dataset.csv` | `Code/outputs/hf2/01_describe.json`, `01_describe.md` | none |
 | `Code/hf2_02_split.py` | Step 2 split. Reuses the earlier analysis's training and test row indices (user's choice), after checking that file's source checksum, its settings and that the indices partition the 299 rows. Records this rerun's input design (11 inputs, `time` set aside), the class counts recomputed from the data, and P2–P4 with their `[I]` thresholds as named constants. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/split.json` (earlier analysis; read only) | `Code/outputs/hf2/split.json` | the source split's seed 2026 and fraction 0.2 are checked, not set |
-| `Code/hf2/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far: the input design of DR-08 (`preprocessor`: six numerical inputs passed through, five 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 239 `train_idx` rows only, asserting that no test row is kept), §11 P9 and P10 (`p9_p10`), and, from step 4a, §9 and §12 (`admissible_set`, `mod2_check`). The header lists interpretations a–h. §13–§19 are added before step 4b. Run: `uv run python hf2/core.py p9p10`; `uv run python hf2/core.py admset hf2/props_dr09.json`. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/hf2/split.json`, `Code/hf2/props_dr09.json` (the DR-09 values) | `Code/outputs/hf2/core_p9_p10.json`, `core_admset.json` | `[I]` constants `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `DEFAULT_THRESHOLD = 0.5`; `LOGISTIC_MAX_ITER = 100000` |
+| `Code/hf2/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far: the input design of DR-08 (`preprocessor`: six numerical inputs passed through, five 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 239 `train_idx` rows only, asserting that no test row is kept), §11 P9 and P10 (`p9_p10`). From step 4a it adds §9 and §12 (`admissible_set`, `mod2_check`). From step 4b it adds the rest: §13–§15 prior ranking (`prior_ranking`); §16 nested CV with a cumulative store (`run_cv`, `nested_cv`, `baseline_cv`, `cv_table`); §18 observations and the learning curve (`observations`, `learning_curve`); §16/§17/§19/§20 threshold tuning, recommendation, confidence and why-not codes (`tune_threshold`, `recommend`); and §19.4 the single test evaluation (`final`), the only function that reads the test rows. `final` needs the user's approval on the command line, and refuses a second run or a changed core. The header lists interpretations a–z. Commands: `p9p10`; `admset`, `prior`, `cv round1`, `cv round2` and `recommend`, each with `hf2/props_dr09.json`; `cv add "<configuration>" [--drop COL] [--grid JSON] [--label TEXT]`; `diagnose "<entry>"`; `final --approved "<words>"`. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/hf2/split.json`, `Code/hf2/props_dr09.json` (the DR-09 values) | `Code/outputs/hf2/core_p9_p10.json`, `core_admset.json`, `core_prior.json`. Later: `core_cv_store.json`, `core_cv_round1.json`, `core_cv_round2.json`, `core_cv_post_prior_N.json`, `core_diagnose_*.json`, `core_recommend.json`, `core_final.json`, `core_test_predictions.csv` | `[I]` constants as named in the file: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `DEFAULT_THRESHOLD = 0.5`, `KEEP_TOP_OTHERS = 3`, `OUTER_FOLDS = 10`, `INNER_FOLDS = 5`, `C1_CLEAR = 1.0`, `C1_MODERATE = 0.5`, `C2_CLEAR = 1.0`, `C3_FALLING = 0.5`, `WITHIN_NOISE = 0.5`, `BREADTH_MANY = 10`, `O3_RATIO = O4_RATIO = 2.0`, `O5_MOST_FOLDS = 0.5`; grids (§16); `CV_SEED = 2026`, `THRESHOLD_BETA = 2`, `THRESHOLD_GRID` 0.01–0.99, `N_JOBS = 1`, `KEPT_DROPS = []`; `LOGISTIC_MAX_ITER = 100000` |
 | `Code/hf2_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, both outcomes together. One bar per value for ejection fraction and sodium, 1-year bins for age, 40 equal-width bins for the rest. Light and dark versions. | training patients via `core.training_data()` | `Code/outputs/hf2/figures/fig1_input_distributions.png` (+ `dark/`), `.json` | `BINS = 40`, `FIGSIZE = (15, 9)` |
 | `Code/hf2_04_fig2_inputs_by_outcome.py` | Figure 2: box plot per outcome group for each numerical input, with every patient as a jittered point. | same | `fig2_inputs_by_outcome.png` (+ `dark/`), `.json` (group sizes, medians, quartiles) | `JITTER_SEED = 2026` (sideways position only) |
 | `Code/hf2_05_fig3_indicators_by_outcome.py` | Figure 3: share who died among patients with each yes/no input = 0 and = 1, with deaths/patients labels and the overall share as a reference line. | same | `fig3_indicators_by_outcome.png` (+ `dark/`), `.json` | none |

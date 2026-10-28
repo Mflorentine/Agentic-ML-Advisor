@@ -1,0 +1,121 @@
+{
+  "core_version_sha256": "93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a",
+  "properties_file": "hf2/props_dr09.json",
+  "properties_used": {
+    "record": "DR-09 (PROP, step 3, 28 October 2026), Demonstration/Heart Failure rerun/Appendix.md",
+    "P1": "binary",
+    "P2": "ample",
+    "P3": "few",
+    "P4": "low",
+    "P5": "none",
+    "P5_must_have": false,
+    "P6": "yes",
+    "P6_must_have": false,
+    "P7": "no",
+    "P8": "unknown",
+    "P9": "no",
+    "P10": "balanced"
+  },
+  "order": [
+    {
+      "configuration": "Logistic",
+      "score": 1,
+      "addons": 0,
+      "entries": [
+        {
+          "entry": "P6=yes\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I pp.50, 53\u201354]"
+        }
+      ],
+      "rank": 1,
+      "kept": true,
+      "role": "simple-first (SEQ-2)"
+    },
+    {
+      "configuration": "Logistic + L2",
+      "score": 1,
+      "addons": 1,
+      "entries": [
+        {
+          "entry": "P6=yes\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I pp.50, 53\u201354]"
+        }
+      ],
+      "rank": 2,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "Logistic + poly",
+      "score": 1,
+      "addons": 1,
+      "entries": [
+        {
+          "entry": "P6=yes\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I pp.50, 53\u201354]"
+        }
+      ],
+      "rank": 2,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "Logistic + poly + L2",
+      "score": 1,
+      "addons": 2,
+      "entries": [
+        {
+          "entry": "P6=yes\u2192Logistic",
+          "score": 1,
+          "provenance": "[B\u2192I pp.50, 53\u201354]"
+        }
+      ],
+      "rank": 4,
+      "kept": true,
+      "role": "kept"
+    },
+    {
+      "configuration": "kNN",
+      "score": 0,
+      "addons": 0,
+      "entries": [],
+      "rank": 5,
+      "kept": false,
+      "role": "DISF"
+    },
+    {
+      "configuration": "Tree",
+      "score": 0,
+      "addons": 0,
+      "entries": [],
+      "rank": 5,
+      "kept": false,
+      "role": "DISF"
+    }
+  ],
+  "simple_first": "Logistic",
+  "kept": [
+    "Logistic",
+    "Logistic + L2",
+    "Logistic + poly",
+    "Logistic + poly + L2"
+  ],
+  "baseline": "Baseline (flag nobody)",
+  "not_kept": [
+    {
+      "configuration": "kNN",
+      "code": "DISF",
+      "score": 0,
+      "entries": []
+    },
+    {
+      "configuration": "Tree",
+      "code": "DISF",
+      "score": 0,
+      "entries": []
+    }
+  ]
+}
