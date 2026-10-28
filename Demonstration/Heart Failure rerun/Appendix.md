@@ -869,6 +869,138 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/outputs/hf2/core_cv_round2.json`, `Code/outputs/hf2/core_cv_store.json`, DR-11, DR-12
 
+### DR-14 · DX · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** Diagnosis pass 1 (§18) on the leading configuration, `Logistic + poly`: which observation holds first, and which action follows?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Errors (misclassification rate at r = 0.5, P10 = balanced) | E_train 0.1878, E_val 0.2424, gap 0.0546 | CV | `Code/outputs/hf2/core_diagnose_Logistic___poly.json` |
+| Training PR-AUC (mean over outer folds) | 0.7819 | CV | same |
+| Learning curve, E_val mean (fold SD) at 10 %, 20 % … 100 % | 0.2969 (0.0448), 0.3018 (0.1147), 0.3056 (0.0886), 0.2594 (0.0674), 0.2717 (0.0899), 0.2511 (0.0983), 0.2551 (0.0861), 0.2551 (0.0905), 0.2592 (0.0953), 0.2424 (0.1187) | CV | same |
+| Learning curve, E_train mean at 10 % … 100 % | 0.0000, 0.0093, 0.1047, 0.1314, 0.1512, 0.1643, 0.1752, 0.1802, 0.1864, 0.1878 | CV | same |
+| Run time | 2 min 4 s | — | — |
+
+**Observation → action**
+
+| Observation | Holds | Test values |
+| --- | --- | --- |
+| O1 doesn't beat the baseline | no | C2 = clear (DR-13) |
+| O2 training performance short of what the application needs | no | training PR-AUC 0.7819 > training share of deaths 0.3222 + fold SD 0.1557 = 0.4779 (interpretation q) |
+| O5 tuned hyperparameter at a grid edge | no | the degree is ignored (interpretation r); no other tuned hyperparameter |
+| O3 overfitting | no | gap 0.0546 < 2 × E_train = 0.3756 |
+| **O4 underfitting** | **yes**, the first that holds | E_train 0.1878 ≥ 2 × gap = 0.1092 |
+| O6 more data likely to help | no | C3 adequate: E_val(80 %) − E_val(100 %) = 0.0127 < 0.5 × 0.1187 = 0.0594 |
+
+- **Action:** DX-5 (O4), more flexibility `[B pp.333–334]`. Its parts:
+  - (i) Add polynomial terms if P3 = few: the leader already has them.
+  - (ii) **Add k-NN or a tree if not already compared: taken.** Neither was kept by the prior (DR-11, DISF). Both are cross-validated on the same folds as post-prior entries, with the §16 grids. This is an action on configurations, so it runs without stopping.
+  - (iii) Ask whether more input variables exist: needs the user; considered in the next pass if needed.
+  - DX-9 `[B p.334]`: the gap is not ≫ E_train, so adding flexibility is not ruled out.
+
+**Stopping check**
+
+- **S1:** not assessed until 4g.
+- **S2:** the achievable level is unknown.
+- **S3, S4, S5, S6:** no; this is the first pass.
+- The loop continues.
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| O3 overfitting: gap ≥ 2 × E_train | 0.3756 | 0.0546 |
+| O4 underfitting: E_train ≥ 2 × gap | 0.1092 | 0.1878 |
+| O5 edge in most folds | > 5 of 10 | n/a (no grid besides degree) |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0594 | 0.0127 |
+
+- **Options considered:** the three parts of DX-5, above
+- **Expectation** (written before the k-NN and tree runs): neither `kNN` nor `Tree` will clearly beat the leader (0.7064). The reasoning is that the fold-to-fold spread is large (0.09 to 0.16) and 239 patients give each fold only about 7 to 8 deaths to validate on. A tree at this size is likely to be unstable from fold to fold, and k-NN on 11 standardised inputs, five of them 0/1, measures similarity coarsely. Both are expected at or below the logistic configurations, possibly within noise of them.
+- **Decision:** O4 → DX-5 part (ii): cross-validate `kNN` and `Tree` as post-prior entries.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `observations` (`cd Code && uv run python hf2/core.py diagnose "Logistic + poly"`) · version: interim core, not reviewed, SHA-256 `93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a` · output: `Code/outputs/hf2/core_diagnose_Logistic___poly.json`, copied above unchanged (rounded to 4 decimals)
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** agree (filled in by DR-15). Neither `kNN` (0.5633) nor `Tree` (0.5546) beats the leader (0.7064); both are below all four Logistic configurations. `kNN` trails the leader by more than one spread, and `Tree` by between 0.5 and 1 × spread.
+- **User involvement:** informed — the user asked for 4e and for k-NN or Tree only if DX-5 calls for them; part (ii) runs without stopping
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/hf2/core.py` (`observations`, `learning_curve`), `Code/outputs/hf2/core_diagnose_Logistic___poly.json`, DR-13
+
+### DR-15 · CV · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** How do `kNN` and `Tree`, added by DX-5 (post-prior), compare on the same folds?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| `kNN`, validation PR-AUC per fold | 0.4127, 0.4726, 0.5984, 0.6589, 0.6421, 0.4707, 0.9167, 0.5493, 0.4961, 0.4160 | CV | `Code/outputs/hf2/core_cv_store.json` |
+| `kNN`, tuned k per fold | 15, 51, 51, 51, 21, 51, 51, 51, 31, 51 (the largest grid value, 51, in 7 of 10 folds) | CV | same |
+| `Tree`, validation PR-AUC per fold | 0.5510, 0.4271, 0.4555, 0.6747, 0.8819, 0.4679, 0.7127, 0.4556, 0.3748, 0.5453 | CV | same |
+| `Tree`, tuned (depth, minimum leaf) per fold | (5, 10), (5, 5), (4, 10), (5, 10), (4, 5), (6, 5), (4, 10), (6, 10), (3, 5), (3, 5) | CV | same |
+| REQ-2 (k-NN normalised), REQ-4 (tree size tuned) | `kNN`: `design` → `scale` → `m`; `Tree`: `design` → `m`, with depth and minimum leaf size from the grid | CV | `core_cv_store.json` (`pipeline`, `grid`) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| DX-5 (ii), add k-NN or a tree if not already compared | both added, post-prior, same folds | [B pp.333–334] | — |
+| C2 | clear for both | [I] | eligible under §19.1 |
+| §17 breadth note | 6 configurations compared (4 prior-kept, 2 post-prior) | [I] | below 10 |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear | margin ≥ 1 × spread | `kNN` 0.2412 vs 0.1472; `Tree` 0.2325 vs 0.1497 |
+| Breadth note | > 10 | 6 |
+
+**CV table** (outer 10, inner 5; stratified by `DEATH_EVENT`; seed 2026; PR-AUC; all entries so far)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean PR-AUC | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (flag nobody) | no | n/a | 0.3221 | 0.0184 | −0.3843 (0.1619) | — | 0.3222 | 0.3221 |
+| `Logistic + poly` | no | degree 3 (6/10) | 0.7064 | 0.1557 | — (leader) | +0.3843 (0.1619), clear | 0.1878 | 0.2424 |
+| `Logistic + poly + L2` | no | degree 3, λ = 10 (2/10) | 0.6882 | 0.1299 | −0.0182 (0.0664) | +0.3661 (0.1320), clear | 0.2333 | 0.2763 |
+| `Logistic + L2` | no | λ = 1 (3/10) | 0.6703 | 0.1051 | −0.0360 (0.0980) | +0.3482 (0.1023), clear | 0.2817 | 0.2971 |
+| `Logistic` | no | none (10/10) | 0.6627 | 0.0938 | −0.0437 (0.1171) | +0.3406 (0.0892), clear | 0.2329 | 0.2848 |
+| `kNN` | yes | k = 51 (7/10) | 0.5633 | 0.1518 | −0.1430 (0.1194) | +0.2412 (0.1472), clear | 0.3157 | 0.3346 |
+| `Tree` | yes | depth 5, minimum leaf 10 (2/10) | 0.5546 | 0.1572 | −0.1517 (0.1535) | +0.2325 (0.1497), clear | 0.1688 | 0.3098 |
+
+- **Options considered:** `kNN`, `Tree` (DX-5 part ii)
+- **Expectation:** n/a (this record fills in DR-14's *Outcome vs expectation*)
+- **Decision:** Neither new configuration leads. `Logistic + poly` remains the leader, so the loop continues with pass 2 on it. `kNN`'s k at the grid edge is noted, but O5 is computed only for the leader.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `run_cv` via `cv add "kNN"` and `cv add "Tree"` · version: interim core, not reviewed, SHA-256 `93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a` · output: `Code/outputs/hf2/core_cv_post_prior_1.json`, `core_cv_post_prior_2.json`, `core_cv_store.json`, copied above unchanged (rounded to 4 decimals); run time 2 min 50 s for both
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** informed (DX-5 part ii runs without stopping)
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/outputs/hf2/core_cv_post_prior_1.json`, `Code/outputs/hf2/core_cv_post_prior_2.json`, DR-14
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -899,6 +1031,8 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 18 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `93225b44…`; interpretations i–z, including the new §19 rule on input drops and `N_JOBS = 1`) and shown to the user before any output was used ("Run the prior"). Prior: P6=yes→Logistic is the only entry (+1 on all Logistic configurations). Kept: `Logistic` (simple-first), `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`; `kNN` and `Tree` are DISF (score 0). The expectation is recorded. The method was presented and agreed ("Agree the method"). | `Code/hf2/core.py`, `Code/outputs/hf2/core_prior.json`, DR-11 |
 | 19 | Step 4c, sub-task 1: round 1 run (20 s). Baseline mean CV PR-AUC 0.3221; `Logistic` 0.6627 (fold SD 0.0938). Margin 0.3406, spread 0.0892: C2 clear, so round 2 may proceed. All refits converged. | `Code/outputs/hf2/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
 | 20 | Step 4d, sub-task 1: round 2 run (46 s) on the same folds. Mean CV PR-AUC: `Logistic + poly` 0.7064 (leader), `Logistic + poly + L2` 0.6882, `Logistic + L2` 0.6703, `Logistic` 0.6627. All clearly beat the baseline, and all are within noise of the leader. DR-11 outcome vs expectation: disagree (expected the plain configurations first and `Logistic + poly` last); prior agreement partial (winner at prior rank 2). | `Code/outputs/hf2/core_cv_round2.json`, `core_cv_store.json`, DR-11, DR-13 |
+| 21 | Step 4e, pass 1 on `Logistic + poly` (2 min 4 s): O4 (underfitting) holds first (E_train 0.1878 ≥ 2 × gap 0.0546). DX-5: part (i) does not apply (the leader has poly); part (ii) adds `kNN` and `Tree`, which the prior had not kept. The expectation was written before the run. | `Code/outputs/hf2/core_diagnose_Logistic___poly.json`, DR-14 |
+| 22 | Step 4e, DX-5 (ii) run (2 min 50 s): `kNN` 0.5633 (k = 51 in 7/10 folds), `Tree` 0.5546. Both clearly beat the baseline and both are below the four Logistic configurations. The leader is unchanged. DR-14 outcome vs expectation: agree. | `Code/outputs/hf2/core_cv_post_prior_1.json`, `_2.json`, DR-15 |
 
 ## Code Summary
 
