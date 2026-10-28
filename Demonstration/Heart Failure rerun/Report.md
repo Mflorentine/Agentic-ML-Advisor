@@ -16,7 +16,7 @@ Missing a patient who dies is worse than a false alarm. Models are compared by t
 
 ## Results
 
-Figures 1 to 4 describe the 239 training patients; the 60 held-out patients are not shown. Where patients are split by outcome, those who died during follow-up are orange and the others blue.
+Figures 1 to 3 describe the 239 training patients; the 60 held-out patients are not shown. Where patients are split by outcome, those who died during follow-up are orange and the others blue.
 
 ![Figure 1](../../Code/outputs/hf2/figures/fig1_input_distributions.png)
 
@@ -33,10 +33,6 @@ In Figure 3, the height of a bar is the share of patients in that group who died
 ![Figure 3](../../Code/outputs/hf2/figures/fig3_indicators_by_outcome.png)
 
 <small><b>Figure 3.</b> Share of training patients who died during follow-up, for each of the five yes/no measurements, among patients with the value 0 (light orange) and with the value 1 (full orange). The grey line is the share among all 239 training patients, 0.32. The source does not say which value of sex is a woman.</small>
-
-![Figure 4](../../Code/outputs/hf2/figures/fig4_indicator_counts.png)
-
-<small><b>Figure 4.</b> Number of the 239 training patients with the value 1 for each of the five yes/no measurements.</small>
 
 ## Discussion
 

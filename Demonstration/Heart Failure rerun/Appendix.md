@@ -169,11 +169,11 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
   - P9 = no: logistic regression with C = 1e8 classifies 184 of 239 training patients correctly.
   - P10 = balanced: 77 deaths of 239 (32.2 %).
   - The P9 fit is not a candidate model, and its result is not interpreted.
-- **Figures:** four were proposed and the user chose all four. Colours by variable: green for all training patients (Figures 1 and 4); blue for no death and orange for died (Figure 2); orange shades for the share who died by 0/1 value (Figure 3); grey for the overall share.
+- **Figures:** four were proposed and the user chose all four. The yes/no input counts figure was later dropped from `Results` (Analysis Log row 15). Colours by variable: green for all training patients (Figure 1 and the dropped counts figure); blue for no death and orange for died (Figure 2); orange shades for the share who died by 0/1 value (Figure 3); grey for the overall share.
 - **One revision before the figures entered the report:**
   - In Figures 1 and 2 the platelet axis printed in scientific notation ("2e+05"); it now prints plain numbers for values of 10,000 and above.
   - In Figure 3 the label of the overall-share line overlapped the smoking bars; the line is now named in the legend.
-  - Output sizes, which the tight bounding box did not enlarge: Figure 1 3,030 × 1,765; Figure 2 3,031 × 1,863; Figure 3 2,632 × 1,374; Figure 4 2,433 × 1,179 pixels.
+  - Output sizes, which the tight bounding box did not enlarge: Figure 1 3,030 × 1,765; Figure 2 3,031 × 1,863; Figure 3 2,632 × 1,374; the dropped counts figure 2,433 × 1,179 pixels.
 - **Counts behind the figures, training patients only** (`Code/outputs/hf2/figures/*.json`):
   - medians by outcome (no death / died): age 60 / 65; ejection fraction 38 / 30; serum creatinine 1.0 / 1.3; serum sodium 137 / 135; creatinine phosphokinase 246.5 / 258; platelets 258,000 / 244,000;
   - share who died by 0/1 value: anaemia 0.28 / 0.38; diabetes 0.32 / 0.32; high blood pressure 0.29 / 0.39; sex 0.34 / 0.31; smoking 0.33 / 0.31.
@@ -633,6 +633,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 12 | Step 3, input design. Three options were offered without a recommendation (as recorded; log of CPK and serum creatinine; log of those and platelets), and the user chose "All as recorded". | DR-08 |
 | 13 | Step 3. Interim core `Code/hf2/core.py` written (input design, §11 P9 and P10) and shown to the user before it ran ("Run it"). P9 = no (184 of 239 correct with C = 1e8); P10 = balanced (32.2 %). New PROP record supersedes DR-06. | `Code/hf2/core.py`, `Code/outputs/hf2/core_p9_p10.json`, DR-09 |
 | 14 | Step 3, figures. Four were proposed and the user chose all four: numerical input distributions, numerical inputs by outcome, share who died by yes/no input, and yes/no input counts. One revision (platelet axis format; overlapping line label) before they were added to `Results` with captions and notes on how to read Figures 2 and 3. | `Code/hf2_03_fig1_input_distributions.py` … `hf2_06_fig4_indicator_counts.py`, `Code/outputs/hf2/figures/` (+ `dark/`), `Report.md` |
+| 15 | Step 3, at the user's decision: the yes/no input counts figure was dropped from `Results`, because its counts already appear in the labels of Figure 3 (deaths / patients for each value). The image and its caption were removed, and "Figures 1 to 4" became "Figures 1 to 3". The remaining figures keep their numbers, so no renumbering was needed. In the appendix, references to the figure by number were reworded. `Code/hf2_06_fig4_indicator_counts.py` and its images (`Code/outputs/hf2/figures/fig4_indicator_counts.png`, `dark/`, `.json`) are kept, as the contract asks. | `Report.md`, `Appendix.md` |
 
 ## Code Summary
 
@@ -646,7 +647,7 @@ All scripts run from `Code/` with `uv run python <script>.py`. Names start with 
 | `Code/hf2_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, both outcomes together. One bar per value for ejection fraction and sodium, 1-year bins for age, 40 equal-width bins for the rest. Light and dark versions. | training patients via `core.training_data()` | `Code/outputs/hf2/figures/fig1_input_distributions.png` (+ `dark/`), `.json` | `BINS = 40`, `FIGSIZE = (15, 9)` |
 | `Code/hf2_04_fig2_inputs_by_outcome.py` | Figure 2: box plot per outcome group for each numerical input, with every patient as a jittered point. | same | `fig2_inputs_by_outcome.png` (+ `dark/`), `.json` (group sizes, medians, quartiles) | `JITTER_SEED = 2026` (sideways position only) |
 | `Code/hf2_05_fig3_indicators_by_outcome.py` | Figure 3: share who died among patients with each yes/no input = 0 and = 1, with deaths/patients labels and the overall share as a reference line. | same | `fig3_indicators_by_outcome.png` (+ `dark/`), `.json` | none |
-| `Code/hf2_06_fig4_indicator_counts.py` | Figure 4: number of training patients with each yes/no input = 1. | same | `fig4_indicator_counts.png` (+ `dark/`), `.json` | none |
+| `Code/hf2_06_fig4_indicator_counts.py` | Yes/no input counts: the number of training patients with each yes/no input = 1. Dropped from `Results` in step 3 (Analysis Log row 15); the script and image files are kept. | same | `fig4_indicator_counts.png` (+ `dark/`), `.json` | none |
 
 ## References
 
