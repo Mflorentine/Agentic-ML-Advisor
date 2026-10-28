@@ -1,6 +1,4 @@
-# [Title]
-
-*Chosen by the user at the end of step 5, from the titles suggested once the `Discussion` is written.*
+# Predicting death during follow-up in heart failure patients from routine clinical measurements
 
 ## Introduction
 
@@ -71,7 +69,23 @@ In Figure 6, each step of the curve is one more death flagged as the threshold i
 
 ## Discussion
 
-*Written in step 5, organised by theme: why the recommended configuration and not the others, how it makes predictions, what it can and cannot be used for, and the limits of the evaluation.*
+Logistic regression without regularisation was chosen because it is the simplest of four logistic models that cross-validation could not tell apart (Figure 4). The model with squares and cubes added had the highest mean, 0.7064 against 0.6627, but the difference was smaller than half its variation across the folds, which was 0.1171. In that case the rule takes the model with the fewest additions. The selection confidence is therefore low. This does not mean the chosen model is poor: it means that, with 239 training patients and 7 or 8 deaths in each validation fold, the data could not separate four similar models. k-nearest neighbours and the decision tree were added when the diagnosis showed that the leading model fitted the training patients little better than new ones. Both scored below all four logistic models, at 0.5633 and 0.5546.
+
+The model gives each patient a score: a constant plus each of the 11 measurements, first put on a common scale and then multiplied by a weight learned from the training patients. The logistic function turns that score into a probability of death between 0 and 1. The largest weights belong to ejection fraction, age and serum creatinine. A lower ejection fraction, an older age and a higher serum creatinine each raise the predicted probability, with the other measurements held fixed. Platelets, diabetes and smoking have the smallest weights.
+
+As a worked example, take a patient with every measurement at its median among the training patients and the most common yes/no values: aged 60, ejection fraction 38 %, serum creatinine 1.1 mg/dL. That patient's predicted probability of death is 0.108, just above the threshold of 0.10, so the patient is flagged.
+
+The weights describe how this fitted model separates patients in these data. They do not show that any measurement causes death: the question was framed as one of prediction, not of how the measurements are connected to death.
+
+The model met its success criterion. On the 60 held-out patients its area under the precision–recall curve, 0.6983, is above the share of deaths, 0.3167, by more than the variation across the folds. It ranks patients who died above those who did not more often than chance would.
+
+The threshold tells a different story from the ranking. At 0.10, chosen to weight missed deaths twice as heavily as false alarms, the model flags 49 of the 60 patients and catches 16 of the 19 deaths. But 33 of the 41 patients who did not die are flagged too, so the share of flagged patients who died, 0.3265, is close to the share of deaths overall. Its F2 on the held-out patients, 0.6400, is below the 0.6985 that flagging every patient would reach. As a ranking of risk, the model carries information. As a rule for whom to flag, at this threshold, it scores below flagging everyone on the measure the threshold was chosen for.
+
+What a flag means is limited further by the data. A patient recorded as not having died was not observed to die during a follow-up of varying length; the source does not say how follow-up ended, so some of these patients may have died later. The unit of the platelet count is uncertain, and the model uses it as recorded. An earlier analysis of the same 60 held-out patients, using a decision tree, reached an F2 of 0.6780 under a different deciding metric and success criterion.
+
+The area of 0.6983 estimates the average performance on new patients like these held-out ones: patients in NYHA class III or IV at two hospitals in Faisalabad in 2015. It says nothing about how wrong the worst single prediction can be, and it holds only while new patients resemble these. It rests on 60 patients, 19 of whom died. Its uncertainty, 0.0938, is the variation across cross-validation folds of 23 or 24 patients, so it approximates rather than measures the uncertainty of an estimate from 60 patients.
+
+The held-out patients are also the test set of the earlier analysis, whose result was known before this one began. They informed none of this analysis's choices, but they are not unseen in the sense the method assumes. The learning curve did not fall over the last fifth of the training data (Figure 5), so more patients of the same kind are not indicated as the way to improve the model; the diagnosis instead pointed to the information in the inputs, and no further measurements were available.
 
 ## Disclaimer
 
