@@ -1,0 +1,53 @@
+{
+  "core_version_sha256": "6ffd570a4c9f58b3d59113bb10af643d6277ae69e95c7e7db6cfa7fa640b8e2b",
+  "rows_used": "training phones only",
+  "n_train": 1600,
+  "inputs": [
+    "battery_power",
+    "clock_speed",
+    "fc",
+    "int_memory",
+    "m_dep",
+    "mobile_wt",
+    "n_cores",
+    "pc",
+    "px_height",
+    "px_width",
+    "ram",
+    "sc_h",
+    "sc_w",
+    "talk_time",
+    "blue",
+    "dual_sim",
+    "four_g",
+    "three_g",
+    "touch_screen",
+    "wifi"
+  ],
+  "P9": {
+    "value": "yes",
+    "training_accuracy_negligible_regularisation": 1.0,
+    "training_rows_misclassified": 0,
+    "C_used": 100000000.0,
+    "iterations": 42,
+    "max_iter": 100000,
+    "convergence_warnings": [],
+    "prediction_rule": "class with the highest probability (interpretation d)",
+    "threshold": "100 % training accuracy",
+    "provenance": "[I] procedure"
+  },
+  "P10": {
+    "value": "balanced",
+    "smallest_class_share": 0.25,
+    "class_counts": {
+      "0": 400,
+      "1": 400,
+      "2": 400,
+      "3": 400
+    },
+    "threshold": "< 20%",
+    "provenance": "[I] threshold"
+  },
+  "input_columns_after_encoding": 20,
+  "transformed_inputs": []
+}

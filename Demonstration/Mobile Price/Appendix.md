@@ -160,7 +160,26 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 
 ## Analysis
 
-*The workings, one sub-heading per sub-task, added as steps 3 and 4 proceed: exploration of the training data, cross-validation tables, learning curves, diagnostics, error analysis, checks that changed nothing, and anything computed but not reported.*
+### Sub-task 1 — Price band of a new phone
+
+**Step 3: training data only (1,600 phones).** Nothing in this step read the 400 test rows. `core.training_data()` keeps only `train_idx` from `split.json`, and asserts that no test index is kept. Every figure script reads the data through it.
+
+- **Input design (DR-08):** all 20 inputs as recorded. Three alternatives were offered and not taken: the log of `ram` and `int_memory`; log(1 + x) of all size inputs; and derived inputs (screen area, pixel count).
+- **P9 and P10 (DR-09)** were computed by `Code/mobile/core.py` (SHA-256 `6ffd570a…640b8e2b`) after the user had seen the script. P9 = yes: logistic regression with C = 1e8 on standardised inputs classifies all 1,600 training phones correctly, in 42 iterations with no convergence warning. P10 = balanced: 400 phones per band. The P9 fit is not a candidate model, and its result is not interpreted.
+- **Figures proposed** (one per script, training phones only):
+  1. histograms of the 14 numerical inputs, all bands together;
+  2. box plots of each numerical input per band;
+  3. the share of phones with each yes/no feature per band;
+  4. scatter plots of `px_width` against `px_height` and `sc_w` against `sc_h`.
+
+  The user chose Figure 1 only. Figures 2–4 were not made.
+- **Figure 1 binning: two versions replaced before the figure entered the report.**
+  - *First version:* 40 equal-width bins for inputs with more than 30 distinct values. `int_memory` (63 whole-number values) zig-zagged, because some bins held two values and others one. `mobile_wt` (121 values) showed a spike in its last bin, which held four whole numbers where the others held three. Both were artefacts of the bins, not features of the data.
+  - *Second version:* bins of a fixed whole-number width. The last bin then held fewer possible values than the others in `battery_power`, `mobile_wt`, `px_width` and `ram`, which made a short final bar.
+  - *Final version:* one bar per recorded value for every input with up to 130 distinct values, including `int_memory` (63) and `mobile_wt` (121). The other four inputs (977 to 1,304 distinct values) get 40 equal-width bins from min − 0.5 to max + 0.5, so each bin holds 37–38 possible whole numbers (`px_height` 49–50, `ram` 93–94).
+  - Bar outlines are dropped for panels with more than 64 bars, so the thin bars stay visible.
+  - Output size: 3,229 × 2,743 pixels in both themes, from a 16 × 14 inch canvas at 200 dpi. The tight bounding box did not enlarge it.
+- **Counts quoted in the Figure 1 caption** come from `Code/outputs/mobile/figures/fig1_input_distributions.json`, training phones only. Zeros: `fc` 372, `sc_w` 145, `pc` 81, `px_height` 2. These are lower than the step 1 counts (474, 180, 101, 2), which covered all 2,000 rows.
 
 ## Decision Records
 
@@ -437,7 +456,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** asked — quoted above
-- **Supersedes / superseded by:** n/a
+- **Supersedes / superseded by:** superseded by DR-09 (P9 and P10 added in step 3; P1–P8 unchanged)
 - **Links:** `Code/mobile_02_split.py`, `Code/outputs/mobile/split.json`
 
 ### DR-07 · SPLIT · step 2
@@ -488,6 +507,115 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/mobile_02_split.py`, `Code/outputs/mobile/split.json`
 
+### DR-08 · FORM · step 3
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** What is the input design: which inputs, and is any of them transformed before modelling?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Inputs | all 20 specification columns (DR-05) | M | DR-05 |
+| `n_cores` | numerical | M | user, 28 October 2026: "Number (Recommended)" (DR-05) |
+| Zeros in `px_height`, `sc_w`, `fc`, `pc` | present; a logarithm is undefined at 0 | M | `Code/outputs/mobile/01_describe.json` (step 1) |
+| User's answer | "All as recorded (Recommended)" | M | user, 28 October 2026 (selected option) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Input design (§9) | decided with the user from the meaning of the columns, not from the data | [B p.18] | not a configuration axis; not chosen by CV |
+| Start simple | no transformation | [B p.331] | inputs used as recorded |
+| REQ-6 | the six 0/1 indicators one-hot encoded | [B p.49] | one column each (one level dropped) |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** all as recorded · log of `ram` and `int_memory` · log(1 + x) of all size inputs (needed because of zeros; ours) · derived inputs (screen area, pixel count; P3 would become many)
+- **Expectation:** n/a
+- **Decision:** All 20 inputs are used as recorded, with no transformation and no derived input. The six indicators are single 0/1 columns, and the 14 numerical inputs are unchanged. Scaling is added only by the families that need it (REQ-2, REQ-3), inside the folds (REQ-1).
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "All as recorded (Recommended)"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile/core.py` (`preprocessor`, interpretation a)
+
+### DR-09 · PROP · step 3
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** What are the property values P1–P10, now that P9 and P10 have been computed from the training phones?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| P1 output type | multiclass (4 classes; ordinal, treated as multiclass) | M | DR-05; user: "Multiclass" |
+| P2 data-to-parameter ratio | ample (1,600 ÷ (20 + 1) = 76.19) | M | `Code/outputs/mobile/split.json` |
+| P3 number of inputs | few (20 columns after encoding; unchanged by DR-08) | M | `Code/outputs/mobile/split.json`; `core_p9_p10.json` (`input_columns_after_encoding`: 20) |
+| P4 share of categorical inputs | low (6 ÷ 20 = 30 %) | M | `Code/outputs/mobile/split.json` |
+| P5 interpretability | none | M | user, 28 October 2026: "Not needed" |
+| P6 probabilities or threshold | no | M | user, 28 October 2026: "No" |
+| P7 beyond training range | no | M | user, 28 October 2026: "No" |
+| P8 expected shape | unknown | M | user, 28 October 2026: "I have no expectation" |
+| P9 classes perfectly separable | yes: logistic regression with C = 1e8 classifies all 1,600 training phones correctly (training accuracy 1.0, 0 misclassified; 42 iterations, no convergence warning) | T | `Code/outputs/mobile/core_p9_p10.json` |
+| P10 class imbalance | balanced: smallest class share 0.25 (400 per band) | T | `Code/outputs/mobile/core_p9_p10.json` |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P2 | ample | [I] | no P2 entry in the matrix |
+| P3 | few | [I] | no P3 entry |
+| P4 | low | [I] | no P4 entry |
+| P5–P8 | none · no · no · unknown | — | contribute nothing to the prior (§15) |
+| P9 | yes | [I] | MOD-1 will apply when the admissible set is built (step 4a) |
+| P10 | balanced | [I] | the diagnosis loop uses the book's default error, the misclassification rate (§16) |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | 76.19 |
+| P3 many inputs | > 20 | 20 |
+| P4 high categorical share | ≥ 50 % | 30 % |
+| P9 separable | 100 % training accuracy with negligible regularisation (C = 1e8) | 100 % (1,600 of 1,600) |
+| P10 imbalanced | smallest class < 20 % | 25 % |
+
+**P3 sits exactly on its threshold.** There are 20 input columns after encoding, and P3 = many only above 20 `[I]`, so P3 = few. One more input column would change it to many. That would happen with any derived input, or with `n_cores` treated as a category, which gives 27 columns. P3 = many would add −1 to `kNN` and to every `+ poly` configuration (§13). The value rests on the input design (DR-05, DR-08), not on the data.
+
+- **Options considered:** n/a
+- **Expectation:** n/a
+- **Decision:** P1 multiclass · P2 ample · P3 few (on the threshold) · P4 low · P5 none · P6 no · P7 no · P8 unknown · P9 yes · P10 balanced. The P9 fit only establishes a property: it is not a candidate model, and its result is not interpreted as a finding.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+**Reference code**
+
+- Function: `p9_p10` in `Code/mobile/core.py` (interim core, not reviewed) · version SHA-256 `6ffd570a4c9f58b3d59113bb10af643d6277ae69e95c7e7db6cfa7fa640b8e2b` · inputs: the 1,600 training rows (`split.json` `train_idx`), DR-08 input design · output: `Code/outputs/mobile/core_p9_p10.json`, copied unchanged
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — the user saw the core before it ran and chose "Run it"
+- **Supersedes / superseded by:** supersedes DR-06
+- **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_p9_p10.json`
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -508,6 +636,10 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 | 8 | Step 2, formulation. The bands are treated as multiclass (not numeric). All errors are equally costly. Accuracy is the deciding metric, with the confusion matrix and per-band recall monitored. Baseline: most common class, 25 %. Success: test accuracy minus its uncertainty above 25 %. Achievable level unknown. P5 none, P6 no, P7 no, P8 unknown ("I have no expectation"). `n_cores` is numerical. | DR-05, DR-06 |
 | 9 | Step 2, split. 20 % test, shuffled and stratified by `price_range`, seed 2026: 1,600 training and 400 test rows, 25 % per band in each. P2 = ample (76.19), P3 = few (20), P4 = low (30 %). Test set locked. | `Code/mobile_02_split.py`, `Code/outputs/mobile/split.json`, DR-06, DR-07 |
 | 10 | Step 2. Problem, approach and sub-task written into the `Introduction` of `Report.md`, with the two works it cites in its `References`. The book entry was added to the appendix's `References` first; the link was checked on 28 October 2026. | `Report.md` |
+| 11 | Step 2 closed: the user moved on to step 3 ("Mobile Price: step 3, explore and visualise the training data"). Three items listed at the close were not taken up: how the `Introduction` describes who uses the predictions; transforming inputs (settled in step 3, row 12); and a second sub-task. | — |
+| 12 | Step 3, input design. Four options were offered (as recorded; log of RAM and storage; log(1 + x) of all size inputs; derived inputs), and the user chose "All as recorded (Recommended)". | DR-08 |
+| 13 | Step 3. Interim core `Code/mobile/core.py` written (input design, §11 P9 and P10) and shown to the user before it ran ("Run it"). It ran on the 1,600 training phones: P9 = yes, P10 = balanced. A new PROP record supersedes DR-06, and notes that P3 = 20 sits exactly on its threshold. | `Code/mobile/core.py`, `Code/outputs/mobile/core_p9_p10.json`, DR-09 |
+| 14 | Step 3, figures. Four were proposed and the user chose Figure 1 (distributions of the 14 numerical inputs) only. Two binning versions were replaced because of artefacts (see `Analysis`). Figure 1 was added to `Results` with a caption and a paragraph on how to read it. | `Code/mobile_03_fig1_input_distributions.py`, `Code/outputs/mobile/figures/fig1_input_distributions.png` (+ `dark/`), `Report.md` |
 
 ## Code Summary
 
@@ -517,6 +649,8 @@ All scripts run from `Code/` with `uv run python <script>.py`. Script names star
 | --- | --- | --- | --- | --- |
 | `Code/mobile_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 of both files and checks them against `SOURCE.md`. Describes each column (meaning and unit from Kaggle's descriptions, range, percentiles, zeros, 0/1 counts). Counts duplicates, conflicting targets, class counts, row order and selected value combinations, and compares `test.csv` with `train.csv`. Draws no conclusions. | `Attachments/Mobile Price/train.csv`, `test.csv` | `Code/outputs/mobile/01_describe.json`, `01_describe.md` | none |
 | `Code/mobile_02_split.py` | Step 2 split. Shuffled, stratified 80 / 20 split of `train.csv` by `price_range`. Records the row indices of each part, their class counts, the input design (categorical and numerical inputs) and P2–P4 with their `[I]` thresholds as named constants. After it runs, the test indices are locked until step 4g. | `Attachments/Mobile Price/train.csv` | `Code/outputs/mobile/split.json` (indices and counts, no data values) | `SEED = 2026`, `TEST_FRACTION = 0.2` |
+| `Code/mobile/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far it holds the input design of DR-08 (`preprocessor`: 14 numerical inputs passed through, six 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 1,600 `train_idx` rows only, with an assertion that no test row is kept), and §11 P9 and P10 (`p9_p10`). The header lists interpretations a–d. Sections §12–§19 are added before step 4b. Run: `uv run python mobile/core.py p9p10`. | `Attachments/Mobile Price/train.csv`, `Code/outputs/mobile/split.json` | `Code/outputs/mobile/core_p9_p10.json` | `[I]` constants: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`; `LOGISTIC_MAX_ITER = 100000` |
+| `Code/mobile_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, all bands together. One bar per value for inputs with up to 130 distinct values; 40 equal-width bins from min − 0.5 to max + 0.5 for the rest. Light and dark versions. Uses `viz_style.py`, with `FIGURES` set to the Mobile Price folder. | the training phones, via `core.training_data()` | `Code/outputs/mobile/figures/fig1_input_distributions.png`, `dark/fig1_input_distributions.png`, `fig1_input_distributions.json` (per panel: phones, distinct values, min, max, zeros, bars) | `BINS = 40`, `DISCRETE_MAX = 130`, `FIGSIZE = (16, 14)` |
 
 ## References
 

@@ -16,7 +16,11 @@ Each band is treated as a separate category, so the order of the bands is not us
 
 ## Results
 
-*Figures of the training data go in during step 3. In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
+Figure 1 describes the 1,600 training phones, all four price bands together. Each panel is one of the 14 numerical specifications, and the height of a bar is the number of phones with that value. For the ten specifications with up to 121 distinct values, there is one bar per recorded value. Battery capacity, pixel height, pixel width and memory (RAM) take about 1,000 values or more, and are grouped into 40 bins of equal width.
+
+![Figure 1](../../Code/outputs/mobile/figures/fig1_input_distributions.png)
+
+<small><b>Figure 1.</b> Number of training phones (of 1,600) at each value of the 14 numerical specifications, as recorded. Each panel has its own vertical scale. Units are those given in the source; clock speed, weight and talk time have none. The value 0 occurs for front-camera megapixels in 372 phones, screen width in 145, primary-camera megapixels in 81 and pixel height in 2.</small>
 
 ## Discussion
 
