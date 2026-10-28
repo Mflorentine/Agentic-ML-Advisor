@@ -10,7 +10,7 @@
 - The same data were analysed before in `Demonstration/Heart Failure/` (steps 1–5, finished), and its data, decisions and results are known to the user and to the advisor.
 - This rerun works through the steps afresh with the method as it stands now (`instructions.md` and `ML Guide.md` at 28 October 2026). Every decision is put to the user as options, and no decision is copied from the earlier Appendix.
 - Prior knowledge cannot be undone, though. Choices in this rerun, such as the problem, the inputs and the metric, may be influenced by what the earlier analysis found, and the earlier test result has already been seen. Whether this rerun's test set is the same as the earlier one is a step 2 decision. If it is, its rows have already informed the earlier analysis's evaluation, though not this rerun's choices.
-- The earlier analysis is the reference and is not edited. Its scripts (`Code/01_…08_*.py`), core (`Code/core.py`) and outputs are not read or changed by this rerun. This rerun's files are named `Code/hf2_*`, `Code/hf2/core.py` and `Code/outputs/hf2/`.
+- The earlier analysis is the reference and is not edited. Its scripts (`Code/01_…08_*.py`), core (`Code/core.py`) and outputs are not changed by this rerun. One exception to "not read" follows from a step 2 decision: the row indices of its split (`Code/outputs/split.json`) are read, because the user chose to reuse its test set (DR-07). This rerun's files are named `Code/hf2_*`, `Code/hf2/core.py` and `Code/outputs/hf2/`.
 
 **Provenance.**
 - **File:** `Attachments/heart_failure_clinical_records_dataset.csv`, from the UCI Machine Learning Repository, *Heart Failure Clinical Records* (dataset 519; donated 4 February 2020). It was downloaded on 14 October 2026 by the user (`Attachments/SOURCE.md`). Never modified.
@@ -93,7 +93,70 @@
 
 ## Problem Definition
 
-*Written in step 2, before anything is trained. Three parts. `Discussion`: how the problem was arrived at, what was ruled out, and whether it is a prediction problem. `Problem`: what is predicted, from what, the output type, the agreed metric, the success criterion, the baseline and the achievable level, the must-have requirements, and any expectations the user states about the relationship (quoted). `Sub-tasks`: the separately answerable parts. Ends with the train/test split, its seed, and the statement that the test set is locked.*
+*Step 2, written 28 October 2026, before anything was trained. It works from the column meanings, the `Data Summary` and row counts only. No model has been fitted, and no relationship between inputs and outcome has been looked at in this rerun.*
+
+### Discussion
+
+**How the problem was arrived at.** The user asked the advisor to suggest a problem. Three candidates were offered, from the column meanings:
+- (a) **Death during follow-up:** predict `DEATH_EVENT` from the 11 clinical inputs.
+- (b) **Death within a fixed time** (for example 90 days), using `time` only to define the label.
+- (c) **Ejection fraction:** a regression on a measurement.
+
+The user chose (a), "Death during follow-up". (b) was not taken: patients without a death followed for less than the fixed time have no known outcome. (c) was not taken: it is not the outcome the data were collected for.
+
+**Prediction, not understanding (ADM-2, DR-04).** The user chose "Predict".
+
+**What a mistake costs.** Suppose the prediction is used to flag patients at higher risk when follow-up starts. The user chose "Missing a death is worse" over "Both about equal" and "False alarm is worse".
+
+**The metric.** The user chose "PR-AUC (Recommended)": the area under the precision–recall curve (p. 92), computed as average precision `[I]`. It is threshold-free, so model selection does not depend on a threshold, and §16 tunes a threshold only after selection. Alongside it, F2, precision and recall are monitored at a threshold tuned on the training data. F2 weighs recall twice as heavily as precision (p. 92). Two alternatives were offered and not taken:
+- F2 at the default threshold 0.5 during selection;
+- ROC-AUC, which the book ranks below the precision–recall curve when positives are the minority (p. 92).
+
+**Success and achievable level.**
+- The user chose "Above no-skill beyond noise": test PR-AUC minus its uncertainty above the test set's share of deaths. Fixed bars of 0.60 and 0.75 were not taken.
+- The achievable level is "Unknown". The results of Chicco and Jurman (2020) were offered as a reference and not taken: they use other metrics, partly other inputs, and could anchor the work.
+
+**Requirements and expectations.**
+- P5: "Not needed".
+- P6: "Yes, nice to have", with a threshold tuned after selection and the trade-off chosen by the user.
+- P7: "No".
+- P8: "I have no expectation", so `unknown`.
+- No must-haves.
+
+**The split (DR-07).** The user chose "Same test set as before" over "New split": the earlier analysis's 60 test patients are reused, so that the old and new methods are compared on the same patients.
+- *Limitation:* those 60 patients already produced the earlier test result, which the user and the advisor have both seen. The test set is untouched by this rerun's choices, but not by our knowledge.
+
+**Feasibility.**
+- *Is the output recorded well enough?* It is recorded for all rows; a 0 means "no death observed during follow-up" (DR-01).
+- *Are there enough rows?* 239 training patients for 11 input columns: a ratio of 19.9 (P2 = ample).
+- *Do grouping or time order constrain the split?* No groups (DR-02).
+- *Is the problem answerable within the scope?* Binary classification is covered by chapters 2 and 3.
+
+### Problem
+
+Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.json`.
+
+| Item | Agreed |
+| --- | --- |
+| **Rows** | All 299 patients, one row each. |
+| **Output y** | `DEATH_EVENT`: 1 if the patient died during the follow-up period, 0 otherwise (no death observed). 96 of 299 are 1 (32.11 %). |
+| **Inputs x** | The 11 clinical columns: `age`, `anaemia`, `creatinine_phosphokinase`, `diabetes`, `ejection_fraction`, `high_blood_pressure`, `platelets`, `serum_creatinine`, `serum_sodium`, `sex`, `smoking`. Five are 0/1 indicators; six are numerical. `time` is not an input (step 1). Any transformation is decided in step 3. |
+| **Output type (P1)** | Binary. |
+| **What a prediction is for** | Flagging patients at higher risk of death when follow-up starts. Missing a death costs more than a false alarm. |
+| **Deciding metric** | PR-AUC, computed as average precision `[I]`. |
+| **Monitored alongside** | F2 (β = 2), precision and recall at a decision threshold tuned on the training data after selection (§16). |
+| **Baseline** | The most common training class: flag nobody (pp. 330–331). Its scores are constant, so its PR-AUC equals the share of deaths, the no-skill level (p. 92): 77 / 239 = 0.3222 in training, and 19 / 60 = 0.3167 in the test set. |
+| **Success criterion** | Test PR-AUC minus its uncertainty above the test set's share of deaths (0.3167). The uncertainty is the SD of PR-AUC across the 10 outer folds (step 4g) `[B→I pp.71–73]`. |
+| **Achievable level** | Unknown. |
+| **P5** | None (not needed). |
+| **P6** | Yes, not a must-have: a tuned threshold, with the trade-off chosen by the user. |
+| **P7** | No. |
+| **P8** | Unknown: "I have no expectation". |
+| **Split** | The earlier analysis's split, reused: 20 % test, shuffled, stratified by `DEATH_EVENT`, seed 2026. 239 training patients (77 deaths) and 60 test patients (19 deaths). Cross-validation folds are stratified by `DEATH_EVENT`. The test set is locked (DR-07, `Code/outputs/hf2/split.json`). |
+
+### Sub-tasks
+
+1. **Death during follow-up.** Predict, from the 11 clinical inputs, whether a patient dies during the follow-up period. Success: test PR-AUC minus its uncertainty above the test set's share of deaths.
 
 ## Analysis
 
@@ -226,6 +289,202 @@
 - **Supersedes / superseded by:** n/a
 - **Links:** `Attachments/SOURCE.md`
 
+### DR-04 · ADM · step 2
+
+- **Sub-task:** all
+- **Date:** 2026-10-28
+- **Question:** Is the main aim to predict y for new cases, or to understand how the variables are connected (ADM-2)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Problem chosen | "Death during follow-up": predict `DEATH_EVENT` from the 11 clinical inputs | M | user, 28 October 2026 (selected option) |
+| User's answer | "Predict" | M | user, 28 October 2026 (selected option) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| ADM-2 | predict | [B p.20] | continue |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** predict · understand
+- **Expectation:** n/a
+- **Decision:** The aim is to predict death during follow-up for new patients. No claim is made about how the measurements are connected to death.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "Predict"
+- **Supersedes / superseded by:** n/a
+- **Links:** n/a
+
+### DR-05 · FORM · step 2
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** What is predicted, from what, and how is success judged?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| y | `DEATH_EVENT`, binary; 96 of 299 are 1 | M | `Code/outputs/hf2/01_describe.json` |
+| x | 11 clinical inputs (5 indicators, 6 numerical); `time` set aside (step 1) | M | Data Summary; `Code/outputs/hf2/split.json` |
+| Error costs | missing a death is worse than a false alarm | M | user, 28 October 2026: "Missing a death is worse" |
+| Deciding metric | PR-AUC (average precision); F2, precision and recall monitored at a tuned threshold | M | user, 28 October 2026: "PR-AUC (Recommended)" |
+| Success criterion | test PR-AUC − fold SD > test share of deaths | M | user, 28 October 2026: "Above no-skill beyond noise" |
+| Baseline | flag nobody: PR-AUC = share of deaths (training 0.3222; test 0.3167) | M | `Code/outputs/hf2/split.json` |
+| Achievable level | unknown | M | user: "Unknown" |
+| P5 · P6 · P7 · P8 | none · yes (not a must-have) · no · unknown | M | user: "Not needed", "Yes, nice to have", "No", "I have no expectation" |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| One metric, agreed up front | PR-AUC | [B p.330] | decides between models; others monitored |
+| Imbalanced or asymmetric problems need more than the misclassification rate | missing a death is worse | [B p.91] | accuracy not used |
+| Precision–recall curve preferred to ROC when positives are the minority | PR-AUC | [B p.92] | ROC-AUC not used |
+| F_β weights recall β times as heavily as precision | β = 2, monitored | [B p.92] | F2 at the tuned threshold |
+| PR-AUC computed as average precision | chosen | UNLISTED [I] — "the book draws the precision–recall curve and its area (p. 92) but not how the area is computed" | `average_precision_score` |
+| SEQ-1 | baseline = most common training class (flag nobody) | [B pp.330–331] | always cross-validated and reported |
+| Uncertainty of the test result | SD of PR-AUC across the 10 outer folds | [B→I pp.71–73] | used in the success criterion |
+| Threshold tuned only after selection, trade-off chosen by the user (P6 = yes) | applies | [B→I pp.53–54, 92–93] | at 4f |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** problems: death during follow-up, death within a fixed time, ejection fraction; error costs: missing a death worse, equal, false alarm worse; metric: PR-AUC, F2 at 0.5, ROC-AUC; success: above no-skill beyond noise, ≥ 0.60, ≥ 0.75; achievable level: unknown, from the literature
+- **Expectation:** n/a
+- **Decision:** Predict `DEATH_EVENT` from the 11 clinical inputs, decided by PR-AUC against the no-skill baseline. Success is test PR-AUC minus its outer-fold SD above the test share of deaths. A threshold for F2 is tuned after selection.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — quoted above
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/outputs/hf2/split.json`
+
+### DR-06 · PROP · step 2
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** What are the property values P1–P8, before any training?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| P1 output type | binary | M | DR-05 |
+| P2 data-to-parameter ratio | ample (239 ÷ (11 + 1) = 19.92) | M | `Code/outputs/hf2/split.json` |
+| P3 number of inputs | few (11 columns after encoding) | M | same |
+| P4 share of categorical inputs | low (5 ÷ 11 = 45 %) | M | same |
+| P5 interpretability | none | M | user: "Not needed" |
+| P6 probabilities or threshold | yes, not a must-have | M | user: "Yes, nice to have" |
+| P7 beyond training range | no | M | user: "No" |
+| P8 expected shape | unknown | M | user: "I have no expectation" |
+| P9, P10 | not yet computed (training data, step 3) | n/a | — |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P2 | ample | [I] | no P2 entry in the matrix |
+| P3 | few | [I] | no P3 entry |
+| P4 | low | [I] | no P4 entry |
+| P6 = yes (not a must-have) | applies | [B→I pp.50, 53–54] | +1 on Logistic in the prior (§13) |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | 19.92 |
+| P3 many inputs | > 20 | 11 |
+| P4 high categorical share | ≥ 50 % | 45 % |
+
+- **Options considered:** n/a
+- **Expectation:** n/a
+- **Decision:** P1 binary · P2 ample · P3 few · P4 low · P5 none · P6 yes (not a must-have) · P7 no · P8 unknown. P9 and P10 follow in step 3.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — quoted above
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/hf2_02_split.py`, `Code/outputs/hf2/split.json`
+
+### DR-07 · SPLIT · step 2
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** Which training/test split is used, and is the test set locked?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Grouping or time order | none | M | DR-02 |
+| User's choice | "Same test set as before", over "New split" | M | user, 28 October 2026 |
+| Source of the split | the earlier analysis's `Code/outputs/split.json` (commit 5338393): 20 % test, shuffled, stratified by `DEATH_EVENT`, seed 2026. Its source checksum and settings were checked, and its indices form a partition of the 299 rows. Read only, not changed | M | `Code/hf2_02_split.py` |
+| Result | 239 training patients (162 × 0, 77 × 1); 60 test patients (41 × 0, 19 × 1), recomputed from the data | M | `Code/outputs/hf2/split.json` |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Split randomly (shuffle; the file is sorted by `time`) | the reused split was shuffled | [B pp.71, 73] | — |
+| Size with about this much data | test set plus k-fold CV on the rest | [B pp.329–330] | 20 % held out; outer 10-fold CV on the 239 |
+| ADM-3 = none | random split by row | [B p.329] | — |
+| Stratified folds for classification | stratified by `DEATH_EVENT` | [I] | folds keep the share of deaths |
+| Test set used once | locked | [B pp.74, 328] | no step 3 or step 4 code reads `test_idx` before step 4g |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** reuse the earlier test set · a new split (fraction and seed to be chosen)
+- **Expectation:** n/a
+- **Decision:** Reuse the earlier analysis's split, with 60 test patients locked until the final evaluation.
+- **Limitation:** these test patients produced the earlier analysis's test result, which the user and the advisor have seen. The test set has informed none of this rerun's choices so far, but it is not unknown to us. The rerun's test result is therefore a like-for-like comparison with the earlier one rather than a fresh estimate.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — "Same test set as before"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/hf2_02_split.py`, `Code/outputs/hf2/split.json`, `Code/outputs/split.json` (read only)
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -242,6 +501,10 @@
 | 4 | Step 1. The user stated their experience ("New to ML") and answered ADM-1 "Yes", ADM-3 "Neither" and ADM-4 "Yes". | DR-01, DR-02, DR-03 |
 | 5 | Step 1, scope. `time` set aside as a leakage risk (not an input; kept in the file); the alternative, keeping it as an input, was offered and not taken. `platelets` used as recorded, with its unit uncertain; rescaling by 1/1,000 was not taken. `serum_sodium` = 113 (1 row) and `age` = 60.667 (2 rows) accepted as-is; setting to missing and rounding were not taken. All 299 rows kept. | `Data Summary`, *Step 1 decisions* |
 | 6 | Step 1 closed by the user ("close step 1"). Three items listed at the close were not taken up. Rows are not restricted by follow-up length: a 0 means "no death observed during follow-up", which is recorded as a label limitation. The coding of `sex` stays undocumented. The two hospitals stay unidentified in the file. | `Data Summary` |
+| 7 | Step 2. The user asked for suggestions. Three candidate problems were offered, and the user chose "Death during follow-up". ADM-2 was answered "Predict". | `Problem Definition`, DR-04 |
+| 8 | Step 2, formulation. Missing a death is worse. PR-AUC (average precision) is the deciding metric; F2, precision and recall are monitored at a threshold tuned after selection. Baseline: flag nobody. Success: test PR-AUC minus its fold SD above the test share of deaths. Achievable level unknown. P5 none, P6 yes (not a must-have), P7 no, P8 unknown ("I have no expectation"). | DR-05, DR-06 |
+| 9 | Step 2, split. The user chose to reuse the earlier analysis's test set over a new split. `hf2_02_split.py` read the earlier `split.json` (unchanged), checked its checksum, settings and partition, and wrote this rerun's own split: 239 training (77 deaths) and 60 test (19 deaths). P2 = ample (19.92), P3 = few (11), P4 = low (45 %). Test set locked. The `Data Summary` statement that the earlier outputs are "not read" was amended to name this exception. | `Code/hf2_02_split.py`, `Code/outputs/hf2/split.json`, DR-06, DR-07 |
+| 10 | Step 2. Problem, approach and sub-task written into the `Introduction` of `Report.md`, with the works it cites in its `References`. The book entry was added to the appendix's `References` first; the link was checked on 28 October 2026. | `Report.md` |
 
 ## Code Summary
 
@@ -250,9 +513,11 @@ All scripts run from `Code/` with `uv run python <script>.py`. Names start with 
 | File | What it does | Reads | Writes | Seeds / parameters |
 | --- | --- | --- | --- | --- |
 | `Code/hf2_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 and checks it against `SOURCE.md`. Describes each column: meaning, unit and type from the UCI variable table, the paper's range, distinct values, percentiles, zeros, non-integer values and 0/1 counts. Counts duplicates, class counts, row order and `time` by `DEATH_EVENT`. Draws no conclusions. | `Attachments/heart_failure_clinical_records_dataset.csv` | `Code/outputs/hf2/01_describe.json`, `01_describe.md` | none |
+| `Code/hf2_02_split.py` | Step 2 split. Reuses the earlier analysis's training and test row indices (user's choice), after checking that file's source checksum, its settings and that the indices partition the 299 rows. Records this rerun's input design (11 inputs, `time` set aside), the class counts recomputed from the data, and P2–P4 with their `[I]` thresholds as named constants. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/split.json` (earlier analysis; read only) | `Code/outputs/hf2/split.json` | the source split's seed 2026 and fraction 0.2 are checked, not set |
 
 ## References
 
+- Lindholm, A., Wahlström, N., Lindsten, F. and Schön, T. B. (2026). [*Machine Learning – A First Course for Engineers and Scientists*](https://smlbook.org/), 2nd edition, online draft version of 1 September 2026. Cambridge University Press (to be published). Read at smlbook.org; the link was checked on 28 October 2026. Page references in the Decision Records come from `ML Guide.md`.
 - Ahmad, T., Munir, A., Bhatti, S. H., Aftab, M. and Raza, M. A. (2017). Survival analysis of heart failure patients: a case study. *PLoS ONE*, 12(7), e0181001. [https://doi.org/10.1371/journal.pone.0181001](https://doi.org/10.1371/journal.pone.0181001). Its data, `S1 Data.csv` ("DATA_MINIMAL", version 1, CC BY 4.0), are on figshare as article 5227684 (record checked through the figshare API, 28 October 2026). The link was checked on 28 October 2026.
 - Chicco, D. and Jurman, G. (2020). Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone. *BMC Medical Informatics and Decision Making*, 20, 16. [https://doi.org/10.1186/s12911-020-1023-5](https://doi.org/10.1186/s12911-020-1023-5). Its *Dataset* section was read on 28 October 2026 from the open-access full text (Europe PMC, PMC6998201). The link was checked on 28 October 2026.
 - Heart Failure Clinical Records [Dataset]. (2020). UCI Machine Learning Repository. [https://doi.org/10.24432/C5Z89R](https://doi.org/10.24432/C5Z89R). The variable table was read through the UCI API on 28 October 2026. The link was checked on 28 October 2026.
