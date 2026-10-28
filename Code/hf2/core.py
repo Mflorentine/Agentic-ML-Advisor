@@ -5,10 +5,12 @@ as literally as possible, with every [I] threshold as a named constant. Decision
 file's SHA-256 as the code version. Code/core.py (the earlier Heart Failure analysis), Code/sepsis/core.py
 and Code/mobile/core.py belong to other analyses and are neither used nor changed.
 
-Contents so far (step 3):
+Contents so far:
   input design   the preprocessing of DR-08, shared by every model family     (used from step 3)
   §11  P9, P10   properties from the training patients                        (step 3)
-Sections §12-§19 are added before step 4b and shown to the user then.
+  §9, §12        the 14 configurations; admissible set: task gate, must-haves,
+                 MOD-1, MOD-2                                                  (step 4a)
+Sections §13-§19 are added before step 4b and shown to the user then.
 
 Reads Attachments/heart_failure_clinical_records_dataset.csv and keeps only the 239 training rows listed in
 Code/outputs/hf2/split.json ("train_idx"). The 60 test rows are dropped on reading, before any computation,
@@ -25,9 +27,22 @@ Interpretations made in this file, where Part II does not say exactly what to do
   c. "Negligible regularisation" is C = 1e8 (lambda = 1e-8) in LogisticRegression, as in the other
      interim cores.
   d. Predicted class for the P9 accuracy: y = 1 if the probability of class 1 is > 0.5 (p. 53).
+  e. MOD-2 is checked on the design matrix the parametric models would see: the DR-08 preprocessing
+     fitted once on all training patients (as in b), standardised, plus an intercept column; and, for
+     the "+ poly" configurations, with the powers of each numerical input up to the largest degree in
+     the §16 grid (3). The 6 numerical inputs get powers; the 5 0/1 indicators do not (§9: powers of
+     each numerical input).
+  f. "Exactly collinear" = the design matrix has lower rank than it has columns, by numpy's
+     matrix_rank at its default tolerance. Where it does, the near-zero singular directions are
+     reported with the columns that carry them.
+  g. Parameters for MOD-2: binary logistic regression has one parameter vector (pp. 51-52), so
+     parameters = columns + intercept.
+  h. Must-have gates apply only to properties the user called a must-have (P5_must_have,
+     P6_must_have in the properties file); in DR-09 neither is.
 
 Run (from Code/):
   uv run python hf2/core.py p9p10
+  uv run python hf2/core.py admset hf2/props_dr09.json
 """
 from __future__ import annotations
 
@@ -69,6 +84,34 @@ P10_IMBALANCED_SHARE = 0.20  # imbalanced if the smallest class is < 20 % of tra
 DEFAULT_THRESHOLD = 0.5      # p. 53 (interpretation d)
 
 LOGISTIC_MAX_ITER = 100_000
+
+# ---- §16 grid value used by MOD-2 (interpretation e) [I] ----
+GRID_DEGREE = [2, 3]
+
+# ---- Solution space (§9) and gates (§12) ----
+CONFIGS = [  # (name, family, poly, l2) -- the 14 structural configurations
+    ("Linear", "Linear", False, False), ("Linear + L2", "Linear", False, True),
+    ("Linear + poly", "Linear", True, False), ("Linear + poly + L2", "Linear", True, True),
+    ("Logistic", "Logistic", False, False), ("Logistic + L2", "Logistic", False, True),
+    ("Logistic + poly", "Logistic", True, False), ("Logistic + poly + L2", "Logistic", True, True),
+    ("Poisson", "Poisson", False, False), ("Poisson + L2", "Poisson", False, True),
+    ("Exponential", "Exponential", False, False), ("Exponential + L2", "Exponential", False, True),
+    ("kNN", "kNN", False, False), ("Tree", "Tree", False, False),
+]
+CONFIG = {c[0]: {"name": c[0], "family": c[1], "poly": c[2], "l2": c[3]} for c in CONFIGS}
+PARAMETRIC = {"Linear", "Logistic", "Poisson", "Exponential"}
+TASK_GATE = {   # §12, P1 -> admissible families
+    "numeric": ({"Linear", "kNN", "Tree"}, "[B p.17]"),
+    "count": ({"Poisson", "Linear", "kNN", "Tree"}, "[B pp.17, 61–63]"),
+    "non-negative real": ({"Exponential", "Linear", "kNN", "Tree"}, "[B pp.17, 63]"),
+    "binary": ({"Logistic", "kNN", "Tree"}, "[B pp.17, 49–57]"),
+    "multiclass": ({"Logistic", "kNN", "Tree"}, "[B pp.17, 49–57]"),
+}
+MUST_HAVE_GATE = {  # §12, must-have -> families that meet it ("kNN?" = only if the user accepts similar cases)
+    ("P5", "inspectable"): ({"Linear", "Logistic", "Poisson", "Exponential", "Tree", "kNN?"}, "[B→I p.347]"),
+    ("P5", "worst-case bound"): ({"Tree", "Logistic"}, "[B→I p.347]"),
+    ("P6", "yes"): ({"Logistic"}, "[B→I pp.50, 53–54]"),
+}
 
 
 def version() -> str:
@@ -131,6 +174,88 @@ def p9_p10(X: pd.DataFrame, y: pd.Series) -> dict:
     }
 
 
+def load_props(path: str) -> dict:
+    """Property values passed to the core, copied from the latest PROP record."""
+    return json.loads((CODE / path).read_text(encoding="utf-8"))
+
+
+def _rank_report(D: np.ndarray, names: list[str]) -> dict:
+    """Rank of D (interpretation f) and, if deficient, the columns carrying each null direction."""
+    rank = int(np.linalg.matrix_rank(D))
+    out = {"columns": int(D.shape[1]), "rows": int(D.shape[0]), "rank": rank}
+    if rank < D.shape[1]:
+        _, s, vt = np.linalg.svd(D, full_matrices=False)
+        out["null_directions"] = [
+            {"singular_value": float(s[i]),
+             "columns": {names[j]: round(float(vt[i, j]), 3) for j in np.argsort(-np.abs(vt[i]))
+                         if abs(vt[i, j]) > 0.1}}
+            for i in range(rank, D.shape[1])]
+    return out
+
+
+def mod2_check(X: pd.DataFrame) -> dict:
+    """§12 MOD-2 inputs (interpretations e, f, g): parameters vs n_train, and exact collinearity of the
+    design matrix with intercept, without and with powers up to the largest grid degree."""
+    Z = preprocessor().fit_transform(X)
+    names = NUMERICAL + CATEGORICAL                                  # the column order of preprocessor()
+    assert Z.shape[1] == len(names)
+    num = [names.index(c) for c in NUMERICAL]
+    out = {}
+    for poly in (False, True):
+        cols, cnames = [Z], list(names)
+        if poly:
+            for d in range(2, max(GRID_DEGREE) + 1):
+                cols.append(Z[:, num] ** d)
+                cnames += [f"{names[j]}^{d}" for j in num]
+        M = np.hstack(cols)
+        D = np.hstack([np.ones((len(M), 1)), StandardScaler().fit_transform(M)])
+        rep = _rank_report(D, ["intercept"] + cnames)
+        rep["parameters"] = rep["columns"]                            # interpretation g
+        rep["n_train"] = int(len(M))
+        rep["applies"] = bool(rep["parameters"] >= rep["n_train"] or rep["rank"] < rep["columns"])
+        out["poly" if poly else "plain"] = rep
+    return out
+
+
+def admissible_set(props: dict, X: pd.DataFrame) -> dict:
+    """§12: task gate (P1), must-have gates (USER), MOD-1 (P9), MOD-2 (parameters, collinearity)."""
+    families, gate_tag = TASK_GATE[props["P1"]]
+    mod2 = mod2_check(X)
+    admissible, removed = [], []
+    for name, c in CONFIG.items():
+        if c["family"] not in families:
+            removed.append({"configuration": name, "code": "EXCL",
+                            "evidence": f"task gate, P1 = {props['P1']}: admissible families "
+                                        f"{sorted(families)} {gate_tag}"})
+            continue
+        failed = []
+        for (prop, value), (meets, tag) in MUST_HAVE_GATE.items():
+            if props.get(prop) == value and props.get(f"{prop}_must_have", False):     # interpretation h
+                ok = c["family"] in meets or (c["family"] == "kNN" and "kNN?" in meets
+                                               and props.get("kNN_cases_acceptable", False))
+                if not ok:
+                    failed.append(f"must-have {prop} = {value} {tag}")
+        if failed:
+            removed.append({"configuration": name, "code": "USER", "evidence": "; ".join(failed)})
+            continue
+        if c["family"] == "Logistic" and not c["l2"] and props.get("P9") == "yes":
+            removed.append({"configuration": name, "code": "EXCL", "evidence": "MOD-1: P9 = yes [B p.61]"})
+            continue
+        m2 = mod2["poly" if c["poly"] else "plain"]
+        if c["family"] in PARAMETRIC and not c["l2"] and m2["applies"]:
+            removed.append({"configuration": name, "code": "EXCL",
+                            "evidence": f"MOD-2: {m2['parameters']} parameters, rank {m2['rank']}, "
+                                        f"n_train {m2['n_train']} [B→I pp.46–47, 65]"})
+            continue
+        admissible.append(name)
+    return {"properties_used": props,
+            "task_gate": {"P1": props["P1"], "families": sorted(families), "provenance": gate_tag},
+            "must_haves": {k: props.get(k, False) for k in ("P5_must_have", "P6_must_have")},
+            "MOD-1": {"P9": props.get("P9"), "applies": props.get("P9") == "yes", "provenance": "[B p.61]"},
+            "MOD-2": {**mod2, "provenance": "[B→I pp.46–47, 65]"},
+            "admissible": admissible, "removed": removed}
+
+
 def write(name: str, result: dict) -> None:
     result = {"core_version_sha256": version(), **result}
     (OUT / name).write_text(json.dumps(result, indent=2, default=float), encoding="utf-8")
@@ -145,6 +270,10 @@ def main(argv: list[str]) -> None:
         X, y = training_data()
         write("core_p9_p10.json", {"rows_used": "training patients only", "n_train": int(len(y)),
                                    "inputs": INPUTS, **p9_p10(X, y)})
+    elif args[0] == "admset" and len(args) == 2:
+        X, y = training_data()
+        write("core_admset.json", {"rows_used": "training patients only", "n_train": int(len(y)),
+                                   "properties_file": args[1], **admissible_set(load_props(args[1]), X)})
     else:
         sys.exit(__doc__)
 

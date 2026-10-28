@@ -609,6 +609,60 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** supersedes DR-06
 - **Links:** `Code/hf2/core.py`, `Code/outputs/hf2/core_p9_p10.json`
 
+### DR-10 · ADMSET · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** Which of the 14 structural configurations (§9) are admissible for sub-task 1, given the property values in DR-09?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Property values passed to the core | P1 binary, P2 ample, P3 few, P4 low, P5 none (not a must-have), P6 yes (not a must-have), P7 no, P8 unknown, P9 no, P10 balanced | M / T | DR-09; `Code/hf2/props_dr09.json` |
+| Labels checked before 4a | `DEATH_EVENT` is death during a follow-up of varying length, and how follow-up ended for patients without a death is undocumented, so a 0 means "no death observed" (DR-01). It is not constructed from the inputs. `time`, which is tied to the outcome, is not an input (step 1). Nothing new found | M | DR-01; `Data Summary` |
+| MOD-2, without powers | design matrix with intercept: 12 columns, rank 12; parameters 12; n_train 239 | T | `Code/outputs/hf2/core_admset.json` |
+| MOD-2, with powers 2–3 of the 6 numerical inputs | 24 columns, rank 24; parameters 24; n_train 239 | T | same |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Task gate, P1 = binary | Logistic, k-NN, Tree admissible | [B pp.17, 49–57] | 8 configurations removed: the four `Linear`, both `Poisson`, both `Exponential` |
+| Must-have gates (P5, P6) | not applied: neither is a must-have | [B→I p.347]; [B→I pp.50, 53–54] | none removed |
+| MOD-1 | P9 = no: does not apply | [B p.61] | none removed |
+| MOD-2 | does not apply: full rank, and parameters < n_train, with and without powers | [B→I pp.46–47, 65] | none removed |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| MOD-2 exact collinearity (interpretation f) | rank < columns at numpy `matrix_rank` default tolerance | rank 12 of 12; 24 of 24 |
+| MOD-2 parameters ≥ n_train (interpretation g) | 239 | 12; 24 |
+| Largest polynomial degree checked (§16 grid) | 3 | — |
+
+- **Options considered:** the 14 structural configurations of §9
+- **Expectation:** n/a
+- **Decision:** Six configurations are admissible: `Logistic`, `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`, `kNN` and `Tree`. Under §14 SEQ-2 the simple-first configuration will be `Logistic`, because neither MOD-1 nor MOD-2 removed it. This is applied in 4b.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] |
+| `Poisson`, `Poisson + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] |
+| `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] |
+
+**Reference code**
+
+- Function: `admissible_set` (`cd Code && uv run python hf2/core.py admset hf2/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `778783471bc9fe5cb35d47b3fd1cf73ada5640ac071483e04c10b9e3bcb38e5e` (extended for 4a from `2e4b01c3…`; `p9_p10` unchanged, so DR-09 stays valid) · inputs: DR-09 property values in `Code/hf2/props_dr09.json`; the 239 training patients; interpretations e–h in the core's docstring · output: `Code/outputs/hf2/core_admset.json`, copied above unchanged
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — the user chose "§12 now, §13–§19 at 4b", saw the §9/§12 extension before it ran, and chose "Run it"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_admset.json`, DR-09
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -634,6 +688,8 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 13 | Step 3. Interim core `Code/hf2/core.py` written (input design, §11 P9 and P10) and shown to the user before it ran ("Run it"). P9 = no (184 of 239 correct with C = 1e8); P10 = balanced (32.2 %). New PROP record supersedes DR-06. | `Code/hf2/core.py`, `Code/outputs/hf2/core_p9_p10.json`, DR-09 |
 | 14 | Step 3, figures. Four were proposed and the user chose all four: numerical input distributions, numerical inputs by outcome, share who died by yes/no input, and yes/no input counts. One revision (platelet axis format; overlapping line label) before they were added to `Results` with captions and notes on how to read Figures 2 and 3. | `Code/hf2_03_fig1_input_distributions.py` … `hf2_06_fig4_indicator_counts.py`, `Code/outputs/hf2/figures/` (+ `dark/`), `Report.md` |
 | 15 | Step 3, at the user's decision: the yes/no input counts figure was dropped from `Results`, because its counts already appear in the labels of Figure 3 (deaths / patients for each value). The image and its caption were removed, and "Figures 1 to 4" became "Figures 1 to 3". The remaining figures keep their numbers, so no renumbering was needed. In the appendix, references to the figure by number were reworded. `Code/hf2_06_fig4_indicator_counts.py` and its images (`Code/outputs/hf2/figures/fig4_indicator_counts.png`, `dark/`, `.json`) are kept, as the contract asks. | `Report.md`, `Appendix.md` |
+| 16 | Step 3 closed: the user moved on to step 4. Items listed at the close and not taken up: whether to keep the remaining figures as they stand; an expectation for P8 (it stays `unknown`); how the platelet panel is shown, given its uncertain unit. | — |
+| 17 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `77878347…`) was shown and approved ("Run it"). Admissible: `Logistic`, `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 and MOD-2 did not apply. | `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_admset.json`, DR-10 |
 
 ## Code Summary
 
@@ -643,7 +699,7 @@ All scripts run from `Code/` with `uv run python <script>.py`. Names start with 
 | --- | --- | --- | --- | --- |
 | `Code/hf2_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 and checks it against `SOURCE.md`. Describes each column: meaning, unit and type from the UCI variable table, the paper's range, distinct values, percentiles, zeros, non-integer values and 0/1 counts. Counts duplicates, class counts, row order and `time` by `DEATH_EVENT`. Draws no conclusions. | `Attachments/heart_failure_clinical_records_dataset.csv` | `Code/outputs/hf2/01_describe.json`, `01_describe.md` | none |
 | `Code/hf2_02_split.py` | Step 2 split. Reuses the earlier analysis's training and test row indices (user's choice), after checking that file's source checksum, its settings and that the indices partition the 299 rows. Records this rerun's input design (11 inputs, `time` set aside), the class counts recomputed from the data, and P2–P4 with their `[I]` thresholds as named constants. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/split.json` (earlier analysis; read only) | `Code/outputs/hf2/split.json` | the source split's seed 2026 and fraction 0.2 are checked, not set |
-| `Code/hf2/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far: the input design of DR-08 (`preprocessor`: six numerical inputs passed through, five 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 239 `train_idx` rows only, asserting that no test row is kept), and §11 P9 and P10 (`p9_p10`). The header lists interpretations a–d. §12–§19 are added before step 4b. Run: `uv run python hf2/core.py p9p10`. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/hf2/split.json` | `Code/outputs/hf2/core_p9_p10.json` | `[I]` constants `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `DEFAULT_THRESHOLD = 0.5`; `LOGISTIC_MAX_ITER = 100000` |
+| `Code/hf2/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far: the input design of DR-08 (`preprocessor`: six numerical inputs passed through, five 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 239 `train_idx` rows only, asserting that no test row is kept), §11 P9 and P10 (`p9_p10`), and, from step 4a, §9 and §12 (`admissible_set`, `mod2_check`). The header lists interpretations a–h. §13–§19 are added before step 4b. Run: `uv run python hf2/core.py p9p10`; `uv run python hf2/core.py admset hf2/props_dr09.json`. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/hf2/split.json`, `Code/hf2/props_dr09.json` (the DR-09 values) | `Code/outputs/hf2/core_p9_p10.json`, `core_admset.json` | `[I]` constants `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `DEFAULT_THRESHOLD = 0.5`; `LOGISTIC_MAX_ITER = 100000` |
 | `Code/hf2_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, both outcomes together. One bar per value for ejection fraction and sodium, 1-year bins for age, 40 equal-width bins for the rest. Light and dark versions. | training patients via `core.training_data()` | `Code/outputs/hf2/figures/fig1_input_distributions.png` (+ `dark/`), `.json` | `BINS = 40`, `FIGSIZE = (15, 9)` |
 | `Code/hf2_04_fig2_inputs_by_outcome.py` | Figure 2: box plot per outcome group for each numerical input, with every patient as a jittered point. | same | `fig2_inputs_by_outcome.png` (+ `dark/`), `.json` (group sizes, medians, quartiles) | `JITTER_SEED = 2026` (sideways position only) |
 | `Code/hf2_05_fig3_indicators_by_outcome.py` | Figure 3: share who died among patients with each yes/no input = 0 and = 1, with deaths/patients labels and the overall share as a reference line. | same | `fig3_indicators_by_outcome.png` (+ `dark/`), `.json` | none |
