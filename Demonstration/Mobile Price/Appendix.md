@@ -1361,6 +1361,99 @@ These margins describe what the cross-validated model loses without each input, 
 - **Supersedes / superseded by:** n/a
 - **Links:** DR-18, DR-19
 
+### DR-21 · FINAL · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Which configuration does the recommendation rule (§19) choose, how confident is the selection (§17), and, once the user approves, how does it do on the test set?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| CV results | the CV entries of DR-15, DR-17 and DR-19 (same outer folds) | CV | `Code/outputs/mobile/core_cv_store.json` |
+| Diagnosis | loop stopped under S5 after three passes | CV | DR-20 |
+| Candidate set for §17/§19 | the 5 entries with the agreed input design (all 20 inputs). The 20 single-input drops count for the breadth note only (interpretation z) | M | user, 28 October 2026: "Agreed design only (Recommended)", chosen from three options: agreed design only; §19 as written; a `FRAMEWORK` change |
+| Recommendation | `Logistic + L2`, λ tuned over {10⁻⁸ … 10⁴}. Final λ = 10⁻⁵, the most common setting (4 of 10 outer folds; interpretation s). All 20 inputs. No decision threshold (P6 = no): the predicted band is the one with the highest probability | CV | `Code/outputs/mobile/core_recommend.json` |
+| CV mean accuracy | 0.9706 (fold SD 0.0141) | CV | same |
+| Selection confidence | High: C1 clear (runner-up `Logistic + L2` with the original λ grid, margin 0.0069, spread 0.0055); C2 clear (margin over the baseline 0.7206, spread 0.0141); C3 adequate (E_val 80 % − 100 % = 0.0037 < 0.5 × 0.0141) | CV | same |
+| Learning curve, E_val mean (fold SD) at 10 % … 100 % | 0.1825 (0.0712), 0.0944 (0.0279), 0.0644 (0.0250), 0.0537 (0.0274), 0.0444 (0.0229), 0.0375 (0.0164), 0.0375 (0.0161), 0.0331 (0.0144), 0.0269 (0.0132), 0.0294 (0.0141) | CV | same |
+| Prior agreement | disagree: the CV winner among the prior-kept configurations is `Logistic + L2` (prior rank 3); the prior's rank 1 was shared by `kNN` and `Tree` | CV | same |
+| Grounding | 0 matrix entries behind the recommendation's prior score (score 0) | — | same |
+| Selection breadth | 25 configurations compared (5 with the agreed input design, 20 single-input drops); the note applies | — | same |
+| Monitoring (§5.5 note), pooled outer-validation confusion matrix | rows (true 0–3): [391, 9, 0, 0], [8, 383, 9, 0], [0, 8, 383, 9], [0, 0, 4, 396]; recall per band 0.9775 / 0.9575 / 0.9575 / 0.9900 | CV | same |
+| Uncertainty for 4g | SD of accuracy across the 10 outer folds for the recommended entry: 0.0141 `[B→I pp.71–73]` | CV | same |
+
+**§19 trace**
+
+1. **Eligible** (C2 = clear; no must-haves in DR-09; agreed input design only):
+   - `Logistic + L2 (lambda grid from 1e-8)`: +0.7206 (spread 0.0141)
+   - `Logistic + L2`: +0.7137 (0.0141)
+   - `Logistic + poly + L2`: +0.6931 (0.0180)
+   - `Tree`: +0.5781 (0.0288)
+   - `kNN`: +0.3750 (0.0362)
+
+   All five are eligible.
+2. **Candidates** (the best CV mean, plus any within 0.5 × spread of it): `Logistic + L2 (lambda grid from 1e-8)` (0.9706) alone. The original `Logistic + L2` is 0.0069 behind with spread 0.0055, so it is not within noise.
+3. **Choice:** `Logistic + L2 (lambda grid from 1e-8)`, the only candidate.
+4. **Test once:** pending the user's approval (step 4g).
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §19.1 eligible = C2 clear and every must-have met | all five agreed-design entries eligible | [I] (C2 threshold) | — |
+| §19.2 candidates within the noise margin | one candidate | [I] threshold 0.5 × spread | — |
+| §19.3 fewest add-ons, then prior score, then CV mean | not needed (single candidate) | [B p.332] | recommended |
+| §17 C1, C2, C3 and the level rule | C1 clear, C2 clear, C3 adequate → High | [I]; C3 [B→I pp.334–336] + [I] | reported with its factors |
+| Interpretation z (agreed input design only) | the 20 drop entries are not candidates | [I], at the user's choice | without it, §19.3's CV-mean tie-break would have picked the `wifi`-dropped entry (DR-19) |
+| Final hyperparameters (interpretation s) | the most common setting across the outer folds | [I] | λ = 10⁻⁵ (4/10 folds) |
+| Decision threshold | none (P6 = no) | [B→I pp.53–54] | highest-probability band |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C1 clear ≥ 1 × spread, moderate ≥ 0.5 × spread | 0.0055 / 0.0027 | 0.0069 → clear |
+| C2 clear ≥ 1 × spread | 0.0141 | 0.7206 |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0071 | 0.0037 |
+| §19 within noise < 0.5 × spread | 0.0027 | 0.0069 (the original `Logistic + L2`) |
+| Breadth note > 10 configurations | 10 | 25 |
+
+**The agent's notes on these outputs** (raised, not substituted):
+- **C1's runner-up is the same structural configuration** (`Logistic + L2`, with the original λ grid), so C1 here compares two λ grids rather than two configurations. Against the best different configuration, `Logistic + poly + L2`, the margin is 0.0275 with spread 0.0145, from the core's why-not evidence. That is also ≥ 1 × spread, so C1 would be clear either way, and the level would not change.
+- **The final λ was chosen in 4 of 10 folds only.** The others chose 10⁻⁸ (2), 10⁻⁶ (3) and 10⁻⁷ (1). The final refit uses 10⁻⁵ (interpretation s).
+- **The breadth note applies.** 25 entries were compared on the same folds, so the winner's CV score of 0.9706 may be optimistic (p. 328). The single test evaluation is what checks this (p. 74).
+
+- **Options considered:** the five eligible agreed-design entries
+- **Expectation:** DR-11 expected the two Logistic configurations to lead, which they do. No expectation about the choice or the confidence level was stated.
+- **Decision:** Recommend `Logistic + L2` with λ = 10⁻⁵ on all 20 inputs, predicting the band with the highest probability. The selection confidence is High. The test set is used only after the user approves.
+
+**Why not** (all 14 structural configurations except the recommendation)
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = multiclass [B pp.17, 49–57] (DR-10) |
+| `Logistic` | EXCL | MOD-1: P9 = yes [B p.61] (DR-10) |
+| `Logistic + poly` | EXCL | MOD-1: P9 = yes [B p.61] (DR-10) |
+| `Logistic + poly + L2` | OUTP | margin 0.0275, spread 0.0145 (≥ 1 × spread) |
+| `Tree` | OUTP | margin 0.1425, spread 0.0325 (≥ 1 × spread) |
+| `kNN` | OUTP | margin 0.3456, spread 0.0340 (≥ 1 × spread) |
+
+**Flags:** none. No evidence in the diagnosis loop pointed to a method outside the solution space.
+
+**Reference code**
+
+- Function: `recommend` (`cd Code && uv run python mobile/core.py recommend mobile/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `b81c7f4302efc0235d05b7af832ff2c85a4ba00c1a2fce10c1a3f24ed8b49af0`. It differs from `d89e2275…` by interpretation z only, in `recommend`, so no earlier output is affected. The user saw the diff before it ran ("Run recommend") · inputs: DR-09 property values; the CV store · output: `Code/outputs/mobile/core_recommend.json`, copied above unchanged, rounded to 4 decimals. Run time about 15 minutes (learning curve).
+
+**Test-set result:** pending (step 4g, after the user's approval).
+
+- **Confidence:** High — C1 clear · C2 clear · C3 adequate — rule: High if C1 = clear, C2 = clear and C3 = adequate · prior agreement disagree · grounding [B] 0 / [B→I] 0 / [I] 0 · breadth note applies (25 compared)
+- **Outcome vs expectation:** agree on the leading family (DR-11); the test result is pending
+- **User involvement:** asked — §19 scope: "Agreed design only (Recommended)"; core change approved ("Run recommend"); test-set approval pending
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile/core.py` (`recommend`), `Code/outputs/mobile/core_recommend.json`, DR-10 to DR-20
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1396,6 +1489,7 @@ These margins describe what the cross-validated model loses without each input, 
 | 23 | Step 4e, pass 2. Diagnosis of the new leader (15 min): O3 (overfitting) holds first, so DX-4 applies. Parts (a) and (b) do not apply. The user chose (c), backward elimination, from three options given without a recommendation; the keep rule is margin ≥ 0.5 × spread [I], and the expectation was written before the run (DR-18). | DR-18 |
 | 24 | Step 4e, backward elimination round 1 (about 11 min, 20 post-prior entries). Best drop `wifi` (0.9725, +0.0019, spread 0.0106) misses the keep rule, so elimination stops and the leader keeps all 20 inputs. DR-18 outcome vs expectation: agree. 25 configurations have been compared, so the breadth note applies. Open point for 4f: §19's CV-mean tie-break would favour the not-kept `wifi` drop. | `Code/mobile_05_backward_elimination.py`, `Code/outputs/mobile/backward_elimination.json`, `core_cv_post_prior_2.json`–`_21.json`, DR-19 |
 | 25 | Step 4e, pass 3. The leader is unchanged, so O3 and DX-4 remain; only part (d) is left. Asked whether more labelled data exists, the user chose "No; stop the loop". The loop ends under S5 after three passes, with 25 configurations compared. Step 4e is done. | DR-20 |
+| 26 | Step 4f. The §19 tie-break point was raised before `recommend` ran, and the user chose "Agreed design only (Recommended)". The core gained interpretation z (`d89e2275…` → `b81c7f43…`, `recommend` only); the diff was shown and approved. `recommend` ran in about 15 min. Recommended: `Logistic + L2`, λ = 10⁻⁵ (4/10 folds), all 20 inputs, CV mean 0.9706 (fold SD 0.0141). Selection confidence High (C1, C2 clear; C3 adequate); prior agreement disagree; grounding 0 entries; breadth note applies (25). Why-not: 10 EXCL, 3 OUTP. | `Code/mobile/core.py`, `Code/outputs/mobile/core_recommend.json`, DR-21 |
 
 ## Code Summary
 

@@ -101,6 +101,12 @@ Interpretations made in this file, where Part II does not say exactly what to do
      winner among the prior-kept configurations has rank 1, "partial" if rank 2, "disagree"
      otherwise. "Prior first" and "top two" are read as ranks, so a tie at the top is not broken by
      list order.
+  z. §17 and §19 (eligible, candidates, choice, C1 runner-up, prior agreement, why-not) consider only
+     the CV entries with the agreed input design (DR-08: all 20 inputs). Entries with inputs dropped
+     during backward elimination (DX-4) whose drop was not kept are not candidates, because §9 makes
+     the input design a decision taken with the user and not a configuration axis. They count towards
+     the breadth note, which reports every entry compared. Added 28 October 2026 at the user's choice
+     ("Agreed design only (Recommended)"), after round 1 of backward elimination kept no drop (DR-19).
 
 Run (from Code/):
   uv run python mobile/core.py p9p10
@@ -803,7 +809,8 @@ def recommend(props: dict, X, y) -> dict:
     entries = store["entries"]
     adm = admissible_set(props, X)
     prior = prior_ranking(props, adm)
-    models = [k for k in entries if k != BASELINE]
+    compared = [k for k in entries if k != BASELINE]                               # breadth note: all entries
+    models = [k for k in compared if not entries[k]["dropped_inputs"]]               # interpretation z
     f = {k: fold_values(entries[k], "acc_val") for k in entries}
     mean = {k: float(np.mean(v)) for k, v in f.items()}
     struct = {k: entries[k]["structural"] for k in models}
@@ -884,7 +891,9 @@ def recommend(props: dict, X, y) -> dict:
             "prior_agreement": {"value": agreement, "cv_winner_among_prior_kept": winner,
                                 "prior_order_kept": prior_order, "sharing_first_rank": first_rank},
             "grounding": dict(grounding), "grounding_entries": rec_entries,
-            "breadth_note": {"configurations_compared": len(models), "applies": len(models) > BREADTH_MANY},
+            "breadth_note": {"configurations_compared": len(compared), "applies": len(compared) > BREADTH_MANY,
+                             "of_which_agreed_input_design": len(models),
+                             "not_candidates_input_drops": [k for k in compared if k not in models]},
             "why_not": why_not, "learning_curve": lc["points"],
             "monitoring_cv": pooled_monitoring(entries[rec]),
             "uncertainty_for_4g": {"fold_sd_accuracy": float(np.std(f[rec], ddof=SPREAD_DDOF)),
