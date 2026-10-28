@@ -814,7 +814,7 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** informed — the user asked to "continue" after the method was agreed in DR-11
-- **Supersedes / superseded by:** n/a
+- **Supersedes / superseded by:** superseded by DR-15 (re-run under core `d89e2275…`, N_JOBS = 1; every number identical)
 - **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_cv_round1.json`, `Code/outputs/mobile/core_cv_store.json`, DR-11
 
 ### DR-13 · CV · step 4
@@ -887,8 +887,267 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** asked — "Run round 2 (4d)"
-- **Supersedes / superseded by:** n/a
+- **Supersedes / superseded by:** superseded by DR-15 (re-run under core `d89e2275…`, N_JOBS = 1; every number identical)
 - **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_cv_round2.json`, `Code/outputs/mobile/core_cv_store.json`, DR-11, DR-12
+
+### DR-14 · DX · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Diagnosis pass 1 (§18) on the leading configuration, `Logistic + L2`: which observation holds first, and which action follows?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Errors (misclassification rate, §16, P10 = balanced) | E_train 0.0149, E_val 0.0363, gap 0.0213 | CV | `Code/outputs/mobile/core_diagnose_Logistic___L2.json` |
+| Learning curve, E_val mean (fold SD) at 10 %, 20 % … 100 % | 0.1813 (0.0685), 0.0906 (0.0272), 0.0763 (0.0224), 0.0588 (0.0211), 0.0500 (0.0177), 0.0425 (0.0171), 0.0444 (0.0143), 0.0400 (0.0122), 0.0356 (0.0132), 0.0363 (0.0141) | CV | same |
+| Learning curve, E_train mean at 10 % … 100 % | 0.0014, 0.0035, 0.0109, 0.0101, 0.0099, 0.0130, 0.0137, 0.0147, 0.0138, 0.0149 | CV | same |
+| Tuned λ | 10⁻⁴, the smallest value in the §16 grid, in 10/10 outer folds | CV | DR-12; `core_cv_store.json` |
+
+**Observation → action**
+
+| Observation | Holds | Test values |
+| --- | --- | --- |
+| O1 doesn't beat the baseline | no | C2 = clear (DR-12) |
+| O2 training error above what the application needs | no | E_train 0.0149 < 1 − (training baseline accuracy 0.2500 + fold SD 0.0141) = 0.7359 (interpretation q) |
+| **O5 tuned hyperparameter at a grid edge** | **yes**, the first that holds | λ at the smallest grid value in 10 of 10 folds |
+| O3 overfitting | no | gap 0.0213 < 2 × E_train = 0.0299 |
+| O4 underfitting | no | E_train 0.0149 < 2 × gap = 0.0426 |
+| O6 more data likely to help | no | C3 adequate: E_val(80 %) − E_val(100 %) = 0.0037 < 0.5 × 0.0141 = 0.0070 |
+
+- **Action:** DX-3 (O5) `[I]`: extend the grid in that direction and rerun. The λ grid for `Logistic + L2` is extended downward by four decades to {10⁻⁸, 10⁻⁷, …, 10⁴} (13 values). The original nine values are kept, so the extended search contains the old one. The configuration is cross-validated by the core on the same outer folds and marked **post-prior**. This is an action on a configuration, so the loop runs it without stopping (`instructions.md`, step 4e). DX-9 `[B p.334]`: E_train is not ≫ gap, and gap is not ≫ E_train, so neither more data nor more flexibility is ruled out by it.
+
+**Stopping check**
+
+- **S1 (criterion met):** not assessed until 4g, as in the Heart Failure and Sepsis analyses.
+- **S2 (achievable level):** unknown (DR-05).
+- **S3 (two passes without gain):** this is the first pass.
+- **S4 (out of scope):** no.
+- **S5 (user stops it):** no.
+- **S6 (five passes):** no.
+- The loop continues.
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| O3 overfitting: gap ≥ 2 × E_train | 0.0299 | 0.0213 |
+| O4 underfitting: E_train ≥ 2 × gap | 0.0426 | 0.0149 |
+| O5 edge in most folds | > 5 of 10 | 10 |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0070 | 0.0037 |
+
+- **Options considered:** DX-3, the only action triggered by the first observation that holds
+- **Expectation** (written before the extended run): the tuned λ will move below 10⁻⁴ in most folds, and the CV mean accuracy will change by less than 0.5 × the spread of the difference to the original `Logistic + L2` entry. The reasoning is that E_train is already small (0.0149) and the gap is moderate, so a weaker penalty should change the fitted boundary only slightly. Whether the change is a gain or a loss is not predicted.
+- **Decision:** O5 → DX-3. Cross-validate `Logistic + L2` with λ ∈ {10⁻⁸, …, 10⁴} as a post-prior entry, labelled "Logistic + L2 (lambda grid from 1e-8)".
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `observations` (`cd Code && uv run python mobile/core.py diagnose "Logistic + L2"`) · version: interim core, not reviewed, SHA-256 `38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda` · output: `Code/outputs/mobile/core_diagnose_Logistic___L2.json`, copied above unchanged (rounded to 4 decimals)
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** see DR-16, which supersedes this record. Its observations are identical, and the extended run was made under the new core version.
+- **User involvement:** informed — the user asked to "Start 4e"; DX-3 is an action on a configuration and runs without stopping
+- **Supersedes / superseded by:** superseded by DR-16 (pass 1 re-run under core `d89e2275…`, N_JOBS = 1; every number identical). The first DX-3 run under this record's core version failed twice in the parallel worker pool (`WinError 6`, `WinError 5`) and wrote no output (Analysis Log row 20).
+- **Links:** `Code/mobile/core.py` (`observations`, `learning_curve`), `Code/outputs/mobile/core_diagnose_Logistic___L2.json`, DR-13
+
+### DR-15 · CV · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** After the core changed (N_JOBS from −1 to 1), do rounds 1 and 2, re-run from the earliest affected decision, reproduce DR-12 and DR-13?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Reason for the change | the first DX-3 run failed twice in the parallel worker pool: `OSError: [WinError 6] The handle is invalid`, then `PermissionError: [WinError 5] Access is denied`, each followed by `BrokenProcessPool`, in the first outer fold; no output was written. Single fits at λ = 10⁻⁸, 10⁻⁶ and 10⁻⁴ ran normally (about 0.03 s, converged) | — | Analysis Log row 20 |
+| User's choice | "N_JOBS = 1, re-verify (Recommended)", chosen from three options: set N_JOBS = 1 and re-verify; retry unchanged; run under a threading-backend wrapper with the core unchanged | M | user, 28 October 2026 |
+| Change | `N_JOBS = -1` → `N_JOBS = 1` (how many grid-search fits run at once). No other line changed | — | `Code/mobile/core.py`, `d89e2275…` vs `38e21eca…` |
+| Re-run | the CV store was removed and rebuilt; `cv round1`, `cv round2` and `diagnose "Logistic + L2"` were run under `d89e2275…` | CV | `Code/outputs/mobile/core_cv_round1.json`, `core_cv_round2.json`, `core_cv_store.json`, `core_diagnose_Logistic___L2.json` |
+| Comparison | every number, list and string identical to the committed outputs of `38e21eca…` (commit `a1b8fa7`) and to the saved earlier diagnosis, apart from the code-version and printed-pipeline fields: 0 differences in each of the 4 files; floats compared for exact equality | CV | `Code/mobile_04_compare_rerun.py` → `Code/outputs/mobile/rerun_check.json` (`all_identical`: true) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Interim core changed after step 4b → superseding record, re-run from the earliest affected decision | `N_JOBS` is used only in the grid search (§16), so the earliest affected decision is round 1 (DR-12); the admissible set (DR-10) and the prior (DR-11) do not call it | `instructions.md` (Machine Learning Scope and Reasoning; When Something Changes) | rounds 1 and 2 and the pass-1 diagnosis re-run |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+**CV table**: identical to DR-13, every value (outer 10, inner 5; stratified by `price_range`; seed 2026; metric: accuracy).
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean accuracy | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7138 (0.0141) | — | 0.7500 | 0.7500 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9638 | 0.0141 | — (leader) | +0.7138 (0.0141), clear | 0.0149 | 0.0363 |
+| `Logistic + poly + L2` | no | degree 2, λ = 10⁻⁴ (10/10) | 0.9431 | 0.0180 | −0.0206 (0.0132) | +0.6931 (0.0180), clear | 0.0178 | 0.0569 |
+| `Tree` | no | depth 8, minimum leaf 5 (3/10) | 0.8281 | 0.0288 | −0.1356 (0.0328) | +0.5781 (0.0288), clear | 0.0694 | 0.1719 |
+| `kNN` | no | k = 51 (10/10) | 0.6250 | 0.0362 | −0.3387 (0.0314) | +0.3750 (0.0362), clear | 0.3176 | 0.3750 |
+
+- **Options considered:** set N_JOBS = 1 and re-verify · retry unchanged · threading-backend wrapper with the core unchanged
+- **Expectation:** n/a
+- **Decision:** The core's version for all later records is `d89e2275…`. DR-12 and DR-13 are superseded by this record. Their tables, and DR-11's *Outcome vs expectation*, stand unchanged, because the re-run reproduces them exactly.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | not a selection |
+
+**Reference code**
+
+- Function: `run_cv` (`cv round1`, `cv round2`) and `observations` (`diagnose "Logistic + L2"`) · version: interim core, not reviewed, SHA-256 `d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872` (from `38e21eca…`: N_JOBS only) · inputs: as in DR-12 and DR-13 · outputs: `core_cv_round1.json`, `core_cv_round2.json`, `core_cv_store.json`, `core_diagnose_Logistic___L2.json`; the comparison is in `rerun_check.json`
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "N_JOBS = 1, re-verify (Recommended)"
+- **Supersedes / superseded by:** supersedes DR-12 and DR-13
+- **Links:** `Code/mobile/core.py`, `Code/mobile_04_compare_rerun.py`, `Code/outputs/mobile/rerun_check.json`, DR-12, DR-13
+
+### DR-16 · DX · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Diagnosis pass 1 (§18) on `Logistic + L2`, re-run under core `d89e2275…`: which observation holds first, and which action follows?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Observations, errors and learning curve | identical to DR-14 in every value: E_train 0.0149, E_val 0.0363, gap 0.0213; λ at the smallest grid value in 10/10 folds; learning curve as in DR-14 | CV | `Code/outputs/mobile/core_diagnose_Logistic___L2.json`; `rerun_check.json` |
+
+**Observation → action**
+
+| Observation | Holds | Test values |
+| --- | --- | --- |
+| O1 doesn't beat the baseline | no | C2 = clear |
+| O2 training error above what the application needs | no | E_train 0.0149 < 0.7359 (interpretation q) |
+| **O5 tuned hyperparameter at a grid edge** | **yes**, the first that holds | λ = 10⁻⁴ (the smallest) in 10 of 10 folds |
+| O3 overfitting | no | gap 0.0213 < 2 × E_train = 0.0299 |
+| O4 underfitting | no | E_train 0.0149 < 2 × gap = 0.0426 |
+| O6 more data likely to help | no | C3 adequate: 0.0037 < 0.0070 |
+
+- **Action:** DX-3 (O5) `[I]`, as in DR-14. The λ grid for `Logistic + L2` is extended downward to {10⁻⁸, …, 10⁴} (13 values, the original 9 included) and cross-validated on the same folds as a post-prior entry, "Logistic + L2 (lambda grid from 1e-8)".
+
+**Stopping check**
+
+- S1: not assessed until 4g. S2: achievable level unknown. S3: first pass. S4: no. S5: no. S6: no.
+- The loop continues.
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| O3 overfitting: gap ≥ 2 × E_train | 0.0299 | 0.0213 |
+| O4 underfitting: E_train ≥ 2 × gap | 0.0426 | 0.0149 |
+| O5 edge in most folds | > 5 of 10 | 10 |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0070 | 0.0037 |
+
+- **Options considered:** DX-3
+- **Expectation** (written in DR-14 before any extended run, and carried over unchanged): the tuned λ will move below 10⁻⁴ in most folds, and the CV mean accuracy will change by less than 0.5 × the spread of the difference to the original `Logistic + L2` entry.
+- **Decision:** O5 → DX-3, run under core `d89e2275…` (DR-17).
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `observations` (`diagnose "Logistic + L2"`) · version: `d89e2275…` · output: `Code/outputs/mobile/core_diagnose_Logistic___L2.json`
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** partial (filled in by DR-17).
+  - **First part: agree.** λ moved below 10⁻⁴ in all 10 folds: 10⁻⁵ in 4, 10⁻⁶ in 3, 10⁻⁸ in 2, 10⁻⁷ in 1.
+  - **Second part: disagree.** The CV mean rose by 0.0069, which is more than 0.5 × its spread of 0.0055 (and more than 1 ×): from 0.9638 to 0.9706.
+- **User involvement:** informed (as DR-14)
+- **Supersedes / superseded by:** supersedes DR-14
+- **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_diagnose_Logistic___L2.json`, DR-14, DR-15
+
+### DR-17 · CV · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** What does `Logistic + L2` with the λ grid extended down to 10⁻⁸ (DX-3, post-prior) score on the same folds?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Validation accuracy per outer fold | 0.9500, 0.9688, 0.9500, 0.9812, 0.9875, 0.9625, 0.9812, 0.9875, 0.9625, 0.9750 | CV | `Code/outputs/mobile/core_cv_store.json` |
+| Training accuracy per outer fold | 0.9917, 0.9910, 0.9951, 0.9979, 0.9910, 0.9903, 0.9993, 0.9924, 0.9931, 0.9972 | CV | same |
+| Tuned λ per fold | 10⁻⁵, 10⁻⁵, 10⁻⁶, 10⁻⁸, 10⁻⁶, 10⁻⁵, 10⁻⁸, 10⁻⁶, 10⁻⁵, 10⁻⁷. The new edge (10⁻⁸) is chosen in 2 of 10 folds | CV | same |
+| Convergence | all 10 outer refits converged | CV | `core_cv_post_prior_1.json` |
+| Extended minus original `Logistic + L2`, paired by fold | mean +0.0069, spread 0.0055 | CV | computed from `core_cv_store.json` by the agent (the core's table gives the margin of the original to the new leader: −0.0069, spread 0.0055) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| DX-3 | λ grid extended in the direction of the edge | [I] | post-prior entry, same folds |
+| §17 breadth note | 5 configurations compared so far (including this post-prior entry) | [I] | below the threshold of 10 |
+| C2 | margin over the baseline 0.7206 ≥ 1 × spread 0.0141 → clear | [I] | eligible under §19.1 |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear | margin ≥ 1 × spread | 0.7206 vs 0.0141 |
+| Breadth note | > 10 configurations | 5 |
+
+**CV table** (outer 10, inner 5; stratified by `price_range`; seed 2026; metric: accuracy; all entries so far; margins are against the new leader)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean accuracy | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7206 (0.0141) | — | 0.7500 | 0.7500 |
+| `Logistic + L2 (lambda grid from 1e-8)` | yes | λ = 10⁻⁵ (4/10) | 0.9706 | 0.0141 | — (leader) | +0.7206 (0.0141), clear | 0.0061 | 0.0294 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9638 | 0.0141 | −0.0069 (0.0055) | +0.7138 (0.0141), clear | 0.0149 | 0.0363 |
+| `Logistic + poly + L2` | no | degree 2, λ = 10⁻⁴ (10/10) | 0.9431 | 0.0180 | −0.0275 (0.0145) | +0.6931 (0.0180), clear | 0.0178 | 0.0569 |
+| `Tree` | no | depth 8, minimum leaf 5 (3/10) | 0.8281 | 0.0288 | −0.1425 (0.0325) | +0.5781 (0.0288), clear | 0.0694 | 0.1719 |
+| `kNN` | no | k = 51 (10/10) | 0.6250 | 0.0362 | −0.3456 (0.0340) | +0.3750 (0.0362), clear | 0.3176 | 0.3750 |
+
+**Monitoring (§5.5 note), `Logistic + L2 (lambda grid from 1e-8)`, pooled outer-validation confusion matrix.** Rows are the true band and columns the predicted band (0, 1, 2, 3):
+
+| True \ predicted | 0 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- |
+| 0 | 391 | 9 | 0 | 0 |
+| 1 | 8 | 383 | 9 | 0 |
+| 2 | 0 | 8 | 383 | 9 |
+| 3 | 0 | 0 | 4 | 396 |
+
+Recall per band: 0 → 0.9775, 1 → 0.9575, 2 → 0.9575, 3 → 0.9900. These are reported and not used in any decision.
+
+- **Options considered:** `Logistic + L2` with λ ∈ {10⁻⁸, …, 10⁴}
+- **Expectation:** n/a (this record fills in DR-16's *Outcome vs expectation*)
+- **Decision:** The extended entry is the new leader, ahead of the original `Logistic + L2` by 0.0069, which is more than one spread (0.0055). The diagnosis loop continues with pass 2 on it.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `run_cv` (`cv add "Logistic + L2" --grid '{"m__lam": [1e-08, …, 10000.0]}' --label "Logistic + L2 (lambda grid from 1e-8)"`) · version: interim core, not reviewed, SHA-256 `d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872` · output: `Code/outputs/mobile/core_cv_post_prior_1.json`, `core_cv_store.json`, copied above unchanged (rounded to 4 decimals)
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** informed (DX-3 runs without stopping)
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/outputs/mobile/core_cv_post_prior_1.json`, `Code/outputs/mobile/core_cv_store.json`, DR-16
 
 ## Recommendation
 
@@ -919,6 +1178,9 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 | 17 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `38e21eca…`; interpretations i–y), shown to the user before any output was used ("Run the prior"), and the prior ranking was run. All four admissible configurations score 0, and all are kept. The order comes from add-ons only: `kNN` = `Tree`, then `Logistic + L2` (simple-first), then `Logistic + poly + L2`. The expectation recorded is that the Logistic configurations lead, against the prior order. The method was presented and agreed ("Agree the method"). | `Code/mobile/core.py`, `Code/outputs/mobile/core_prior.json`, DR-11 |
 | 18 | Step 4c, sub-task 1: round 1 run (42 s). Baseline mean CV accuracy 0.2500 (band 0 in every fold); `Logistic + L2` 0.9638 (fold SD 0.0141), with λ = 10⁻⁴ in 10/10 folds. Margin over the baseline 0.7138, spread 0.0141: C2 clear, so round 2 may proceed. λ at the grid edge is noted for 4e. | `Code/outputs/mobile/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
 | 19 | Step 4d, sub-task 1: round 2 run (1 min 49 s) on the same folds. Mean CV accuracy: `Logistic + poly + L2` 0.9431, `Tree` 0.8281, `kNN` 0.6250; all four clearly beat the baseline, and `Logistic + L2` (0.9638) leads by more than one spread over each. DR-11 *Outcome vs expectation* filled in: the CV order agrees with the advisor's expectation and disagrees with the prior order. Grid edges noted for 4e: λ = 10⁻⁴ for both Logistic configurations, k = 51 for `kNN` (10/10 folds each). | `Code/outputs/mobile/core_cv_round2.json`, `core_cv_store.json`, DR-11, DR-13 |
+| 20 | Step 4e, pass 1. Diagnosis of `Logistic + L2` (2 min 23 s): O5 holds first (λ at the low edge in 10/10 folds), so DX-3 extends the λ grid down to 10⁻⁸; the expectation was written before the run (DR-14). The extended run then failed twice in the parallel worker pool (`WinError 6`, then `WinError 5`, `BrokenProcessPool`, in outer fold 0; nothing written). Single fits at small λ ran normally. The user chose "N_JOBS = 1, re-verify (Recommended)" over retrying unchanged or a threading wrapper. | DR-14 |
+| 21 | Step 4e. Core changed: `N_JOBS = -1` → `1` (`38e21eca…` → `d89e2275…`). The CV store was rebuilt, and rounds 1–2 and the pass-1 diagnosis were re-run (6 min 19 s). `Code/mobile_04_compare_rerun.py` found every number identical to the committed outputs (0 differences in 4 files). DR-12, DR-13 and DR-14 are superseded by DR-15 and DR-16, with unchanged values. | `Code/mobile/core.py`, `Code/mobile_04_compare_rerun.py`, `Code/outputs/mobile/rerun_check.json`, DR-15, DR-16 |
+| 22 | Step 4e, DX-3 run (33 s): `Logistic + L2` with λ ∈ {10⁻⁸ … 10⁴}, post-prior, scores 0.9706 (fold SD 0.0141), against 0.9638. The paired gain is +0.0069, spread 0.0055. λ ranges over 10⁻⁸ to 10⁻⁵ (10⁻⁸ in 2/10 folds). It is the new leader. DR-16 outcome vs expectation: partial (λ moved down as expected; the gain was larger than expected). | `Code/outputs/mobile/core_cv_post_prior_1.json`, DR-16, DR-17 |
 
 ## Code Summary
 
@@ -929,6 +1191,7 @@ All scripts run from `Code/` with `uv run python <script>.py`. Script names star
 | `Code/mobile_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 of both files and checks them against `SOURCE.md`. Describes each column (meaning and unit from Kaggle's descriptions, range, percentiles, zeros, 0/1 counts). Counts duplicates, conflicting targets, class counts, row order and selected value combinations, and compares `test.csv` with `train.csv`. Draws no conclusions. | `Attachments/Mobile Price/train.csv`, `test.csv` | `Code/outputs/mobile/01_describe.json`, `01_describe.md` | none |
 | `Code/mobile_02_split.py` | Step 2 split. Shuffled, stratified 80 / 20 split of `train.csv` by `price_range`. Records the row indices of each part, their class counts, the input design (categorical and numerical inputs) and P2–P4 with their `[I]` thresholds as named constants. After it runs, the test indices are locked until step 4g. | `Attachments/Mobile Price/train.csv` | `Code/outputs/mobile/split.json` (indices and counts, no data values) | `SEED = 2026`, `TEST_FRACTION = 0.2` |
 | `Code/mobile/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far it holds the input design of DR-08 (`preprocessor`: 14 numerical inputs passed through, six 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 1,600 `train_idx` rows only, with an assertion that no test row is kept), §11 P9 and P10 (`p9_p10`). From step 4a it adds §9 and §12: the 14 configurations, the task gate, the must-have gates, MOD-1 and MOD-2 (`admissible_set`, `mod2_check`). From step 4b it adds the rest: §13–§15 prior ranking (`prior_ranking`); §16 nested CV with a cumulative store (`run_cv`, `nested_cv`, `baseline_cv`, `cv_table`; pooled confusion matrices and recall per band); §18 observations and the learning curve (`observations`, `learning_curve`); §17/§19/§20 recommendation, confidence and why-not codes (`recommend`); and §19.4 the single test evaluation (`final`), the only function that reads the test rows. `final` needs the user's approval on the command line, and refuses a second run or a changed core. The header lists interpretations a–y. Commands: `p9p10`; `admset`, `prior`, `cv round1`, `cv round2` and `recommend`, each with `mobile/props_dr09.json`; `cv add "<configuration>" [--drop COL] [--grid JSON] [--label TEXT]`; `diagnose "<entry>"`; `final --approved "<words>"`. | `Attachments/Mobile Price/train.csv`, `Code/outputs/mobile/split.json`, `Code/mobile/props_dr09.json` (the DR-09 property values) | `Code/outputs/mobile/core_p9_p10.json`, `core_admset.json`, `core_prior.json`. Later: `core_cv_store.json`, `core_cv_round1.json`, `core_cv_round2.json`, `core_cv_post_prior_N.json`, `core_diagnose_*.json`, `core_recommend.json`, `core_final.json`, `core_test_predictions.csv` | `[I]` constants as named in the file: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `KEEP_TOP_OTHERS = 3`, `OUTER_FOLDS = 10`, `INNER_FOLDS = 5`, `C1_CLEAR = 1.0`, `C1_MODERATE = 0.5`, `C2_CLEAR = 1.0`, `C3_FALLING = 0.5`, `WITHIN_NOISE = 0.5`, `BREADTH_MANY = 10`, `O3_RATIO = O4_RATIO = 2.0`, `O5_MOST_FOLDS = 0.5`; grids `GRID_DEGREE`, `GRID_K`, `GRID_DEPTH`, `GRID_MIN_LEAF`, `GRID_LAMBDA` (§16); `CV_SEED = 2026`; `LOGISTIC_MAX_ITER = 100000` |
+| `Code/mobile_04_compare_rerun.py` | Step 4e check after the core change `N_JOBS = -1` → `1`. Compares every value of the re-run outputs (`core_cv_round1.json`, `core_cv_round2.json`, `core_cv_store.json`, `core_diagnose_Logistic___L2.json`) with the earlier core's committed outputs (from git, commit `a1b8fa7`) and the saved earlier diagnosis. Fields naming the code version or the printed pipeline are skipped, and floats must match exactly. | the outputs above; the old diagnosis file (path as argument) | `Code/outputs/mobile/rerun_check.json` | `OLD_COMMIT = "a1b8fa7"` |
 | `Code/mobile_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, all bands together. One bar per value for inputs with up to 130 distinct values; 40 equal-width bins from min − 0.5 to max + 0.5 for the rest. Light and dark versions. Uses `viz_style.py`, with `FIGURES` set to the Mobile Price folder. | the training phones, via `core.training_data()` | `Code/outputs/mobile/figures/fig1_input_distributions.png`, `dark/fig1_input_distributions.png`, `fig1_input_distributions.json` (per panel: phones, distinct values, min, max, zeros, bars) | `BINS = 40`, `DISCRETE_MAX = 130`, `FIGSIZE = (16, 14)` |
 
 ## References

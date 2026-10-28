@@ -184,7 +184,9 @@ LC_FRACTIONS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]   # §16 learn
 # ---- Choices made for this analysis, not thresholds in the guide ----
 CV_SEED = 2026               # outer and inner folds, learning-curve subsets, tree tie-breaks (DR-07)
 SPREAD_DDOF = 1              # interpretation m
-N_JOBS = -1                  # parallel grid search; does not change results
+N_JOBS = 1                   # grid search in one process; does not change results. Was -1 until
+                             # 28 October 2026: the parallel worker pool broke twice on Windows
+                             # (WinError 6, WinError 5) during the first DX-3 run (user's choice)
 
 BASELINE = "Baseline (most common class)"                    # §14 SEQ-1, DR-05, interpretation u
 SIMPLE_FIRST = {"numeric": "Linear", "count": "Poisson", "non-negative real": "Exponential",

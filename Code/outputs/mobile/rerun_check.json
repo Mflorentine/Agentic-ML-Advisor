@@ -1,0 +1,38 @@
+{
+  "old_commit": "a1b8fa7",
+  "skipped_fields": [
+    "core_version_sha256",
+    "pipeline"
+  ],
+  "files": {
+    "core_cv_round1.json": {
+      "old_core": "38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda",
+      "new_core": "d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872",
+      "identical": true,
+      "differences": [],
+      "n_differences": 0
+    },
+    "core_cv_round2.json": {
+      "old_core": "38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda",
+      "new_core": "d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872",
+      "identical": true,
+      "differences": [],
+      "n_differences": 0
+    },
+    "core_cv_store.json": {
+      "old_core": null,
+      "new_core": null,
+      "identical": true,
+      "differences": [],
+      "n_differences": 0
+    },
+    "core_diagnose_Logistic___L2.json": {
+      "old_core": "38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda",
+      "new_core": "d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872",
+      "identical": true,
+      "differences": [],
+      "n_differences": 0
+    }
+  },
+  "all_identical": true
+}
