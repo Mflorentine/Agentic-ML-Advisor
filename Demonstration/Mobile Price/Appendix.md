@@ -743,7 +743,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 - Function: `prior_ranking` (`cd Code && uv run python mobile/core.py prior mobile/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda`. It was extended for 4b from `c7435f48…` with §13–§19 and interpretations i–y; `p9_p10` and `admissible_set` are unchanged, so DR-09 and DR-10 stay valid · inputs: DR-09 property values in `Code/mobile/props_dr09.json`; the admissible set recomputed by `admissible_set` (identical to DR-10) · output: `Code/outputs/mobile/core_prior.json`, copied above unchanged
 
 - **Confidence:** n/a
-- **Outcome vs expectation:** agree with the advisor's expectation; disagree with the prior order (filled in by DR-13). The CV order is `Logistic + L2` (0.9638) > `Logistic + poly + L2` (0.9431) > `Tree` (0.8281) > `kNN` (0.6250). The two Logistic configurations lead, as expected from P9 = yes. The prior's rank-1 configurations, `kNN` and `Tree`, come last and third. The CV winner among the prior-kept configurations, `Logistic + L2`, has prior rank 3. This is a disagreement with the prior, recorded as a finding. The prior scores were all 0, so its order came only from the add-on tie-break.
+- **Outcome vs expectation:** agree with the advisor's expectation; disagree with the prior order (filled in by DR-13). The CV order is `Logistic + L2` (0.9637) > `Logistic + poly + L2` (0.9431) > `Tree` (0.8281) > `kNN` (0.6250). The two Logistic configurations lead, as expected from P9 = yes. The prior's rank-1 configurations, `kNN` and `Tree`, come last and third. The CV winner among the prior-kept configurations, `Logistic + L2`, has prior rank 3. This is a disagreement with the prior, recorded as a finding. The prior scores were all 0, so its order came only from the add-on tie-break.
 - **User involvement:** approved — the user saw the §13–§19 extension before any output was used ("Run the prior"), and then agreed the method: "Agree the method"
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_prior.json`, DR-09, DR-10
@@ -770,21 +770,21 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 | --- | --- | --- | --- |
 | SEQ-3 | round 1 = baseline and the simple-first configuration only | [B pp.331–332] | — |
 | §16 nested CV | 10 outer × 5 inner, stratified by `price_range`, seed 2026; tuned on accuracy | [B pp.72–73]; [I] | — |
-| C2 (`Logistic + L2` vs baseline) | margin 0.7138 ≥ 1 × spread 0.0141 → clear | [I] | round 2 may proceed; DX-1 is not triggered |
+| C2 (`Logistic + L2` vs baseline) | margin 0.7137 ≥ 1 × spread 0.0141 → clear | [I] | round 2 may proceed; DX-1 is not triggered |
 
 **Thresholds applied**
 
 | Threshold | Value used | Value compared |
 | --- | --- | --- |
-| C2 clear | margin ≥ 1 × spread | 0.7138 vs 0.0141 |
+| C2 clear | margin ≥ 1 × spread | 0.7137 vs 0.0141 |
 | Outer / inner folds | 10 / 5 | — |
 
 **CV table** (outer 10, inner 5; stratified by `price_range`; seed 2026; metric: accuracy)
 
 | Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean accuracy | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7138 (0.0141) | — | 0.7500 | 0.7500 |
-| `Logistic + L2` | no | λ = 10⁻⁴ (10/10 folds) | 0.9638 | 0.0141 | — (leader) | +0.7138 (0.0141), C2 clear | 0.0149 | 0.0363 |
+| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7137 (0.0141) | — | 0.7500 | 0.7500 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10 folds) | 0.9637 | 0.0141 | — (leader) | +0.7137 (0.0141), C2 clear | 0.0149 | 0.0363 |
 
 **Monitoring (§5.5 note): pooled outer-validation confusion matrix, `Logistic + L2`.** Rows are the true band and columns the predicted band, in the order 0, 1, 2, 3.
 
@@ -854,8 +854,8 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 
 | Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean accuracy | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7138 (0.0141) | — | 0.7500 | 0.7500 |
-| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9638 | 0.0141 | — (leader) | +0.7138 (0.0141), clear | 0.0149 | 0.0363 |
+| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7137 (0.0141) | — | 0.7500 | 0.7500 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9637 | 0.0141 | — (leader) | +0.7137 (0.0141), clear | 0.0149 | 0.0363 |
 | `Logistic + poly + L2` | no | degree 2, λ = 10⁻⁴ (10/10) | 0.9431 | 0.0180 | −0.0206 (0.0132) | +0.6931 (0.0180), clear | 0.0178 | 0.0569 |
 | `Tree` | no | depth 8, minimum leaf 5 (3/10) | 0.8281 | 0.0288 | −0.1356 (0.0328) | +0.5781 (0.0288), clear | 0.0694 | 0.1719 |
 | `kNN` | no | k = 51 (10/10) | 0.6250 | 0.0362 | −0.3387 (0.0314) | +0.3750 (0.0362), clear | 0.3176 | 0.3750 |
@@ -989,8 +989,8 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 
 | Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean accuracy | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7138 (0.0141) | — | 0.7500 | 0.7500 |
-| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9638 | 0.0141 | — (leader) | +0.7138 (0.0141), clear | 0.0149 | 0.0363 |
+| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7137 (0.0141) | — | 0.7500 | 0.7500 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9637 | 0.0141 | — (leader) | +0.7137 (0.0141), clear | 0.0149 | 0.0363 |
 | `Logistic + poly + L2` | no | degree 2, λ = 10⁻⁴ (10/10) | 0.9431 | 0.0180 | −0.0206 (0.0132) | +0.6931 (0.0180), clear | 0.0178 | 0.0569 |
 | `Tree` | no | depth 8, minimum leaf 5 (3/10) | 0.8281 | 0.0288 | −0.1356 (0.0328) | +0.5781 (0.0288), clear | 0.0694 | 0.1719 |
 | `kNN` | no | k = 51 (10/10) | 0.6250 | 0.0362 | −0.3387 (0.0314) | +0.3750 (0.0362), clear | 0.3176 | 0.3750 |
@@ -1071,7 +1071,7 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 - **Confidence:** n/a
 - **Outcome vs expectation:** partial (filled in by DR-17).
   - **First part: agree.** λ moved below 10⁻⁴ in all 10 folds: 10⁻⁵ in 4, 10⁻⁶ in 3, 10⁻⁸ in 2, 10⁻⁷ in 1.
-  - **Second part: disagree.** The CV mean rose by 0.0069, which is more than 0.5 × its spread of 0.0055 (and more than 1 ×): from 0.9638 to 0.9706.
+  - **Second part: disagree.** The CV mean rose by 0.0069, which is more than 0.5 × its spread of 0.0055 (and more than 1 ×): from 0.9637 to 0.9706.
 - **User involvement:** informed (as DR-14)
 - **Supersedes / superseded by:** supersedes DR-14
 - **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_diagnose_Logistic___L2.json`, DR-14, DR-15
@@ -1113,7 +1113,7 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7206 (0.0141) | — | 0.7500 | 0.7500 |
 | `Logistic + L2 (lambda grid from 1e-8)` | yes | λ = 10⁻⁵ (4/10) | 0.9706 | 0.0141 | — (leader) | +0.7206 (0.0141), clear | 0.0061 | 0.0294 |
-| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9638 | 0.0141 | −0.0069 (0.0055) | +0.7138 (0.0141), clear | 0.0149 | 0.0363 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9637 | 0.0141 | −0.0069 (0.0055) | +0.7137 (0.0141), clear | 0.0149 | 0.0363 |
 | `Logistic + poly + L2` | no | degree 2, λ = 10⁻⁴ (10/10) | 0.9431 | 0.0180 | −0.0275 (0.0145) | +0.6931 (0.0180), clear | 0.0178 | 0.0569 |
 | `Tree` | no | depth 8, minimum leaf 5 (3/10) | 0.8281 | 0.0288 | −0.1425 (0.0325) | +0.5781 (0.0288), clear | 0.0694 | 0.1719 |
 | `kNN` | no | k = 51 (10/10) | 0.6250 | 0.0362 | −0.3456 (0.0340) | +0.3750 (0.0362), clear | 0.3176 | 0.3750 |
@@ -1474,7 +1474,151 @@ The test set is not used again for this sub-task. The core's `final` refuses a s
 
 ## Recommendation
 
-*Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
+### Sub-task 1 — Price band of a new phone
+
+*Assembled on 28 October 2026 from DR-01 to DR-21. Nothing in it is new. The user's experience is "New to ML" (Data Summary), so terms are explained the first time they appear.*
+
+**1. Problem.**
+- **What is predicted:** a phone's price band, `price_range` (0 low, 1 medium, 2 high, 3 very high cost), from its 20 specifications as recorded: 14 numbers and 6 yes/no features (DR-05, DR-08).
+- **Output type:** the bands are ordered, but are treated as four separate categories, which is multiclass classification (P1, at the user's choice, DR-05).
+- **Metric:** accuracy, the share of phones placed in the right band (p. 67).
+- **Baseline:** always predict the most common training band, which gives 25 %. A baseline is a deliberately simple rule that any useful model must beat (pp. 330–331).
+- **Success criterion:** test accuracy minus its uncertainty above 25 %.
+- **Achievable level:** unknown.
+- **Must-haves:** none (P5 none, P6 no).
+- **Expectations:** P7 no; P8 unknown, in the user's words "I have no expectation" (DR-09).
+- **Admissibility:**
+  - ADM-1: yes, `price_range` is recorded for every row (DR-01).
+  - ADM-2: the aim is to predict (DR-04).
+  - ADM-3: no groups and no time order (DR-02).
+  - ADM-4: yes, new phones are taken to look like these (DR-03).
+- **Split:** 1,600 training phones and 400 test phones, 25 % of each band on both sides, shuffled, seed 2026. The test phones were locked until 4g (DR-07).
+
+**2. Recommendation.** `Logistic + L2`: multiclass logistic regression with L2 regularisation. λ was tuned over {10⁻⁸ … 10⁴}, and the final model uses λ = 10⁻⁵, with all 20 inputs, predicting the band with the highest probability. Selection confidence: **High** (DR-21).
+
+**3. Test-set result.**
+- **Accuracy:** 0.9600 on 400 test phones (100 per band), with an uncertainty of 0.0141. The uncertainty is the standard deviation of accuracy across the 10 outer cross-validation folds `[B→I pp.71–73]`. Each outer fold holds 160 phones, so it approximates the uncertainty of the test result rather than measuring it.
+- **Baseline on the same test phones:** 0.2500.
+- **Success criterion:** 0.9600 − 0.0141 = 0.9459 > 0.2500, so it is **met**.
+- **Confusion matrix, test** (rows true band low → very high; columns predicted):
+
+| True \ predicted | Low | Medium | High | Very high |
+| --- | --- | --- | --- | --- |
+| Low | 99 | 1 | 0 | 0 |
+| Medium | 2 | 96 | 2 | 0 |
+| High | 0 | 4 | 92 | 4 |
+| Very high | 0 | 0 | 3 | 97 |
+
+- **Recall per band:** 0.99 / 0.96 / 0.92 / 0.97.
+- **Misses:** all 16 are one band away.
+- **Threshold:** none (P6 = no). The predicted band is the one with the highest probability.
+- **Curves:** a precision–recall or ROC curve is not used, because §5.5 gives them for two-class problems.
+- **Checks:** recomputed independently from the saved predictions, with an identical result (DR-21).
+
+**4. Why this configuration.**
+- **Constraints.** A four-band output needs a classification model, so only logistic regression, k-NN and the decision tree were admissible (task gate, DR-10). In the training data a straight boundary separates the bands perfectly (P9 = yes). Without regularisation, logistic regression would then never settle on finite parameters (p. 61). So only its L2 versions were allowed (MOD-1, DR-10). L2 regularisation adds a penalty λ on large parameters, which makes the fitted boundary less extreme.
+- **Cross-validation evidence.** Cross-validation repeatedly fits on part of the training phones and scores on the rest (pp. 72–73). Here the scoring used 10 "outer" folds, with λ, k or tree size tuned in 5 "inner" folds inside each.
+  - Over the runner-up (the same configuration with the original λ grid, which stopped at 10⁻⁴), the margin is 0.0069 with a spread of 0.0055.
+  - Over the best *different* configuration, `Logistic + poly + L2`, the margin is 0.0275, spread 0.0145.
+  - Over the baseline, the margin is 0.7206, spread 0.0141.
+- **Simplicity.** The §19 within-noise step did not decide this. The recommendation was the only candidate within 0.5 × spread of the best, so the add-on count was not needed.
+- **Prior support.** None. No matrix entry applied to any configuration, so the prior score is 0 (DR-11).
+
+**5. Ranking.** The columns are:
+- *Prior rank* and *Prior score:* from the ranking made before any fitting (DR-11).
+- *Post-prior:* added by the diagnosis loop.
+- *CV mean:* mean accuracy over the 10 outer folds.
+- *Margins:* mean fold-by-fold differences, with the spread (their SD).
+- *Code:* the why-not code.
+
+| Configuration | Prior rank | Prior score | Post-prior | CV mean | Margin vs recommended (± spread) | Margin vs baseline (± spread) | Code |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `Logistic + L2`, λ ∈ {10⁻⁸ … 10⁴} (recommended) | 3 (as `Logistic + L2`) | 0 | yes | 0.9706 | — | +0.7206 (± 0.0141) | — |
+| `Logistic + L2`, λ ∈ {10⁻⁴ … 10⁴} | 3 | 0 | no | 0.9637 | −0.0069 (± 0.0055) | +0.7137 (± 0.0141) | — (the same configuration; its grid was extended by DX-3) |
+| `Logistic + poly + L2` | 4 | 0 | no | 0.9431 | −0.0275 (± 0.0145) | +0.6931 (± 0.0180) | OUTP |
+| `Tree` | 1 | 0 | no | 0.8281 | −0.1425 (± 0.0325) | +0.5781 (± 0.0288) | OUTP |
+| `kNN` | 1 | 0 | no | 0.6250 | −0.3456 (± 0.0340) | +0.3750 (± 0.0362) | OUTP |
+| Baseline (most common band) | — | — | no | 0.2500 | −0.7206 (± 0.0141) | — | — |
+| 20 single-input drops of the recommendation (backward elimination) | — | — | yes | 0.3175 to 0.9725 | see DR-19 | — | not candidates (interpretation z); no drop kept |
+
+**6. Prior versus evidence. Disagree.** The prior ranked `kNN` and `Tree` first, on fewer add-ons only. All scores were 0 because no property value has a matrix entry (DR-11). In cross-validation, among the four prior-kept configurations, `Tree` came third and `kNN` last. The CV winner among those, `Logistic + L2`, had prior rank 3. No matrix entry is contradicted, because none applied. The disagreement shows that the add-on tie-break carried no information about this data. The advisor's own expectation, written before round 2, was that the logistic configurations would lead, because a linear boundary separates the training bands (P9 = yes). The CV order agreed with it (DR-11, DR-13).
+
+**7. Why not the others.**
+- **EXCL:**
+  - `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2`: task gate, P1 = multiclass [B pp.17, 49–57].
+  - `Logistic`, `Logistic + poly`: MOD-1, P9 = yes [B p.61] (DR-10).
+- **USER:** none (no must-haves).
+- **DISF:** none (all four admissible configurations were kept, DR-11).
+- **BASE:** none (all clearly beat the baseline).
+- **OUTP:**
+  - `Logistic + poly + L2`: margin 0.0275, spread 0.0145.
+  - `Tree`: 0.1425, spread 0.0325.
+  - `kNN`: 0.3456, spread 0.0340. Its k was 51, the largest in the grid, in all 10 folds (DR-13).
+- **SIMP:** none.
+
+Flags: none.
+
+**8. Confidence.**
+- **Selection confidence: High.**
+  - C1 clear (margin over the runner-up 0.0069 ≥ 1 × spread 0.0055).
+  - C2 clear (margin over the baseline 0.7206 ≥ 1 × spread 0.0141).
+  - C3 adequate: the learning-curve validation error fell by 0.0037 between 80 % and 100 % of the data, below 0.5 × its fold SD (0.0071).
+  - Rule: High if C1 clear, C2 clear and C3 adequate.
+- **Reported alongside:**
+  - Prior agreement: disagree.
+  - Grounding: [B] 0 · [B→I] 0 · [I] 0 (prior score 0).
+  - **Breadth note: applies.** 25 configurations were compared on the same folds (5 with the agreed inputs and 20 single-input drops), so the winner's CV score (0.9706) may be optimistic (p. 328). The single test result (0.9600) is the check on this.
+- **Advisor's note (DR-21):** the runner-up in C1 is the same configuration with a narrower λ grid. Against the best different configuration, C1 is also clear.
+
+**9. How the model predicts** (draft, turned into prose in step 5).
+- **What the model computes.** For each band, the model adds up the phone's 20 specifications, each multiplied by a weight learned for that band, plus a constant. The specifications are first put on a common scale (standardised on the training phones). The four totals are turned into four probabilities that sum to 1, by the softmax function (pp. 56–57). The phone is assigned the band with the highest probability.
+- **Its boundaries.** Because each band's score is a weighted sum, the boundaries between bands are straight (linear) in the space of the 20 specifications (p. 55). λ = 10⁻⁵ is a light penalty that keeps the weights finite.
+- **What the weights can say.** They give the direction and relative size of each specification's pull towards or away from each band, with the others held fixed. They are not causes (ADM-2: prediction only), and L2 shrinks them.
+- **Pending.** The fitted weights and one worked example of a prediction, which §25.3 asks for at this experience level, have not been computed. The core's `final` does not save the fitted model. Producing them needs a verified rebuild of the final model through the core, as the Sepsis analysis added later with an `explain` command. That is a core change, raised with the user before step 5.
+
+**10. Use and limits** (draft, turned into prose in step 5).
+- **What the result covers.** The model places a phone described by these 20 specifications in one of four price bands. The 0.9600 is an average over phones like the 400 test phones (E_new, pp. 68–69). It says nothing about the worst single prediction, beyond the observation that every test miss was one band away. It holds only while new phones resemble these (§6.6; ADM-4, DR-03).
+- **Limits from step 1:**
+  - How the bands were set is undocumented: no prices, thresholds, currency or date (DR-01). So the model reproduces the source's labelling, whatever rule produced it.
+  - Whether the rows describe real phones is undocumented (Data Summary, *Best available form*).
+  - Implausible values were accepted as recorded and are in both training and test data: `sc_w` = 0 cm, `px_height` < 100 pixels, cameras at 0 megapixels.
+  - Units are not stated for `clock_speed`, `mobile_wt` and `talk_time`.
+- **Limits of the selection:** the breadth note (part 8). The interpretations of ours in the interim core (a–z), notably z, which restricts §19 to the agreed input design.
+
+**11. Improvement history.**
+- **Round 1:** `Logistic + L2` clearly beat the baseline (DR-12, superseded by DR-15 with identical values).
+- **Pass 1** (DR-14, DR-16): O5, λ at the low edge of its grid in 10/10 folds → DX-3, extend the λ grid down to 10⁻⁸. Result: 0.9706 against 0.9637, a gain of 0.0069 with spread 0.0055; the new leader (DR-17).
+  - On the way, the parallel worker pool failed twice. The core was changed to `N_JOBS = 1`, and every earlier number was reproduced exactly (DR-15).
+- **Pass 2** (DR-18): O3, overfitting: gap 0.0233 ≥ 2 × E_train 0.0122 → DX-4 (c), backward elimination at the user's choice. Result: no single drop beat the leader by ≥ 0.5 × spread (best `wifi`, +0.0019, spread 0.0106), so all 20 inputs stay (DR-19).
+- **Pass 3** (DR-20): O3 again → DX-4 (d), more data? The user had none.
+- **Stopped by S5** (the user stopped it).
+
+**12. Thresholds applied.**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | 76.19 (ample) |
+| P3 many inputs | > 20 | 20 (few; on the threshold) |
+| P4 high categorical share | ≥ 50 % | 30 % (low) |
+| P9 separable | 100 % training accuracy, C = 1e8 | 100 % (yes) |
+| P10 imbalanced | smallest class < 20 % | 25 % (balanced) |
+| Kept besides baseline and simple-first | 3 (+ ties) | 3 admissible |
+| Outer / inner folds | 10 / 5 | — |
+| O5 grid edge | > 5 of 10 folds | pass 1: 10; pass 2: 2 |
+| O3 overfitting | gap ≥ 2 × E_train | pass 1: 0.0213 < 0.0299; pass 2: 0.0233 ≥ 0.0122 |
+| O4 underfitting | E_train ≥ 2 × gap | pass 1: 0.0149 < 0.0426; pass 2: 0.0061 < 0.0465 |
+| Backward-elimination keep rule | margin ≥ 0.5 × spread | 0.0019 vs 0.0053 |
+| C1 clear / moderate | ≥ 1 / 0.5 × spread | 0.0069 vs 0.0055 |
+| C2 clear | ≥ 1 × spread | 0.7206 vs 0.0141 |
+| C3 limited | E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0037 vs 0.0071 |
+| §19 within noise | < 0.5 × spread | 0.0069 vs 0.0027 |
+| Breadth note | > 10 configurations | 25 |
+
+**13. Trace and provenance.**
+- **Records:** DR-01 to DR-21. DR-06, DR-12, DR-13 and DR-14 are superseded, by DR-09, DR-15 and DR-16.
+- **Rules applied** (the *Rules applied* tables of the 17 records in force, counted by script): [B] 23 · [B→I] 5 · [I] 18 · UNLISTED 1 (the multiclass metric practice of the §5.5 note, DR-05). Three rows carry no tag: the P5–P8 row of DR-09, the matrix row of DR-11, and the contract rule on core changes in DR-15.
+- **Not counted** (DX records use *Observation → action*): DX-3 [I] and DX-4 [B pp.60, 333, 346], each once.
+- **Core:** interim, not reviewed; final version `b81c7f43…`. Interpretations a–z are listed in its header.
 
 ## Analysis Log
 
@@ -1499,16 +1643,18 @@ The test set is not used again for this sub-task. The core's `final` refuses a s
 | 15 | Step 3 closed by the user. Three items listed at the close were not taken up: whether to keep Figure 1 as it stands; an expectation for P8 (it stays `unknown`); a figure of the six yes/no inputs. | — |
 | 16 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `c7435f48…`) was shown and approved ("Run it"). Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 removed `Logistic` and `Logistic + poly`; MOD-2 did not apply. | `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_admset.json`, DR-10 |
 | 17 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `38e21eca…`; interpretations i–y), shown to the user before any output was used ("Run the prior"), and the prior ranking was run. All four admissible configurations score 0, and all are kept. The order comes from add-ons only: `kNN` = `Tree`, then `Logistic + L2` (simple-first), then `Logistic + poly + L2`. The expectation recorded is that the Logistic configurations lead, against the prior order. The method was presented and agreed ("Agree the method"). | `Code/mobile/core.py`, `Code/outputs/mobile/core_prior.json`, DR-11 |
-| 18 | Step 4c, sub-task 1: round 1 run (42 s). Baseline mean CV accuracy 0.2500 (band 0 in every fold); `Logistic + L2` 0.9638 (fold SD 0.0141), with λ = 10⁻⁴ in 10/10 folds. Margin over the baseline 0.7138, spread 0.0141: C2 clear, so round 2 may proceed. λ at the grid edge is noted for 4e. | `Code/outputs/mobile/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
-| 19 | Step 4d, sub-task 1: round 2 run (1 min 49 s) on the same folds. Mean CV accuracy: `Logistic + poly + L2` 0.9431, `Tree` 0.8281, `kNN` 0.6250; all four clearly beat the baseline, and `Logistic + L2` (0.9638) leads by more than one spread over each. DR-11 *Outcome vs expectation* filled in: the CV order agrees with the advisor's expectation and disagrees with the prior order. Grid edges noted for 4e: λ = 10⁻⁴ for both Logistic configurations, k = 51 for `kNN` (10/10 folds each). | `Code/outputs/mobile/core_cv_round2.json`, `core_cv_store.json`, DR-11, DR-13 |
+| 18 | Step 4c, sub-task 1: round 1 run (42 s). Baseline mean CV accuracy 0.2500 (band 0 in every fold); `Logistic + L2` 0.9637 (fold SD 0.0141), with λ = 10⁻⁴ in 10/10 folds. Margin over the baseline 0.7137, spread 0.0141: C2 clear, so round 2 may proceed. λ at the grid edge is noted for 4e. | `Code/outputs/mobile/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
+| 19 | Step 4d, sub-task 1: round 2 run (1 min 49 s) on the same folds. Mean CV accuracy: `Logistic + poly + L2` 0.9431, `Tree` 0.8281, `kNN` 0.6250; all four clearly beat the baseline, and `Logistic + L2` (0.9637) leads by more than one spread over each. DR-11 *Outcome vs expectation* filled in: the CV order agrees with the advisor's expectation and disagrees with the prior order. Grid edges noted for 4e: λ = 10⁻⁴ for both Logistic configurations, k = 51 for `kNN` (10/10 folds each). | `Code/outputs/mobile/core_cv_round2.json`, `core_cv_store.json`, DR-11, DR-13 |
 | 20 | Step 4e, pass 1. Diagnosis of `Logistic + L2` (2 min 23 s): O5 holds first (λ at the low edge in 10/10 folds), so DX-3 extends the λ grid down to 10⁻⁸; the expectation was written before the run (DR-14). The extended run then failed twice in the parallel worker pool (`WinError 6`, then `WinError 5`, `BrokenProcessPool`, in outer fold 0; nothing written). Single fits at small λ ran normally. The user chose "N_JOBS = 1, re-verify (Recommended)" over retrying unchanged or a threading wrapper. | DR-14 |
 | 21 | Step 4e. Core changed: `N_JOBS = -1` → `1` (`38e21eca…` → `d89e2275…`). The CV store was rebuilt, and rounds 1–2 and the pass-1 diagnosis were re-run (6 min 19 s). `Code/mobile_04_compare_rerun.py` found every number identical to the committed outputs (0 differences in 4 files). DR-12, DR-13 and DR-14 are superseded by DR-15 and DR-16, with unchanged values. | `Code/mobile/core.py`, `Code/mobile_04_compare_rerun.py`, `Code/outputs/mobile/rerun_check.json`, DR-15, DR-16 |
-| 22 | Step 4e, DX-3 run (33 s): `Logistic + L2` with λ ∈ {10⁻⁸ … 10⁴}, post-prior, scores 0.9706 (fold SD 0.0141), against 0.9638. The paired gain is +0.0069, spread 0.0055. λ ranges over 10⁻⁸ to 10⁻⁵ (10⁻⁸ in 2/10 folds). It is the new leader. DR-16 outcome vs expectation: partial (λ moved down as expected; the gain was larger than expected). | `Code/outputs/mobile/core_cv_post_prior_1.json`, DR-16, DR-17 |
+| 22 | Step 4e, DX-3 run (33 s): `Logistic + L2` with λ ∈ {10⁻⁸ … 10⁴}, post-prior, scores 0.9706 (fold SD 0.0141), against 0.9637. The paired gain is +0.0069, spread 0.0055. λ ranges over 10⁻⁸ to 10⁻⁵ (10⁻⁸ in 2/10 folds). It is the new leader. DR-16 outcome vs expectation: partial (λ moved down as expected; the gain was larger than expected). | `Code/outputs/mobile/core_cv_post_prior_1.json`, DR-16, DR-17 |
 | 23 | Step 4e, pass 2. Diagnosis of the new leader (15 min): O3 (overfitting) holds first, so DX-4 applies. Parts (a) and (b) do not apply. The user chose (c), backward elimination, from three options given without a recommendation; the keep rule is margin ≥ 0.5 × spread [I], and the expectation was written before the run (DR-18). | DR-18 |
 | 24 | Step 4e, backward elimination round 1 (about 11 min, 20 post-prior entries). Best drop `wifi` (0.9725, +0.0019, spread 0.0106) misses the keep rule, so elimination stops and the leader keeps all 20 inputs. DR-18 outcome vs expectation: agree. 25 configurations have been compared, so the breadth note applies. Open point for 4f: §19's CV-mean tie-break would favour the not-kept `wifi` drop. | `Code/mobile_05_backward_elimination.py`, `Code/outputs/mobile/backward_elimination.json`, `core_cv_post_prior_2.json`–`_21.json`, DR-19 |
 | 25 | Step 4e, pass 3. The leader is unchanged, so O3 and DX-4 remain; only part (d) is left. Asked whether more labelled data exists, the user chose "No; stop the loop". The loop ends under S5 after three passes, with 25 configurations compared. Step 4e is done. | DR-20 |
 | 26 | Step 4f. The §19 tie-break point was raised before `recommend` ran, and the user chose "Agreed design only (Recommended)". The core gained interpretation z (`d89e2275…` → `b81c7f43…`, `recommend` only); the diff was shown and approved. `recommend` ran in about 15 min. Recommended: `Logistic + L2`, λ = 10⁻⁵ (4/10 folds), all 20 inputs, CV mean 0.9706 (fold SD 0.0141). Selection confidence High (C1, C2 clear; C3 adequate); prior agreement disagree; grounding 0 entries; breadth note applies (25). Why-not: 10 EXCL, 3 OUTP. | `Code/mobile/core.py`, `Code/outputs/mobile/core_recommend.json`, DR-21 |
 | 27 | Step 4g. The user approved ("continue", confirmed "Yes, evaluate once"). The core's `final` refitted the recommended configuration on the 1,600 training phones and evaluated it once on the 400 test phones. Test accuracy 0.9600 (384/400) against a baseline of 0.2500, fold SD 0.0141, so the success criterion is met (0.9459 > 0.2500). All 16 misses are one band away. An independent recount from the saved predictions agrees exactly. `core_test_predictions.csv` holds row-level true bands, so it is kept out of git (`.gitignore`) under the unknown licence. | `Code/outputs/mobile/core_final.json`, `Code/mobile_06_recompute_test_metric.py`, `Code/outputs/mobile/recompute_test_metric.txt`, DR-21 |
+| 28 | Step 4h. Correction: two values had been rounded by hand in DR-11 to DR-21 and log rows 18–22. `Logistic + L2`'s CV mean, stored as 0.96374999…, was written 0.9638, and its baseline margin, stored as 0.71374999…, was written 0.7138. Both are now 0.9637 and 0.7137 everywhere (14 places), as Python rounds the stored values. The discrepancy was found against Figure 2. No decision is affected: every comparison used the core's unrounded values. The commit messages of steps 4c and 4d keep the old rounding. | `Appendix.md` |
+| 29 | Step 4h. The user chose all three evaluation figures: Figure 2 (CV comparison), Figure 3 (learning curve of the recommended model) and Figure 4 (test confusion matrix), each drawn only from the core's outputs, in light and dark versions. The Recommendation Report for sub-task 1 was assembled from DR-01 to DR-21; part 13's provenance counts come from a script over the *Rules applied* tables. `Methods` and `Results` paragraphs and Figures 2–4 were added to `Report.md`. Backward elimination changed nothing, so it is left out of the report, as the contract asks. Part 9 lacks the fitted weights and a worked example, because the core does not save the final model; this is raised with the user. | `Code/mobile_07_fig2_cv_comparison.py`, `Code/mobile_08_fig3_learning_curve.py`, `Code/mobile_09_fig4_confusion.py`, `Code/outputs/mobile/figures/`, `Recommendation`, `Report.md` |
 
 ## Code Summary
 
@@ -1522,6 +1668,9 @@ All scripts run from `Code/` with `uv run python <script>.py`. Script names star
 | `Code/mobile_04_compare_rerun.py` | Step 4e check after the core change `N_JOBS = -1` → `1`. Compares every value of the re-run outputs (`core_cv_round1.json`, `core_cv_round2.json`, `core_cv_store.json`, `core_diagnose_Logistic___L2.json`) with the earlier core's committed outputs (from git, commit `a1b8fa7`) and the saved earlier diagnosis. Fields naming the code version or the printed pipeline are skipped, and floats must match exactly. | the outputs above; the old diagnosis file (path as argument) | `Code/outputs/mobile/rerun_check.json` | `OLD_COMMIT = "a1b8fa7"` |
 | `Code/mobile_05_backward_elimination.py` | Step 4e, DX-4 (c). Backward elimination driven through the core's `cv add --drop` entry point. Each round cross-validates the current leader with each remaining input also dropped, and keeps the best drop only if its paired margin over the leader is ≥ `KEEP_MARGIN` × spread (the core's `margin`). Otherwise it stops. It fits nothing itself. | the CV store, via the core | post-prior entries via the core; `Code/outputs/mobile/backward_elimination.json` | `KEEP_MARGIN = 0.5` [I]; the λ grid {10⁻⁸ … 10⁴}; start = `Logistic + L2 (lambda grid from 1e-8)` |
 | `Code/mobile_06_recompute_test_metric.py` | Step 4g second route to the test result. Plain counting, without scikit-learn, of accuracy, the baseline, the confusion matrix and the miss distances, from the saved predictions. True bands are read from `train.csv` by row number, and the rows are checked against `split.json`. The result is compared with `core_final.json`. | `Code/outputs/mobile/core_test_predictions.csv` (not in git: row-level labels), `train.csv`, `split.json`, `core_final.json` | `Code/outputs/mobile/recompute_test_metric.txt` | none |
+| `Code/mobile_07_fig2_cv_comparison.py` | Figure 2: mean CV accuracy with fold-SD error bars, for the baseline and the five configurations with the agreed input design (the 20 drops are not drawn). Light and dark versions. | `Code/outputs/mobile/core_cv_post_prior_21.json` (the core's last CV table), `core_recommend.json` | `Code/outputs/mobile/figures/fig2_cv_comparison.png` (+ `dark/`), `fig2_cv_comparison.json` | `FIGSIZE = (12, 6)` |
+| `Code/mobile_08_fig3_learning_curve.py` | Figure 3: the learning curve of the recommended configuration, E_train and E_val against the training share, with fold-SD error bars on E_val. | `Code/outputs/mobile/core_recommend.json` | `Code/outputs/mobile/figures/fig3_learning_curve.png` (+ `dark/`), `fig3_learning_curve.json` | `FIGSIZE = (12, 6.5)` |
+| `Code/mobile_09_fig4_confusion.py` | Figure 4: the test confusion matrix of the recommended configuration, with counts in the cells. | `Code/outputs/mobile/core_final.json` | `Code/outputs/mobile/figures/fig4_confusion.png` (+ `dark/`), `fig4_confusion.json` | `FIGSIZE = (8.5, 7.5)` |
 | `Code/mobile_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, all bands together. One bar per value for inputs with up to 130 distinct values; 40 equal-width bins from min − 0.5 to max + 0.5 for the rest. Light and dark versions. Uses `viz_style.py`, with `FIGURES` set to the Mobile Price folder. | the training phones, via `core.training_data()` | `Code/outputs/mobile/figures/fig1_input_distributions.png`, `dark/fig1_input_distributions.png`, `fig1_input_distributions.json` (per panel: phones, distinct values, min, max, zeros, bars) | `BINS = 40`, `DISCRETE_MAX = 130`, `FIGSIZE = (16, 14)` |
 
 ## References

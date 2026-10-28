@@ -12,15 +12,45 @@ Each band is treated as a separate category, so the order of the bands is not us
 
 ## Methods
 
-*Written in step 4, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
+### 1. Price band of a new phone
+
+The 20 specifications are used as recorded, with each of the six yes/no features as a single 0/1 input. The models compared are the types in Lindholm et al. (2026) that suit an outcome with several categories: logistic regression with L2 regularisation, the same with squares and cubes of the numerical inputs added, k-nearest neighbours, and a decision tree. Logistic regression without regularisation was not fitted, because a linear boundary separates the four bands perfectly in the training data, and its parameters then grow without limit. The models were compared on the 1,600 training phones by nested cross-validation, with ten outer folds that keep a quarter of each band in every fold. Inside each outer training fold, each model's regularisation strength, number of neighbours or tree size was tuned by five-fold cross-validation on accuracy. For logistic regression with L2, the tuned strength was the smallest in the range searched in every fold, so the range was extended downwards by four orders of magnitude and the model was cross-validated again. Among the models whose mean margin over the baseline exceeded the variation of that margin across the folds, models within half the variation of the best were treated as indistinguishable from it, and the one with the fewest additions to the basic model was chosen. The selection confidence is computed from three factors: the margin over the runner-up, the margin over the baseline, and whether the validation error was still falling when the last fifth of the training data was added. The chosen model was refitted on all training phones with the regularisation strength selected most often across the outer folds, and evaluated once on the 400 held-out phones. The uncertainty reported with that result is the standard deviation of the model's accuracy across the ten outer folds. Each fold holds 160 phones, fewer than the 400 held out, so this approximates the uncertainty of the held-out result rather than measuring it.
 
 ## Results
+
+Figures 1 to 3 use the 1,600 training phones; the 400 held-out phones appear only in Figure 4.
 
 Figure 1 describes the 1,600 training phones, all four price bands together. Each panel is one of the 14 numerical specifications, and the height of a bar is the number of phones with that value. For the ten specifications with up to 121 distinct values, there is one bar per recorded value. Battery capacity, pixel height, pixel width and memory (RAM) take about 1,000 values or more, and are grouped into 40 bins of equal width.
 
 ![Figure 1](../../Code/outputs/mobile/figures/fig1_input_distributions.png)
 
 <small><b>Figure 1.</b> Number of training phones (of 1,600) at each value of the 14 numerical specifications, as recorded. Each panel has its own vertical scale. Units are those given in the source; clock speed, weight and talk time have none. The value 0 occurs for front-camera megapixels in 372 phones, screen width in 145, primary-camera megapixels in 81 and pixel height in 2.</small>
+
+### 1. Price band of a new phone
+
+The recommended model is logistic regression with L2 regularisation (λ = 10⁻⁵), which assigns each phone the band with the highest predicted probability. On the 400 held-out phones it places 384 in the right band, an accuracy of 0.9600. The standard deviation of its accuracy across the cross-validation folds is 0.0141. A rule that always predicts the same band places 100 of the 400 correctly, an accuracy of 0.2500. The success criterion required the accuracy less its standard deviation, 0.9459, to exceed 0.2500, and it is met. Each of the 16 misplaced phones is placed in a neighbouring band (Figure 4). In cross-validation, the mean accuracies were:
+- 0.9706 for the recommended model;
+- 0.9637 for the same model with the original range of regularisation strengths;
+- 0.9431 with squares and cubes added;
+- 0.8281 for the decision tree;
+- 0.6250 for k-nearest neighbours;
+- 0.2500 for the baseline (Figure 2).
+
+The selection confidence is high. The margin over the runner-up, 0.0069, exceeds its spread across the folds, 0.0055. The margin over the baseline, 0.7206, exceeds its spread of 0.0141. Adding the last fifth of the training data lowered the validation error by 0.0037, less than half its fold spread (Figure 3).
+
+![Figure 2](../../Code/outputs/mobile/figures/fig2_cv_comparison.png)
+
+<small><b>Figure 2.</b> Mean accuracy over the ten outer cross-validation folds on the 1,600 training phones, for the baseline (grey) and the five models compared with all 20 specifications (blue). The error bars show the standard deviation of accuracy across the folds. The two rows for logistic regression with L2 differ only in the range of regularisation strengths searched.</small>
+
+In Figure 3, each point is the average over the ten outer folds of a model trained on the given share of the fold. The orange line is its error on the phones it was trained on, and the blue line its error on the fold's held-out phones.
+
+![Figure 3](../../Code/outputs/mobile/figures/fig3_learning_curve.png)
+
+<small><b>Figure 3.</b> Misclassification rate of the recommended model trained on 10 % to 100 % of each outer training fold (1,440 phones at 100 %), on its training phones (orange) and on the fold's held-out phones (blue), averaged over the ten outer folds. The error bars on the validation error show its standard deviation across the folds.</small>
+
+![Figure 4](../../Code/outputs/mobile/figures/fig4_confusion.png)
+
+<small><b>Figure 4.</b> The 400 held-out phones by true price band (rows) and the band predicted by the recommended model (columns), with the number of phones in each cell. The diagonal holds the 384 phones placed in the right band.</small>
 
 ## Discussion
 

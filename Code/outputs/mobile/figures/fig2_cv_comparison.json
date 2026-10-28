@@ -1,0 +1,42 @@
+{
+  "table_core_version": "d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872",
+  "recommended": "Logistic + L2 (lambda grid from 1e-8)",
+  "bars": [
+    {
+      "entry": "Baseline (most common class)",
+      "label": "Baseline (most common band)",
+      "mean": 0.25,
+      "sd": 0.0
+    },
+    {
+      "entry": "kNN",
+      "label": "k-NN",
+      "mean": 0.625,
+      "sd": 0.03620447332704744
+    },
+    {
+      "entry": "Tree",
+      "label": "Decision tree",
+      "mean": 0.828125,
+      "sd": 0.02875452862883803
+    },
+    {
+      "entry": "Logistic + poly + L2",
+      "label": "Logistic + poly + L2",
+      "mean": 0.943125,
+      "sd": 0.018030163769515686
+    },
+    {
+      "entry": "Logistic + L2",
+      "label": "Logistic + L2, \u03bb \u2265 $10^{-4}$",
+      "mean": 0.9637499999999999,
+      "sd": 0.01406828584677844
+    },
+    {
+      "entry": "Logistic + L2 (lambda grid from 1e-8)",
+      "label": "Logistic + L2, \u03bb \u2265 $10^{-8}$ (recommended)",
+      "mean": 0.9706249999999998,
+      "sd": 0.014145204330639977
+    }
+  ]
+}

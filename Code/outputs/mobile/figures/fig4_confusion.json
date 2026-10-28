@@ -1,0 +1,32 @@
+{
+  "source": "core_final.json",
+  "core_version_sha256": "b81c7f4302efc0235d05b7af832ff2c85a4ba00c1a2fce10c1a3f24ed8b49af0",
+  "n_test": 400,
+  "confusion_test": [
+    [
+      99,
+      1,
+      0,
+      0
+    ],
+    [
+      2,
+      96,
+      2,
+      0
+    ],
+    [
+      0,
+      4,
+      92,
+      4
+    ],
+    [
+      0,
+      0,
+      3,
+      97
+    ]
+  ],
+  "correct": 384
+}
