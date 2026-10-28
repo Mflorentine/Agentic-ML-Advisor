@@ -1149,6 +1149,162 @@ Recall per band: 0 → 0.9775, 1 → 0.9575, 2 → 0.9575, 3 → 0.9900. These a
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/outputs/mobile/core_cv_post_prior_1.json`, `Code/outputs/mobile/core_cv_store.json`, DR-16
 
+### DR-18 · DX · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Diagnosis pass 2 (§18) on the leader, `Logistic + L2 (lambda grid from 1e-8)`: which observation holds first, and which action follows?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Errors (misclassification rate, P10 = balanced) | E_train 0.0061, E_val 0.0294, gap 0.0233 | CV | `Code/outputs/mobile/core_diagnose_Logistic___L2__lambda_grid_from_1e_8_.json` |
+| Learning curve, E_val mean (fold SD) at 10 %, 20 % … 100 % | 0.1825 (0.0712), 0.0944 (0.0279), 0.0644 (0.0250), 0.0538 (0.0274), 0.0444 (0.0229), 0.0375 (0.0164), 0.0375 (0.0161), 0.0331 (0.0144), 0.0269 (0.0132), 0.0294 (0.0141) | CV | same |
+| Learning curve, E_train mean at 10 % … 100 % | 0.0014, 0.0017, 0.0012, 0.0007, 0.0026, 0.0016, 0.0048, 0.0046, 0.0044, 0.0061 | CV | same |
+| Run time | 15 min 0 s (single process, 13-value λ grid at ten training sizes) | — | — |
+
+**Observation → action**
+
+| Observation | Holds | Test values |
+| --- | --- | --- |
+| O1 doesn't beat the baseline | no | C2 = clear (DR-17) |
+| O2 training error above what the application needs | no | E_train 0.0061 < 1 − (0.2500 + 0.0141) = 0.7359 (interpretation q) |
+| O5 tuned hyperparameter at a grid edge | no | λ at an edge (10⁻⁸) in 2 of 10 folds |
+| **O3 overfitting** | **yes**, the first that holds | gap 0.0233 ≥ 2 × E_train = 0.0122 |
+| O4 underfitting | no | E_train 0.0061 < 2 × gap = 0.0465 |
+| O6 more data likely to help | no | C3 adequate: E_val(80 %) − E_val(100 %) = 0.0037 < 0.5 × 0.0141 = 0.0071 |
+
+- **Action:** DX-4 (O3), less flexibility `[B pp.60, 333, 346]`. Its parts:
+  - (a) Add L2 to a parametric configuration without it: does not apply, because the leader has L2.
+  - (b) Remove polynomial terms: does not apply, because the leader has none.
+  - (c) Feature selection by backward elimination, compared by CV: taken, at the user's choice.
+  - (d) Ask whether more data is available: not reached in this pass. The only other labelled rows are the 400 locked test phones.
+  - DX-9 `[B p.334]`: gap > E_train, so more flexibility is not added.
+- **Backward elimination, as agreed:**
+  - Each round cross-validates the current leader with each remaining input also dropped. These are post-prior entries, with the same outer folds and the same 13-value λ grid.
+  - The round takes the candidate with the best CV mean, and keeps that drop only if it beats the current leader by a paired margin ≥ 0.5 × spread `[I]`, the same cut-off as §19's within-noise margin. Otherwise elimination stops.
+  - The procedure is driven by `Code/mobile_05_backward_elimination.py` through the core's `cv add --drop` entry point, and the margins come from the core's `margin` function.
+  - Round 1 compares 20 candidates, which takes the number of configurations compared above the breadth threshold of 10 (§17, p. 328).
+
+**Stopping check**
+
+- **S1:** not assessed until 4g.
+- **S2:** the achievable level is unknown.
+- **S3 (two passes without a gain of ≥ 0.5 × spread):** pass 1 gained 0.0069 (spread 0.0055), so S3 does not apply.
+- **S4, S5, S6:** no.
+- The loop continues.
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| O3 overfitting: gap ≥ 2 × E_train | 0.0122 | 0.0233 |
+| O4 underfitting: E_train ≥ 2 × gap | 0.0465 | 0.0061 |
+| O5 edge in most folds | > 5 of 10 | 2 |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0071 | 0.0037 |
+| Backward-elimination keep rule (ours, agreed with the user) | margin ≥ 0.5 × spread | see the CV record of the run |
+
+- **Options considered:** put to the user without a recommendation:
+  - backward elimination until the keep rule fails (chosen);
+  - "no more data", stopping the loop (S5);
+  - one elimination round only, then stop.
+- **Expectation** (written before the run): no single dropped input will clear the keep rule, so elimination will stop after round 1. The reasoning is that the gap is small in absolute terms (0.0233) and the data are ample for 20 inputs (P2, 76 rows per parameter). Removing one input should reduce the variance of the fit only slightly, and most single drops should change the CV mean by less than 0.5 × spread. Which inputs, if dropped, would lower accuracy clearly is not predicted.
+- **Decision:** O3 → DX-4, part (c): backward elimination with the agreed keep rule.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `observations` (`diagnose "Logistic + L2 (lambda grid from 1e-8)"`) · version: interim core, not reviewed, SHA-256 `d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872` · output: `Code/outputs/mobile/core_diagnose_Logistic___L2__lambda_grid_from_1e_8_.json`, copied above unchanged (rounded to 4 decimals)
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** agree (filled in by DR-19). No single drop cleared the keep rule, and elimination stopped after round 1. The best drop, `wifi`, gained +0.0019 against a threshold of 0.5 × 0.0106 = 0.0053. 15 of the 20 drops changed the CV mean by 0.0025 or less. Five lowered it by more: `mobile_wt` by 0.0100 (spread 0.0103), and four by more than one spread.
+- **User involvement:** asked — "Backward elimination", chosen without a recommendation from three options
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile/core.py`, `Code/mobile_05_backward_elimination.py`, `Code/outputs/mobile/core_diagnose_Logistic___L2__lambda_grid_from_1e_8_.json`, DR-17
+
+### DR-19 · CV · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Backward elimination, round 1 (DX-4 part c): does dropping any one input from `Logistic + L2 (lambda grid from 1e-8)` beat it by at least 0.5 × spread on the same folds?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Candidates | 20 post-prior entries, `Logistic + L2` with one input dropped each, λ ∈ {10⁻⁸ … 10⁴}, same outer folds | CV | `Code/outputs/mobile/core_cv_post_prior_2.json` … `_21.json`, `core_cv_store.json` |
+| Round 1 result | best drop `wifi`: 0.9725, margin vs the leader +0.0019, spread 0.0106; below the keep threshold 0.0053, so elimination stopped | CV | `Code/outputs/mobile/backward_elimination.json` |
+| Run time | about 11 min for 20 candidates | — | — |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| DX-4 (c), feature selection by backward elimination compared by CV | round 1 run; no drop kept | [B pp.333, 346] | the leader stays `Logistic + L2 (lambda grid from 1e-8)`, with all 20 inputs |
+| Keep rule (agreed, DR-18) | margin ≥ 0.5 × spread: 0.0019 < 0.0053 | [I] | stop |
+| §17 breadth note | 25 configurations compared (4 prior-kept, 21 post-prior); more than 10 | [I], p. 328 | the winner's CV score may be optimistic because many were compared on the same data; reported with the recommendation |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| Keep rule | margin ≥ 0.5 × spread | 0.0019 vs 0.0053 |
+| Breadth note | > 10 configurations | 25 |
+
+**Round 1 candidates** (each is the leader with the named input dropped; the leader's CV mean accuracy is 0.9706; margins are paired over the 10 outer folds)
+
+| Input dropped | CV mean accuracy | Margin vs leader | Spread |
+| --- | --- | --- | --- |
+| `wifi` | 0.9725 | +0.0019 | 0.0106 |
+| `three_g` | 0.9706 | 0.0000 | 0.0078 |
+| `touch_screen` | 0.9706 | 0.0000 | 0.0066 |
+| `n_cores` | 0.9700 | −0.0006 | 0.0136 |
+| `four_g` | 0.9700 | −0.0006 | 0.0069 |
+| `pc` | 0.9694 | −0.0012 | 0.0071 |
+| `sc_h` | 0.9694 | −0.0012 | 0.0071 |
+| `dual_sim` | 0.9694 | −0.0013 | 0.0065 |
+| `clock_speed` | 0.9688 | −0.0019 | 0.0030 |
+| `fc` | 0.9688 | −0.0019 | 0.0066 |
+| `sc_w` | 0.9688 | −0.0019 | 0.0098 |
+| `blue` | 0.9687 | −0.0019 | 0.0118 |
+| `int_memory` | 0.9681 | −0.0025 | 0.0089 |
+| `m_dep` | 0.9681 | −0.0025 | 0.0053 |
+| `talk_time` | 0.9681 | −0.0025 | 0.0053 |
+| `mobile_wt` | 0.9606 | −0.0100 | 0.0103 |
+| `px_height` | 0.9031 | −0.0675 | 0.0138 |
+| `px_width` | 0.9025 | −0.0681 | 0.0146 |
+| `battery_power` | 0.8062 | −0.1644 | 0.0198 |
+| `ram` | 0.3175 | −0.6531 | 0.0309 |
+
+These margins describe what the cross-validated model loses without each input, given the other 19. They are not a statement about how any specification is connected to price (ADM-2, DR-04).
+
+- **Options considered:** the 20 single-input drops
+- **Expectation:** n/a (this record fills in DR-18's *Outcome vs expectation*)
+- **Decision:** No drop is kept. The leader stays `Logistic + L2 (lambda grid from 1e-8)` with all 20 inputs (DR-08). The 20 drop entries stay in the CV store as post-prior entries.
+- **Open point for 4f:** §19.2–19.3 will see the `wifi`-dropped entry as the best CV mean (0.9725). It is within noise of the leader, and has the same structure and the same number of add-ons. §19's last tie-break is "the better CV mean", so the rule would pick the `wifi`-dropped entry, which the agreed keep rule has just declined to keep. This is raised with the user before `recommend` is run (`instructions.md`: the agent says so and raises it, and does not substitute its own result).
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+**Reference code**
+
+- Function: `run_cv` via `cv add "Logistic + L2" --drop <input> --grid … --label "… minus <input>"` (20 calls, driven by `Code/mobile_05_backward_elimination.py`); `margin` for the comparison · version: interim core, not reviewed, SHA-256 `d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872` · output: `core_cv_post_prior_2.json` … `_21.json`, `core_cv_store.json`, `backward_elimination.json`, copied above unchanged (rounded to 4 decimals)
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "Backward elimination" (DR-18)
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile_05_backward_elimination.py`, `Code/outputs/mobile/backward_elimination.json`, `Code/outputs/mobile/core_cv_store.json`, DR-18
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1181,6 +1337,8 @@ Recall per band: 0 → 0.9775, 1 → 0.9575, 2 → 0.9575, 3 → 0.9900. These a
 | 20 | Step 4e, pass 1. Diagnosis of `Logistic + L2` (2 min 23 s): O5 holds first (λ at the low edge in 10/10 folds), so DX-3 extends the λ grid down to 10⁻⁸; the expectation was written before the run (DR-14). The extended run then failed twice in the parallel worker pool (`WinError 6`, then `WinError 5`, `BrokenProcessPool`, in outer fold 0; nothing written). Single fits at small λ ran normally. The user chose "N_JOBS = 1, re-verify (Recommended)" over retrying unchanged or a threading wrapper. | DR-14 |
 | 21 | Step 4e. Core changed: `N_JOBS = -1` → `1` (`38e21eca…` → `d89e2275…`). The CV store was rebuilt, and rounds 1–2 and the pass-1 diagnosis were re-run (6 min 19 s). `Code/mobile_04_compare_rerun.py` found every number identical to the committed outputs (0 differences in 4 files). DR-12, DR-13 and DR-14 are superseded by DR-15 and DR-16, with unchanged values. | `Code/mobile/core.py`, `Code/mobile_04_compare_rerun.py`, `Code/outputs/mobile/rerun_check.json`, DR-15, DR-16 |
 | 22 | Step 4e, DX-3 run (33 s): `Logistic + L2` with λ ∈ {10⁻⁸ … 10⁴}, post-prior, scores 0.9706 (fold SD 0.0141), against 0.9638. The paired gain is +0.0069, spread 0.0055. λ ranges over 10⁻⁸ to 10⁻⁵ (10⁻⁸ in 2/10 folds). It is the new leader. DR-16 outcome vs expectation: partial (λ moved down as expected; the gain was larger than expected). | `Code/outputs/mobile/core_cv_post_prior_1.json`, DR-16, DR-17 |
+| 23 | Step 4e, pass 2. Diagnosis of the new leader (15 min): O3 (overfitting) holds first, so DX-4 applies. Parts (a) and (b) do not apply. The user chose (c), backward elimination, from three options given without a recommendation; the keep rule is margin ≥ 0.5 × spread [I], and the expectation was written before the run (DR-18). | DR-18 |
+| 24 | Step 4e, backward elimination round 1 (about 11 min, 20 post-prior entries). Best drop `wifi` (0.9725, +0.0019, spread 0.0106) misses the keep rule, so elimination stops and the leader keeps all 20 inputs. DR-18 outcome vs expectation: agree. 25 configurations have been compared, so the breadth note applies. Open point for 4f: §19's CV-mean tie-break would favour the not-kept `wifi` drop. | `Code/mobile_05_backward_elimination.py`, `Code/outputs/mobile/backward_elimination.json`, `core_cv_post_prior_2.json`–`_21.json`, DR-19 |
 
 ## Code Summary
 
@@ -1192,6 +1350,7 @@ All scripts run from `Code/` with `uv run python <script>.py`. Script names star
 | `Code/mobile_02_split.py` | Step 2 split. Shuffled, stratified 80 / 20 split of `train.csv` by `price_range`. Records the row indices of each part, their class counts, the input design (categorical and numerical inputs) and P2–P4 with their `[I]` thresholds as named constants. After it runs, the test indices are locked until step 4g. | `Attachments/Mobile Price/train.csv` | `Code/outputs/mobile/split.json` (indices and counts, no data values) | `SEED = 2026`, `TEST_FRACTION = 0.2` |
 | `Code/mobile/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far it holds the input design of DR-08 (`preprocessor`: 14 numerical inputs passed through, six 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 1,600 `train_idx` rows only, with an assertion that no test row is kept), §11 P9 and P10 (`p9_p10`). From step 4a it adds §9 and §12: the 14 configurations, the task gate, the must-have gates, MOD-1 and MOD-2 (`admissible_set`, `mod2_check`). From step 4b it adds the rest: §13–§15 prior ranking (`prior_ranking`); §16 nested CV with a cumulative store (`run_cv`, `nested_cv`, `baseline_cv`, `cv_table`; pooled confusion matrices and recall per band); §18 observations and the learning curve (`observations`, `learning_curve`); §17/§19/§20 recommendation, confidence and why-not codes (`recommend`); and §19.4 the single test evaluation (`final`), the only function that reads the test rows. `final` needs the user's approval on the command line, and refuses a second run or a changed core. The header lists interpretations a–y. Commands: `p9p10`; `admset`, `prior`, `cv round1`, `cv round2` and `recommend`, each with `mobile/props_dr09.json`; `cv add "<configuration>" [--drop COL] [--grid JSON] [--label TEXT]`; `diagnose "<entry>"`; `final --approved "<words>"`. | `Attachments/Mobile Price/train.csv`, `Code/outputs/mobile/split.json`, `Code/mobile/props_dr09.json` (the DR-09 property values) | `Code/outputs/mobile/core_p9_p10.json`, `core_admset.json`, `core_prior.json`. Later: `core_cv_store.json`, `core_cv_round1.json`, `core_cv_round2.json`, `core_cv_post_prior_N.json`, `core_diagnose_*.json`, `core_recommend.json`, `core_final.json`, `core_test_predictions.csv` | `[I]` constants as named in the file: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `KEEP_TOP_OTHERS = 3`, `OUTER_FOLDS = 10`, `INNER_FOLDS = 5`, `C1_CLEAR = 1.0`, `C1_MODERATE = 0.5`, `C2_CLEAR = 1.0`, `C3_FALLING = 0.5`, `WITHIN_NOISE = 0.5`, `BREADTH_MANY = 10`, `O3_RATIO = O4_RATIO = 2.0`, `O5_MOST_FOLDS = 0.5`; grids `GRID_DEGREE`, `GRID_K`, `GRID_DEPTH`, `GRID_MIN_LEAF`, `GRID_LAMBDA` (§16); `CV_SEED = 2026`; `LOGISTIC_MAX_ITER = 100000` |
 | `Code/mobile_04_compare_rerun.py` | Step 4e check after the core change `N_JOBS = -1` → `1`. Compares every value of the re-run outputs (`core_cv_round1.json`, `core_cv_round2.json`, `core_cv_store.json`, `core_diagnose_Logistic___L2.json`) with the earlier core's committed outputs (from git, commit `a1b8fa7`) and the saved earlier diagnosis. Fields naming the code version or the printed pipeline are skipped, and floats must match exactly. | the outputs above; the old diagnosis file (path as argument) | `Code/outputs/mobile/rerun_check.json` | `OLD_COMMIT = "a1b8fa7"` |
+| `Code/mobile_05_backward_elimination.py` | Step 4e, DX-4 (c). Backward elimination driven through the core's `cv add --drop` entry point. Each round cross-validates the current leader with each remaining input also dropped, and keeps the best drop only if its paired margin over the leader is ≥ `KEEP_MARGIN` × spread (the core's `margin`). Otherwise it stops. It fits nothing itself. | the CV store, via the core | post-prior entries via the core; `Code/outputs/mobile/backward_elimination.json` | `KEEP_MARGIN = 0.5` [I]; the λ grid {10⁻⁸ … 10⁴}; start = `Logistic + L2 (lambda grid from 1e-8)` |
 | `Code/mobile_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, all bands together. One bar per value for inputs with up to 130 distinct values; 40 equal-width bins from min − 0.5 to max + 0.5 for the rest. Light and dark versions. Uses `viz_style.py`, with `FIGURES` set to the Mobile Price folder. | the training phones, via `core.training_data()` | `Code/outputs/mobile/figures/fig1_input_distributions.png`, `dark/fig1_input_distributions.png`, `fig1_input_distributions.json` (per panel: phones, distinct values, min, max, zeros, bars) | `BINS = 40`, `DISCRETE_MAX = 130`, `FIGSIZE = (16, 14)` |
 
 ## References

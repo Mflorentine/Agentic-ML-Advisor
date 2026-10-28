@@ -1,0 +1,400 @@
+{
+  "core_version_sha256": "d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872",
+  "round": "post-prior 2",
+  "added": [
+    "Logistic + L2 (lambda grid from 1e-8) minus battery_power"
+  ],
+  "table": {
+    "metric": "accuracy",
+    "leader": "Logistic + L2 (lambda grid from 1e-8)",
+    "rows": [
+      {
+        "configuration": "Baseline (most common class)",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": "n/a",
+        "cv_mean_accuracy": 0.25,
+        "fold_sd_accuracy": 0.0,
+        "e_train": 0.75,
+        "e_val": 0.75,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            400,
+            0,
+            0,
+            0
+          ],
+          [
+            400,
+            0,
+            0,
+            0
+          ],
+          [
+            400,
+            0,
+            0,
+            0
+          ],
+          [
+            400,
+            0,
+            0,
+            0
+          ]
+        ],
+        "recall_per_band": {
+          "0": 1.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0
+        },
+        "margin_vs_leader": {
+          "mean": -0.720625,
+          "spread": 0.014145204330639977
+        }
+      },
+      {
+        "configuration": "Logistic + L2",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__lam": 0.0001
+          },
+          "folds": "10/10"
+        },
+        "cv_mean_accuracy": 0.9637499999999999,
+        "fold_sd_accuracy": 0.01406828584677844,
+        "e_train": 0.014930555555555535,
+        "e_val": 0.03625000000000002,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            391,
+            9,
+            0,
+            0
+          ],
+          [
+            10,
+            380,
+            10,
+            0
+          ],
+          [
+            0,
+            12,
+            377,
+            11
+          ],
+          [
+            0,
+            0,
+            6,
+            394
+          ]
+        ],
+        "recall_per_band": {
+          "0": 0.9775,
+          "1": 0.95,
+          "2": 0.9425,
+          "3": 0.985
+        },
+        "margin_vs_leader": {
+          "mean": -0.006875000000000009,
+          "spread": 0.0054724689735682125
+        },
+        "margin_vs_baseline": {
+          "mean": 0.71375,
+          "spread": 0.01406828584677844,
+          "C2": "clear"
+        }
+      },
+      {
+        "configuration": "kNN",
+        "post_prior": false,
+        "round": "round2",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__n_neighbors": 51
+          },
+          "folds": "10/10"
+        },
+        "cv_mean_accuracy": 0.625,
+        "fold_sd_accuracy": 0.03620447332704744,
+        "e_train": 0.3176388888888889,
+        "e_val": 0.37499999999999994,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            310,
+            81,
+            9,
+            0
+          ],
+          [
+            116,
+            194,
+            86,
+            4
+          ],
+          [
+            12,
+            109,
+            219,
+            60
+          ],
+          [
+            0,
+            10,
+            113,
+            277
+          ]
+        ],
+        "recall_per_band": {
+          "0": 0.775,
+          "1": 0.485,
+          "2": 0.5475,
+          "3": 0.6925
+        },
+        "margin_vs_leader": {
+          "mean": -0.345625,
+          "spread": 0.03398452466442141
+        },
+        "margin_vs_baseline": {
+          "mean": 0.37500000000000006,
+          "spread": 0.03620447332704743,
+          "C2": "clear"
+        }
+      },
+      {
+        "configuration": "Tree",
+        "post_prior": false,
+        "round": "round2",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__max_depth": 8,
+            "m__min_samples_leaf": 5
+          },
+          "folds": "3/10"
+        },
+        "cv_mean_accuracy": 0.828125,
+        "fold_sd_accuracy": 0.02875452862883803,
+        "e_train": 0.069375,
+        "e_val": 0.171875,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            360,
+            40,
+            0,
+            0
+          ],
+          [
+            45,
+            308,
+            47,
+            0
+          ],
+          [
+            0,
+            40,
+            307,
+            53
+          ],
+          [
+            0,
+            0,
+            50,
+            350
+          ]
+        ],
+        "recall_per_band": {
+          "0": 0.9,
+          "1": 0.77,
+          "2": 0.7675,
+          "3": 0.875
+        },
+        "margin_vs_leader": {
+          "mean": -0.14250000000000002,
+          "spread": 0.032516021691877776
+        },
+        "margin_vs_baseline": {
+          "mean": 0.578125,
+          "spread": 0.02875452862883803,
+          "C2": "clear"
+        }
+      },
+      {
+        "configuration": "Logistic + poly + L2",
+        "post_prior": false,
+        "round": "round2",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__lam": 0.0001,
+            "poly__degree": 2
+          },
+          "folds": "10/10"
+        },
+        "cv_mean_accuracy": 0.943125,
+        "fold_sd_accuracy": 0.018030163769515686,
+        "e_train": 0.017777777777777816,
+        "e_val": 0.05687500000000001,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            380,
+            20,
+            0,
+            0
+          ],
+          [
+            14,
+            372,
+            14,
+            0
+          ],
+          [
+            0,
+            13,
+            371,
+            16
+          ],
+          [
+            0,
+            0,
+            14,
+            386
+          ]
+        ],
+        "recall_per_band": {
+          "0": 0.95,
+          "1": 0.93,
+          "2": 0.9275,
+          "3": 0.965
+        },
+        "margin_vs_leader": {
+          "mean": -0.027500000000000004,
+          "spread": 0.014493772609105088
+        },
+        "margin_vs_baseline": {
+          "mean": 0.693125,
+          "spread": 0.018030163769515686,
+          "C2": "clear"
+        }
+      },
+      {
+        "configuration": "Logistic + L2 (lambda grid from 1e-8)",
+        "post_prior": true,
+        "round": "post-prior 1",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__lam": 1e-05
+          },
+          "folds": "4/10"
+        },
+        "cv_mean_accuracy": 0.9706249999999998,
+        "fold_sd_accuracy": 0.014145204330639977,
+        "e_train": 0.00611111111111109,
+        "e_val": 0.029375000000000005,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            391,
+            9,
+            0,
+            0
+          ],
+          [
+            8,
+            383,
+            9,
+            0
+          ],
+          [
+            0,
+            8,
+            383,
+            9
+          ],
+          [
+            0,
+            0,
+            4,
+            396
+          ]
+        ],
+        "recall_per_band": {
+          "0": 0.9775,
+          "1": 0.9575,
+          "2": 0.9575,
+          "3": 0.99
+        },
+        "margin_vs_baseline": {
+          "mean": 0.720625,
+          "spread": 0.014145204330639977,
+          "C2": "clear"
+        }
+      },
+      {
+        "configuration": "Logistic + L2 (lambda grid from 1e-8) minus battery_power",
+        "post_prior": true,
+        "round": "post-prior 2",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__lam": 1e-08
+          },
+          "folds": "4/10"
+        },
+        "cv_mean_accuracy": 0.8062499999999998,
+        "fold_sd_accuracy": 0.018865385704452953,
+        "e_train": 0.1736111111111111,
+        "e_val": 0.19375,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            357,
+            43,
+            0,
+            0
+          ],
+          [
+            46,
+            300,
+            54,
+            0
+          ],
+          [
+            0,
+            54,
+            290,
+            56
+          ],
+          [
+            0,
+            0,
+            57,
+            343
+          ]
+        ],
+        "recall_per_band": {
+          "0": 0.8925,
+          "1": 0.75,
+          "2": 0.725,
+          "3": 0.8575
+        },
+        "margin_vs_leader": {
+          "mean": -0.164375,
+          "spread": 0.01977521245847381
+        },
+        "margin_vs_baseline": {
+          "mean": 0.5562499999999998,
+          "spread": 0.018865385704452953,
+          "C2": "clear"
+        }
+      }
+    ]
+  }
+}

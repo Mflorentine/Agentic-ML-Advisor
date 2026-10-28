@@ -1,0 +1,156 @@
+{
+  "core_version_sha256": "d89e2275ffda2d958708f3dd410f3f39a8ef187a78a9df1d2416d51b00f91872",
+  "start": "Logistic + L2 (lambda grid from 1e-8)",
+  "rounds": [
+    {
+      "round": 1,
+      "current": "Logistic + L2 (lambda grid from 1e-8)",
+      "current_cv_mean": 0.9706249999999998,
+      "candidates": [
+        {
+          "drop": "wifi",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus wifi",
+          "cv_mean": 0.9724999999999999,
+          "margin_vs_current": 0.0018750000000000155,
+          "spread": 0.010643366478704038
+        },
+        {
+          "drop": "three_g",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus three_g",
+          "cv_mean": 0.9706250000000001,
+          "margin_vs_current": 1.1102230246251566e-17,
+          "spread": 0.0077951195557790665
+        },
+        {
+          "drop": "touch_screen",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus touch_screen",
+          "cv_mean": 0.9706249999999998,
+          "margin_vs_current": 1.1102230246251566e-17,
+          "spread": 0.006588078458684148
+        },
+        {
+          "drop": "n_cores",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus n_cores",
+          "cv_mean": 0.9700000000000001,
+          "margin_vs_current": -0.0006249999999999977,
+          "spread": 0.013645435744844014
+        },
+        {
+          "drop": "four_g",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus four_g",
+          "cv_mean": 0.97,
+          "margin_vs_current": -0.0006249999999999977,
+          "spread": 0.006878155841341345
+        },
+        {
+          "drop": "pc",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus pc",
+          "cv_mean": 0.969375,
+          "margin_vs_current": -0.0012499999999999955,
+          "spread": 0.0070955776524693525
+        },
+        {
+          "drop": "sc_h",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus sc_h",
+          "cv_mean": 0.969375,
+          "margin_vs_current": -0.0012499999999999734,
+          "spread": 0.007095577652469368
+        },
+        {
+          "drop": "dual_sim",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus dual_sim",
+          "cv_mean": 0.969375,
+          "margin_vs_current": -0.0012500000000000067,
+          "spread": 0.006454972243679051
+        },
+        {
+          "drop": "clock_speed",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus clock_speed",
+          "cv_mean": 0.96875,
+          "margin_vs_current": -0.0018750000000000045,
+          "spread": 0.003019036822122807
+        },
+        {
+          "drop": "fc",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus fc",
+          "cv_mean": 0.96875,
+          "margin_vs_current": -0.0018749999999999934,
+          "spread": 0.006620936909196149
+        },
+        {
+          "drop": "sc_w",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus sc_w",
+          "cv_mean": 0.96875,
+          "margin_vs_current": -0.0018750000000000155,
+          "spread": 0.00979388272795263
+        },
+        {
+          "drop": "blue",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus blue",
+          "cv_mean": 0.9687499999999998,
+          "margin_vs_current": -0.0018749999999999934,
+          "spread": 0.011803512895179448
+        },
+        {
+          "drop": "int_memory",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus int_memory",
+          "cv_mean": 0.968125,
+          "margin_vs_current": -0.0025000000000000135,
+          "spread": 0.008936504412303002
+        },
+        {
+          "drop": "m_dep",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus m_dep",
+          "cv_mean": 0.968125,
+          "margin_vs_current": -0.00249999999999998,
+          "spread": 0.0052704627669473295
+        },
+        {
+          "drop": "talk_time",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus talk_time",
+          "cv_mean": 0.968125,
+          "margin_vs_current": -0.0025000000000000022,
+          "spread": 0.00527046276694729
+        },
+        {
+          "drop": "mobile_wt",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus mobile_wt",
+          "cv_mean": 0.960625,
+          "margin_vs_current": -0.010000000000000009,
+          "spread": 0.010290907529357048
+        },
+        {
+          "drop": "px_height",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus px_height",
+          "cv_mean": 0.903125,
+          "margin_vs_current": -0.0675,
+          "spread": 0.013756311682682619
+        },
+        {
+          "drop": "px_width",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus px_width",
+          "cv_mean": 0.9025000000000001,
+          "margin_vs_current": -0.068125,
+          "spread": 0.014568444780872571
+        },
+        {
+          "drop": "battery_power",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus battery_power",
+          "cv_mean": 0.8062499999999998,
+          "margin_vs_current": -0.164375,
+          "spread": 0.01977521245847381
+        },
+        {
+          "drop": "ram",
+          "entry": "Logistic + L2 (lambda grid from 1e-8) minus ram",
+          "cv_mean": 0.3175,
+          "margin_vs_current": -0.653125,
+          "spread": 0.030935921676911414
+        }
+      ],
+      "best": "wifi",
+      "kept": false,
+      "rule": "margin >= 0.5 x spread [I]"
+    }
+  ]
+}
