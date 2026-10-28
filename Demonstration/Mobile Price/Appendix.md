@@ -4,7 +4,7 @@
 
 ## Data Summary
 
-*Step 1, 28 October 2026. All figures are from `Code/outputs/mobile/01_describe.json`. The section covers only `train.csv`, the file the analysis uses. `test.csv` is excluded, and is noted only under* Step 1 decisions*.*
+*Step 1, closed 28 October 2026. All figures are from `Code/outputs/mobile/01_describe.json`. The section covers only `train.csv`, the file the analysis uses. `test.csv` is excluded, and is noted only under* Step 1 decisions*.*
 
 **Provenance.**
 - **File used:** `Attachments/Mobile Price/train.csv`, from Kaggle's *Mobile Price Classification* by Abhishek Sharma (`iabhishekofficial`), version 1. Never modified.
@@ -82,7 +82,7 @@
 | **Units** | Taken from Kaggle's column descriptions. No unit is stated for `clock_speed`, `mobile_wt` or `talk_time`. For `px_height` and `px_width`, "Pixel Resolution" implies pixels. Recorded as "not stated" rather than guessed. Whether a column is a measurement, a specification or generated is undocumented for every column. | Statements about these columns in the report cannot give units the source does not give. |
 | **Missing data** | There are no empty cells, so nothing is imputed. No documentation says that 0 encodes "missing" in any column. | — |
 | **Cleaning** | No value altered or set to missing. | — |
-| **Accepted as-is** | **`sc_w` = 0 cm in 180 rows.** A width of 0 cm is not physically possible, but 1, 2 and 3 cm are as common (210, 156 and 199 rows). Zero sits on a continuous spread of small widths, so singling it out would be arbitrary. The user chose "Accept as-is". **`px_height` < 100 pixels in 150 rows (0 in 2).** There is no documented cut-off for an impossible resolution. The user chose "Accept as-is". | If these values are errors, the models learn from them, and the evaluation includes them. Both flaws stay visible here. |
+| **Accepted as-is** | **`sc_w` = 0 cm in 180 rows.** A width of 0 cm is not physically possible, but 1, 2 and 3 cm are as common (210, 156 and 199 rows). Zero sits on a continuous spread of small widths, so singling it out would be arbitrary. The user chose "Accept as-is". **`px_height` < 100 pixels in 150 rows (0 in 2).** There is no documented cut-off for an impossible resolution. The user chose "Accept as-is". **`fc` = 0 in 474 rows and `pc` = 0 in 101 rows** (front and primary camera, in megapixels). Left unaltered. Step 1 was closed without discussing whether 0 means "no camera" or is a flaw. | If these values are errors, the models learn from them, and the evaluation includes them. All three stay visible here. |
 | **Grouping and time order** | None (ADM-3, DR-02). There is no grouping or time column, and the rows are not sorted by the target. Rows are treated as independent phones. | If several rows are in fact variants of one model, a random split would let near-copies sit on both sides of it. The files give no means to check this. |
 | **Admissibility** | ADM-1 yes (DR-01), ADM-3 none (DR-02), ADM-4 yes (DR-03). | — |
 | **Target and leakage** | The target is `price_range`, four ordered classes, 500 rows each. How the labels were produced is undocumented (no prices, thresholds, currency or date). No column is set aside for leakage. | Whatever rule produced the labels is unknown, so whether they are an independent outcome cannot be verified from the source. |
@@ -240,6 +240,7 @@
 | 3 | Step 1, describing pass over both files: shape, columns, ranges, duplicates, class counts, value combinations, overlap between the files. No conclusions drawn. | `Code/mobile_01_describe_data.py`, `Code/outputs/mobile/01_describe.md` |
 | 4 | Step 1. The user stated their experience, "New to ML", and answered ADM-1 "Yes", ADM-3 "Neither" and ADM-4 "Yes". | DR-01, DR-02, DR-03 |
 | 5 | Step 1, scope. `test.csv` excluded (no labels), and its description removed from the `Data Summary`, leaving a note under *Step 1 decisions*. `sc_w` = 0 (180 rows) and `px_height` < 100 (150 rows) accepted as-is. Alternatives considered and not taken: setting these values to missing, with imputation inside the folds; dropping the rows; and, for `px_height`, setting only the 2 zeros to missing. | `Data Summary`, *Step 1 decisions* |
+| 6 | Step 1 closed by the user ("close step 1"). Three items were offered and left undiscussed. The units of `mobile_wt`, `clock_speed` and `talk_time` stay "not stated". Zero values of `fc` and `pc` are left unaltered. The origin of the rows and labels stays undocumented. | `Data Summary`, *Step 1 decisions* |
 
 ## Code Summary
 
