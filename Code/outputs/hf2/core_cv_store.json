@@ -541,6 +541,802 @@
     }
    ],
    "round": "round1"
+  },
+  "Logistic + L2": {
+   "configuration": "Logistic + L2",
+   "structural": "Logistic + L2",
+   "post_prior": false,
+   "dropped_inputs": [],
+   "grid": {
+    "m__lam": [
+     0.0001,
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0,
+     10000.0
+    ]
+   },
+   "pipeline": "Pipeline(steps=[('design',\n                 ColumnTransformer(transformers=[('as_recorded', 'passthrough',\n                                                  ['age',\n                                                   'creatinine_phosphokinase',\n                                                   'ejection_fraction',\n                                                   'platelets',\n                                                   'serum_creatinine',\n                                                   'serum_sodium']),\n                                                 ('indicators',\n                                                  OneHotEncoder(categories=[[0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1]],\n                                                                drop='if_binary'),\n                                                  ['anaemia', 'diabetes',\n                                                   'high_blood_pressure', 'sex',\n                                                   'smoking'])],\n                                   verbose_feature_names_out=False)),\n                ('scale', StandardScaler()), ('m', BookLogistic(lam=1.0))])",
+   "folds": [
+    {
+     "fold": 0,
+     "best_params": {
+      "m__lam": 0.0001
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7001642063443422,
+     "ap_val": 0.5535984848484848,
+     "e_train": 0.22325581395348837,
+     "e_val": 0.3333333333333333,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 1,
+     "best_params": {
+      "m__lam": 10.0
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6782198338495911,
+     "ap_val": 0.5658730158730159,
+     "e_train": 0.3209302325581395,
+     "e_val": 0.3333333333333333,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 2,
+     "best_params": {
+      "m__lam": 1.0
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6535802386889539,
+     "ap_val": 0.621478705118411,
+     "e_train": 0.3209302325581395,
+     "e_val": 0.3333333333333333,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 3,
+     "best_params": {
+      "m__lam": 0.001
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6582110426462362,
+     "ap_val": 0.8187500000000001,
+     "e_train": 0.2558139534883721,
+     "e_val": 0.25,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 4,
+     "best_params": {
+      "m__lam": 0.1
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6460477807906425,
+     "ap_val": 0.7351190476190476,
+     "e_train": 0.27906976744186046,
+     "e_val": 0.3333333333333333,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 5,
+     "best_params": {
+      "m__lam": 0.01
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6760746528339995,
+     "ap_val": 0.6354668003565063,
+     "e_train": 0.24186046511627907,
+     "e_val": 0.25,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 6,
+     "best_params": {
+      "m__lam": 0.1
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6291600074312402,
+     "ap_val": 0.8726076007326007,
+     "e_train": 0.2930232558139535,
+     "e_val": 0.25,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 7,
+     "best_params": {
+      "m__lam": 1.0
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6580112382754212,
+     "ap_val": 0.638766032728881,
+     "e_train": 0.32558139534883723,
+     "e_val": 0.2916666666666667,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 8,
+     "best_params": {
+      "m__lam": 0.001
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6779401554632588,
+     "ap_val": 0.6252293341579056,
+     "e_train": 0.23255813953488372,
+     "e_val": 0.2916666666666667,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 9,
+     "best_params": {
+      "m__lam": 1.0
+     },
+     "grid_used": {
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6511113869908524,
+     "ap_val": 0.6364468864468864,
+     "e_train": 0.32407407407407407,
+     "e_val": 0.30434782608695654,
+     "converged": true,
+     "grid_override": null
+    }
+   ],
+   "round": "round2"
+  },
+  "Logistic + poly": {
+   "configuration": "Logistic + poly",
+   "structural": "Logistic + poly",
+   "post_prior": false,
+   "dropped_inputs": [],
+   "grid": {
+    "poly__degree": [
+     2,
+     3
+    ]
+   },
+   "pipeline": "Pipeline(steps=[('design',\n                 ColumnTransformer(transformers=[('as_recorded', 'passthrough',\n                                                  ['age',\n                                                   'creatinine_phosphokinase',\n                                                   'ejection_fraction',\n                                                   'platelets',\n                                                   'serum_creatinine',\n                                                   'serum_sodium']),\n                                                 ('indicators',\n                                                  OneHotEncoder(categories=[[0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1]],\n                                                                drop='if_binary'),\n                                                  ['anaemia', 'diabetes',\n                                                   'high_blood_pressure', 'sex',\n                                                   'smoking'])],\n                                   verbose_feature_names_out=False)),\n                ('poly', SeparatePowers(degree=3, idx=(0, 1, 2, 3, 4, 5))),\n                ('scale', StandardScaler()), ('m', BookLogistic())])",
+   "folds": [
+    {
+     "fold": 0,
+     "best_params": {
+      "poly__degree": 2
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.7828717998613973,
+     "ap_val": 0.4532546191553544,
+     "e_train": 0.17209302325581396,
+     "e_val": 0.4583333333333333,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 1,
+     "best_params": {
+      "poly__degree": 2
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.7484705026619988,
+     "ap_val": 0.5633380508380508,
+     "e_train": 0.19069767441860466,
+     "e_val": 0.2916666666666667,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 2,
+     "best_params": {
+      "poly__degree": 2
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.7580685262408904,
+     "ap_val": 0.6400568181818181,
+     "e_train": 0.20465116279069767,
+     "e_val": 0.2916666666666667,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 3,
+     "best_params": {
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.7961570326774768,
+     "ap_val": 0.8404761904761905,
+     "e_train": 0.18604651162790697,
+     "e_val": 0.16666666666666666,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 4,
+     "best_params": {
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.7853869750716552,
+     "ap_val": 0.8262362637362637,
+     "e_train": 0.19069767441860466,
+     "e_val": 0.16666666666666666,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 5,
+     "best_params": {
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.8302943478675869,
+     "ap_val": 0.5258838383838385,
+     "e_train": 0.16279069767441862,
+     "e_val": 0.4166666666666667,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 6,
+     "best_params": {
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.780437815139429,
+     "ap_val": 0.9040178571428571,
+     "e_train": 0.19534883720930232,
+     "e_val": 0.125,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 7,
+     "best_params": {
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.7921005685721502,
+     "ap_val": 0.857142857142857,
+     "e_train": 0.1813953488372093,
+     "e_val": 0.125,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 8,
+     "best_params": {
+      "poly__degree": 2
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.7493468910419903,
+     "ap_val": 0.6963744588744589,
+     "e_train": 0.19069767441860466,
+     "e_val": 0.20833333333333334,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 9,
+     "best_params": {
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ]
+     },
+     "ap_train": 0.795853731946801,
+     "ap_val": 0.7569966583124477,
+     "e_train": 0.2037037037037037,
+     "e_val": 0.17391304347826086,
+     "converged": true,
+     "grid_override": null
+    }
+   ],
+   "round": "round2"
+  },
+  "Logistic + poly + L2": {
+   "configuration": "Logistic + poly + L2",
+   "structural": "Logistic + poly + L2",
+   "post_prior": false,
+   "dropped_inputs": [],
+   "grid": {
+    "poly__degree": [
+     2,
+     3
+    ],
+    "m__lam": [
+     0.0001,
+     0.001,
+     0.01,
+     0.1,
+     1.0,
+     10.0,
+     100.0,
+     1000.0,
+     10000.0
+    ]
+   },
+   "pipeline": "Pipeline(steps=[('design',\n                 ColumnTransformer(transformers=[('as_recorded', 'passthrough',\n                                                  ['age',\n                                                   'creatinine_phosphokinase',\n                                                   'ejection_fraction',\n                                                   'platelets',\n                                                   'serum_creatinine',\n                                                   'serum_sodium']),\n                                                 ('indicators',\n                                                  OneHotEncoder(categories=[[0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1],\n                                                                            [0,\n                                                                             1]],\n                                                                drop='if_binary'),\n                                                  ['anaemia', 'diabetes',\n                                                   'high_blood_pressure', 'sex',\n                                                   'smoking'])],\n                                   verbose_feature_names_out=False)),\n                ('poly', SeparatePowers(degree=3, idx=(0, 1, 2, 3, 4, 5))),\n                ('scale', StandardScaler()), ('m', BookLogistic(lam=1.0))])",
+   "folds": [
+    {
+     "fold": 0,
+     "best_params": {
+      "m__lam": 0.01,
+      "poly__degree": 2
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7795708556763243,
+     "ap_val": 0.5231139265146618,
+     "e_train": 0.18604651162790697,
+     "e_val": 0.3333333333333333,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 1,
+     "best_params": {
+      "m__lam": 10.0,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7106625658149266,
+     "ap_val": 0.5474702380952381,
+     "e_train": 0.3209302325581395,
+     "e_val": 0.3333333333333333,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 2,
+     "best_params": {
+      "m__lam": 0.0001,
+      "poly__degree": 2
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7584068449212891,
+     "ap_val": 0.6400568181818181,
+     "e_train": 0.20465116279069767,
+     "e_val": 0.2916666666666667,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 3,
+     "best_params": {
+      "m__lam": 0.01,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7735857445906739,
+     "ap_val": 0.8060897435897436,
+     "e_train": 0.19069767441860466,
+     "e_val": 0.20833333333333334,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 4,
+     "best_params": {
+      "m__lam": 0.001,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.766729348346313,
+     "ap_val": 0.8519230769230769,
+     "e_train": 0.17674418604651163,
+     "e_val": 0.20833333333333334,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 5,
+     "best_params": {
+      "m__lam": 0.001,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.8108544934948605,
+     "ap_val": 0.5538475790513834,
+     "e_train": 0.17209302325581396,
+     "e_val": 0.375,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 6,
+     "best_params": {
+      "m__lam": 0.1,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7203074695441262,
+     "ap_val": 0.8860479797979799,
+     "e_train": 0.25116279069767444,
+     "e_val": 0.20833333333333334,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 7,
+     "best_params": {
+      "m__lam": 10.0,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.6936484654520974,
+     "ap_val": 0.7166666666666666,
+     "e_train": 0.32558139534883723,
+     "e_val": 0.2916666666666667,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 8,
+     "best_params": {
+      "m__lam": 0.01,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7731689874729858,
+     "ap_val": 0.7204887218045113,
+     "e_train": 0.18604651162790697,
+     "e_val": 0.20833333333333334,
+     "converged": true,
+     "grid_override": null
+    },
+    {
+     "fold": 9,
+     "best_params": {
+      "m__lam": 1.0,
+      "poly__degree": 3
+     },
+     "grid_used": {
+      "poly__degree": [
+       2,
+       3
+      ],
+      "m__lam": [
+       0.0001,
+       0.001,
+       0.01,
+       0.1,
+       1.0,
+       10.0,
+       100.0,
+       1000.0,
+       10000.0
+      ]
+     },
+     "ap_train": 0.7040854351496214,
+     "ap_val": 0.636453823953824,
+     "e_train": 0.3194444444444444,
+     "e_val": 0.30434782608695654,
+     "converged": true,
+     "grid_override": null
+    }
+   ],
+   "round": "round2"
   }
  }
 }

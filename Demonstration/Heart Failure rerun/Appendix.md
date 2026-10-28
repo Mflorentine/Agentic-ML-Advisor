@@ -734,7 +734,10 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - Function: `prior_ranking` (`cd Code && uv run python hf2/core.py prior hf2/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a`. It was extended for 4b from `77878347…` with §13–§19 and interpretations i–z; `p9_p10` and `admissible_set` are unchanged, so DR-09 and DR-10 stay valid · inputs: DR-09 property values in `Code/hf2/props_dr09.json` · output: `Code/outputs/hf2/core_prior.json`, copied above unchanged
 
 - **Confidence:** n/a
-- **Outcome vs expectation:** pending (round-2 `CV` record)
+- **Outcome vs expectation:** disagree (filled in by DR-13).
+  - The CV order is `Logistic + poly` (0.7064) > `Logistic + poly + L2` (0.6882) > `Logistic + L2` (0.6703) > `Logistic` (0.6627).
+  - The expectation was the reverse: the plain configurations first, and `Logistic + poly` without L2 last. All four are within noise of the leader (each margin < 0.5 × spread), so the order is not clearly established, but it is not the one expected.
+  - Against the prior: the CV winner among the prior-kept configurations, `Logistic + poly`, has prior rank 2, so prior agreement is partial.
 - **User involvement:** approved — the user saw the §13–§19 extension before any output was used ("Run the prior"), and then agreed the method: "Agree the method"
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_prior.json`, DR-09, DR-10
@@ -796,6 +799,76 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/outputs/hf2/core_cv_round1.json`, `Code/outputs/hf2/core_cv_store.json`, DR-11
 
+### DR-13 · CV · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** How do the remaining kept configurations compare with `Logistic` and the baseline on the same folds (round 2)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| `Logistic + L2`, validation PR-AUC per fold | 0.5536, 0.5659, 0.6215, 0.8188, 0.7351, 0.6355, 0.8726, 0.6388, 0.6252, 0.6364 | CV | `Code/outputs/hf2/core_cv_store.json` |
+| `Logistic + L2`, tuned λ per fold | 10⁻⁴, 10, 1, 10⁻³, 0.1, 0.01, 0.1, 1, 10⁻³, 1 | CV | same |
+| `Logistic + poly`, validation PR-AUC per fold | 0.4533, 0.5633, 0.6401, 0.8405, 0.8262, 0.5259, 0.9040, 0.8571, 0.6964, 0.7570 | CV | same |
+| `Logistic + poly`, training PR-AUC per fold | 0.7829, 0.7485, 0.7581, 0.7962, 0.7854, 0.8303, 0.7804, 0.7921, 0.7493, 0.7959 | CV | same |
+| `Logistic + poly`, tuned degree per fold | 2, 2, 2, 3, 3, 3, 3, 3, 2, 3 | CV | same |
+| `Logistic + poly + L2`, validation PR-AUC per fold | 0.5231, 0.5475, 0.6401, 0.8061, 0.8519, 0.5538, 0.8860, 0.7167, 0.7205, 0.6365 | CV | same |
+| `Logistic + poly + L2`, tuned (degree, λ) per fold | (2, 0.01), (3, 10), (2, 10⁻⁴), (3, 0.01), (3, 10⁻³), (3, 10⁻³), (3, 0.1), (3, 10), (3, 0.01), (3, 1) | CV | same |
+| Convergence | all refits converged | CV | `core_cv_round2.json` (`not_converged_folds`: 0) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| SEQ-3 | round 2 run because `Logistic` clearly beat the baseline (DR-12) | [B pp.331–332] | — |
+| §16 same outer folds | stored folds checked and reused | [I] | margins paired by fold |
+| C2 for each configuration | clear for all four | [I] | all eligible under §19.1 |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear | margin ≥ 1 × spread | `Logistic + poly` 0.3843 vs 0.1619; `Logistic + poly + L2` 0.3661 vs 0.1320; `Logistic + L2` 0.3482 vs 0.1023; `Logistic` 0.3406 vs 0.0892 |
+| §19 within noise (for reference; applied at 4f) | margin < 0.5 × spread | `Logistic + poly + L2` 0.0182 vs 0.0332; `Logistic + L2` 0.0360 vs 0.0490; `Logistic` 0.0437 vs 0.0586 |
+
+**CV table** (outer 10, inner 5; stratified by `DEATH_EVENT`; seed 2026; metric: PR-AUC as average precision; diagnosis errors: misclassification rate at r = 0.5)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean PR-AUC | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (flag nobody) | no | n/a | 0.3221 | 0.0184 | −0.3843 (0.1619) | — | 0.3222 | 0.3221 |
+| `Logistic + poly` | no | degree 3 (6/10) | 0.7064 | 0.1557 | — (leader) | +0.3843 (0.1619), clear | 0.1878 | 0.2424 |
+| `Logistic + poly + L2` | no | degree 3, λ = 10 (2/10) | 0.6882 | 0.1299 | −0.0182 (0.0664) | +0.3661 (0.1320), clear | 0.2333 | 0.2763 |
+| `Logistic + L2` | no | λ = 1 (3/10) | 0.6703 | 0.1051 | −0.0360 (0.0980) | +0.3482 (0.1023), clear | 0.2817 | 0.2971 |
+| `Logistic` | no | none (10/10) | 0.6627 | 0.0938 | −0.0437 (0.1171) | +0.3406 (0.0892), clear | 0.2329 | 0.2848 |
+
+- **Options considered:** `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2` (round 2), alongside round 1
+- **Expectation:** n/a (this record fills in DR-11's *Outcome vs expectation*)
+- **Decision:**
+  - All four configurations clearly beat the baseline. `Logistic + poly` has the highest CV mean, but every other configuration is within noise of it, with margins below 0.5 × spread.
+  - The fold-to-fold variation is large: fold SDs of 0.09 to 0.16 on means around 0.66 to 0.71, with 23 to 24 patients and 7 to 8 deaths per validation fold.
+  - The CV order disagrees with the advisor's expectation (DR-11).
+- **Noted for 4e:**
+  - The tuned λ varies widely across folds (from 10⁻⁴ to 10 for `Logistic + L2`). It is at an edge (10⁻⁴) in only 1 of 10 folds, so O5 is not expected to hold.
+  - The leader `Logistic + poly` has the lowest training error (0.1878) of the four.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | not a selection; why-not codes are assigned in `FINAL` |
+
+**Reference code**
+
+- Function: `run_cv` via `cd Code && uv run python hf2/core.py cv round2 hf2/props_dr09.json` · version: interim core, not reviewed, SHA-256 `93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a` · output: `Code/outputs/hf2/core_cv_round2.json`, `core_cv_store.json`, copied above unchanged (rounded to 4 decimals); run time 46 s
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "continue step 4 with the method agreed in DR-11"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/outputs/hf2/core_cv_round2.json`, `Code/outputs/hf2/core_cv_store.json`, DR-11, DR-12
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -825,6 +898,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 17 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `77878347…`) was shown and approved ("Run it"). Admissible: `Logistic`, `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 and MOD-2 did not apply. | `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_admset.json`, DR-10 |
 | 18 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `93225b44…`; interpretations i–z, including the new §19 rule on input drops and `N_JOBS = 1`) and shown to the user before any output was used ("Run the prior"). Prior: P6=yes→Logistic is the only entry (+1 on all Logistic configurations). Kept: `Logistic` (simple-first), `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`; `kNN` and `Tree` are DISF (score 0). The expectation is recorded. The method was presented and agreed ("Agree the method"). | `Code/hf2/core.py`, `Code/outputs/hf2/core_prior.json`, DR-11 |
 | 19 | Step 4c, sub-task 1: round 1 run (20 s). Baseline mean CV PR-AUC 0.3221; `Logistic` 0.6627 (fold SD 0.0938). Margin 0.3406, spread 0.0892: C2 clear, so round 2 may proceed. All refits converged. | `Code/outputs/hf2/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
+| 20 | Step 4d, sub-task 1: round 2 run (46 s) on the same folds. Mean CV PR-AUC: `Logistic + poly` 0.7064 (leader), `Logistic + poly + L2` 0.6882, `Logistic + L2` 0.6703, `Logistic` 0.6627. All clearly beat the baseline, and all are within noise of the leader. DR-11 outcome vs expectation: disagree (expected the plain configurations first and `Logistic + poly` last); prior agreement partial (winner at prior rank 2). | `Code/outputs/hf2/core_cv_round2.json`, `core_cv_store.json`, DR-11, DR-13 |
 
 ## Code Summary
 
