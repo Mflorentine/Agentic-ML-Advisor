@@ -1,0 +1,96 @@
+{
+  "rows": "training patients only",
+  "n_train": 239,
+  "groups": {
+    "No death": 162,
+    "Died": 77
+  },
+  "medians": {
+    "age": {
+      "No death": 60.0,
+      "Died": 65.0
+    },
+    "creatinine_phosphokinase": {
+      "No death": 246.5,
+      "Died": 258.0
+    },
+    "ejection_fraction": {
+      "No death": 38.0,
+      "Died": 30.0
+    },
+    "platelets": {
+      "No death": 258000.0,
+      "Died": 244000.0
+    },
+    "serum_creatinine": {
+      "No death": 1.0,
+      "Died": 1.3
+    },
+    "serum_sodium": {
+      "No death": 137.0,
+      "Died": 135.0
+    }
+  },
+  "quartiles": {
+    "age": {
+      "No death": [
+        50.0,
+        65.0
+      ],
+      "Died": [
+        55.0,
+        72.0
+      ]
+    },
+    "creatinine_phosphokinase": {
+      "No death": [
+        115.0,
+        582.0
+      ],
+      "Died": [
+        124.0,
+        582.0
+      ]
+    },
+    "ejection_fraction": {
+      "No death": [
+        35.0,
+        45.0
+      ],
+      "Died": [
+        25.0,
+        40.0
+      ]
+    },
+    "platelets": {
+      "No death": [
+        218500.0,
+        300750.0
+      ],
+      "Died": [
+        198000.0,
+        314000.0
+      ]
+    },
+    "serum_creatinine": {
+      "No death": [
+        0.9,
+        1.2
+      ],
+      "Died": [
+        1.1,
+        1.9
+      ]
+    },
+    "serum_sodium": {
+      "No death": [
+        135.0,
+        140.0
+      ],
+      "Died": [
+        132.0,
+        138.0
+      ]
+    }
+  }
+}

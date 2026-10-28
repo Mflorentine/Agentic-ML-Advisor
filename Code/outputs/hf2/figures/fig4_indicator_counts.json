@@ -1,0 +1,11 @@
+{
+  "rows": "training patients only",
+  "n_train": 239,
+  "count_value_1": {
+    "anaemia": 101,
+    "diabetes": 99,
+    "high_blood_pressure": 85,
+    "sex": 160,
+    "smoking": 78
+  }
+}

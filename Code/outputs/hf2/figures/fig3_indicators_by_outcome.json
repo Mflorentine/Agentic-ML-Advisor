@@ -1,0 +1,67 @@
+{
+  "rows": "training patients only",
+  "n_train": 239,
+  "share_died_all": 0.32217573221757323,
+  "by_input": {
+    "anaemia": {
+      "0": {
+        "patients": 138,
+        "deaths": 39,
+        "share_died": 0.2826086956521739
+      },
+      "1": {
+        "patients": 101,
+        "deaths": 38,
+        "share_died": 0.37623762376237624
+      }
+    },
+    "diabetes": {
+      "0": {
+        "patients": 140,
+        "deaths": 45,
+        "share_died": 0.32142857142857145
+      },
+      "1": {
+        "patients": 99,
+        "deaths": 32,
+        "share_died": 0.32323232323232326
+      }
+    },
+    "high_blood_pressure": {
+      "0": {
+        "patients": 154,
+        "deaths": 44,
+        "share_died": 0.2857142857142857
+      },
+      "1": {
+        "patients": 85,
+        "deaths": 33,
+        "share_died": 0.38823529411764707
+      }
+    },
+    "sex": {
+      "0": {
+        "patients": 79,
+        "deaths": 27,
+        "share_died": 0.34177215189873417
+      },
+      "1": {
+        "patients": 160,
+        "deaths": 50,
+        "share_died": 0.3125
+      }
+    },
+    "smoking": {
+      "0": {
+        "patients": 161,
+        "deaths": 53,
+        "share_died": 0.32919254658385094
+      },
+      "1": {
+        "patients": 78,
+        "deaths": 24,
+        "share_died": 0.3076923076923077
+      }
+    }
+  }
+}

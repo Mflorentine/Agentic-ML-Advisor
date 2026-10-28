@@ -160,7 +160,25 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 
 ## Analysis
 
-*The workings, one sub-heading per sub-task, added as steps 3 and 4 proceed: exploration of the training data, cross-validation tables, learning curves, diagnostics, error analysis, checks that changed nothing, and anything computed but not reported.*
+### Sub-task 1 — Death during follow-up
+
+**Step 3: training data only (239 patients).** Nothing in this step read the 60 test rows. `Code/hf2/core.py` `training_data()` keeps only `train_idx` from `Code/outputs/hf2/split.json` and asserts that no test index is kept. Every figure script reads the data through it.
+
+- **Input design (DR-08):** all 11 inputs as recorded. The natural log of `creatinine_phosphokinase` and `serum_creatinine`, and the log of those two plus `platelets`, were offered without a recommendation and not taken.
+- **P9 and P10 (DR-09)** were computed by `Code/hf2/core.py` (SHA-256 `2e4b01c3…6e85789f`) after the user had seen the script.
+  - P9 = no: logistic regression with C = 1e8 classifies 184 of 239 training patients correctly.
+  - P10 = balanced: 77 deaths of 239 (32.2 %).
+  - The P9 fit is not a candidate model, and its result is not interpreted.
+- **Figures:** four were proposed and the user chose all four. Colours by variable: green for all training patients (Figures 1 and 4); blue for no death and orange for died (Figure 2); orange shades for the share who died by 0/1 value (Figure 3); grey for the overall share.
+- **One revision before the figures entered the report:**
+  - In Figures 1 and 2 the platelet axis printed in scientific notation ("2e+05"); it now prints plain numbers for values of 10,000 and above.
+  - In Figure 3 the label of the overall-share line overlapped the smoking bars; the line is now named in the legend.
+  - Output sizes, which the tight bounding box did not enlarge: Figure 1 3,030 × 1,765; Figure 2 3,031 × 1,863; Figure 3 2,632 × 1,374; Figure 4 2,433 × 1,179 pixels.
+- **Counts behind the figures, training patients only** (`Code/outputs/hf2/figures/*.json`):
+  - medians by outcome (no death / died): age 60 / 65; ejection fraction 38 / 30; serum creatinine 1.0 / 1.3; serum sodium 137 / 135; creatinine phosphokinase 246.5 / 258; platelets 258,000 / 244,000;
+  - share who died by 0/1 value: anaemia 0.28 / 0.38; diabetes 0.32 / 0.32; high blood pressure 0.29 / 0.39; sex 0.34 / 0.31; smoking 0.33 / 0.31.
+
+  These are recorded as counts, not findings (P8 stays unknown).
 
 ## Decision Records
 
@@ -434,7 +452,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Confidence:** n/a
 - **Outcome vs expectation:** n/a
 - **User involvement:** asked — quoted above
-- **Supersedes / superseded by:** n/a
+- **Supersedes / superseded by:** superseded by DR-09 (P9 and P10 added in step 3; P1–P8 unchanged)
 - **Links:** `Code/hf2_02_split.py`, `Code/outputs/hf2/split.json`
 
 ### DR-07 · SPLIT · step 2
@@ -485,6 +503,112 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/hf2_02_split.py`, `Code/outputs/hf2/split.json`, `Code/outputs/split.json` (read only)
 
+### DR-08 · FORM · step 3
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** What is the input design: is any of the 11 inputs transformed before modelling?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Inputs | the 11 clinical columns; `time` not an input (step 1) | M | DR-05 |
+| Documented ranges | `creatinine_phosphokinase` 23–7,861 mcg/L; `serum_creatinine` 0.50–9.40 mg/dL; `platelets` 25.01–850.00 (paper's unit); `serum_sodium` 114–148; `ejection_fraction` 14–80 % | M | Chicco and Jurman (2020), Table 1 |
+| User's answer | "All as recorded", chosen from three options without a recommendation | M | user, 28 October 2026 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Input design (§9) | decided with the user from meanings and documented ranges, not from the data | [B p.18] | not a configuration axis; not chosen by CV |
+| Start simple | no transformation | [B p.331] | inputs used as recorded |
+| REQ-6 | the five 0/1 indicators one-hot encoded | [B p.49] | one column each (one level dropped) |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| n/a | | |
+
+- **Options considered:** all as recorded · natural log of `creatinine_phosphokinase` and `serum_creatinine` · log of those two and `platelets`
+- **Expectation:** n/a
+- **Decision:** All 11 inputs are used as recorded, with no transformation. The five indicators are single 0/1 columns and the six numerical inputs are unchanged. Scaling is added only by the families that need it (REQ-2, REQ-3), inside the folds (REQ-1).
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "All as recorded"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/hf2/core.py` (`preprocessor`, interpretation a)
+
+### DR-09 · PROP · step 3
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** What are the property values P1–P10, now that P9 and P10 have been computed from the training patients?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| P1 output type | binary | M | DR-05 |
+| P2 data-to-parameter ratio | ample (239 ÷ (11 + 1) = 19.92) | M | `Code/outputs/hf2/split.json` |
+| P3 number of inputs | few (11 columns after encoding; unchanged by DR-08) | M | `split.json`; `core_p9_p10.json` (`input_columns_after_encoding`: 11) |
+| P4 share of categorical inputs | low (5 ÷ 11 = 45 %) | M | `split.json` |
+| P5 interpretability | none | M | user: "Not needed" |
+| P6 probabilities or threshold | yes, not a must-have | M | user: "Yes, nice to have" |
+| P7 beyond training range | no | M | user: "No" |
+| P8 expected shape | unknown | M | user: "I have no expectation" |
+| P9 classes perfectly separable | no: logistic regression with C = 1e8 classifies 184 of 239 training patients correctly (accuracy 0.7699; 55 misclassified; 6 iterations, no convergence warning) | T | `Code/outputs/hf2/core_p9_p10.json` |
+| P10 class imbalance | balanced: smallest class share 0.3222 (77 of 239 deaths) | T | `Code/outputs/hf2/core_p9_p10.json` |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| P2 | ample | [I] | no P2 entry in the matrix |
+| P3 | few | [I] | no P3 entry |
+| P4 | low | [I] | no P4 entry |
+| P6 = yes (not a must-have) | applies | [B→I pp.50, 53–54] | +1 on Logistic in the prior (§13) |
+| P9 | no | [I] | MOD-1 does not apply (step 4a) |
+| P10 | balanced | [I] | the diagnosis loop uses the book's default error, the misclassification rate (§16), although PR-AUC decides between models |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | 19.92 |
+| P3 many inputs | > 20 | 11 |
+| P4 high categorical share | ≥ 50 % | 45 % |
+| P9 separable | 100 % training accuracy with negligible regularisation (C = 1e8) | 76.99 % (184 of 239) |
+| P10 imbalanced | smallest class < 20 % | 32.22 % |
+
+- **Options considered:** n/a
+- **Expectation:** n/a
+- **Decision:** P1 binary · P2 ample · P3 few · P4 low · P5 none · P6 yes (not a must-have) · P7 no · P8 unknown · P9 no · P10 balanced. The P9 fit only establishes a property: it is not a candidate model, and its result is not interpreted as a finding.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | |
+
+**Reference code**
+
+- Function: `p9_p10` in `Code/hf2/core.py` (interim core, not reviewed) · version SHA-256 `2e4b01c3d733bb4f410fb8daaf3bd03512671ba57e0ef30c321be73b6e85789f` · inputs: the 239 training rows (`Code/outputs/hf2/split.json` `train_idx`), DR-08 input design · output: `Code/outputs/hf2/core_p9_p10.json`, copied unchanged
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — the user saw the core before it ran and chose "Run it"
+- **Supersedes / superseded by:** supersedes DR-06
+- **Links:** `Code/hf2/core.py`, `Code/outputs/hf2/core_p9_p10.json`
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -505,6 +629,10 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 8 | Step 2, formulation. Missing a death is worse. PR-AUC (average precision) is the deciding metric; F2, precision and recall are monitored at a threshold tuned after selection. Baseline: flag nobody. Success: test PR-AUC minus its fold SD above the test share of deaths. Achievable level unknown. P5 none, P6 yes (not a must-have), P7 no, P8 unknown ("I have no expectation"). | DR-05, DR-06 |
 | 9 | Step 2, split. The user chose to reuse the earlier analysis's test set over a new split. `hf2_02_split.py` read the earlier `split.json` (unchanged), checked its checksum, settings and partition, and wrote this rerun's own split: 239 training (77 deaths) and 60 test (19 deaths). P2 = ample (19.92), P3 = few (11), P4 = low (45 %). Test set locked. The `Data Summary` statement that the earlier outputs are "not read" was amended to name this exception. | `Code/hf2_02_split.py`, `Code/outputs/hf2/split.json`, DR-06, DR-07 |
 | 10 | Step 2. Problem, approach and sub-task written into the `Introduction` of `Report.md`, with the works it cites in its `References`. The book entry was added to the appendix's `References` first; the link was checked on 28 October 2026. | `Report.md` |
+| 11 | Step 2 closed: the user moved on to step 3. Items listed at the close and not taken up: the threshold trade-off (to be confirmed at 4f); input transformations (settled in step 3, row 12); a second sub-task. | — |
+| 12 | Step 3, input design. Three options were offered without a recommendation (as recorded; log of CPK and serum creatinine; log of those and platelets), and the user chose "All as recorded". | DR-08 |
+| 13 | Step 3. Interim core `Code/hf2/core.py` written (input design, §11 P9 and P10) and shown to the user before it ran ("Run it"). P9 = no (184 of 239 correct with C = 1e8); P10 = balanced (32.2 %). New PROP record supersedes DR-06. | `Code/hf2/core.py`, `Code/outputs/hf2/core_p9_p10.json`, DR-09 |
+| 14 | Step 3, figures. Four were proposed and the user chose all four: numerical input distributions, numerical inputs by outcome, share who died by yes/no input, and yes/no input counts. One revision (platelet axis format; overlapping line label) before they were added to `Results` with captions and notes on how to read Figures 2 and 3. | `Code/hf2_03_fig1_input_distributions.py` … `hf2_06_fig4_indicator_counts.py`, `Code/outputs/hf2/figures/` (+ `dark/`), `Report.md` |
 
 ## Code Summary
 
@@ -514,6 +642,11 @@ All scripts run from `Code/` with `uv run python <script>.py`. Names start with 
 | --- | --- | --- | --- | --- |
 | `Code/hf2_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 and checks it against `SOURCE.md`. Describes each column: meaning, unit and type from the UCI variable table, the paper's range, distinct values, percentiles, zeros, non-integer values and 0/1 counts. Counts duplicates, class counts, row order and `time` by `DEATH_EVENT`. Draws no conclusions. | `Attachments/heart_failure_clinical_records_dataset.csv` | `Code/outputs/hf2/01_describe.json`, `01_describe.md` | none |
 | `Code/hf2_02_split.py` | Step 2 split. Reuses the earlier analysis's training and test row indices (user's choice), after checking that file's source checksum, its settings and that the indices partition the 299 rows. Records this rerun's input design (11 inputs, `time` set aside), the class counts recomputed from the data, and P2–P4 with their `[I]` thresholds as named constants. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/split.json` (earlier analysis; read only) | `Code/outputs/hf2/split.json` | the source split's seed 2026 and fraction 0.2 are checked, not set |
+| `Code/hf2/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far: the input design of DR-08 (`preprocessor`: six numerical inputs passed through, five 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 239 `train_idx` rows only, asserting that no test row is kept), and §11 P9 and P10 (`p9_p10`). The header lists interpretations a–d. §12–§19 are added before step 4b. Run: `uv run python hf2/core.py p9p10`. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/hf2/split.json` | `Code/outputs/hf2/core_p9_p10.json` | `[I]` constants `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `DEFAULT_THRESHOLD = 0.5`; `LOGISTIC_MAX_ITER = 100000` |
+| `Code/hf2_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, both outcomes together. One bar per value for ejection fraction and sodium, 1-year bins for age, 40 equal-width bins for the rest. Light and dark versions. | training patients via `core.training_data()` | `Code/outputs/hf2/figures/fig1_input_distributions.png` (+ `dark/`), `.json` | `BINS = 40`, `FIGSIZE = (15, 9)` |
+| `Code/hf2_04_fig2_inputs_by_outcome.py` | Figure 2: box plot per outcome group for each numerical input, with every patient as a jittered point. | same | `fig2_inputs_by_outcome.png` (+ `dark/`), `.json` (group sizes, medians, quartiles) | `JITTER_SEED = 2026` (sideways position only) |
+| `Code/hf2_05_fig3_indicators_by_outcome.py` | Figure 3: share who died among patients with each yes/no input = 0 and = 1, with deaths/patients labels and the overall share as a reference line. | same | `fig3_indicators_by_outcome.png` (+ `dark/`), `.json` | none |
+| `Code/hf2_06_fig4_indicator_counts.py` | Figure 4: number of training patients with each yes/no input = 1. | same | `fig4_indicator_counts.png` (+ `dark/`), `.json` | none |
 
 ## References
 

@@ -1,0 +1,60 @@
+{
+  "rows": "training patients only",
+  "n_train": 239,
+  "panels": {
+    "age": {
+      "patients": 239,
+      "distinct": 46,
+      "min": 40.0,
+      "median": 60.0,
+      "max": 95.0,
+      "bars": "1-year bins centred on whole years",
+      "unit": "years"
+    },
+    "creatinine_phosphokinase": {
+      "patients": 239,
+      "distinct": 171,
+      "min": 23.0,
+      "median": 250.0,
+      "max": 7861.0,
+      "bars": "40 equal-width bins from min to max",
+      "unit": "mcg/L"
+    },
+    "ejection_fraction": {
+      "patients": 239,
+      "distinct": 16,
+      "min": 14.0,
+      "median": 38.0,
+      "max": 80.0,
+      "bars": "one per recorded value",
+      "unit": "%"
+    },
+    "platelets": {
+      "patients": 239,
+      "distinct": 151,
+      "min": 25100.0,
+      "median": 255000.0,
+      "max": 850000.0,
+      "bars": "40 equal-width bins from min to max",
+      "unit": "as recorded"
+    },
+    "serum_creatinine": {
+      "patients": 239,
+      "distinct": 35,
+      "min": 0.6,
+      "median": 1.1,
+      "max": 9.0,
+      "bars": "40 equal-width bins from min to max",
+      "unit": "mg/dL"
+    },
+    "serum_sodium": {
+      "patients": 239,
+      "distinct": 26,
+      "min": 113.0,
+      "median": 137.0,
+      "max": 148.0,
+      "bars": "one per recorded value",
+      "unit": "mEq/L"
+    }
+  }
+}
