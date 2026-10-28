@@ -748,6 +748,75 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_prior.json`, DR-09, DR-10
 
+### DR-12 · CV · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Does the simple-first configuration, `Logistic + L2`, clearly beat the baseline in nested cross-validation (round 1, SEQ-3)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Baseline, outer folds | predicts band 0 in all 10 folds (four-way tie, interpretation u); accuracy 0.25 in every fold | CV | `Code/outputs/mobile/core_cv_round1.json` |
+| `Logistic + L2`, validation accuracy per outer fold | 0.9437, 0.9750, 0.9437, 0.9750, 0.9812, 0.9563, 0.9688, 0.9750, 0.9500, 0.9688 | CV | `Code/outputs/mobile/core_cv_store.json` |
+| `Logistic + L2`, training accuracy per outer fold | 0.9868, 0.9826, 0.9833, 0.9854, 0.9861, 0.9847, 0.9868, 0.9840, 0.9847, 0.9861 | CV | `Code/outputs/mobile/core_cv_store.json` |
+| Convergence | all 10 outer refits converged | CV | `core_cv_round1.json` (`not_converged_folds`: 0) |
+| REQ-1, REQ-3, REQ-6 in the pipeline | `design` (DR-08 encoding) → `scale` (StandardScaler) → `m` (BookLogistic), refitted inside every outer and inner training fold | CV | `core_cv_store.json` (`pipeline`) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| SEQ-3 | round 1 = baseline and the simple-first configuration only | [B pp.331–332] | — |
+| §16 nested CV | 10 outer × 5 inner, stratified by `price_range`, seed 2026; tuned on accuracy | [B pp.72–73]; [I] | — |
+| C2 (`Logistic + L2` vs baseline) | margin 0.7138 ≥ 1 × spread 0.0141 → clear | [I] | round 2 may proceed; DX-1 is not triggered |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear | margin ≥ 1 × spread | 0.7138 vs 0.0141 |
+| Outer / inner folds | 10 / 5 | — |
+
+**CV table** (outer 10, inner 5; stratified by `price_range`; seed 2026; metric: accuracy)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean accuracy | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7138 (0.0141) | — | 0.7500 | 0.7500 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10 folds) | 0.9638 | 0.0141 | — (leader) | +0.7138 (0.0141), C2 clear | 0.0149 | 0.0363 |
+
+**Monitoring (§5.5 note): pooled outer-validation confusion matrix, `Logistic + L2`.** Rows are the true band and columns the predicted band, in the order 0, 1, 2, 3.
+
+| True \ predicted | 0 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- |
+| 0 | 391 | 9 | 0 | 0 |
+| 1 | 10 | 380 | 10 | 0 |
+| 2 | 0 | 12 | 377 | 11 |
+| 3 | 0 | 0 | 6 | 394 |
+
+Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every misclassified phone lies in a neighbouring band. These figures are reported and not used in any decision.
+
+- **Options considered:** baseline, `Logistic + L2`
+- **Expectation:** n/a (the expectation is in DR-11 and is tested in round 2)
+- **Decision:** `Logistic + L2` clearly beats the baseline (C2 clear), so round 2 (4d) proceeds with `kNN`, `Tree` and `Logistic + poly + L2` on the same folds. The tuned λ is the smallest value in the grid in all 10 folds. This is noted for the diagnosis loop (O5, §18), and no action is taken before 4e.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | not a selection; why-not codes are assigned in `FINAL` |
+
+**Reference code**
+
+- Function: `run_cv` via `cd Code && uv run python mobile/core.py cv round1 mobile/props_dr09.json` · version: interim core, not reviewed, SHA-256 `38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda` (unchanged since DR-11) · inputs: the DR-11 kept list (round 1 = baseline + simple-first), the §16 protocol as agreed in DR-11 · output: `Code/outputs/mobile/core_cv_round1.json` and `core_cv_store.json`, copied above unchanged (rounded to 4 decimals)
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** informed — the user asked to "continue" after the method was agreed in DR-11
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_cv_round1.json`, `Code/outputs/mobile/core_cv_store.json`, DR-11
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -775,6 +844,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 | 15 | Step 3 closed by the user. Three items listed at the close were not taken up: whether to keep Figure 1 as it stands; an expectation for P8 (it stays `unknown`); a figure of the six yes/no inputs. | — |
 | 16 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `c7435f48…`) was shown and approved ("Run it"). Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 removed `Logistic` and `Logistic + poly`; MOD-2 did not apply. | `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_admset.json`, DR-10 |
 | 17 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `38e21eca…`; interpretations i–y), shown to the user before any output was used ("Run the prior"), and the prior ranking was run. All four admissible configurations score 0, and all are kept. The order comes from add-ons only: `kNN` = `Tree`, then `Logistic + L2` (simple-first), then `Logistic + poly + L2`. The expectation recorded is that the Logistic configurations lead, against the prior order. The method was presented and agreed ("Agree the method"). | `Code/mobile/core.py`, `Code/outputs/mobile/core_prior.json`, DR-11 |
+| 18 | Step 4c, sub-task 1: round 1 run (42 s). Baseline mean CV accuracy 0.2500 (band 0 in every fold); `Logistic + L2` 0.9638 (fold SD 0.0141), with λ = 10⁻⁴ in 10/10 folds. Margin over the baseline 0.7138, spread 0.0141: C2 clear, so round 2 may proceed. λ at the grid edge is noted for 4e. | `Code/outputs/mobile/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
 
 ## Code Summary
 

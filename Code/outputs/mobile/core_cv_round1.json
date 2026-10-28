@@ -1,0 +1,114 @@
+{
+  "core_version_sha256": "38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda",
+  "round": "round1",
+  "added": [
+    "Baseline (most common class)",
+    "Logistic + L2"
+  ],
+  "table": {
+    "metric": "accuracy",
+    "leader": "Logistic + L2",
+    "rows": [
+      {
+        "configuration": "Baseline (most common class)",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": "n/a",
+        "cv_mean_accuracy": 0.25,
+        "fold_sd_accuracy": 0.0,
+        "e_train": 0.75,
+        "e_val": 0.75,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            400,
+            0,
+            0,
+            0
+          ],
+          [
+            400,
+            0,
+            0,
+            0
+          ],
+          [
+            400,
+            0,
+            0,
+            0
+          ],
+          [
+            400,
+            0,
+            0,
+            0
+          ]
+        ],
+        "recall_per_band": {
+          "0": 1.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0
+        },
+        "margin_vs_leader": {
+          "mean": -0.71375,
+          "spread": 0.01406828584677844
+        }
+      },
+      {
+        "configuration": "Logistic + L2",
+        "post_prior": false,
+        "round": "round1",
+        "tuned_hyperparameters": {
+          "params": {
+            "m__lam": 0.0001
+          },
+          "folds": "10/10"
+        },
+        "cv_mean_accuracy": 0.9637499999999999,
+        "fold_sd_accuracy": 0.01406828584677844,
+        "e_train": 0.014930555555555535,
+        "e_val": 0.03625000000000002,
+        "not_converged_folds": 0,
+        "confusion_pooled": [
+          [
+            391,
+            9,
+            0,
+            0
+          ],
+          [
+            10,
+            380,
+            10,
+            0
+          ],
+          [
+            0,
+            12,
+            377,
+            11
+          ],
+          [
+            0,
+            0,
+            6,
+            394
+          ]
+        ],
+        "recall_per_band": {
+          "0": 0.9775,
+          "1": 0.95,
+          "2": 0.9425,
+          "3": 0.985
+        },
+        "margin_vs_baseline": {
+          "mean": 0.71375,
+          "spread": 0.01406828584677844,
+          "C2": "clear"
+        }
+      }
+    ]
+  }
+}
