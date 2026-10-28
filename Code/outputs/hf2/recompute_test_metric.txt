@@ -1,0 +1,7 @@
+test rows: 60; deaths: 19; share of deaths: 0.3167   (core: 0.3167)
+PR-AUC (average precision, by definition): 0.698290   (core: 0.698290)
+baseline (flag nobody) PR-AUC = share of deaths: 0.3167   (core: 0.3167)
+threshold r = 0.1: tn 8, fp 33, fn 3, tp 16   (core: {'tn': 8, 'fp': 33, 'fn': 3, 'tp': 16})
+precision 0.3265, recall 0.8421, F2 0.6400   (core: 0.3265, 0.8421, 0.6400)
+success: 0.6983 - 0.0938 = 0.6045 > 0.3167: True
+agrees with core: True

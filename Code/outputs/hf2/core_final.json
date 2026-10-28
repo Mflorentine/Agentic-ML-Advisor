@@ -1,0 +1,35 @@
+{
+  "core_version_sha256": "93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a",
+  "approved_by_user": "1 (Approve the test evaluation (4g)), 28 October 2026",
+  "configuration": "Logistic",
+  "hyperparameters": {
+    "m__lam": null
+  },
+  "dropped_inputs": [],
+  "threshold": 0.1,
+  "n_test": 60,
+  "test_positives": 19,
+  "test_pr_auc": 0.6982898359506486,
+  "test_positive_rate": 0.31666666666666665,
+  "baseline_test_pr_auc": 0.31666666666666665,
+  "uncertainty_fold_sd_pr_auc": 0.09380728000721275,
+  "success_criterion": {
+    "rule": "test PR-AUC - fold SD of PR-AUC > test share of deaths (DR-05)",
+    "value": 0.6044825559434359,
+    "share_of_deaths": 0.31666666666666665,
+    "met": true
+  },
+  "at_threshold": {
+    "fbeta": 0.64,
+    "beta": 2.0,
+    "precision": 0.32653061224489793,
+    "recall": 0.8421052631578947,
+    "flagged": 49
+  },
+  "confusion_test": {
+    "tn": 8,
+    "fp": 33,
+    "fn": 3,
+    "tp": 16
+  }
+}
