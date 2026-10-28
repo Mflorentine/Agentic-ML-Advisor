@@ -672,6 +672,82 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_admset.json`, DR-09
 
+### DR-11 · PRIOR · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Which admissible configurations should be cross-validated, and in what expected order?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Admissible set | `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree` | T | DR-10; `Code/outputs/mobile/core_admset.json` |
+| P1 output type | multiclass | M | DR-09 |
+| P2 data-to-parameter ratio | ample (76.19) | M | DR-09 |
+| P3 number of inputs | few (20, on the threshold) | M | DR-09 |
+| P4 share of categorical inputs | low (30 %) | M | DR-09 |
+| P5 interpretability | none | M | DR-09; user: "Not needed" |
+| P6 probabilities or threshold | no | M | DR-09; user: "No" |
+| P7 beyond training range | no | M | DR-09; user: "No" |
+| P8 expected shape | unknown | M | DR-09; user: "I have no expectation" |
+| P9, P10 | yes, balanced (no row in the §13 matrix) | T | DR-09 |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §13 matrix, all 29 entries | none applies: no property takes a value with a matrix entry (P2 ample, P3 few, P4 low, P5 none, P6 no, P7 no, P8 unknown; P1 multiclass has no entry) | — | every admissible configuration scores 0 |
+| §15 order | score, then fewer add-ons; ties share a rank | [I] (§15 procedure) | `kNN` and `Tree` rank 1 (0 add-ons); `Logistic + L2` rank 3 (1); `Logistic + poly + L2` rank 4 (2) |
+| SEQ-1 | baseline = most common training class | [B pp.330–331] | kept |
+| SEQ-2 | simple-first = `Logistic + L2` (`Logistic` removed by MOD-1, DR-10) | [B p.331] | kept |
+| §15 keep | simple-first + 3 highest-ranked others (+ ties) | [I] | `kNN`, `Tree`, `Logistic + poly + L2` kept, i.e. the whole admissible set |
+| SEQ-3 | round 1 = baseline and `Logistic + L2`; round 2 only once `Logistic + L2` clearly beats the baseline | [B pp.331–332] | sets the order of 4c and 4d |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | 76.19 |
+| P3 many inputs | > 20 | 20 |
+| P4 high categorical share | ≥ 50 % | 30 % |
+| Kept besides baseline and simple-first | 3 (+ ties) | 3 others admissible |
+
+- **Options considered:** `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree`
+- **Expectation:** The prior carries no information here: all four scores are 0, and its order (`kNN` = `Tree` > `Logistic + L2` > `Logistic + poly + L2`) comes only from the add-on tie-break. The advisor's own expectation, which is ours and not the prior's `[I]`, is that `Logistic + L2` and `Logistic + poly + L2` will lead the cross-validation, with `kNN` and `Tree` behind. The reason is that P9 = yes: a linear boundary separates all 1,600 training phones, so a linear classifier, with L2 to counter the overfitting that separability invites (p. 61), looks well suited. If this holds, the CV order will disagree with the prior order. The expectation is recorded so that the disagreement can be seen, not explained away.
+- **Decision:** Cross-validate the baseline and `Logistic + L2` in round 1, then `kNN`, `Tree` and `Logistic + poly + L2` in round 2, on the same folds. Prior order: `kNN` = `Tree` (rank 1), `Logistic + L2` (rank 3), `Logistic + poly + L2` (rank 4).
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = multiclass (DR-10) |
+| `Logistic`, `Logistic + poly` | EXCL | MOD-1, P9 = yes (DR-10) |
+
+**Cross-validation protocol agreed (§16)**
+
+- **Outer folds:** 10, stratified by `price_range`, shuffled, seed 2026. The same folds are used for every configuration, and the fold of each phone is stored with the checksums of `train.csv` and `split.json`.
+- **Inner folds:** 5-fold grid search within each outer training fold, on accuracy. The grids are:
+  - λ ∈ {10⁻⁴, …, 10⁴};
+  - polynomial degree ∈ {2, 3};
+  - k ∈ {1, 3, 5, 7, 9, 15, 21, 31, 51};
+  - tree max depth ∈ {1, 2, 3, 4, 5, 6, 8, 10, 15, 20} × minimum leaf size ∈ {1, 5, 10, 20}.
+- **Deciding metric:** accuracy. Margins are means of fold differences, and the spread is the SD of those differences.
+- **Monitored (§5.5 note):** the 4 × 4 confusion matrix per outer validation fold, pooled, and recall per band. These are not used in any decision.
+- **Diagnosis errors:** the misclassification rate (P10 = balanced).
+- **Decision threshold:** none (P6 = no).
+- **Flags:** none. Ordinal regression (§23, not covered in chapters 2–4) is noted as outside the solution space. It becomes a `FLAG` only if evidence in the diagnosis loop suggests it might help.
+
+**Reference code**
+
+- Function: `prior_ranking` (`cd Code && uv run python mobile/core.py prior mobile/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda`. It was extended for 4b from `c7435f48…` with §13–§19 and interpretations i–y; `p9_p10` and `admissible_set` are unchanged, so DR-09 and DR-10 stay valid · inputs: DR-09 property values in `Code/mobile/props_dr09.json`; the admissible set recomputed by `admissible_set` (identical to DR-10) · output: `Code/outputs/mobile/core_prior.json`, copied above unchanged
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** pending (round-2 `CV` record)
+- **User involvement:** approved — the user saw the §13–§19 extension before any output was used ("Run the prior"), and then agreed the method: "Agree the method"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_prior.json`, DR-09, DR-10
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -698,6 +774,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 | 14 | Step 3, figures. Four were proposed and the user chose Figure 1 (distributions of the 14 numerical inputs) only. Two binning versions were replaced because of artefacts (see `Analysis`). Figure 1 was added to `Results` with a caption and a paragraph on how to read it. | `Code/mobile_03_fig1_input_distributions.py`, `Code/outputs/mobile/figures/fig1_input_distributions.png` (+ `dark/`), `Report.md` |
 | 15 | Step 3 closed by the user. Three items listed at the close were not taken up: whether to keep Figure 1 as it stands; an expectation for P8 (it stays `unknown`); a figure of the six yes/no inputs. | — |
 | 16 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `c7435f48…`) was shown and approved ("Run it"). Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 removed `Logistic` and `Logistic + poly`; MOD-2 did not apply. | `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_admset.json`, DR-10 |
+| 17 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `38e21eca…`; interpretations i–y), shown to the user before any output was used ("Run the prior"), and the prior ranking was run. All four admissible configurations score 0, and all are kept. The order comes from add-ons only: `kNN` = `Tree`, then `Logistic + L2` (simple-first), then `Logistic + poly + L2`. The expectation recorded is that the Logistic configurations lead, against the prior order. The method was presented and agreed ("Agree the method"). | `Code/mobile/core.py`, `Code/outputs/mobile/core_prior.json`, DR-11 |
 
 ## Code Summary
 
@@ -707,7 +784,7 @@ All scripts run from `Code/` with `uv run python <script>.py`. Script names star
 | --- | --- | --- | --- | --- |
 | `Code/mobile_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 of both files and checks them against `SOURCE.md`. Describes each column (meaning and unit from Kaggle's descriptions, range, percentiles, zeros, 0/1 counts). Counts duplicates, conflicting targets, class counts, row order and selected value combinations, and compares `test.csv` with `train.csv`. Draws no conclusions. | `Attachments/Mobile Price/train.csv`, `test.csv` | `Code/outputs/mobile/01_describe.json`, `01_describe.md` | none |
 | `Code/mobile_02_split.py` | Step 2 split. Shuffled, stratified 80 / 20 split of `train.csv` by `price_range`. Records the row indices of each part, their class counts, the input design (categorical and numerical inputs) and P2–P4 with their `[I]` thresholds as named constants. After it runs, the test indices are locked until step 4g. | `Attachments/Mobile Price/train.csv` | `Code/outputs/mobile/split.json` (indices and counts, no data values) | `SEED = 2026`, `TEST_FRACTION = 0.2` |
-| `Code/mobile/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far it holds the input design of DR-08 (`preprocessor`: 14 numerical inputs passed through, six 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 1,600 `train_idx` rows only, with an assertion that no test row is kept), §11 P9 and P10 (`p9_p10`), and, from step 4a, §9 and §12: the 14 configurations, the task gate, the must-have gates, MOD-1 and MOD-2 (`admissible_set`, `mod2_check`). The header lists interpretations a–h. §13–§19 are added before step 4b. Run: `uv run python mobile/core.py p9p10`; `uv run python mobile/core.py admset mobile/props_dr09.json`. | `Attachments/Mobile Price/train.csv`, `Code/outputs/mobile/split.json`, `Code/mobile/props_dr09.json` (the DR-09 property values) | `Code/outputs/mobile/core_p9_p10.json`, `Code/outputs/mobile/core_admset.json` | `[I]` constants: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`; `LOGISTIC_MAX_ITER = 100000` |
+| `Code/mobile/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far it holds the input design of DR-08 (`preprocessor`: 14 numerical inputs passed through, six 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 1,600 `train_idx` rows only, with an assertion that no test row is kept), §11 P9 and P10 (`p9_p10`). From step 4a it adds §9 and §12: the 14 configurations, the task gate, the must-have gates, MOD-1 and MOD-2 (`admissible_set`, `mod2_check`). From step 4b it adds the rest: §13–§15 prior ranking (`prior_ranking`); §16 nested CV with a cumulative store (`run_cv`, `nested_cv`, `baseline_cv`, `cv_table`; pooled confusion matrices and recall per band); §18 observations and the learning curve (`observations`, `learning_curve`); §17/§19/§20 recommendation, confidence and why-not codes (`recommend`); and §19.4 the single test evaluation (`final`), the only function that reads the test rows. `final` needs the user's approval on the command line, and refuses a second run or a changed core. The header lists interpretations a–y. Commands: `p9p10`; `admset`, `prior`, `cv round1`, `cv round2` and `recommend`, each with `mobile/props_dr09.json`; `cv add "<configuration>" [--drop COL] [--grid JSON] [--label TEXT]`; `diagnose "<entry>"`; `final --approved "<words>"`. | `Attachments/Mobile Price/train.csv`, `Code/outputs/mobile/split.json`, `Code/mobile/props_dr09.json` (the DR-09 property values) | `Code/outputs/mobile/core_p9_p10.json`, `core_admset.json`, `core_prior.json`. Later: `core_cv_store.json`, `core_cv_round1.json`, `core_cv_round2.json`, `core_cv_post_prior_N.json`, `core_diagnose_*.json`, `core_recommend.json`, `core_final.json`, `core_test_predictions.csv` | `[I]` constants as named in the file: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `KEEP_TOP_OTHERS = 3`, `OUTER_FOLDS = 10`, `INNER_FOLDS = 5`, `C1_CLEAR = 1.0`, `C1_MODERATE = 0.5`, `C2_CLEAR = 1.0`, `C3_FALLING = 0.5`, `WITHIN_NOISE = 0.5`, `BREADTH_MANY = 10`, `O3_RATIO = O4_RATIO = 2.0`, `O5_MOST_FOLDS = 0.5`; grids `GRID_DEGREE`, `GRID_K`, `GRID_DEPTH`, `GRID_MIN_LEAF`, `GRID_LAMBDA` (§16); `CV_SEED = 2026`; `LOGISTIC_MAX_ITER = 100000` |
 | `Code/mobile_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, all bands together. One bar per value for inputs with up to 130 distinct values; 40 equal-width bins from min − 0.5 to max + 0.5 for the rest. Light and dark versions. Uses `viz_style.py`, with `FIGURES` set to the Mobile Price folder. | the training phones, via `core.training_data()` | `Code/outputs/mobile/figures/fig1_input_distributions.png`, `dark/fig1_input_distributions.png`, `fig1_input_distributions.json` (per panel: phones, distinct values, min, max, zeros, bars) | `BINS = 40`, `DISCRETE_MAX = 130`, `FIGSIZE = (16, 14)` |
 
 ## References
