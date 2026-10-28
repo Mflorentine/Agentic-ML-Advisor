@@ -1305,6 +1305,62 @@ These margins describe what the cross-validated model loses without each input, 
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/mobile_05_backward_elimination.py`, `Code/outputs/mobile/backward_elimination.json`, `Code/outputs/mobile/core_cv_store.json`, DR-18
 
+### DR-20 · DX · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Diagnosis pass 3 (§18) on the unchanged leader, `Logistic + L2 (lambda grid from 1e-8)`: which action is left, and does the loop stop?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Leader | unchanged since pass 2 (no drop kept, DR-19), so its observations are those of DR-18: O3 holds first (gap 0.0233 ≥ 2 × E_train 0.0061) | CV | `Code/outputs/mobile/core_diagnose_Logistic___L2__lambda_grid_from_1e_8_.json` |
+| DX-4 parts | (a) add L2: not applicable (has L2); (b) remove polynomial terms: not applicable (none); (c) backward elimination: run in pass 2, nothing kept (DR-19); (d) ask whether more data is available: needs the user | — | DR-18, DR-19 |
+| User's answer to (d) | "No; stop the loop" | M | user, 28 October 2026 |
+
+**Observation → action**
+
+| Observation | Holds | Test values |
+| --- | --- | --- |
+| O1, O2, O5 | no | as DR-18 |
+| **O3 overfitting** | **yes**, the first that holds | as DR-18 |
+| O4, O6 | no | as DR-18 |
+
+- **Action:** DX-4 part (d): the user was asked whether more labelled data is available. The answer was no.
+
+**Stopping check**
+
+- **S1 (criterion met):** not assessed until 4g.
+- **S2 (achievable level):** unknown (DR-05).
+- **S3 (two consecutive passes without a gain of ≥ 0.5 × spread):** pass 2 gave none (+0.0019 vs 0.0053); pass 3 adds no configuration.
+- **S4 (out of scope):** no; no method outside the solution space is called for.
+- **S5 (user stops it): applies.** "No; stop the loop."
+- **S6 (five passes):** no (three passes).
+- The loop stops under S5.
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| as DR-18 | | |
+
+- **Options considered:** put to the user without a recommendation: no more data, stop the loop (chosen); more data exists
+- **Expectation:** n/a (no configuration action is taken)
+- **Decision:** The diagnosis loop ends under S5 after three passes. 25 configurations have been compared, besides the baseline: the 4 kept by the prior, the λ-extended `Logistic + L2`, and 20 single-input drops of it. The leader is `Logistic + L2 (lambda grid from 1e-8)`. Next is 4f.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "No; stop the loop"
+- **Supersedes / superseded by:** n/a
+- **Links:** DR-18, DR-19
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1339,6 +1395,7 @@ These margins describe what the cross-validated model loses without each input, 
 | 22 | Step 4e, DX-3 run (33 s): `Logistic + L2` with λ ∈ {10⁻⁸ … 10⁴}, post-prior, scores 0.9706 (fold SD 0.0141), against 0.9638. The paired gain is +0.0069, spread 0.0055. λ ranges over 10⁻⁸ to 10⁻⁵ (10⁻⁸ in 2/10 folds). It is the new leader. DR-16 outcome vs expectation: partial (λ moved down as expected; the gain was larger than expected). | `Code/outputs/mobile/core_cv_post_prior_1.json`, DR-16, DR-17 |
 | 23 | Step 4e, pass 2. Diagnosis of the new leader (15 min): O3 (overfitting) holds first, so DX-4 applies. Parts (a) and (b) do not apply. The user chose (c), backward elimination, from three options given without a recommendation; the keep rule is margin ≥ 0.5 × spread [I], and the expectation was written before the run (DR-18). | DR-18 |
 | 24 | Step 4e, backward elimination round 1 (about 11 min, 20 post-prior entries). Best drop `wifi` (0.9725, +0.0019, spread 0.0106) misses the keep rule, so elimination stops and the leader keeps all 20 inputs. DR-18 outcome vs expectation: agree. 25 configurations have been compared, so the breadth note applies. Open point for 4f: §19's CV-mean tie-break would favour the not-kept `wifi` drop. | `Code/mobile_05_backward_elimination.py`, `Code/outputs/mobile/backward_elimination.json`, `core_cv_post_prior_2.json`–`_21.json`, DR-19 |
+| 25 | Step 4e, pass 3. The leader is unchanged, so O3 and DX-4 remain; only part (d) is left. Asked whether more labelled data exists, the user chose "No; stop the loop". The loop ends under S5 after three passes, with 25 configurations compared. Step 4e is done. | DR-20 |
 
 ## Code Summary
 
