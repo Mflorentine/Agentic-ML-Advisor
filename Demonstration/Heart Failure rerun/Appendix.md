@@ -739,6 +739,63 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_prior.json`, DR-09, DR-10
 
+### DR-12 · CV · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** Does the simple-first configuration, `Logistic`, clearly beat the baseline in nested cross-validation (round 1, SEQ-3)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Baseline, validation PR-AUC per outer fold | 0.3333 (7 folds), 0.2917 (2 folds), 0.3043 (1 fold): the fold's share of deaths | CV | `Code/outputs/hf2/core_cv_store.json` |
+| `Logistic`, validation PR-AUC per outer fold | 0.5536, 0.5972, 0.6392, 0.7937, 0.6902, 0.6438, 0.8507, 0.5769, 0.6252, 0.6562 | CV | same |
+| `Logistic`, training PR-AUC per outer fold | 0.7004, 0.6853, 0.6726, 0.6588, 0.6694, 0.6788, 0.6412, 0.6775, 0.6774, 0.6620 | CV | same |
+| Convergence | all 10 outer refits converged (unregularised, C = ∞) | CV | `core_cv_round1.json` (`not_converged_folds`: 0) |
+| REQ-1, REQ-3, REQ-6 in the pipeline | `design` (DR-08 encoding) → `scale` (StandardScaler) → `m` (BookLogistic, C = ∞), refitted inside every training fold | CV | `core_cv_store.json` (`pipeline`) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| SEQ-3 | round 1 = baseline and the simple-first configuration only | [B pp.331–332] | — |
+| §16 nested CV | 10 outer × 5 inner, stratified by `DEATH_EVENT`, seed 2026; PR-AUC | [B pp.72–73]; [I] | — |
+| C2 (`Logistic` vs baseline) | margin 0.3406 ≥ 1 × spread 0.0892 → clear | [I] | round 2 may proceed; DX-1 is not triggered |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear | margin ≥ 1 × spread | 0.3406 vs 0.0892 |
+
+**CV table** (outer 10, inner 5; stratified by `DEATH_EVENT`; seed 2026; metric: PR-AUC as average precision; diagnosis errors: misclassification rate at r = 0.5)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean PR-AUC | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (flag nobody) | no | n/a | 0.3221 | 0.0184 | −0.3406 (0.0892) | — | 0.3222 | 0.3221 |
+| `Logistic` | no | none (unregularised; 10/10) | 0.6627 | 0.0938 | — (leader) | +0.3406 (0.0892), clear | 0.2329 | 0.2848 |
+
+- **Options considered:** baseline, `Logistic`
+- **Expectation:** n/a (the expectation is in DR-11 and is tested in round 2)
+- **Decision:** `Logistic` clearly beats the baseline (C2 clear), so round 2 (4d) proceeds with `Logistic + L2`, `Logistic + poly` and `Logistic + poly + L2` on the same folds.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | not a selection; why-not codes are assigned in `FINAL` |
+
+**Reference code**
+
+- Function: `run_cv` via `cd Code && uv run python hf2/core.py cv round1 hf2/props_dr09.json` · version: interim core, not reviewed, SHA-256 `93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a` (unchanged since DR-11) · output: `Code/outputs/hf2/core_cv_round1.json`, `core_cv_store.json`, copied above unchanged (rounded to 4 decimals); run time 20 s
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "continue step 4 with the method agreed in DR-11"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/outputs/hf2/core_cv_round1.json`, `Code/outputs/hf2/core_cv_store.json`, DR-11
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -767,6 +824,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 16 | Step 3 closed: the user moved on to step 4. Items listed at the close and not taken up: whether to keep the remaining figures as they stand; an expectation for P8 (it stays `unknown`); how the platelet panel is shown, given its uncertain unit. | — |
 | 17 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `77878347…`) was shown and approved ("Run it"). Admissible: `Logistic`, `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 and MOD-2 did not apply. | `Code/hf2/core.py`, `Code/hf2/props_dr09.json`, `Code/outputs/hf2/core_admset.json`, DR-10 |
 | 18 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `93225b44…`; interpretations i–z, including the new §19 rule on input drops and `N_JOBS = 1`) and shown to the user before any output was used ("Run the prior"). Prior: P6=yes→Logistic is the only entry (+1 on all Logistic configurations). Kept: `Logistic` (simple-first), `Logistic + L2`, `Logistic + poly`, `Logistic + poly + L2`; `kNN` and `Tree` are DISF (score 0). The expectation is recorded. The method was presented and agreed ("Agree the method"). | `Code/hf2/core.py`, `Code/outputs/hf2/core_prior.json`, DR-11 |
+| 19 | Step 4c, sub-task 1: round 1 run (20 s). Baseline mean CV PR-AUC 0.3221; `Logistic` 0.6627 (fold SD 0.0938). Margin 0.3406, spread 0.0892: C2 clear, so round 2 may proceed. All refits converged. | `Code/outputs/hf2/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
 
 ## Code Summary
 

@@ -1,0 +1,52 @@
+{
+  "core_version_sha256": "93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a",
+  "round": "round1",
+  "added": [
+    "Baseline (flag nobody)",
+    "Logistic"
+  ],
+  "table": {
+    "metric": "PR-AUC (average precision)",
+    "leader": "Logistic",
+    "rows": [
+      {
+        "configuration": "Baseline (flag nobody)",
+        "post_prior": false,
+        "round": "round1",
+        "dropped_inputs": [],
+        "tuned_hyperparameters": "n/a",
+        "cv_mean_pr_auc": 0.32210144927536233,
+        "fold_sd_pr_auc": 0.01841143864749709,
+        "e_train": 0.32217484926787254,
+        "e_val": 0.32210144927536233,
+        "not_converged_folds": 0,
+        "margin_vs_leader": {
+          "mean": -0.34057883031501734,
+          "spread": 0.08919441911021066
+        }
+      },
+      {
+        "configuration": "Logistic",
+        "post_prior": false,
+        "round": "round1",
+        "dropped_inputs": [],
+        "tuned_hyperparameters": {
+          "params": {
+            "m__lam": null
+          },
+          "folds": "10/10"
+        },
+        "cv_mean_pr_auc": 0.6626802795903798,
+        "fold_sd_pr_auc": 0.09380728000721275,
+        "e_train": 0.23291989664082688,
+        "e_val": 0.28478260869565214,
+        "not_converged_folds": 0,
+        "margin_vs_baseline": {
+          "mean": 0.34057883031501734,
+          "spread": 0.08919441911021066,
+          "C2": "clear"
+        }
+      }
+    ]
+  }
+}
