@@ -1057,6 +1057,105 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** n/a
 - **Links:** DR-14, DR-15
 
+### DR-17 · FINAL · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** Which configuration does the recommendation rule (§19) choose, how confident is the selection (§17), at which decision threshold, and, once the user approves, how does it do on the test set?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| CV results | the CV table of DR-15 (rounds 1, 2 and the DX-5 entries, same folds) | CV | `Code/outputs/hf2/core_cv_store.json` |
+| Diagnosis | loop stopped under S5 after two passes | CV | DR-16 |
+| Threshold trade-off | "F2, as in DR-05", chosen from three options without a recommendation (F2; F3; F1) | M | user, 28 October 2026 |
+| Recommendation | `Logistic` (unregularised, all 11 inputs), decision threshold r = 0.10 | CV | `Code/outputs/hf2/core_recommend.json` |
+| Selection confidence | Low: C1 none (runner-up `Logistic + poly`, margin −0.0437, spread 0.1171); C2 clear (margin over the baseline 0.3406, spread 0.0892); C3 adequate (E_val(80 %) − E_val(100 %) = −0.0335 < 0.5 × 0.0530) | CV | same |
+| Learning curve, E_val mean (fold SD) at 10 % … 100 % | 0.2933 (0.0830), 0.3014 (0.0525), 0.2763 (0.0601), 0.2804 (0.0765), 0.2596 (0.0624), 0.2638 (0.0599), 0.2513 (0.0632), 0.2513 (0.0632), 0.2554 (0.0702), 0.2848 (0.0530) | CV | same |
+| Prior agreement | partial: the CV winner among the prior-kept configurations, `Logistic + poly`, has prior rank 2 | CV | same |
+| Grounding | 1 matrix entry, `[B→I]`: P6=yes→Logistic `[B→I pp.50, 53–54]` | — | same |
+| Selection breadth | 6 configurations compared; the note (> 10) does not apply | — | same |
+| Decision threshold, nested CV (r chosen inside each outer fold) | r per outer fold 0.02, 0.09, 0.10, 0.05, 0.16, 0.08, 0.13, 0.13, 0.28, 0.15; F2 0.7127 (SD 0.0614), precision 0.4012 (SD 0.0553), recall 0.8946 (SD 0.1056) | CV | same |
+| Final threshold, on all training patients' inner out-of-fold probabilities | 0.10 | CV | same |
+| Uncertainty for 4g | SD of PR-AUC across the outer folds for `Logistic`: 0.0938 `[B→I pp.71–73]` | CV | same |
+| Training share of deaths | 0.3222 (77 of 239) | T | same |
+
+**§19 trace**
+
+1. **Eligible** (C2 = clear; no must-haves in DR-09):
+   - `Logistic` +0.3406 (spread 0.0892)
+   - `Logistic + L2` +0.3482 (0.1023)
+   - `Logistic + poly` +0.3843 (0.1619)
+   - `Logistic + poly + L2` +0.3661 (0.1320)
+   - `kNN` +0.2412 (0.1472)
+   - `Tree` +0.2325 (0.1497)
+
+   All six are eligible; none has inputs dropped.
+2. **Candidates** (the best CV mean, plus any within 0.5 × spread of it):
+   - `Logistic + poly`: 0.7064, the best
+   - `Logistic + poly + L2`: 0.6882, margin 0.0182 < 0.0332
+   - `Logistic + L2`: 0.6703, margin 0.0360 < 0.0490
+   - `Logistic`: 0.6627, margin 0.0437 < 0.0586
+3. **Choice** (fewest add-ons, then prior score, then CV mean): `Logistic` (0 add-ons) over `Logistic + L2` and `Logistic + poly` (1 each) and `Logistic + poly + L2` (2). It is decided at the first step, add-ons. All four have prior score +1.
+4. **Test once:** pending the user's approval (step 4g).
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §19.1 eligible = C2 clear and every must-have met | all six eligible | [I] (C2 threshold) | — |
+| §19.2 candidates within the noise margin | four Logistic configurations | [I] threshold 0.5 × spread | — |
+| §19.3 fewest add-ons | `Logistic` | [B p.332] | recommended |
+| §17 C1, C2, C3 and the level rule | C1 none, C2 clear, C3 adequate → Low | [I]; C3 [B→I pp.334–336] + [I] | reported with its factors |
+| §16 decision threshold (P6 = yes) | tuned after selection, maximising F2, nested | [B→I pp.53–54, 92–93] | r = 0.10 |
+| Final hyperparameters (interpretation s) | none to tune (unregularised) | — | — |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C1 clear ≥ 1 × spread, moderate ≥ 0.5 × spread | 0.1171 / 0.0586 | −0.0437 → none |
+| C2 clear ≥ 1 × spread | 0.0892 | 0.3406 |
+| C3 limited if E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | 0.0265 | −0.0335 |
+| §19 within noise < 0.5 × spread | per candidate | see trace |
+| Breadth note > 10 configurations | 10 | 6 |
+| Threshold grid | 0.01 to 0.99, step 0.01 | chosen 0.10 |
+
+**The agent's notes on these outputs** (raised, not substituted):
+- **C1 is "none" because the recommendation is not the CV leader.** §19.3's simplicity rule chose `Logistic` over the higher-scoring `Logistic + poly`, so the margin to the runner-up is negative. The level Low follows mechanically. It reflects that the four Logistic configurations cannot be told apart on these 239 patients.
+- **The threshold is low.** r = 0.10, with per-fold values from 0.02 to 0.28. With F2 weighting recall twice as heavily, about a third of patients dying, and probabilities that separate the classes only partly, the threshold that maximises F2 flags most patients. Nested precision is 0.40 against a share of deaths of 0.32, and recall is 0.89.
+- **The learning curve's E_val is higher at 100 % (0.2848) than at 80 % (0.2513).** The curve does not fall over the last fifth, so C3 is adequate. The fold SDs (0.05 to 0.08) are of the same size as these differences.
+
+- **Options considered:** the six eligible configurations; the threshold trade-off (F2, F3, F1)
+- **Expectation:** DR-11 expected `Logistic` and `Logistic + L2` to lead; they did not lead on CV mean (DR-13), but `Logistic` is chosen by §19.3. No expectation about the choice or the confidence level was stated.
+- **Decision:** Recommend `Logistic` (unregularised), with decision threshold 0.10 (F2). Selection confidence is Low (C1 none). The test set is used only after the user approves.
+
+**Why not** (all 14 structural configurations except the recommendation)
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = binary [B pp.17, 49–57] (DR-10) |
+| `Logistic + L2` | SIMP | margin (recommendation − this) −0.0077, spread 0.0300; within noise; 1 add-on against 0 |
+| `Logistic + poly` | SIMP | margin −0.0437, spread 0.1171; within noise; 1 add-on against 0 |
+| `Logistic + poly + L2` | SIMP | margin −0.0255, spread 0.0827; within noise; 2 add-ons against 0 |
+| `kNN` | OUTP | margin +0.0993, spread 0.0871 (≥ 1 × spread) |
+| `Tree` | OUTP | margin +0.1080, spread 0.1232 (≥ 0.5 × spread; outside the candidate set, which is measured from the best) |
+
+**Flags:** none.
+
+**Reference code**
+
+- Function: `recommend` (`cd Code && uv run python hf2/core.py recommend hf2/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a` (unchanged since DR-11; approved at 4b) · inputs: DR-09 property values; the CV store; F2 as the threshold trade-off · output: `Code/outputs/hf2/core_recommend.json`, copied above unchanged (rounded to 4 decimals). Run time 43 s.
+
+**Test-set result:** pending (step 4g, after the user's approval).
+
+- **Confidence:** Low — C1 none · C2 clear · C3 adequate — rule: Low if C1 = none or C2 = not clear · prior agreement partial · grounding [B] 0 / [B→I] 1 / [I] 0 · breadth note n/a (6 compared)
+- **Outcome vs expectation:** partial (`Logistic` was expected near the top; it is chosen by simplicity, not by CV mean); the test result is pending
+- **User involvement:** asked — threshold trade-off: "F2, as in DR-05"; test-set approval pending
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/hf2/core.py` (`recommend`, `tune_threshold`), `Code/outputs/hf2/core_recommend.json`, DR-10 to DR-16
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1090,6 +1189,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 21 | Step 4e, pass 1 on `Logistic + poly` (2 min 4 s): O4 (underfitting) holds first (E_train 0.1878 ≥ 2 × gap 0.0546). DX-5: part (i) does not apply (the leader has poly); part (ii) adds `kNN` and `Tree`, which the prior had not kept. The expectation was written before the run. | `Code/outputs/hf2/core_diagnose_Logistic___poly.json`, DR-14 |
 | 22 | Step 4e, DX-5 (ii) run (2 min 50 s): `kNN` 0.5633 (k = 51 in 7/10 folds), `Tree` 0.5546. Both clearly beat the baseline and both are below the four Logistic configurations. The leader is unchanged. DR-14 outcome vs expectation: agree. | `Code/outputs/hf2/core_cv_post_prior_1.json`, `_2.json`, DR-15 |
 | 23 | Step 4e, pass 2: the leader is unchanged, so O4 and DX-5 remain, and only part (iii) is left. Asked whether more input variables exist, the user chose "No; stop the loop". The loop ends under S5 after two passes, with 6 configurations compared. Step 4e is done. | DR-16 |
+| 24 | Step 4f. Threshold trade-off: the user chose "F2, as in DR-05" (no core change). `recommend` ran (43 s, core `93225b44…`). Recommended: `Logistic` (unregularised), chosen by fewest add-ons among four Logistic candidates within noise of the leader `Logistic + poly`. Decision threshold 0.10; nested F2 0.7127, precision 0.4012, recall 0.8946. Selection confidence Low (C1 none: the runner-up has a higher mean; C2 clear; C3 adequate); prior agreement partial; grounding 1 [B→I]; breadth note does not apply (6 compared). Why-not: 8 EXCL, 3 SIMP, 2 OUTP. The test set has not been used. | `Code/outputs/hf2/core_recommend.json`, DR-17 |
 
 ## Code Summary
 
