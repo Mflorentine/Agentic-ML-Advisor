@@ -616,6 +616,62 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 - **Supersedes / superseded by:** supersedes DR-06
 - **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_p9_p10.json`
 
+### DR-10 · ADMSET · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** Which of the 14 structural configurations (§9) are admissible for sub-task 1, given the property values in DR-09?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Property values passed to the core | P1 multiclass, P2 ample, P3 few, P4 low, P5 none (not a must-have), P6 no (not a must-have), P7 no, P8 unknown, P9 yes, P10 balanced | M / T | DR-09; `Code/mobile/props_dr09.json` |
+| Labels checked before 4a | `price_range` is the source's target. How the bands were set is undocumented (no prices, thresholds, currency or date), so whether the labels are independent of the inputs cannot be checked from the source. This was recorded as a limitation in step 1, and nothing new has been found | M | DR-01; `Data Summary`, *Target and leakage* |
+| MOD-2, without powers | design matrix with intercept: 21 columns, rank 21; parameters 4 × 21 = 84; n_train 1,600 | T | `Code/outputs/mobile/core_admset.json` |
+| MOD-2, with powers 2–3 of the 14 numerical inputs | 49 columns, rank 49; parameters 4 × 49 = 196; n_train 1,600 | T | `Code/outputs/mobile/core_admset.json` |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Task gate, P1 = multiclass | Logistic, k-NN, Tree admissible | [B pp.17, 49–57] | 8 configurations removed: the four `Linear`, both `Poisson`, both `Exponential` |
+| Must-have gates (P5, P6) | not applied: neither is a must-have | [B→I p.347]; [B→I pp.50, 53–54] | none removed |
+| MOD-1 | P9 = yes: applies | [B p.61] | `Logistic` and `Logistic + poly` removed; their `+ L2` versions remain |
+| MOD-2 | does not apply: full rank, and parameters < n_train, with and without powers | [B→I pp.46–47, 65] | none removed |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| MOD-2 exact collinearity (interpretation f) | rank < columns at numpy `matrix_rank` default tolerance | rank 21 of 21; 49 of 49 |
+| MOD-2 parameters ≥ n_train (interpretation g: 4 × columns) | 1,600 | 84; 196 |
+| Largest polynomial degree checked (§16 grid) | 3 | — |
+
+- **Options considered:** the 14 structural configurations of §9
+- **Expectation:** n/a
+- **Decision:** The admissible configurations are `Logistic + L2`, `Logistic + poly + L2`, `kNN` and `Tree`. Under §14 SEQ-2, the simple-first configuration will be `Logistic + L2`, because MOD-1 removed `Logistic`. This is applied in 4b.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2` | EXCL | task gate, P1 = multiclass [B pp.17, 49–57] |
+| `Poisson`, `Poisson + L2` | EXCL | task gate, P1 = multiclass [B pp.17, 49–57] |
+| `Exponential`, `Exponential + L2` | EXCL | task gate, P1 = multiclass [B pp.17, 49–57] |
+| `Logistic` | EXCL | MOD-1: P9 = yes [B p.61] |
+| `Logistic + poly` | EXCL | MOD-1: P9 = yes [B p.61] |
+
+**Reference code**
+
+- Function: `admissible_set` (`cd Code && uv run python mobile/core.py admset mobile/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `c7435f48be88ccc1533ecb77da48897ff26343a99307b9607d1b56e9be083de0` (extended for 4a from `6ffd570a…`; `p9_p10` unchanged, so DR-09 stays valid) · inputs: DR-09 property values in `Code/mobile/props_dr09.json`; the 1,600 training phones; interpretations e–h in the core's docstring · output: `Code/outputs/mobile/core_admset.json`, copied above unchanged
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** approved — the user chose "§12 now, §13–§19 at 4b", saw the §9/§12 extension before it ran, and chose "Run it"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_admset.json`, DR-09
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -640,6 +696,8 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 | 12 | Step 3, input design. Four options were offered (as recorded; log of RAM and storage; log(1 + x) of all size inputs; derived inputs), and the user chose "All as recorded (Recommended)". | DR-08 |
 | 13 | Step 3. Interim core `Code/mobile/core.py` written (input design, §11 P9 and P10) and shown to the user before it ran ("Run it"). It ran on the 1,600 training phones: P9 = yes, P10 = balanced. A new PROP record supersedes DR-06, and notes that P3 = 20 sits exactly on its threshold. | `Code/mobile/core.py`, `Code/outputs/mobile/core_p9_p10.json`, DR-09 |
 | 14 | Step 3, figures. Four were proposed and the user chose Figure 1 (distributions of the 14 numerical inputs) only. Two binning versions were replaced because of artefacts (see `Analysis`). Figure 1 was added to `Results` with a caption and a paragraph on how to read it. | `Code/mobile_03_fig1_input_distributions.py`, `Code/outputs/mobile/figures/fig1_input_distributions.png` (+ `dark/`), `Report.md` |
+| 15 | Step 3 closed by the user. Three items listed at the close were not taken up: whether to keep Figure 1 as it stands; an expectation for P8 (it stays `unknown`); a figure of the six yes/no inputs. | — |
+| 16 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `c7435f48…`) was shown and approved ("Run it"). Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 removed `Logistic` and `Logistic + poly`; MOD-2 did not apply. | `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_admset.json`, DR-10 |
 
 ## Code Summary
 
@@ -649,7 +707,7 @@ All scripts run from `Code/` with `uv run python <script>.py`. Script names star
 | --- | --- | --- | --- | --- |
 | `Code/mobile_01_describe_data.py` | Step 1 describing pass. Recomputes the SHA-256 of both files and checks them against `SOURCE.md`. Describes each column (meaning and unit from Kaggle's descriptions, range, percentiles, zeros, 0/1 counts). Counts duplicates, conflicting targets, class counts, row order and selected value combinations, and compares `test.csv` with `train.csv`. Draws no conclusions. | `Attachments/Mobile Price/train.csv`, `test.csv` | `Code/outputs/mobile/01_describe.json`, `01_describe.md` | none |
 | `Code/mobile_02_split.py` | Step 2 split. Shuffled, stratified 80 / 20 split of `train.csv` by `price_range`. Records the row indices of each part, their class counts, the input design (categorical and numerical inputs) and P2–P4 with their `[I]` thresholds as named constants. After it runs, the test indices are locked until step 4g. | `Attachments/Mobile Price/train.csv` | `Code/outputs/mobile/split.json` (indices and counts, no data values) | `SEED = 2026`, `TEST_FRACTION = 0.2` |
-| `Code/mobile/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far it holds the input design of DR-08 (`preprocessor`: 14 numerical inputs passed through, six 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 1,600 `train_idx` rows only, with an assertion that no test row is kept), and §11 P9 and P10 (`p9_p10`). The header lists interpretations a–d. Sections §12–§19 are added before step 4b. Run: `uv run python mobile/core.py p9p10`. | `Attachments/Mobile Price/train.csv`, `Code/outputs/mobile/split.json` | `Code/outputs/mobile/core_p9_p10.json` | `[I]` constants: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`; `LOGISTIC_MAX_ITER = 100000` |
+| `Code/mobile/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far it holds the input design of DR-08 (`preprocessor`: 14 numerical inputs passed through, six 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 1,600 `train_idx` rows only, with an assertion that no test row is kept), §11 P9 and P10 (`p9_p10`), and, from step 4a, §9 and §12: the 14 configurations, the task gate, the must-have gates, MOD-1 and MOD-2 (`admissible_set`, `mod2_check`). The header lists interpretations a–h. §13–§19 are added before step 4b. Run: `uv run python mobile/core.py p9p10`; `uv run python mobile/core.py admset mobile/props_dr09.json`. | `Attachments/Mobile Price/train.csv`, `Code/outputs/mobile/split.json`, `Code/mobile/props_dr09.json` (the DR-09 property values) | `Code/outputs/mobile/core_p9_p10.json`, `Code/outputs/mobile/core_admset.json` | `[I]` constants: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`; `LOGISTIC_MAX_ITER = 100000` |
 | `Code/mobile_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, all bands together. One bar per value for inputs with up to 130 distinct values; 40 equal-width bins from min − 0.5 to max + 0.5 for the rest. Light and dark versions. Uses `viz_style.py`, with `FIGURES` set to the Mobile Price folder. | the training phones, via `core.training_data()` | `Code/outputs/mobile/figures/fig1_input_distributions.png`, `dark/fig1_input_distributions.png`, `fig1_input_distributions.json` (per panel: phones, distinct values, min, max, zeros, bars) | `BINS = 40`, `DISCRETE_MAX = 130`, `FIGSIZE = (16, 14)` |
 
 ## References

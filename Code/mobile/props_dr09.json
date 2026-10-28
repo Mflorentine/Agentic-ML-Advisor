@@ -1,0 +1,15 @@
+{
+  "record": "DR-09 (PROP, step 3, 28 October 2026), Demonstration/Mobile Price/Appendix.md",
+  "P1": "multiclass",
+  "P2": "ample",
+  "P3": "few",
+  "P4": "low",
+  "P5": "none",
+  "P5_must_have": false,
+  "P6": "no",
+  "P6_must_have": false,
+  "P7": "no",
+  "P8": "unknown",
+  "P9": "yes",
+  "P10": "balanced"
+}

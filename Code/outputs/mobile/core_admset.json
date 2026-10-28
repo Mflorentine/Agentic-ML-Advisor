@@ -1,0 +1,118 @@
+{
+  "core_version_sha256": "c7435f48be88ccc1533ecb77da48897ff26343a99307b9607d1b56e9be083de0",
+  "rows_used": "training phones only",
+  "n_train": 1600,
+  "properties_file": "mobile/props_dr09.json",
+  "properties_used": {
+    "record": "DR-09 (PROP, step 3, 28 October 2026), Demonstration/Mobile Price/Appendix.md",
+    "P1": "multiclass",
+    "P2": "ample",
+    "P3": "few",
+    "P4": "low",
+    "P5": "none",
+    "P5_must_have": false,
+    "P6": "no",
+    "P6_must_have": false,
+    "P7": "no",
+    "P8": "unknown",
+    "P9": "yes",
+    "P10": "balanced"
+  },
+  "task_gate": {
+    "P1": "multiclass",
+    "families": [
+      "Logistic",
+      "Tree",
+      "kNN"
+    ],
+    "provenance": "[B pp.17, 49\u201357]"
+  },
+  "must_haves": {
+    "P5_must_have": false,
+    "P6_must_have": false
+  },
+  "MOD-1": {
+    "P9": "yes",
+    "applies": true,
+    "provenance": "[B p.61]"
+  },
+  "MOD-2": {
+    "plain": {
+      "columns": 21,
+      "rows": 1600,
+      "rank": 21,
+      "parameters_per_class": 21,
+      "parameters": 84,
+      "n_train": 1600,
+      "applies": false
+    },
+    "poly": {
+      "columns": 49,
+      "rows": 1600,
+      "rank": 49,
+      "parameters_per_class": 49,
+      "parameters": 196,
+      "n_train": 1600,
+      "applies": false
+    },
+    "provenance": "[B\u2192I pp.46\u201347, 65]"
+  },
+  "admissible": [
+    "Logistic + L2",
+    "Logistic + poly + L2",
+    "kNN",
+    "Tree"
+  ],
+  "removed": [
+    {
+      "configuration": "Linear",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Linear + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Linear + poly",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Linear + poly + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Logistic",
+      "code": "EXCL",
+      "evidence": "MOD-1: P9 = yes [B p.61]"
+    },
+    {
+      "configuration": "Logistic + poly",
+      "code": "EXCL",
+      "evidence": "MOD-1: P9 = yes [B p.61]"
+    },
+    {
+      "configuration": "Poisson",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Poisson + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Exponential",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    },
+    {
+      "configuration": "Exponential + L2",
+      "code": "EXCL",
+      "evidence": "task gate, P1 = multiclass: admissible families ['Logistic', 'Tree', 'kNN'] [B pp.17, 49\u201357]"
+    }
+  ]
+}
