@@ -19,9 +19,16 @@ Every model choice is recorded as it is made. Each decision gets a Decision Reco
 3. Open a Claudian conversation and ask for step 1: import and describe the data. The agent first asks for a name and copies the two templates in `Templates/` into a new folder, for example `Demonstration/Sepsis/`; your report and appendix are written there.
 4. Work through the five steps, one request at a time.
 
-## Example analysis
+## Example analyses
 
-[Demonstration/Heart Failure/](Demonstration/Heart%20Failure/) holds a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5. Its [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md) is the full record behind it, including every decision record. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
+Two finished examples, each worked through steps 1–5:
+
+- [Demonstration/Heart Failure/](Demonstration/Heart%20Failure/) predicts death during follow-up from the Heart Failure Clinical Records data. Its [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md) is the full record behind it, including every decision record.
+- [Demonstration/Sepsis/](Demonstration/Sepsis/) predicts, from the first six hours in intensive care, whether a patient's sepsis label switches on within the next 48 hours, using the PhysioNet/Computing in Cardiology Challenge 2019 data. Its [Report.md](Demonstration/Sepsis/Report.md) and [Appendix.md](Demonstration/Sepsis/Appendix.md) follow the same pattern.
+
+A third, [Demonstration/Mobile Price/](Demonstration/Mobile%20Price/), places phones in one of four price bands from their specifications. Steps 1–4 are done and step 5 is next.
+
+Each analysis's code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
 
 The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty templates. Each new analysis gets its own copy of both, in its own folder under `Demonstration/`.
 
@@ -31,17 +38,18 @@ The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty template
 | --- | --- |
 | Agentic system that guides users through ML problem-solving | Done: the five-step workflow in [instructions.md](instructions.md). |
 | Uses smlbook.org chapters 2, 3, 4 and 13 | Done: [ML Guide.md](ML%20Guide.md), with page references. |
-| Helps users choose ML techniques | Done for classification, using an interim core (`Code/core.py`); the reusable `Code/advisor/` is next. |
-| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/Heart Failure/](Demonstration/Heart%20Failure/)). The sepsis demonstration is in progress ([Demonstration/Sepsis/](Demonstration/Sepsis/)). |
+| Helps users choose ML techniques | Demonstrated on two classification datasets, heart failure (binary) and sepsis (binary), each with its own interim core (`Code/core.py`, `Code/sepsis/core.py`). It is under way on a third, Mobile Price (four classes, `Code/mobile/core.py`). The reusable `Code/advisor/` is not yet built. |
+| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/Heart Failure/](Demonstration/Heart%20Failure/)) and the sepsis data ([Demonstration/Sepsis/](Demonstration/Sepsis/)), steps 1–5. Mobile Price ([Demonstration/Mobile Price/](Demonstration/Mobile%20Price/)) has steps 1–4 done, and step 5 is next. |
 | Available online through GitHub | Done. |
 
 ### Next steps
 
 See [Note for Florentine.md](Note%20for%20Florentine.md) for how the method is to be improved by working through the three datasets.
 
+- Mobile Price, step 5: conclusions and limitations ([Demonstration/Mobile Price/](Demonstration/Mobile%20Price/)).
+- The project report, [Project Report.md](Project%20Report.md).
+- Re-run the heart failure analysis with the improved method.
 - Build `Code/advisor/`.
-- Finish the sepsis and Mobile Price demonstrations. All are classification problems, making three datasets in total with heart failure.
-- Finish the project report, [Project Report.md](Project%20Report.md).
 
 ## The five steps
 
@@ -65,10 +73,10 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [instructions.md](instructions.md) | The working contract. The agent reads this; you change it by prefixing a message with `FRAMEWORK`. |
 | [ML Guide.md](ML%20Guide.md) | What the book says (Part I), the procedure the agent follows for every model decision (Part II), and the formats of its decision records and recommendation reports (Part III). Changed only with `FRAMEWORK`. |
 | [Templates/](Templates/) | The empty [Report.md](Templates/Report.md) and [Appendix.md](Templates/Appendix.md). Copied into each new analysis folder; not edited by an analysis. |
-| [Demonstration/](Demonstration/) | One folder per analysis, each with its own `Report.md` (the report, filled in through steps 2–5) and `Appendix.md` (the running record — data, problem, workings, decision records, recommendation, log, code guide — filled from step 1). [Heart Failure/](Demonstration/Heart%20Failure/) is the finished example: [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md). A finished analysis is not edited by a new one. |
-| [Project Report.md](Project%20Report.md) | The report on the project itself — the advisor and this workspace — not on any analysis, and the only report at the top level. A template: headings, each with a note on what goes there. Not part of the five steps. |
-| `Attachments/` | Your data. Never modified. Holds the heart failure data used by the example analysis; see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
-| `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core in its own folder, for example `Code/sepsis/core.py`; the example analysis used `Code/core.py` (not reviewed), which is never changed and which `Code/advisor/` will replace. Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. The example's scripts and outputs stay here; a new analysis uses names that do not collide with them. |
+| [Demonstration/](Demonstration/) | One folder per analysis, each with its own `Report.md` (the report, filled in through steps 2–5) and `Appendix.md` (the running record — data, problem, workings, decision records, recommendation, log, code guide — filled from step 1). It holds three: [Heart Failure/](Demonstration/Heart%20Failure/), finished ([Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md)); [Sepsis/](Demonstration/Sepsis/), finished; and [Mobile Price/](Demonstration/Mobile%20Price/), with steps 1–4 done. A finished analysis is not edited by a new one. |
+| [Project Report.md](Project%20Report.md) | Your report on your project: the machine learning methods you used and how you chose between them, how that relates to the book, and how the models were trained and validated. It is written from your analyses in `Demonstration/`, and is the only report at the top level. A template: headings, each with a note on what goes there. Not part of the five steps; the agent helps with it section by section, as set out in [instructions.md](instructions.md). |
+| `Attachments/` | Your data. Never modified. Holds the data of the three analyses; see [Attachments/SOURCE.md](Attachments/SOURCE.md). Only the heart failure data is committed. The sepsis and Mobile Price data are kept locally under their licence terms. |
+| `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis has its own interim core, not reviewed: `Code/core.py` (Heart Failure; never changed, and `Code/advisor/` will replace it), `Code/sepsis/core.py` (Sepsis) and `Code/mobile/core.py` (Mobile Price). Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. Earlier analyses' scripts and outputs stay here, and a new analysis uses names that do not collide with them. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
 
 ## Report and appendix
