@@ -12,11 +12,13 @@ Missing a patient who dies is worse than a false alarm. Models are compared by t
 
 ## Methods
 
-*Written in step 4, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
+### 1. Death during follow-up
+
+The 11 clinical measurements are used as recorded, with each of the five yes/no measurements as a single 0/1 input. The models compared are the types in Lindholm et al. (2026) that suit a yes/no outcome. Four were chosen first: logistic regression, logistic regression with L2 regularisation, and each of these with squares and cubes of the numerical inputs added. They were preferred to k-nearest neighbours and a decision tree because they give probabilities from which a decision threshold can be chosen. The models were compared on the 239 training patients by nested cross-validation, with ten outer folds that keep the share of deaths the same in every fold. Inside each outer training fold, each model's regularisation strength or polynomial degree was tuned by five-fold cross-validation on the area under the precision–recall curve. Because the best of these models fitted the training patients little better than it fitted new ones, k-nearest neighbours and a decision tree were then compared on the same folds, with the number of neighbours and the tree size tuned in the same way. Among the models whose mean margin over flagging nobody exceeded the variation of that margin across the folds, models within half the variation of the best were treated as indistinguishable from it, and the one with the fewest additions to the basic model was chosen. The selection confidence is computed from three factors: the margin over the runner-up, the margin over flagging nobody, and whether the validation error was still falling when the last fifth of the training data was added. The decision threshold was then chosen by cross-validation on the training patients to maximise F2. The chosen model was refitted on all training patients and evaluated once on the 60 held-out patients. The uncertainty reported with that result is the standard deviation of the model's area under the curve across the ten outer folds. Each fold holds 23 or 24 patients, fewer than the 60 held out, so this approximates the uncertainty of the held-out result rather than measuring it.
 
 ## Results
 
-Figures 1 to 3 describe the 239 training patients; the 60 held-out patients are not shown. Where patients are split by outcome, those who died during follow-up are orange and the others blue.
+Figures 1 to 5 use the 239 training patients; the 60 held-out patients appear only in Figures 6 and 7. Where patients are split by outcome, those who died during follow-up are orange and the others blue.
 
 ![Figure 1](../../Code/outputs/hf2/figures/fig1_input_distributions.png)
 
@@ -33,6 +35,39 @@ In Figure 3, the height of a bar is the share of patients in that group who died
 ![Figure 3](../../Code/outputs/hf2/figures/fig3_indicators_by_outcome.png)
 
 <small><b>Figure 3.</b> Share of training patients who died during follow-up, for each of the five yes/no measurements, among patients with the value 0 (light orange) and with the value 1 (full orange). The grey line is the share among all 239 training patients, 0.32. The source does not say which value of sex is a woman.</small>
+
+### 1. Death during follow-up
+
+The recommended model is logistic regression without regularisation, which flags a patient when the predicted probability of death exceeds 0.10. On the 60 held-out patients, 19 of whom died during follow-up, its area under the precision–recall curve is 0.6983, with a standard deviation of 0.0938 across the cross-validation folds; flagging nobody scores 0.3167, the share of deaths (Figure 6). The success criterion required more than 0.3167 after subtracting the standard deviation (0.6045), and it is met. At the threshold, 49 patients are flagged, 16 of them among the 19 who died: precision 0.3265, recall 0.8421 and F2 0.6400 (Figure 7). In cross-validation, the mean areas under the curve were:
+- 0.7064 for logistic regression with squares and cubes;
+- 0.6882 for the same with L2 regularisation;
+- 0.6703 for logistic regression with L2;
+- 0.6627 for logistic regression;
+- 0.5633 for k-nearest neighbours;
+- 0.5546 for the decision tree;
+- 0.3221 for flagging nobody (Figure 4).
+
+The four logistic models were within half the variation of the best, and the one without additions was chosen. The selection confidence is low. The margin over the runner-up is −0.0437 (spread 0.1171), because the runner-up has the higher mean. The margin over flagging nobody, 0.3406, exceeds its spread of 0.0892. Adding the last fifth of the training data did not lower the validation error (Figure 5).
+
+![Figure 4](../../Code/outputs/hf2/figures/fig4_cv_comparison.png)
+
+<small><b>Figure 4.</b> Mean area under the precision–recall curve over the ten outer cross-validation folds on the 239 training patients, for flagging nobody (grey) and the six models compared (purple). The error bars show the standard deviation across the folds.</small>
+
+In Figure 5, each point is the average over the ten outer folds of the model trained on the given share of the fold. The darker line is its error on the fold's held-out patients and the lighter line its error on the patients it was trained on. The error is the share of patients misclassified at a probability threshold of 0.5.
+
+![Figure 5](../../Code/outputs/hf2/figures/fig5_learning_curve.png)
+
+<small><b>Figure 5.</b> Misclassification rate of logistic regression trained on 10 % to 100 % of each outer training fold (about 215 patients at 100 %), on the fold's held-out patients (dark purple, with the standard deviation across folds) and on its training patients (light purple), averaged over the ten outer folds.</small>
+
+In Figure 6, each step of the curve is one more death flagged as the threshold is lowered. The height is the share of flagged patients who died, and the horizontal position is the share of all deaths that are flagged.
+
+![Figure 6](../../Code/outputs/hf2/figures/fig6_pr_curve.png)
+
+<small><b>Figure 6.</b> Precision against recall of logistic regression on the 60 held-out patients (19 deaths), over all decision thresholds (purple). By convention the curve starts at precision 1 at recall 0. The grey line is the share of deaths, 0.32: the precision of flagging patients at random, and the area under the curve of flagging nobody. The marked point is the chosen threshold, 0.10: recall 0.8421, precision 0.3265. The area under the purple curve is 0.6983.</small>
+
+![Figure 7](../../Code/outputs/hf2/figures/fig7_confusion.png)
+
+<small><b>Figure 7.</b> The 60 held-out patients by whether they were flagged at the threshold of 0.10 (columns) and whether they died during follow-up (rows), with the number of patients in each cell.</small>
 
 ## Discussion
 

@@ -1174,7 +1174,146 @@ The test set is not used again for this sub-task. The core's `final` refuses a s
 
 ## Recommendation
 
-*Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
+### Sub-task 1 — Death during follow-up
+
+*Assembled on 28 October 2026 from DR-01 to DR-17. Nothing in it is new. The user's experience is "New to ML" (Data Summary), so terms are explained the first time they appear.*
+
+**1. Problem.**
+- **What is predicted:** `DEATH_EVENT`, death during a follow-up period of varying length, from 11 clinical inputs as recorded: 6 numerical, 5 yes/no. `time` is not an input (step 1, leakage risk). A 0 means "no death observed during follow-up" (DR-01, DR-05, DR-08).
+- **Output type:** binary (P1).
+- **What a prediction is for:** flagging patients at higher risk when follow-up starts. Missing a death is worse than a false alarm.
+- **Metric:** PR-AUC, the area under the precision–recall curve (p. 92), computed as average precision `[I]`. Precision is the share of flagged patients who died; recall is the share of deaths that were flagged.
+- **Baseline:** flag nobody. A baseline is a deliberately simple rule that any useful model must beat (pp. 330–331). Its PR-AUC equals the share of deaths.
+- **Success criterion:** test PR-AUC minus its uncertainty above the test share of deaths.
+- **Achievable level:** unknown.
+- **Requirements and expectations:** P5 none; P6 yes, not a must-have; P7 no; P8 unknown, in the user's words "I have no expectation" (DR-09).
+- **Admissibility:**
+  - ADM-1: yes (DR-01).
+  - ADM-2: predict (DR-04).
+  - ADM-3: no groups and no time order (DR-02).
+  - ADM-4: yes, new patients are taken to look like these (DR-03).
+- **Split:** the earlier analysis's test set, reused at the user's choice: 239 training patients (77 deaths) and 60 test patients (19 deaths). Those 60 patients' earlier test result was already known (DR-07).
+
+**2. Recommendation.** `Logistic`: logistic regression without regularisation, on the 11 inputs, with decision threshold r = 0.10 (patients with a predicted probability above 0.10 are flagged). Selection confidence: **Low** (DR-17).
+
+**3. Test-set result.**
+- **PR-AUC:** 0.6983 on 60 test patients (19 deaths), with an uncertainty of 0.0938. The uncertainty is the standard deviation of PR-AUC across the 10 outer folds `[B→I pp.71–73]`. Each outer fold holds 23–24 patients against 60 in the test set, so it approximates rather than measures the test result's uncertainty.
+- **Baseline on the same patients:** 0.3167.
+- **Success criterion:** 0.6983 − 0.0938 = 0.6045 > 0.3167, so it is **met**.
+- **At r = 0.10:** 49 of 60 flagged.
+
+| Outcome \ prediction | Not flagged | Flagged |
+| --- | --- | --- |
+| No death | 8 | 33 |
+| Died | 3 | 16 |
+
+  Precision 0.3265, recall 0.8421, F2 0.6400.
+- **Threshold:** chosen by cross-validation on the training patients to maximise F2, which weights recall twice as heavily as precision (p. 92), as the user chose.
+- **Curve:** the precision–recall curve is drawn in Figure 6 of `Report.md`.
+- **Checks:** recomputed independently, with an identical result.
+
+**4. Why this configuration.**
+- **Constraints.** A yes/no output allows logistic regression, k-NN and decision trees (task gate, DR-10). Plain logistic regression stays admissible, because no straight boundary separates deaths from the others perfectly (P9 = no, so MOD-1 does not apply).
+- **Cross-validation evidence.** Cross-validation repeatedly fits on part of the training patients and scores on the rest (pp. 72–73). Here the scoring used 10 outer folds, with λ, degree, k or tree size tuned in 5 inner folds inside each.
+  - `Logistic` reached 0.6627, against the leader `Logistic + poly`'s 0.7064: a margin of −0.0437, spread 0.1171.
+  - Its margin over the baseline is +0.3406, spread 0.0892.
+- **Simplicity. Yes, this decided it.** Four configurations were within noise of the leader: `Logistic + poly`, `Logistic + poly + L2`, `Logistic + L2` and `Logistic`. §19.3 chose the one with the fewest add-ons, `Logistic` (0 add-ons), as the book advises starting simple (p. 332).
+- **Prior support.** One matrix entry: P6=yes→Logistic `[B→I pp.50, 53–54]`, from the wish for probabilities and a tunable threshold.
+
+**5. Ranking.** The columns are:
+- *Prior rank* and *Prior score:* from the ranking made before any fitting (DR-11).
+- *Post-prior:* added by the diagnosis loop.
+- *CV mean:* mean PR-AUC over the 10 outer folds.
+- *Margins:* mean fold-by-fold differences, with the spread (their SD).
+- *Code:* the why-not code.
+
+| Configuration | Prior rank | Prior score | Post-prior | CV mean | Margin vs recommended (± spread) | Margin vs baseline (± spread) | Code |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `Logistic + poly` | 2 | +1 | no | 0.7064 | +0.0437 (± 0.1171) | +0.3843 (± 0.1619) | SIMP |
+| `Logistic + poly + L2` | 4 | +1 | no | 0.6882 | +0.0255 (± 0.0827) | +0.3661 (± 0.1320) | SIMP |
+| `Logistic + L2` | 2 | +1 | no | 0.6703 | +0.0077 (± 0.0300) | +0.3482 (± 0.1023) | SIMP |
+| `Logistic` (recommended) | 1 | +1 | no | 0.6627 | — | +0.3406 (± 0.0892) | — |
+| `kNN` | 5 | 0 | yes | 0.5633 | −0.0993 (± 0.0871) | +0.2412 (± 0.1472) | OUTP |
+| `Tree` | 5 | 0 | yes | 0.5546 | −0.1080 (± 0.1232) | +0.2325 (± 0.1497) | OUTP |
+| Baseline (flag nobody) | — | — | no | 0.3221 | −0.3406 (± 0.0892) | — | — |
+
+**6. Prior versus evidence. Partial.**
+- The prior ranked `Logistic` first and `Logistic + L2` and `Logistic + poly` second, on add-ons only, since all four Logistic configurations scored +1.
+- The CV winner among the prior-kept configurations, `Logistic + poly`, has prior rank 2. No matrix entry is contradicted: the one entry that applied (P6 → Logistic) favoured the Logistic family, which leads.
+- The advisor's own expectation, that the plain configurations would lead and `Logistic + poly` would come last, was not borne out (DR-11, DR-13). All four were within noise of each other, so the CV order among them is not established.
+
+**7. Why not the others.**
+- **EXCL:** `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `Poisson`, `Poisson + L2`, `Exponential`, `Exponential + L2`: task gate, P1 = binary [B pp.17, 49–57] (DR-10).
+- **USER:** none.
+- **DISF:** none in the final table. `kNN` and `Tree` were not kept by the prior (DR-11), but were added by DX-5 and cross-validated, so they carry OUTP.
+- **BASE:** none.
+- **OUTP:** `kNN` (margin 0.0993, spread 0.0871); `Tree` (margin 0.1080, spread 0.1232; outside the candidate set, which is measured from the best).
+- **SIMP:** `Logistic + L2`, `Logistic + poly` and `Logistic + poly + L2`: within noise, with more add-ons.
+
+Flags: none.
+
+**8. Confidence.**
+- **Selection confidence: Low.**
+  - C1 none: the runner-up `Logistic + poly` has a higher CV mean, margin −0.0437, spread 0.1171.
+  - C2 clear: +0.3406 ≥ 1 × 0.0892.
+  - C3 adequate: the learning-curve validation error at 100 % (0.2848) is not lower than at 80 % (0.2513).
+  - Rule: Low if C1 = none or C2 = not clear.
+- **Reported alongside:**
+  - Prior agreement: partial.
+  - Grounding: [B] 0 · [B→I] 1 · [I] 0.
+  - Breadth note: does not apply (6 configurations compared).
+
+**9. How the model predicts** (draft, turned into prose in step 5).
+- **What the model computes.** Logistic regression gives each patient a probability of dying during follow-up. It adds up the 11 inputs, each first put on a common scale (standardised on the training patients) and multiplied by a learned weight, plus a constant. It turns that sum into a probability between 0 and 1 with the logistic function (pp. 51–52).
+- **The decision.** A patient is flagged if the probability is above 0.10, a threshold chosen to favour catching deaths over avoiding false alarms (F2).
+- **Its boundary.** Because the score is a weighted sum, the boundary between flagged and not flagged is a straight line, more precisely a flat plane, in the space of the inputs (p. 55).
+- **What the weights can say.** They give the direction and relative size of each input's pull on the log-odds of death, with the others held fixed. They are not causes (ADM-2: prediction only).
+- **Pending.** The fitted weights and one worked example of a prediction have not been computed. The core's `final` does not save the fitted model. Producing them needs a verified rebuild through the core (an `explain` command, as in the Mobile Price analysis), which is a core change and is raised with the user before step 5.
+
+**10. Use and limits** (draft, turned into prose in step 5).
+- **What the result covers.** The model ranks patients like these by their risk of dying during follow-up, and flags those above r = 0.10. The PR-AUC of 0.6983 is an average over patients like the 60 test patients (E_new, pp. 68–69). It says nothing about the worst single prediction, and it holds only while new patients resemble these: NYHA III–IV, Faisalabad, 2015 (ADM-4, §6.6).
+- **Limits from step 1:**
+  - A 0 means "no death observed during follow-up", whose end is undocumented.
+  - The `platelets` unit is uncertain.
+  - The two hospitals are not identified.
+- **Limits of the evaluation:**
+  - The test set is small (60 patients, 19 deaths), and the fold spread is large (0.0938).
+  - These 60 patients produced the earlier analysis's test result, which was known beforehand (DR-07).
+- **At the threshold:** precision on the test patients (0.3265) is close to the share of deaths (0.3167), while recall is 0.8421.
+
+**11. Improvement history.**
+- **Round 1:** `Logistic` clearly beat the baseline (DR-12).
+- **Round 2:** all four Logistic configurations were within noise; `Logistic + poly` led (DR-13).
+- **Pass 1** (DR-14): O4, underfitting: E_train 0.1878 ≥ 2 × gap 0.0546 → DX-5 (ii): add `kNN` and `Tree`. Result: 0.5633 and 0.5546, neither leading (DR-15).
+- **Pass 2** (DR-16): O4 again → DX-5 (iii), more input variables? The user had none.
+- **Stopped by S5** (the user stopped it).
+
+**12. Thresholds applied.**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| P2 limited ratio | < 10 | 19.92 (ample) |
+| P3 many inputs | > 20 | 11 (few) |
+| P4 high categorical share | ≥ 50 % | 45 % (low) |
+| P9 separable | 100 % training accuracy, C = 1e8 | 76.99 % (no) |
+| P10 imbalanced | smallest class < 20 % | 32.22 % (balanced) |
+| Kept besides baseline and simple-first | 3 (+ ties) | 3 kept, 2 DISF |
+| Outer / inner folds | 10 / 5 | — |
+| O3 overfitting | gap ≥ 2 × E_train | 0.0546 < 0.3756 |
+| O4 underfitting | E_train ≥ 2 × gap | 0.1878 ≥ 0.1092 |
+| O5 grid edge | > 5 of 10 folds | n/a for the leader |
+| C1 clear / moderate | ≥ 1 / 0.5 × spread | −0.0437 vs 0.1171 (none) |
+| C2 clear | ≥ 1 × spread | 0.3406 vs 0.0892 |
+| C3 limited | E_val(80 %) − E_val(100 %) ≥ 0.5 × fold SD | −0.0335 vs 0.0265 |
+| §19 within noise | < 0.5 × spread | 0.0437 vs 0.0586; 0.0360 vs 0.0490; 0.0182 vs 0.0332 |
+| Breadth note | > 10 configurations | 6 |
+| Threshold grid | 0.01–0.99, step 0.01 | 0.10 |
+
+**13. Trace and provenance.**
+- **Records:** DR-01 to DR-17; DR-06 is superseded by DR-09.
+- **Rules applied** (the *Rules applied* tables of the 16 records in force, counted by script): [B] 26 · [B→I] 8 · [I] 15 · UNLISTED 1 (PR-AUC computed as average precision, DR-05). Two rows carry no tag: the "other §13 entries" row of DR-11, and the final-hyperparameters row of DR-17.
+- **Not counted** (DX records use *Observation → action*): DX-5 [B pp.333–334], twice.
+- **Core:** interim, not reviewed, version `93225b44…` for 4b–4g. Interpretations a–z are listed in its header.
 
 ## Analysis Log
 
@@ -1207,6 +1346,7 @@ The test set is not used again for this sub-task. The core's `final` refuses a s
 | 23 | Step 4e, pass 2: the leader is unchanged, so O4 and DX-5 remain, and only part (iii) is left. Asked whether more input variables exist, the user chose "No; stop the loop". The loop ends under S5 after two passes, with 6 configurations compared. Step 4e is done. | DR-16 |
 | 24 | Step 4f. Threshold trade-off: the user chose "F2, as in DR-05" (no core change). `recommend` ran (43 s, core `93225b44…`). Recommended: `Logistic` (unregularised), chosen by fewest add-ons among four Logistic candidates within noise of the leader `Logistic + poly`. Decision threshold 0.10; nested F2 0.7127, precision 0.4012, recall 0.8946. Selection confidence Low (C1 none: the runner-up has a higher mean; C2 clear; C3 adequate); prior agreement partial; grounding 1 [B→I]; breadth note does not apply (6 compared). Why-not: 8 EXCL, 3 SIMP, 2 OUTP. The test set has not been used. | `Code/outputs/hf2/core_recommend.json`, DR-17 |
 | 25 | Step 4g. The user approved ("1"). The core's `final` refitted `Logistic` on the 239 training patients and evaluated it once on the 60 test patients (19 deaths): test PR-AUC 0.6983, fold SD 0.0938, baseline 0.3167; success criterion met (0.6045 > 0.3167). At r = 0.10: 49 flagged, tp 16, fp 33, fn 3, tn 8; precision 0.3265, recall 0.8421, F2 0.6400. An independent recomputation (average precision by definition, without scikit-learn) agrees exactly. | `Code/outputs/hf2/core_final.json`, `core_test_predictions.csv`, `Code/hf2_07_recompute_test_metric.py`, `Code/outputs/hf2/recompute_test_metric.txt`, DR-17 |
+| 26 | Step 4h. The user chose all four evaluation figures: Figure 4 (CV comparison), Figure 5 (learning curve of `Logistic`), Figure 6 (test precision–recall curve) and Figure 7 (test confusion matrix), each drawn only from the core's outputs, in light and dark versions, in the model colour (purple). One revision before Figure 6 entered the report: the curve first drew points where precision changes at unchanged recall, which made spikes. Now only the points where recall rises are drawn, the ones average precision counts. The drawn curve integrates to the reported 0.6983 before and after. The Recommendation Report for sub-task 1 was assembled from DR-01 to DR-17, with part 13's provenance counts from a script over the *Rules applied* tables. The `Methods` and `Results` paragraphs and Figures 4–7 were added to `Report.md`. Part 9 lacks the fitted weights and a worked example, because the core does not save the final model; this is raised with the user. | `Code/hf2_08_fig4_cv_comparison.py` … `hf2_11_fig7_confusion.py`, `Code/outputs/hf2/figures/`, `Recommendation`, `Report.md` |
 
 ## Code Summary
 
@@ -1218,6 +1358,10 @@ All scripts run from `Code/` with `uv run python <script>.py`. Names start with 
 | `Code/hf2_02_split.py` | Step 2 split. Reuses the earlier analysis's training and test row indices (user's choice), after checking that file's source checksum, its settings and that the indices partition the 299 rows. Records this rerun's input design (11 inputs, `time` set aside), the class counts recomputed from the data, and P2–P4 with their `[I]` thresholds as named constants. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/split.json` (earlier analysis; read only) | `Code/outputs/hf2/split.json` | the source split's seed 2026 and fraction 0.2 are checked, not set |
 | `Code/hf2/core.py` | **Interim core, not reviewed** (the version is its SHA-256, quoted in the Decision Records). So far: the input design of DR-08 (`preprocessor`: six numerical inputs passed through, five 0/1 indicators one-hot encoded with one level dropped), the training-data reader (`training_data`: the 239 `train_idx` rows only, asserting that no test row is kept), §11 P9 and P10 (`p9_p10`). From step 4a it adds §9 and §12 (`admissible_set`, `mod2_check`). From step 4b it adds the rest: §13–§15 prior ranking (`prior_ranking`); §16 nested CV with a cumulative store (`run_cv`, `nested_cv`, `baseline_cv`, `cv_table`); §18 observations and the learning curve (`observations`, `learning_curve`); §16/§17/§19/§20 threshold tuning, recommendation, confidence and why-not codes (`tune_threshold`, `recommend`); and §19.4 the single test evaluation (`final`), the only function that reads the test rows. `final` needs the user's approval on the command line, and refuses a second run or a changed core. The header lists interpretations a–z. Commands: `p9p10`; `admset`, `prior`, `cv round1`, `cv round2` and `recommend`, each with `hf2/props_dr09.json`; `cv add "<configuration>" [--drop COL] [--grid JSON] [--label TEXT]`; `diagnose "<entry>"`; `final --approved "<words>"`. | `Attachments/heart_failure_clinical_records_dataset.csv`, `Code/outputs/hf2/split.json`, `Code/hf2/props_dr09.json` (the DR-09 values) | `Code/outputs/hf2/core_p9_p10.json`, `core_admset.json`, `core_prior.json`. Later: `core_cv_store.json`, `core_cv_round1.json`, `core_cv_round2.json`, `core_cv_post_prior_N.json`, `core_diagnose_*.json`, `core_recommend.json`, `core_final.json`, `core_test_predictions.csv` | `[I]` constants as named in the file: `P9_SEPARABLE_ACCURACY = 1.0`, `P9_NEGLIGIBLE_C = 1e8`, `P10_IMBALANCED_SHARE = 0.20`, `DEFAULT_THRESHOLD = 0.5`, `KEEP_TOP_OTHERS = 3`, `OUTER_FOLDS = 10`, `INNER_FOLDS = 5`, `C1_CLEAR = 1.0`, `C1_MODERATE = 0.5`, `C2_CLEAR = 1.0`, `C3_FALLING = 0.5`, `WITHIN_NOISE = 0.5`, `BREADTH_MANY = 10`, `O3_RATIO = O4_RATIO = 2.0`, `O5_MOST_FOLDS = 0.5`; grids (§16); `CV_SEED = 2026`, `THRESHOLD_BETA = 2`, `THRESHOLD_GRID` 0.01–0.99, `N_JOBS = 1`, `KEPT_DROPS = []`; `LOGISTIC_MAX_ITER = 100000` |
 | `Code/hf2_07_recompute_test_metric.py` | Step 4g second route to the test result: average precision from its definition (no scikit-learn), the confusion counts, precision, recall and F2 at the core's threshold, all by counting, from the saved predictions. True outcomes are read from the data file by row number, and the rows are checked against `split.json`. The result is compared with `core_final.json`. | `Code/outputs/hf2/core_test_predictions.csv`, the data file, `split.json`, `core_final.json` | `Code/outputs/hf2/recompute_test_metric.txt` | none |
+| `Code/hf2_08_fig4_cv_comparison.py` | Figure 4: mean CV PR-AUC with fold-SD error bars for the baseline and the six configurations. | `Code/outputs/hf2/core_cv_post_prior_2.json` (the core's last CV table), `core_recommend.json` | `Code/outputs/hf2/figures/fig4_cv_comparison.png` (+ `dark/`), `.json` | `MODEL_COLOUR` |
+| `Code/hf2_09_fig5_learning_curve.py` | Figure 5: the learning curve of the recommended configuration (misclassification rate at 0.5), E_train and E_val with fold-SD error bars. | `Code/outputs/hf2/core_recommend.json` | `fig5_learning_curve.png` (+ `dark/`), `.json` | none |
+| `Code/hf2_10_fig6_pr_curve.py` | Figure 6: the test precision–recall curve, traced from the saved probabilities (only points where recall rises), with the no-skill line and the chosen threshold marked. The reported numbers are read from `core_final.json`. | `Code/outputs/hf2/core_test_predictions.csv`, `core_final.json` | `fig6_pr_curve.png` (+ `dark/`), `.json` | none |
+| `Code/hf2_11_fig7_confusion.py` | Figure 7: the test confusion matrix at the chosen threshold, with counts. | `Code/outputs/hf2/core_final.json` | `fig7_confusion.png` (+ `dark/`), `.json` | none |
 | `Code/hf2_03_fig1_input_distributions.py` | Figure 1: one panel per numerical input, both outcomes together. One bar per value for ejection fraction and sodium, 1-year bins for age, 40 equal-width bins for the rest. Light and dark versions. | training patients via `core.training_data()` | `Code/outputs/hf2/figures/fig1_input_distributions.png` (+ `dark/`), `.json` | `BINS = 40`, `FIGSIZE = (15, 9)` |
 | `Code/hf2_04_fig2_inputs_by_outcome.py` | Figure 2: box plot per outcome group for each numerical input, with every patient as a jittered point. | same | `fig2_inputs_by_outcome.png` (+ `dark/`), `.json` (group sizes, medians, quartiles) | `JITTER_SEED = 2026` (sideways position only) |
 | `Code/hf2_05_fig3_indicators_by_outcome.py` | Figure 3: share who died among patients with each yes/no input = 0 and = 1, with deaths/patients labels and the overall share as a reference line. | same | `fig3_indicators_by_outcome.png` (+ `dark/`), `.json` | none |

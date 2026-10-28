@@ -1,0 +1,13 @@
+{
+  "source": "core_final.json",
+  "core_version_sha256": "93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a",
+  "threshold": 0.1,
+  "n_test": 60,
+  "confusion_test": {
+    "tn": 8,
+    "fp": 33,
+    "fn": 3,
+    "tp": 16
+  },
+  "flagged": 49
+}

@@ -1,0 +1,48 @@
+{
+  "table_core_version": "93225b44b5c337c342904f57bb7c2710fb5a6d4db267e31df2ad54b728f1186a",
+  "recommended": "Logistic",
+  "bars": [
+    {
+      "entry": "Baseline (flag nobody)",
+      "label": "Baseline (flag nobody)",
+      "mean": 0.32210144927536233,
+      "sd": 0.01841143864749709
+    },
+    {
+      "entry": "Tree",
+      "label": "Decision tree",
+      "mean": 0.5546473098275277,
+      "sd": 0.15720118564295196
+    },
+    {
+      "entry": "kNN",
+      "label": "k-NN",
+      "mean": 0.563345408949106,
+      "sd": 0.15178016367163305
+    },
+    {
+      "entry": "Logistic",
+      "label": "Logistic (recommended)",
+      "mean": 0.6626802795903798,
+      "sd": 0.09380728000721275
+    },
+    {
+      "entry": "Logistic + L2",
+      "label": "Logistic + L2",
+      "mean": 0.670333590788174,
+      "sd": 0.10512435179210501
+    },
+    {
+      "entry": "Logistic + poly + L2",
+      "label": "Logistic + poly + L2",
+      "mean": 0.6882158574578904,
+      "sd": 0.12987355135479525
+    },
+    {
+      "entry": "Logistic + poly",
+      "label": "Logistic + poly",
+      "mean": 0.7063777612244136,
+      "sd": 0.15574577478884757
+    }
+  ]
+}
