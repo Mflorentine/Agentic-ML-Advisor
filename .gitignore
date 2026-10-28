@@ -34,3 +34,6 @@ Attachments/Mobile Price/
 
 # Patient-level derived sepsis tables (ODbL): kept locally, never committed
 Code/outputs/sepsis/private/
+
+# Mobile Price row-level test predictions (true bands; licence unknown): kept locally, never committed
+Code/outputs/mobile/core_test_predictions.csv

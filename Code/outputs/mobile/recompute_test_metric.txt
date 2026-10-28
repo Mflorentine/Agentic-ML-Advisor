@@ -1,0 +1,7 @@
+test rows: 400; per band: [100, 100, 100, 100]
+accuracy: 384/400 = 0.9600   (core: 0.9600)
+baseline accuracy: 100/400 = 0.2500   (core: 0.2500)
+confusion (rows true 0-3, columns predicted 0-3): [[99, 1, 0, 0], [2, 96, 2, 0], [0, 4, 92, 4], [0, 0, 3, 97]]   (core: [[99, 1, 0, 0], [2, 96, 2, 0], [0, 4, 92, 4], [0, 0, 3, 97]])
+misses by distance: 1 band 16, 2 bands 0, 3 bands 0
+accuracy - fold SD (0.0141) = 0.9459 > baseline 0.2500: True
+agrees with core: True

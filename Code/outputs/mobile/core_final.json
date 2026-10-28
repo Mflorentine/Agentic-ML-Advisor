@@ -1,0 +1,58 @@
+{
+  "core_version_sha256": "b81c7f4302efc0235d05b7af832ff2c85a4ba00c1a2fce10c1a3f24ed8b49af0",
+  "approved_by_user": "continue; then confirmed: Yes, evaluate once (28 October 2026)",
+  "configuration": "Logistic + L2",
+  "hyperparameters": {
+    "m__lam": 1e-05
+  },
+  "dropped_inputs": [],
+  "n_test": 400,
+  "test_class_counts": {
+    "0": 100,
+    "1": 100,
+    "2": 100,
+    "3": 100
+  },
+  "test_accuracy": 0.96,
+  "baseline_class": 0,
+  "baseline_test_accuracy": 0.25,
+  "uncertainty_fold_sd_accuracy": 0.014145204330639977,
+  "confusion_test": [
+    [
+      99,
+      1,
+      0,
+      0
+    ],
+    [
+      2,
+      96,
+      2,
+      0
+    ],
+    [
+      0,
+      4,
+      92,
+      4
+    ],
+    [
+      0,
+      0,
+      3,
+      97
+    ]
+  ],
+  "recall_per_band_test": {
+    "0": 0.99,
+    "1": 0.96,
+    "2": 0.92,
+    "3": 0.97
+  },
+  "success_criterion": {
+    "rule": "test accuracy - fold SD of accuracy > baseline accuracy (DR-05)",
+    "value": 0.94585479566936,
+    "baseline": 0.25,
+    "met": true
+  }
+}
