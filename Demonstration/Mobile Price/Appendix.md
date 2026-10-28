@@ -743,7 +743,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/mobile/spli
 - Function: `prior_ranking` (`cd Code && uv run python mobile/core.py prior mobile/props_dr09.json`) · version: interim core, not reviewed, SHA-256 `38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda`. It was extended for 4b from `c7435f48…` with §13–§19 and interpretations i–y; `p9_p10` and `admissible_set` are unchanged, so DR-09 and DR-10 stay valid · inputs: DR-09 property values in `Code/mobile/props_dr09.json`; the admissible set recomputed by `admissible_set` (identical to DR-10) · output: `Code/outputs/mobile/core_prior.json`, copied above unchanged
 
 - **Confidence:** n/a
-- **Outcome vs expectation:** pending (round-2 `CV` record)
+- **Outcome vs expectation:** agree with the advisor's expectation; disagree with the prior order (filled in by DR-13). The CV order is `Logistic + L2` (0.9638) > `Logistic + poly + L2` (0.9431) > `Tree` (0.8281) > `kNN` (0.6250). The two Logistic configurations lead, as expected from P9 = yes. The prior's rank-1 configurations, `kNN` and `Tree`, come last and third. The CV winner among the prior-kept configurations, `Logistic + L2`, has prior rank 3. This is a disagreement with the prior, recorded as a finding. The prior scores were all 0, so its order came only from the add-on tie-break.
 - **User involvement:** approved — the user saw the §13–§19 extension before any output was used ("Run the prior"), and then agreed the method: "Agree the method"
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_prior.json`, DR-09, DR-10
@@ -817,6 +817,79 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_cv_round1.json`, `Code/outputs/mobile/core_cv_store.json`, DR-11
 
+### DR-13 · CV · step 4
+
+- **Sub-task:** 1 — Price band of a new phone
+- **Date:** 2026-10-28
+- **Question:** How do the remaining kept configurations (`kNN`, `Tree`, `Logistic + poly + L2`) compare with `Logistic + L2` and the baseline on the same folds (round 2)?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| `kNN`, validation accuracy per outer fold | 0.5687, 0.6937, 0.6062, 0.6625, 0.6188, 0.6062, 0.6500, 0.6062, 0.6375, 0.6000 | CV | `Code/outputs/mobile/core_cv_store.json` |
+| `kNN`, tuned k per fold | 51 in 10/10 folds (largest value in the grid) | CV | `core_cv_store.json` |
+| `Tree`, validation accuracy per outer fold | 0.8750, 0.8375, 0.7750, 0.8250, 0.8000, 0.8438, 0.8313, 0.8562, 0.8313, 0.8063 | CV | `core_cv_store.json` |
+| `Tree`, tuned (depth, minimum leaf) per fold | (8, 5), (15, 5), (15, 5), (6, 10), (8, 5), (8, 5), (10, 10), (8, 1), (8, 10), (6, 10) | CV | `core_cv_store.json` |
+| `Logistic + poly + L2`, validation accuracy per outer fold | 0.9187, 0.9563, 0.9375, 0.9375, 0.9625, 0.9500, 0.9688, 0.9500, 0.9125, 0.9375 | CV | `core_cv_store.json` |
+| `Logistic + poly + L2`, tuned per fold | degree 2, λ = 10⁻⁴ in 10/10 folds (λ the smallest value in the grid) | CV | `core_cv_store.json` |
+| Convergence | all outer refits converged | CV | `core_cv_round2.json` (`not_converged_folds`: 0 for every row) |
+| REQ-2 (k-NN normalised), REQ-4 (tree size tuned, never fully grown) | `kNN` pipeline: `design` → `scale` → `m`; `Tree`: `design` → `m`, with depth and minimum leaf size from the grid | CV | `core_cv_store.json` (`pipeline`, `grid`) |
+
+**Rules applied**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| SEQ-3 | round 2 run because `Logistic + L2` clearly beat the baseline (DR-12) | [B pp.331–332] | — |
+| §16 same outer folds | the folds stored in round 1 are checked and reused | [I] | margins are paired by fold |
+| C2 for each configuration | clear for all four (see table) | [I] | all four are eligible under §19.1 |
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| C2 clear | margin ≥ 1 × spread | `Logistic + poly + L2` 0.6931 vs 0.0180; `Tree` 0.5781 vs 0.0288; `kNN` 0.3750 vs 0.0362 |
+
+**CV table** (outer 10, inner 5; stratified by `price_range`; seed 2026; metric: accuracy; rounds 1 and 2)
+
+| Configuration | Post-prior | Tuned hyperparameters (most common) | CV mean accuracy | Fold SD | Margin vs leader (spread) | Margin vs baseline (spread) | E_train | E_val |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (most common class) | no | n/a | 0.2500 | 0.0000 | −0.7138 (0.0141) | — | 0.7500 | 0.7500 |
+| `Logistic + L2` | no | λ = 10⁻⁴ (10/10) | 0.9638 | 0.0141 | — (leader) | +0.7138 (0.0141), clear | 0.0149 | 0.0363 |
+| `Logistic + poly + L2` | no | degree 2, λ = 10⁻⁴ (10/10) | 0.9431 | 0.0180 | −0.0206 (0.0132) | +0.6931 (0.0180), clear | 0.0178 | 0.0569 |
+| `Tree` | no | depth 8, minimum leaf 5 (3/10) | 0.8281 | 0.0288 | −0.1356 (0.0328) | +0.5781 (0.0288), clear | 0.0694 | 0.1719 |
+| `kNN` | no | k = 51 (10/10) | 0.6250 | 0.0362 | −0.3387 (0.0314) | +0.3750 (0.0362), clear | 0.3176 | 0.3750 |
+
+**Monitoring (§5.5 note): pooled outer-validation confusion matrices.** Rows are the true band and columns the predicted band (0, 1, 2, 3). These are reported and not used in any decision.
+
+| Configuration | Row 0 | Row 1 | Row 2 | Row 3 | Recall per band (0 / 1 / 2 / 3) |
+| --- | --- | --- | --- | --- | --- |
+| `Logistic + L2` | 391, 9, 0, 0 | 10, 380, 10, 0 | 0, 12, 377, 11 | 0, 0, 6, 394 | 0.9775 / 0.9500 / 0.9425 / 0.9850 |
+| `Logistic + poly + L2` | 380, 20, 0, 0 | 14, 372, 14, 0 | 0, 13, 371, 16 | 0, 0, 14, 386 | 0.9500 / 0.9300 / 0.9275 / 0.9650 |
+| `Tree` | 360, 40, 0, 0 | 45, 308, 47, 0 | 0, 40, 307, 53 | 0, 0, 50, 350 | 0.9000 / 0.7700 / 0.7675 / 0.8750 |
+| `kNN` | 310, 81, 9, 0 | 116, 194, 86, 4 | 12, 109, 219, 60 | 0, 10, 113, 277 | 0.7750 / 0.4850 / 0.5475 / 0.6925 |
+
+- **Options considered:** `kNN`, `Tree`, `Logistic + poly + L2` (round 2), alongside the round-1 configurations
+- **Expectation:** n/a (this record fills in DR-11's *Outcome vs expectation*)
+- **Decision:** All four configurations clearly beat the baseline. `Logistic + L2` leads. Each other configuration is behind it by more than one spread: `Logistic + poly + L2` by 0.0206 (spread 0.0132), `Tree` by 0.1356 (0.0328), and `kNN` by 0.3387 (0.0314). The CV order agrees with the advisor's expectation in DR-11 and disagrees with the prior order (DR-11, *Outcome vs expectation*).
+- **Noted for 4e:** a tuned hyperparameter sits at the edge of its grid in 10 of 10 folds for three configurations. For `Logistic + L2` and `Logistic + poly + L2` it is λ at its smallest value (10⁻⁴); for `kNN` it is k at its largest (51). O5 is computed for the leading configuration in the diagnosis loop.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | not a selection; why-not codes are assigned in `FINAL` |
+
+**Reference code**
+
+- Function: `run_cv` via `cd Code && uv run python mobile/core.py cv round2 mobile/props_dr09.json` · version: interim core, not reviewed, SHA-256 `38e21eca7daeec0b188a2af59efcb22c603792f69f17b8302308ae50be182fda` (unchanged since DR-11) · inputs: the DR-11 kept list minus the simple-first configuration, on the outer folds stored in round 1 · output: `Code/outputs/mobile/core_cv_round2.json` and `core_cv_store.json`, copied above unchanged (rounded to 4 decimals)
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "Run round 2 (4d)"
+- **Supersedes / superseded by:** n/a
+- **Links:** `Code/mobile/core.py`, `Code/outputs/mobile/core_cv_round2.json`, `Code/outputs/mobile/core_cv_store.json`, DR-11, DR-12
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -845,6 +918,7 @@ Recall per band: 0 → 0.9775, 1 → 0.9500, 2 → 0.9425, 3 → 0.9850. Every m
 | 16 | Step 4a, sub-task 1. The user chose to add §9/§12 to the core now and §13–§19 at 4b. The extended core (SHA-256 `c7435f48…`) was shown and approved ("Run it"). Admissible: `Logistic + L2`, `Logistic + poly + L2`, `kNN`, `Tree`. The task gate removed the 8 Linear and GLM configurations; MOD-1 removed `Logistic` and `Logistic + poly`; MOD-2 did not apply. | `Code/mobile/core.py`, `Code/mobile/props_dr09.json`, `Code/outputs/mobile/core_admset.json`, DR-10 |
 | 17 | Step 4b, sub-task 1. The core was extended with §13–§19 (SHA-256 `38e21eca…`; interpretations i–y), shown to the user before any output was used ("Run the prior"), and the prior ranking was run. All four admissible configurations score 0, and all are kept. The order comes from add-ons only: `kNN` = `Tree`, then `Logistic + L2` (simple-first), then `Logistic + poly + L2`. The expectation recorded is that the Logistic configurations lead, against the prior order. The method was presented and agreed ("Agree the method"). | `Code/mobile/core.py`, `Code/outputs/mobile/core_prior.json`, DR-11 |
 | 18 | Step 4c, sub-task 1: round 1 run (42 s). Baseline mean CV accuracy 0.2500 (band 0 in every fold); `Logistic + L2` 0.9638 (fold SD 0.0141), with λ = 10⁻⁴ in 10/10 folds. Margin over the baseline 0.7138, spread 0.0141: C2 clear, so round 2 may proceed. λ at the grid edge is noted for 4e. | `Code/outputs/mobile/core_cv_round1.json`, `core_cv_store.json`, DR-12 |
+| 19 | Step 4d, sub-task 1: round 2 run (1 min 49 s) on the same folds. Mean CV accuracy: `Logistic + poly + L2` 0.9431, `Tree` 0.8281, `kNN` 0.6250; all four clearly beat the baseline, and `Logistic + L2` (0.9638) leads by more than one spread over each. DR-11 *Outcome vs expectation* filled in: the CV order agrees with the advisor's expectation and disagrees with the prior order. Grid edges noted for 4e: λ = 10⁻⁴ for both Logistic configurations, k = 51 for `kNN` (10/10 folds each). | `Code/outputs/mobile/core_cv_round2.json`, `core_cv_store.json`, DR-11, DR-13 |
 
 ## Code Summary
 
