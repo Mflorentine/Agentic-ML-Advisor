@@ -1001,6 +1001,62 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 - **Supersedes / superseded by:** n/a
 - **Links:** `Code/outputs/hf2/core_cv_post_prior_1.json`, `Code/outputs/hf2/core_cv_post_prior_2.json`, DR-14
 
+### DR-16 · DX · step 4
+
+- **Sub-task:** 1 — Death during follow-up
+- **Date:** 2026-10-28
+- **Question:** Diagnosis pass 2 (§18) on the unchanged leader, `Logistic + poly`: which action is left, and does the loop stop?
+
+**Evidence**
+
+| Item | Value | Tag | Where |
+| --- | --- | --- | --- |
+| Leader | unchanged (DR-15), so its observations are those of DR-14: O4 holds first (E_train 0.1878 ≥ 2 × gap 0.0546) | CV | `Code/outputs/hf2/core_diagnose_Logistic___poly.json` |
+| DX-5 parts | (i) add polynomial terms: the leader has them; (ii) add k-NN or a tree: done in pass 1, neither leads (DR-15); (iii) ask whether more input variables exist: needs the user | — | DR-14, DR-15 |
+| User's answer to (iii) | "No; stop the loop" | M | user, 28 October 2026 |
+
+**Observation → action**
+
+| Observation | Holds | Test values |
+| --- | --- | --- |
+| O1, O2, O5, O3 | no | as DR-14 |
+| **O4 underfitting** | **yes**, the first that holds | as DR-14 |
+| O6 | no | as DR-14 |
+
+- **Action:** DX-5 part (iii): the user was asked whether more input variables exist. The answer was no. The only other column in the file, `time`, was set aside in step 1 as a leakage risk.
+
+**Stopping check**
+
+- **S1 (criterion met):** not assessed until 4g.
+- **S2:** the achievable level is unknown.
+- **S3:** pass 1 gave no gain, because the leader did not change; pass 2 adds no configuration.
+- **S4:** no.
+- **S5 (user stops it): applies.** "No; stop the loop."
+- **S6:** no.
+- The loop stops under S5 after two passes.
+
+**Thresholds applied**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| as DR-14 | | |
+
+- **Options considered:** put to the user without a recommendation: no further inputs, stop the loop (chosen); more inputs exist
+- **Expectation:** n/a (no configuration action is taken)
+- **Decision:** The diagnosis loop ends under S5. Six configurations have been compared, besides the baseline: the 4 prior-kept Logistic configurations, and `kNN` and `Tree` post-prior. The leader is `Logistic + poly`. Next is 4f.
+
+**Why not**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| n/a | | codes are assigned at 4f |
+
+- **Confidence:** n/a
+- **Outcome vs expectation:** n/a
+- **User involvement:** asked — "No; stop the loop"
+- **Supersedes / superseded by:** n/a
+- **Links:** DR-14, DR-15
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1033,6 +1089,7 @@ Agreed 28 October 2026 (DR-05, DR-06). Counts are from `Code/outputs/hf2/split.j
 | 20 | Step 4d, sub-task 1: round 2 run (46 s) on the same folds. Mean CV PR-AUC: `Logistic + poly` 0.7064 (leader), `Logistic + poly + L2` 0.6882, `Logistic + L2` 0.6703, `Logistic` 0.6627. All clearly beat the baseline, and all are within noise of the leader. DR-11 outcome vs expectation: disagree (expected the plain configurations first and `Logistic + poly` last); prior agreement partial (winner at prior rank 2). | `Code/outputs/hf2/core_cv_round2.json`, `core_cv_store.json`, DR-11, DR-13 |
 | 21 | Step 4e, pass 1 on `Logistic + poly` (2 min 4 s): O4 (underfitting) holds first (E_train 0.1878 ≥ 2 × gap 0.0546). DX-5: part (i) does not apply (the leader has poly); part (ii) adds `kNN` and `Tree`, which the prior had not kept. The expectation was written before the run. | `Code/outputs/hf2/core_diagnose_Logistic___poly.json`, DR-14 |
 | 22 | Step 4e, DX-5 (ii) run (2 min 50 s): `kNN` 0.5633 (k = 51 in 7/10 folds), `Tree` 0.5546. Both clearly beat the baseline and both are below the four Logistic configurations. The leader is unchanged. DR-14 outcome vs expectation: agree. | `Code/outputs/hf2/core_cv_post_prior_1.json`, `_2.json`, DR-15 |
+| 23 | Step 4e, pass 2: the leader is unchanged, so O4 and DX-5 remain, and only part (iii) is left. Asked whether more input variables exist, the user chose "No; stop the loop". The loop ends under S5 after two passes, with 6 configurations compared. Step 4e is done. | DR-16 |
 
 ## Code Summary
 
