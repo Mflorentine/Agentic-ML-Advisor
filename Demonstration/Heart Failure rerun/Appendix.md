@@ -4,7 +4,7 @@
 
 ## Data Summary
 
-*Step 1, 28 October 2026. All figures are from `Code/outputs/hf2/01_describe.json`. The decisions taken in step 1 are under* Step 1 decisions *at the end of this section.*
+*Step 1, closed 28 October 2026. All figures are from `Code/outputs/hf2/01_describe.json`. The decisions taken in step 1 are under* Step 1 decisions *at the end of this section.*
 
 **This is a rerun, and that is a limitation.**
 - The same data were analysed before in `Demonstration/Heart Failure/` (steps 1–5, finished), and its data, decisions and results are known to the user and to the advisor.
@@ -241,6 +241,7 @@
 | 3 | Step 1, describing pass (`hf2_01_describe_data.py`, written fresh). No conclusions drawn. | `Code/hf2_01_describe_data.py`, `Code/outputs/hf2/01_describe.json`, `01_describe.md` |
 | 4 | Step 1. The user stated their experience ("New to ML") and answered ADM-1 "Yes", ADM-3 "Neither" and ADM-4 "Yes". | DR-01, DR-02, DR-03 |
 | 5 | Step 1, scope. `time` set aside as a leakage risk (not an input; kept in the file); the alternative, keeping it as an input, was offered and not taken. `platelets` used as recorded, with its unit uncertain; rescaling by 1/1,000 was not taken. `serum_sodium` = 113 (1 row) and `age` = 60.667 (2 rows) accepted as-is; setting to missing and rounding were not taken. All 299 rows kept. | `Data Summary`, *Step 1 decisions* |
+| 6 | Step 1 closed by the user ("close step 1"). Three items listed at the close were not taken up. Rows are not restricted by follow-up length: a 0 means "no death observed during follow-up", which is recorded as a label limitation. The coding of `sex` stays undocumented. The two hospitals stay unidentified in the file. | `Data Summary` |
 
 ## Code Summary
 
