@@ -1574,7 +1574,54 @@ Flags: none.
 - **What the model computes.** For each band, the model adds up the phone's 20 specifications, each multiplied by a weight learned for that band, plus a constant. The specifications are first put on a common scale (standardised on the training phones). The four totals are turned into four probabilities that sum to 1, by the softmax function (pp. 56–57). The phone is assigned the band with the highest probability.
 - **Its boundaries.** Because each band's score is a weighted sum, the boundaries between bands are straight (linear) in the space of the 20 specifications (p. 55). λ = 10⁻⁵ is a light penalty that keeps the weights finite.
 - **What the weights can say.** They give the direction and relative size of each specification's pull towards or away from each band, with the others held fixed. They are not causes (ADM-2: prediction only), and L2 shrinks them.
-- **Pending.** The fitted weights and one worked example of a prediction, which §25.3 asks for at this experience level, have not been computed. The core's `final` does not save the fitted model. Producing them needs a verified rebuild of the final model through the core, as the Sepsis analysis added later with an `explain` command. That is a core change, raised with the user before step 5.
+- **The fitted weights** (completed in step 5, from `Code/outputs/mobile/core_weights.json`).
+  - **Source.** The core's `explain` command (version `0cd91791…`; additions only, shown to the user before it ran: "Run explain") rebuilt the final model with the same code and settings as `final`. It accepted the rebuild only because its predicted band equals the saved prediction for all 400 test phones. That check read the test inputs and the saved predictions only: no true band was read and no metric computed.
+  - **Penalty.** λ = 10⁻⁵, which is C = 31.25 in scikit-learn's setting.
+  - **Constants (intercepts) per band:** low −10.61, medium 10.20, high 10.29, very high −9.88.
+  - **How to read the table.** Each specification has one weight per band, on the standardised scale: the change in that band's score for a phone one standard deviation above the training mean, others fixed. Only differences between a phone's four scores matter for its probabilities, so the useful reading is how a weight changes from band to band. The table is sorted by that spread (largest weight minus smallest). The weights are not causes (ADM-2, DR-04), and L2 shrinks them.
+
+| Specification | SD (training) | Low | Medium | High | Very high | Spread |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ram` (MB) | 1,085.14 | −34.347 | −10.513 | 10.471 | 34.389 | 68.737 |
+| `battery_power` (mAh) | 437.03 | −8.680 | −2.684 | 2.702 | 8.661 | 17.341 |
+| `px_height` (pixels) | 443.12 | −5.288 | −1.413 | 1.539 | 5.163 | 10.451 |
+| `px_width` (pixels) | 429.16 | −4.870 | −1.676 | 1.526 | 5.021 | 9.891 |
+| `mobile_wt` (unit not stated) | 35.49 | 1.196 | 0.559 | −0.089 | −1.666 | 2.862 |
+| `wifi` (0/1) | 0.50 | 0.582 | 0.171 | −0.236 | −0.517 | 1.099 |
+| `int_memory` (GB) | 18.07 | −0.444 | −0.275 | 0.087 | 0.632 | 1.077 |
+| `n_cores` | 2.30 | −0.379 | −0.168 | 0.114 | 0.433 | 0.812 |
+| `blue` (0/1) | 0.50 | 0.258 | 0.223 | 0.030 | −0.511 | 0.768 |
+| `sc_h` (cm) | 4.20 | −0.129 | −0.137 | −0.166 | 0.431 | 0.597 |
+| `touch_screen` (0/1) | 0.50 | 0.235 | 0.075 | −0.177 | −0.133 | 0.412 |
+| `dual_sim` (0/1) | 0.50 | 0.170 | 0.060 | −0.076 | −0.155 | 0.326 |
+| `m_dep` (cm) | 0.29 | 0.143 | 0.092 | −0.172 | −0.063 | 0.315 |
+| `three_g` (0/1) | 0.43 | 0.067 | −0.142 | 0.128 | −0.053 | 0.269 |
+| `pc` (megapixels) | 6.04 | −0.086 | −0.126 | 0.141 | 0.071 | 0.267 |
+| `talk_time` (unit not stated) | 5.50 | 0.081 | −0.141 | −0.003 | 0.064 | 0.222 |
+| `fc` (megapixels) | 4.32 | −0.047 | 0.088 | −0.081 | 0.041 | 0.169 |
+| `four_g` (0/1) | 0.50 | −0.039 | 0.062 | −0.066 | 0.043 | 0.128 |
+| `sc_w` (cm) | 4.31 | 0.030 | −0.033 | 0.039 | −0.036 | 0.074 |
+| `clock_speed` (unit not stated) | 0.82 | 0.030 | 0.027 | −0.033 | −0.024 | 0.063 |
+
+  - **What the table shows** (reading the output, not new analysis):
+    - For `ram`, `battery_power`, `px_height` and `px_width`, the weight rises steadily from low to very high, so a phone above the training mean on these is pulled towards the higher bands.
+    - The spread for `ram` (68.7) is about four times that of `battery_power` (17.3) and more than six times that of each pixel dimension.
+    - The other 16 specifications have spreads below 3.
+    - This matches the round-1 elimination candidates (DR-19), where dropping `ram`, `battery_power`, `px_width` or `px_height` lowered CV accuracy by more than one spread.
+
+- **Worked example** (a constructed typical phone, not a real row).
+  - **The phone.** Each numerical specification is at its training median: RAM 2,156 MB, battery 1,225 mAh, pixel height 561.5, pixel width 1,261.5, weight 141, storage 32 GB, 4 cores, screen 12 × 5 cm, and so on. Each yes/no feature is at its most common training value: Bluetooth no; dual SIM, 3G, 4G, touch screen and wifi yes.
+  - **Step 1, standardise.** Each value is put on the training scale. RAM 2,156 MB is 0.03 SD above the training mean.
+  - **Step 2, score each band.** Each band's score is its constant plus the sum of weight × standardised value over the 20 specifications:
+    - low −9.585;
+    - medium 10.322;
+    - high 9.751;
+    - very high −10.488.
+
+    For this phone, the largest single contributions to the medium score come from `ram` (−0.319), `px_height` (+0.258), `blue` (−0.220) and `wifi` (+0.169).
+  - **Step 3, probabilities.** The softmax turns the four scores into probabilities that sum to 1 (pp. 56–57). Medium is 0.6389, high 0.3611, and low and very high are below 10⁻⁸.
+  - **Step 4, predict.** The predicted band is the one with the highest probability: **medium**. The scores of the two middle bands are close (10.32 against 9.75), which is why the probability is split between them.
+  - **Trust limits (§21).** These weights describe this fitted model on phones like the training data. They hold only while new phones resemble it, and they say nothing about why prices differ.
 
 **10. Use and limits** (draft, turned into prose in step 5).
 - **What the result covers.** The model places a phone described by these 20 specifications in one of four price bands. The 0.9600 is an average over phones like the 400 test phones (E_new, pp. 68–69). It says nothing about the worst single prediction, beyond the observation that every test miss was one band away. It holds only while new phones resemble these (§6.6; ADM-4, DR-03).

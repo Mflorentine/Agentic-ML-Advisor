@@ -1,0 +1,862 @@
+{
+  "core_version_sha256": "0cd91791b20afa1b79bdc742b056cb8eace2f0eb885046d67f524336fe19584a",
+  "rebuild_of": {
+    "recommend_version": "b81c7f4302efc0235d05b7af832ff2c85a4ba00c1a2fce10c1a3f24ed8b49af0",
+    "configuration": "Logistic + L2",
+    "hyperparameters": {
+      "m__lam": 1e-05
+    },
+    "threshold": "none: P6 = no, predicted band = highest probability or majority (interpretation x)"
+  },
+  "verification": {
+    "test_phones": 400,
+    "true_bands_read": false,
+    "metric_computed": false,
+    "predicted_bands_identical_to_saved": true
+  },
+  "lambda": 1e-05,
+  "C_used": 31.25,
+  "classes": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "intercept": {
+    "0": -10.608316097401495,
+    "1": 10.202519514377197,
+    "2": 10.288067562961485,
+    "3": -9.882270979937212
+  },
+  "note": "One weight per band and design column. weight_standardised: change in that band's score (log-odds scale) per 1 SD of the column, others fixed; weight_per_unit = weight_standardised / column_sd. The band probabilities depend only on differences between the four scores (softmax, pp. 56-57). Sorted by spread_standardised = largest minus smallest of the four standardised weights. Not causal effects (\u00a721).",
+  "weights": [
+    {
+      "column": "ram",
+      "unit": "the value as recorded",
+      "column_mean": 2123.12375,
+      "column_sd": 1085.138979433482,
+      "weight_standardised": {
+        "0": -34.34737282447974,
+        "1": -10.513025502968947,
+        "2": 10.470975588905171,
+        "3": 34.38942273854329
+      },
+      "weight_per_unit": {
+        "0": -0.031652510393103246,
+        "1": -0.009688183451356136,
+        "2": 0.00964943273383447,
+        "3": 0.0316912611106247
+      },
+      "spread_standardised": 68.73679556302304
+    },
+    {
+      "column": "battery_power",
+      "unit": "the value as recorded",
+      "column_mean": 1239.735,
+      "column_sd": 437.0325843401159,
+      "weight_standardised": {
+        "0": -8.679523168742536,
+        "1": -2.6838164876005175,
+        "2": 2.702360224579311,
+        "3": 8.660979431763733
+      },
+      "weight_per_unit": {
+        "0": -0.019860128237000726,
+        "1": -0.006140998597742695,
+        "2": 0.00618342961465827,
+        "3": 0.019817697220085126
+      },
+      "spread_standardised": 17.34050260050627
+    },
+    {
+      "column": "px_height",
+      "unit": "the value as recorded",
+      "column_mean": 642.365,
+      "column_sd": 443.1230732257127,
+      "weight_standardised": {
+        "0": -5.28838492164095,
+        "1": -1.4132938422849322,
+        "2": 1.5390244736931766,
+        "3": 5.162654290232709
+      },
+      "weight_per_unit": {
+        "0": -0.011934347907330061,
+        "1": -0.003189393483839298,
+        "2": 0.003473130980271133,
+        "3": 0.011650610410898234
+      },
+      "spread_standardised": 10.45103921187366
+    },
+    {
+      "column": "px_width",
+      "unit": "the value as recorded",
+      "column_mean": 1257.40125,
+      "column_sd": 429.15759226470374,
+      "weight_standardised": {
+        "0": -4.870156314437387,
+        "1": -1.676390167360017,
+        "2": 1.5256281804204461,
+        "3": 5.020918301376944
+      },
+      "weight_per_unit": {
+        "0": -0.011348176991899708,
+        "1": -0.003906234440624837,
+        "2": 0.0035549369460518387,
+        "3": 0.011699474486472674
+      },
+      "spread_standardised": 9.89107461581433
+    },
+    {
+      "column": "mobile_wt",
+      "unit": "the value as recorded",
+      "column_mean": 140.2375,
+      "column_sd": 35.49429311523183,
+      "weight_standardised": {
+        "0": 1.1957990917126955,
+        "1": 0.5586166534974869,
+        "2": -0.08855797058587997,
+        "3": -1.6658577746243062
+      },
+      "weight_per_unit": {
+        "0": 0.03368989735421824,
+        "1": 0.01573821041269773,
+        "2": -0.002494991808919183,
+        "3": -0.046933115957996895
+      },
+      "spread_standardised": 2.8616568663370017
+    },
+    {
+      "column": "wifi",
+      "unit": "0/1",
+      "column_mean": 0.506875,
+      "column_sd": 0.4999527321407493,
+      "weight_standardised": {
+        "0": 0.5815036722827743,
+        "1": 0.17120689419524754,
+        "2": -0.23557135675075547,
+        "3": -0.5171392097272655
+      },
+      "weight_per_unit": {
+        "0": 1.1631173006952713,
+        "1": 0.3424461617844474,
+        "2": -0.47118725752745,
+        "3": -1.034376204952267
+      },
+      "spread_standardised": 1.0986428820100398
+    },
+    {
+      "column": "int_memory",
+      "unit": "the value as recorded",
+      "column_mean": 32.139375,
+      "column_sd": 18.07166150660687,
+      "weight_standardised": {
+        "0": -0.444472309334674,
+        "1": -0.27483298571497145,
+        "2": 0.08711655933848264,
+        "3": 0.6321887357111683
+      },
+      "weight_per_unit": {
+        "0": -0.024594988633014077,
+        "1": -0.015207953381292279,
+        "2": 0.004820617036603605,
+        "3": 0.03498232497770305
+      },
+      "spread_standardised": 1.0766610450458423
+    },
+    {
+      "column": "n_cores",
+      "unit": "the value as recorded",
+      "column_mean": 4.546875,
+      "column_sd": 2.2954417296840712,
+      "weight_standardised": {
+        "0": -0.3790883894834189,
+        "1": -0.16750792310062018,
+        "2": 0.11366652529140354,
+        "3": 0.4329297872926422
+      },
+      "weight_per_unit": {
+        "0": -0.16514833924169967,
+        "1": -0.07297415610008746,
+        "2": 0.04951836669234371,
+        "3": 0.18860412864944634
+      },
+      "spread_standardised": 0.812018176776061
+    },
+    {
+      "column": "blue",
+      "unit": "0/1",
+      "column_mean": 0.49375,
+      "column_sd": 0.49996093597400754,
+      "weight_standardised": {
+        "0": 0.25781286537288733,
+        "1": 0.2226891269147883,
+        "2": 0.03002758023022718,
+        "3": -0.510529572517897
+      },
+      "weight_per_unit": {
+        "0": 0.5156660187272927,
+        "1": 0.4454130530837427,
+        "2": 0.06005985281975767,
+        "3": -1.0211389246307814
+      },
+      "spread_standardised": 0.7683424378907844
+    },
+    {
+      "column": "sc_h",
+      "unit": "the value as recorded",
+      "column_mean": 12.31,
+      "column_sd": 4.1970406240588085,
+      "weight_standardised": {
+        "0": -0.12910604865029152,
+        "1": -0.1366979635360383,
+        "2": -0.1656401262906826,
+        "3": 0.4314441384770113
+      },
+      "weight_per_unit": {
+        "0": -0.03076121015131792,
+        "1": -0.03257008348988592,
+        "2": -0.03946593352973027,
+        "3": 0.10279722717093384
+      },
+      "spread_standardised": 0.5970842647676939
+    },
+    {
+      "column": "touch_screen",
+      "unit": "0/1",
+      "column_mean": 0.506875,
+      "column_sd": 0.49995273214074926,
+      "weight_standardised": {
+        "0": 0.23475493394544658,
+        "1": 0.07481657292115045,
+        "2": -0.176956195253972,
+        "3": -0.13261531161261103
+      },
+      "weight_per_unit": {
+        "0": 0.4695542575400051,
+        "1": 0.1496472928566529,
+        "2": -0.353945851033282,
+        "3": -0.265255699363348
+      },
+      "spread_standardised": 0.41171112919941855
+    },
+    {
+      "column": "dual_sim",
+      "unit": "0/1",
+      "column_mean": 0.505,
+      "column_sd": 0.49997499937496465,
+      "weight_standardised": {
+        "0": 0.17041249732955197,
+        "1": 0.060430898446685144,
+        "2": -0.07553447489857193,
+        "3": -0.15530892087767492
+      },
+      "weight_per_unit": {
+        "0": 0.3408420371870399,
+        "1": 0.12086784043648546,
+        "2": -0.15107650381119073,
+        "3": -0.3106333738123541
+      },
+      "spread_standardised": 0.3257214182072269
+    },
+    {
+      "column": "m_dep",
+      "unit": "the value as recorded",
+      "column_mean": 0.5023750000000012,
+      "column_sd": 0.2867173858959382,
+      "weight_standardised": {
+        "0": 0.14300881927140582,
+        "1": 0.09243074867514292,
+        "2": -0.17230365009061774,
+        "3": -0.06313591785594262
+      },
+      "weight_per_unit": {
+        "0": 0.4987797263306165,
+        "1": 0.32237580705583696,
+        "2": -0.6009529193780875,
+        "3": -0.22020261400840652
+      },
+      "spread_standardised": 0.31531246936202356
+    },
+    {
+      "column": "three_g",
+      "unit": "0/1",
+      "column_mean": 0.7625,
+      "column_sd": 0.4255511132637318,
+      "weight_standardised": {
+        "0": 0.06670238265006764,
+        "1": -0.1416166287991847,
+        "2": 0.12773999237951492,
+        "3": -0.05282574623041307
+      },
+      "weight_per_unit": {
+        "0": 0.15674352756005927,
+        "1": -0.3327840637357679,
+        "2": 0.3001754393257787,
+        "3": -0.12413490315010585
+      },
+      "spread_standardised": 0.26935662117869963
+    },
+    {
+      "column": "pc",
+      "unit": "the value as recorded",
+      "column_mean": 9.885625,
+      "column_sd": 6.040698913153584,
+      "weight_standardised": {
+        "0": -0.08588917418356387,
+        "1": -0.12594478717901564,
+        "2": 0.14104936640567198,
+        "3": 0.07078459495690982
+      },
+      "weight_per_unit": {
+        "0": -0.01421841667965618,
+        "1": -0.020849373390349195,
+        "2": 0.023349842200964175,
+        "3": 0.01171794786904158
+      },
+      "spread_standardised": 0.2669941535846876
+    },
+    {
+      "column": "talk_time",
+      "unit": "the value as recorded",
+      "column_mean": 11.14,
+      "column_sd": 5.496398821046373,
+      "weight_standardised": {
+        "0": 0.08064864379506734,
+        "1": -0.14117517080089453,
+        "2": -0.002996728893165216,
+        "3": 0.06352325589898677
+      },
+      "weight_per_unit": {
+        "0": 0.014672997069691152,
+        "1": -0.025685030398507072,
+        "2": -0.0005452167847955975,
+        "3": 0.011557250113610492
+      },
+      "spread_standardised": 0.22182381459596187
+    },
+    {
+      "column": "fc",
+      "unit": "the value as recorded",
+      "column_mean": 4.32625,
+      "column_sd": 4.319410947976574,
+      "weight_standardised": {
+        "0": -0.047428330283351,
+        "1": 0.08775703292520325,
+        "2": -0.08129871023354616,
+        "3": 0.04097000759168546
+      },
+      "weight_per_unit": {
+        "0": -0.010980277369896646,
+        "1": 0.020316898295197634,
+        "2": -0.01882171231510873,
+        "3": 0.009485091389805788
+      },
+      "spread_standardised": 0.1690557431587494
+    },
+    {
+      "column": "four_g",
+      "unit": "0/1",
+      "column_mean": 0.5275,
+      "column_sd": 0.49924317721928535,
+      "weight_standardised": {
+        "0": -0.03908617530276898,
+        "1": 0.06230984158607787,
+        "2": -0.06594861784458404,
+        "3": 0.042724951561281845
+      },
+      "weight_per_unit": {
+        "0": -0.07829085521102863,
+        "1": 0.12480859915429385,
+        "2": -0.1320971840054152,
+        "3": 0.08557944006216339
+      },
+      "spread_standardised": 0.12825845943066191
+    },
+    {
+      "column": "sc_w",
+      "unit": "the value as recorded",
+      "column_mean": 5.73625,
+      "column_sd": 4.311662781050959,
+      "weight_standardised": {
+        "0": 0.030436625824175924,
+        "1": -0.03333333347028972,
+        "2": 0.038610239731515776,
+        "3": -0.035713532085400505
+      },
+      "weight_per_unit": {
+        "0": 0.007059138752209433,
+        "1": -0.007730969503641188,
+        "2": 0.00895483753998605,
+        "3": -0.008283006788553952
+      },
+      "spread_standardised": 0.07432377181691628
+    },
+    {
+      "column": "clock_speed",
+      "unit": "the value as recorded",
+      "column_mean": 1.513562499999998,
+      "column_sd": 0.817700928575813,
+      "weight_standardised": {
+        "0": 0.02962598669025695,
+        "1": 0.027350747426159117,
+        "2": -0.03323983232581862,
+        "3": -0.02373690179060761
+      },
+      "weight_per_unit": {
+        "0": 0.036230834104415695,
+        "1": 0.033448350699314754,
+        "2": -0.040650354138293966,
+        "3": -0.02902883066544891
+      },
+      "spread_standardised": 0.06286581901607557
+    }
+  ],
+  "worked_example": {
+    "phone": "constructed: numerical inputs at their training medians, indicators at their most common training value",
+    "inputs": {
+      "battery_power": 1225.0,
+      "clock_speed": 1.5,
+      "fc": 3.0,
+      "int_memory": 32.0,
+      "m_dep": 0.5,
+      "mobile_wt": 141.0,
+      "n_cores": 4.0,
+      "pc": 10.0,
+      "px_height": 561.5,
+      "px_width": 1261.5,
+      "ram": 2156.0,
+      "sc_h": 12.0,
+      "sc_w": 5.0,
+      "talk_time": 11.0,
+      "blue": 0.0,
+      "dual_sim": 1.0,
+      "four_g": 1.0,
+      "three_g": 1.0,
+      "touch_screen": 1.0,
+      "wifi": 1.0
+    },
+    "scores": {
+      "0": -9.58530640217232,
+      "1": 10.32176500476896,
+      "2": 9.751127139953025,
+      "3": -10.487585742549697
+    },
+    "probabilities": {
+      "0": 1.4451357908774348e-09,
+      "1": 0.6389103447969896,
+      "2": 0.36108965317166397,
+      "3": 5.862106691731791e-10
+    },
+    "predicted_band": 1,
+    "contributions_by_band": {
+      "0": [
+        {
+          "column": "ram",
+          "standardised_value": 0.030296810475984825,
+          "contribution": -1.0406158448112544
+        },
+        {
+          "column": "px_height",
+          "standardised_value": -0.18248880477232557,
+          "contribution": 0.9650710435262456
+        },
+        {
+          "column": "wifi",
+          "standardised_value": 0.9863432446673237,
+          "contribution": 0.5735622189053557
+        },
+        {
+          "column": "battery_power",
+          "standardised_value": -0.03371602147754856,
+          "contribution": 0.2926389895722037
+        },
+        {
+          "column": "blue",
+          "standardised_value": -0.9875771574794987,
+          "contribution": -0.25461009674660073
+        },
+        {
+          "column": "touch_screen",
+          "standardised_value": 0.9863432446673238,
+          "contribution": 0.23154894324941505
+        },
+        {
+          "column": "dual_sim",
+          "standardised_value": 0.9900495037128175,
+          "contribution": 0.16871680840758477
+        },
+        {
+          "column": "n_cores",
+          "standardised_value": -0.2382439043988575,
+          "contribution": 0.09031549802280452
+        },
+        {
+          "column": "px_width",
+          "standardised_value": 0.009550687378896484,
+          "contribution": -0.046513340445550166
+        },
+        {
+          "column": "three_g",
+          "standardised_value": 0.5580998206737421,
+          "contribution": 0.03722658779551408
+        },
+        {
+          "column": "four_g",
+          "standardised_value": 0.9464325634488566,
+          "contribution": -0.03699242908721103
+        },
+        {
+          "column": "mobile_wt",
+          "standardised_value": 0.021482326680645276,
+          "contribution": 0.025688546732591026
+        },
+        {
+          "column": "fc",
+          "standardised_value": -0.3070441817121571,
+          "contribution": 0.014562592861825428
+        },
+        {
+          "column": "sc_h",
+          "standardised_value": -0.07386156765387954,
+          "contribution": 0.009535975146908569
+        },
+        {
+          "column": "sc_w",
+          "standardised_value": -0.17075778821008367,
+          "contribution": -0.005197290906314196
+        },
+        {
+          "column": "int_memory",
+          "standardised_value": -0.007712351183041285,
+          "contribution": 0.003427926540726365
+        },
+        {
+          "column": "talk_time",
+          "standardised_value": -0.025471222987663068,
+          "contribution": -0.0020542195897567694
+        },
+        {
+          "column": "pc",
+          "standardised_value": 0.018934067339616934,
+          "contribution": -0.0016262314077356867
+        },
+        {
+          "column": "m_dep",
+          "standardised_value": -0.008283418156104509,
+          "contribution": -0.0011846018500358314
+        },
+        {
+          "column": "clock_speed",
+          "standardised_value": -0.01658613745690577,
+          "contribution": -0.0004913806875410626
+        }
+      ],
+      "1": [
+        {
+          "column": "ram",
+          "standardised_value": 0.030296810475984825,
+          "contribution": -0.31851114119264523
+        },
+        {
+          "column": "px_height",
+          "standardised_value": -0.18248880477232557,
+          "contribution": 0.25791030407066484
+        },
+        {
+          "column": "blue",
+          "standardised_value": -0.9875771574794987,
+          "contribution": -0.21992269496009795
+        },
+        {
+          "column": "wifi",
+          "standardised_value": 0.9863432446673237,
+          "contribution": 0.16886876352995564
+        },
+        {
+          "column": "battery_power",
+          "standardised_value": -0.03371602147754856,
+          "contribution": 0.090487614337738
+        },
+        {
+          "column": "three_g",
+          "standardised_value": 0.5580998206737421,
+          "contribution": -0.07903621513724489
+        },
+        {
+          "column": "touch_screen",
+          "standardised_value": 0.9863432446673238,
+          "contribution": 0.07379482128993697
+        },
+        {
+          "column": "dual_sim",
+          "standardised_value": 0.9900495037128175,
+          "contribution": 0.059829581016060306
+        },
+        {
+          "column": "four_g",
+          "standardised_value": 0.9464325634488566,
+          "contribution": 0.05897206310040385
+        },
+        {
+          "column": "n_cores",
+          "standardised_value": -0.2382439043988575,
+          "contribution": 0.03990774161723533
+        },
+        {
+          "column": "fc",
+          "standardised_value": -0.3070441817121571,
+          "contribution": -0.02694528636400586
+        },
+        {
+          "column": "px_width",
+          "standardised_value": 0.009550687378896484,
+          "contribution": -0.01601067841351148
+        },
+        {
+          "column": "mobile_wt",
+          "standardised_value": 0.021482326680645276,
+          "contribution": 0.01200038543968184
+        },
+        {
+          "column": "sc_h",
+          "standardised_value": -0.07386156765387954,
+          "contribution": 0.010096725881864652
+        },
+        {
+          "column": "sc_w",
+          "standardised_value": -0.17075778821008367,
+          "contribution": 0.005691926297055824
+        },
+        {
+          "column": "talk_time",
+          "standardised_value": -0.025471222987663068,
+          "contribution": 0.0035959042557910047
+        },
+        {
+          "column": "pc",
+          "standardised_value": 0.018934067339616934,
+          "contribution": -0.0023846470815212057
+        },
+        {
+          "column": "int_memory",
+          "standardised_value": -0.007712351183041285,
+          "contribution": 0.002119608502517629
+        },
+        {
+          "column": "m_dep",
+          "standardised_value": -0.008283418156104509,
+          "contribution": -0.0007656425417580116
+        },
+        {
+          "column": "clock_speed",
+          "standardised_value": -0.01658613745690577,
+          "contribution": -0.00045364325635938684
+        }
+      ],
+      "2": [
+        {
+          "column": "ram",
+          "standardised_value": 0.030296810475984825,
+          "contribution": 0.31723716291572357
+        },
+        {
+          "column": "px_height",
+          "standardised_value": -0.18248880477232557,
+          "contribution": -0.28085473671962524
+        },
+        {
+          "column": "wifi",
+          "standardised_value": 0.9863432446673237,
+          "contribution": -0.2323542163682238
+        },
+        {
+          "column": "touch_screen",
+          "standardised_value": 0.9863432446673238,
+          "contribution": -0.17453954779078723
+        },
+        {
+          "column": "battery_power",
+          "standardised_value": -0.03371602147754856,
+          "contribution": -0.091112835371989
+        },
+        {
+          "column": "dual_sim",
+          "standardised_value": 0.9900495037128175,
+          "contribution": -0.07478286938653941
+        },
+        {
+          "column": "three_g",
+          "standardised_value": 0.5580998206737421,
+          "contribution": 0.07129166683987245
+        },
+        {
+          "column": "four_g",
+          "standardised_value": 0.9464325634488566,
+          "contribution": -0.062415919442558684
+        },
+        {
+          "column": "blue",
+          "standardised_value": -0.9875771574794987,
+          "contribution": -0.02965455232975535
+        },
+        {
+          "column": "n_cores",
+          "standardised_value": -0.2382439043988575,
+          "contribution": -0.027080356784875467
+        },
+        {
+          "column": "fc",
+          "standardised_value": -0.3070441817121571,
+          "contribution": 0.024962295957912953
+        },
+        {
+          "column": "px_width",
+          "standardised_value": 0.009550687378896484,
+          "contribution": 0.014570797807630364
+        },
+        {
+          "column": "sc_h",
+          "standardised_value": -0.07386156765387954,
+          "contribution": 0.012234439394216402
+        },
+        {
+          "column": "sc_w",
+          "standardised_value": -0.17075778821008367,
+          "contribution": -0.006592999138814728
+        },
+        {
+          "column": "pc",
+          "standardised_value": 0.018934067339616934,
+          "contribution": 0.002670638201735296
+        },
+        {
+          "column": "mobile_wt",
+          "standardised_value": 0.021482326680645276,
+          "contribution": -0.0019024312543008488
+        },
+        {
+          "column": "m_dep",
+          "standardised_value": -0.008283418156104509,
+          "contribution": 0.0014272631835237012
+        },
+        {
+          "column": "int_memory",
+          "standardised_value": -0.007712351183041285,
+          "contribution": -0.0006718734994766329
+        },
+        {
+          "column": "clock_speed",
+          "standardised_value": -0.01658613745690577,
+          "contribution": 0.0005513204280005275
+        },
+        {
+          "column": "talk_time",
+          "standardised_value": -0.025471222987663068,
+          "contribution": 7.633034987138395e-05
+        }
+      ],
+      "3": [
+        {
+          "column": "ram",
+          "standardised_value": 0.030296810475984825,
+          "contribution": 1.041889823088169
+        },
+        {
+          "column": "px_height",
+          "standardised_value": -0.18248880477232557,
+          "contribution": -0.9421266108772858
+        },
+        {
+          "column": "wifi",
+          "standardised_value": 0.9863432446673237,
+          "contribution": -0.5100767660670866
+        },
+        {
+          "column": "blue",
+          "standardised_value": -0.9875771574794987,
+          "contribution": 0.5041873440364483
+        },
+        {
+          "column": "battery_power",
+          "standardised_value": -0.03371602147754856,
+          "contribution": -0.29201376853795236
+        },
+        {
+          "column": "dual_sim",
+          "standardised_value": 0.9900495037128175,
+          "contribution": -0.1537635200371153
+        },
+        {
+          "column": "touch_screen",
+          "standardised_value": 0.9863432446673238,
+          "contribution": -0.130804216748551
+        },
+        {
+          "column": "n_cores",
+          "standardised_value": -0.2382439043988575,
+          "contribution": -0.10314288285516597
+        },
+        {
+          "column": "px_width",
+          "standardised_value": 0.009550687378896484,
+          "contribution": 0.04795322105143115
+        },
+        {
+          "column": "four_g",
+          "standardised_value": 0.9464325634488566,
+          "contribution": 0.04043628542937221
+        },
+        {
+          "column": "mobile_wt",
+          "standardised_value": 0.021482326680645276,
+          "contribution": -0.0357865009179721
+        },
+        {
+          "column": "sc_h",
+          "standardised_value": -0.07386156765387954,
+          "contribution": -0.03186714042298954
+        },
+        {
+          "column": "three_g",
+          "standardised_value": 0.5580998206737421,
+          "contribution": -0.02948203949815014
+        },
+        {
+          "column": "fc",
+          "standardised_value": -0.3070441817121571,
+          "contribution": -0.012579602455729927
+        },
+        {
+          "column": "sc_w",
+          "standardised_value": -0.17075778821008367,
+          "contribution": 0.0060983637480728475
+        },
+        {
+          "column": "int_memory",
+          "standardised_value": -0.007712351183041285,
+          "contribution": -0.004875661543767403
+        },
+        {
+          "column": "talk_time",
+          "standardised_value": -0.025471222987663068,
+          "contribution": -0.0016180150159054755
+        },
+        {
+          "column": "pc",
+          "standardised_value": 0.018934067339616934,
+          "contribution": 0.0013402402875216399
+        },
+        {
+          "column": "m_dep",
+          "standardised_value": -0.008283418156104509,
+          "contribution": 0.0005229812082702379
+        },
+        {
+          "column": "clock_speed",
+          "standardised_value": -0.01658613745690577,
+          "contribution": 0.0003937035159000905
+        }
+      ]
+    }
+  }
+}
