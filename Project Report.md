@@ -12,11 +12,11 @@
 
 ## Methods
 
-*Three sub-sections: the machine learning methods used and how they were chosen; how the work relates to smlbook.org; and the training and validation methods. Results uses the same sub-headings in the same order.*
+The method is described under three headings, which Results follows in the same order.
 
 ### The machine learning methods used
 
-The workflow chooses among a fixed set of model types from chapters 2 and 3 of Lindholm et al. (2026): linear regression, logistic regression, Poisson and exponential generalised linear models, k-nearest neighbours and decision trees. Polynomial terms (squares and cubes of the numerical inputs) and L2 regularisation can be added to the regression models where the book allows them, which gives fourteen configurations in all. Methods from other chapters, such as ensembles or neural networks, are not used. Which inputs a model receives, and whether any is transformed, is agreed with the user beforehand and is not part of the comparison. The choice among the fourteen is then made in four steps, illustrated here by the four analyses: the original Heart Failure analysis, Sepsis, Mobile Price and the Heart Failure rerun.
+The workflow chooses among a fixed set of model types from chapters 2 and 3 of Lindholm et al. (2026): linear regression, logistic regression, Poisson and exponential generalised linear models, k-nearest neighbours and decision trees. Polynomial terms (squares and cubes of the numerical inputs) and L2 regularisation can be added to the regression models where the book allows them, which gives fourteen configurations in all. Methods from other chapters, such as ensembles or neural networks, are not used. Which inputs a model receives, and whether any is transformed, is agreed with the user beforehand and is not part of the comparison. The choice among the fourteen is then made in four steps, illustrated here by the four analyses: the original Heart Failure analysis, on the heart failure clinical records (Chicco and Jurman, 2020; Heart Failure Clinical Records, 2020); Sepsis, on the PhysioNet/Computing in Cardiology Challenge 2019 data (Reyna et al., 2019, 2020); Mobile Price, on the Mobile Price Classification data (Sharma, 2018); and the Heart Failure rerun, on the same heart failure data.
 
 First, configurations that cannot serve the problem are removed. The output decides the families (Lindholm et al., 2026). In all four analyses it is a category, either a yes/no outcome or one of four price bands, so linear regression and the two generalised linear models, which predict numbers, were excluded every time.
 
@@ -82,7 +82,9 @@ Each model also has settings that must be chosen, such as the strength of its re
 
 Where the user wanted a flag rather than only a probability, a decision threshold was chosen after the model, on the training data only. It was set to maximise F2, which counts recall twice as heavily as precision, the trade-off the user chose (Lindholm et al., 2026). In the two Heart Failure analyses, the model's F2 at its threshold is reported beside the F2 of flagging every patient, which has recall 1 and precision equal to the share of deaths; in the original analysis this was the agreed baseline for F2.
 
-The chosen model was then refitted on all the training data and evaluated once on the test data, only after the user had approved it. The uncertainty reported with that result is the variation of the deciding metric across the ten outer folds. Each fold is smaller than the test set, so this approximates the uncertainty of the test result rather than measuring it; using it in this way is ours. Each analysis fixed its success criterion before any model was fitted: the test result had to exceed the baseline by more than this uncertainty, the baseline being flagging nobody in Sepsis and the rerun, the most common price band in Mobile Price, and, in the original Heart Failure analysis, the F2 of flagging every patient on the training rows.
+The chosen model was then refitted on all the training data and evaluated once on the test data, only after the user had approved it. The uncertainty reported with that result is the variation of the deciding metric across the ten outer folds. Each fold is smaller than the test set, so this approximates the uncertainty of the test result rather than measuring it; using it in this way is ours. Each analysis fixed its success criterion before any model was fitted: the test result had to exceed the baseline by more than this uncertainty, the baseline being flagging nobody in Sepsis and the rerun, the most common price band in Mobile Price, and, in the original Heart Failure analysis, the F2 of flagging every patient on the training rows. Table 1 sets out these choices for each analysis.
+
+<small><b>Table 1.</b> Split, cross-validation folds, metric, decision threshold and uncertainty for each analysis.</small>
 
 | Analysis | Split | Training / test rows (positives) | Folds stratified by | Metric for comparing and tuning | Decision threshold | Uncertainty of the test result |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -96,13 +98,13 @@ All four analyses used seed 2026 for the split and the folds. PR-AUC is the area
 
 ## Results
 
-*What came out of each method, under the same sub-headings as Methods.*
+Each sub-section reports what came out of the method described under the same heading in Methods.
 
 ### The machine learning methods used
 
-Table 1 gives, for each analysis, the recommended configuration and its single evaluation on the test data, on the metric agreed for that problem, and whether that analysis's own success criterion was met. The uncertainty is the standard deviation of that metric across the ten outer cross-validation folds. The selection confidence is followed by its three factors: the margin over the runner-up (C1), the margin over the baseline (C2), and whether more training data was still lowering the validation error (C3).
+Table 2 gives, for each analysis, the recommended configuration and its single evaluation on the test data, on the metric agreed for that problem, and whether that analysis's own success criterion was met. The uncertainty is the standard deviation of that metric across the ten outer cross-validation folds. The selection confidence is followed by its three factors: the margin over the runner-up (C1), the margin over the baseline (C2), and whether more training data was still lowering the validation error (C3).
 
-<small><b>Table 1.</b> Recommended configuration and test result for each analysis.</small>
+<small><b>Table 2.</b> Recommended configuration and test result for each analysis.</small>
 
 | Analysis | Recommended configuration | Deciding metric | Test result (fold SD) | Baseline | Test rows (positives) | Success criterion | Selection confidence (C1, C2, C3) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -111,7 +113,9 @@ Table 1 gives, for each analysis, the recommended configuration and its single e
 | Mobile Price | logistic regression with L2, λ = 10⁻⁵ | accuracy | 0.9600 (0.0141) | 0.2500 (most common band, on the test data) | 400 (100 per band) | met (0.9600 − 0.0141 = 0.9459, required above 0.2500) | High (clear, clear, adequate) |
 | Heart Failure rerun | logistic regression; threshold 0.10 | PR-AUC | 0.6983 (0.0938) | 0.3167 (flag nobody, on the test data) | 60 (19 deaths) | met (0.6983 − 0.0938 = 0.6045, required above 0.3167) | Low (none, clear, adequate) |
 
-**Heart Failure (original): cross-validation.** The mean F2 at threshold 0.5 was:
+#### Heart Failure (original): cross-validation
+
+The mean F2 at threshold 0.5 was:
 - flagging every patient 0.7032;
 - decision tree 0.5567;
 - logistic regression with squares and cubes 0.5286;
@@ -120,7 +124,9 @@ Table 1 gives, for each analysis, the recommended configuration and its single e
 
 A variant of the tree with a wider range of leaf sizes, added by the diagnosis, scored 0.5207. The tree's margin over the runner-up was 0.0281 (spread 0.1422), and its margin over the most common class 0.5567 (spread 0.1124).
 
-**Sepsis: cross-validation.** The mean PR-AUC was:
+#### Sepsis: cross-validation
+
+The mean PR-AUC was:
 - logistic regression with L2 0.0930;
 - the same with squares and cubes 0.0907;
 - k-nearest neighbours 0.0706;
@@ -129,7 +135,9 @@ A variant of the tree with a wider range of leaf sizes, added by the diagnosis, 
 
 The margin over the runner-up was 0.0023 (spread 0.0077), and over the baseline 0.0615 (spread 0.0156).
 
-**Mobile Price: cross-validation.** The mean accuracy was:
+#### Mobile Price: cross-validation
+
+The mean accuracy was:
 - logistic regression with L2, with λ searched down to 10⁻⁸, 0.9706;
 - the same with λ searched down to 10⁻⁴, 0.9637;
 - with squares and cubes added, 0.9431;
@@ -139,7 +147,9 @@ The margin over the runner-up was 0.0023 (spread 0.0077), and over the baseline 
 
 The margin over the runner-up was 0.0069 (spread 0.0055), and over the baseline 0.7206 (spread 0.0141).
 
-**Heart Failure rerun: cross-validation.** The mean PR-AUC was:
+#### Heart Failure rerun: cross-validation
+
+The mean PR-AUC was:
 - logistic regression with squares and cubes 0.7064;
 - the same with L2 0.6882;
 - logistic regression with L2 0.6703;
@@ -150,7 +160,8 @@ The margin over the runner-up was 0.0069 (spread 0.0055), and over the baseline 
 
 The recommended model's margin over the runner-up was −0.0437 (spread 0.1171), and over the baseline 0.3406 (spread 0.0892).
 
-**The two Heart Failure analyses on the same 60 test patients (19 deaths).**
+#### The two Heart Failure analyses on the same 60 test patients (19 deaths)
+
 - The rerun used a different deciding metric and success criterion from the original: PR-AUC, with success meaning test PR-AUC minus its fold SD above the test share of deaths, where the original used F2, with success meaning test F2 above the flag-everyone F2 on the training rows by more than its fold SD.
 - The original analysis's decision tree, at threshold 0.2, had a test F2 of 0.6780.
 - The rerun's logistic regression had a test PR-AUC of 0.6983, and a test F2 of 0.6400 at threshold 0.10.
@@ -160,9 +171,9 @@ Flagging every patient gives an F2 of 0.6985 on these test patients and 0.7038 o
 
 ### How it relates to smlbook.org
 
-Table 2 counts the rules applied in each analysis's Decision Records by the tag each carries: the book's advice ([B]), a fact from the book turned into advice ([B→I]), or ours ([I]). Each row of a record's table of rules applied is counted once, under one tag, taking a rule not in the guide (UNLISTED) first, then [B→I], then [B], then [I]; records later superseded in full, and the diagnosis records, which have no such table, are not counted.
+Table 3 counts the rules applied in each analysis's Decision Records by the tag each carries: the book's advice ([B]), a fact from the book turned into advice ([B→I]), or ours ([I]). Each row of a record's table of rules applied is counted once, under one tag, taking a rule not in the guide (UNLISTED) first, then [B→I], then [B], then [I]; records later superseded in full, and the diagnosis records, which have no such table, are not counted.
 
-<small><b>Table 2.</b> Rules applied in the Decision Records in force, by provenance tag.</small>
+<small><b>Table 3.</b> Rules applied in the Decision Records in force, by provenance tag.</small>
 
 | Analysis | Records in force (of all) | Rules applied | [B] | [B→I] | [I] | UNLISTED | No tag |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -184,9 +195,9 @@ Of the five changes to the method listed under Methods, the original Heart Failu
 
 ### Training and validation methods
 
-The training and test rows of each analysis, with the positives or the rows per class, are in the table under Methods. The spread of the deciding metric across the outer folds for each recommended configuration, and whether each analysis's own success criterion was met, are in Table 1. Mobile Price needed no decision threshold. For the other three analyses, Table 3 gives the threshold chosen on the training data, the nested cross-validation result at that threshold, and the test F2; for the two Heart Failure analyses it also gives the F2 of flagging every patient.
+The training and test rows of each analysis, with the positives or the rows per class, are in Table 1. The spread of the deciding metric across the outer folds for each recommended configuration, and whether each analysis's own success criterion was met, are in Table 2. Mobile Price needed no decision threshold. For the other three analyses, Table 4 gives the threshold chosen on the training data, the nested cross-validation result at that threshold, and the test F2; for the two Heart Failure analyses it also gives the F2 of flagging every patient.
 
-<small><b>Table 3.</b> Decision threshold, nested cross-validation at the tuned threshold, and F2 on the test data, with the F2 of flagging every patient.</small>
+<small><b>Table 4.</b> Decision threshold, nested cross-validation at the tuned threshold, and F2 on the test data, with the F2 of flagging every patient.</small>
 
 | Analysis | Threshold | Nested CV F2 (fold SD) | Nested CV precision (fold SD) | Nested CV recall (fold SD) | Test F2 | Flag everyone: F2 on the training rows | Flag everyone: F2 on the test rows |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -196,7 +207,7 @@ The training and test rows of each analysis, with the positives or the rows per 
 
 ## Discussion
 
-The project carried one workflow through four analyses of three datasets: heart failure, twice, sepsis and mobile phone prices. Each analysis fixed its problem, metric, baseline and test data before any model was fitted, chose among the book's configurations by nested cross-validation, and evaluated the chosen model once on its test data. Every choice was written down as a Decision Record; the 63 records still in force hold 199 rules applied, each tagged with its source (Table 2). This shows that the procedure can be followed from the data to a recommendation and leaves a record a reader can check rule by rule. It does not show that the procedure works for every kind of problem. All four outputs were categories, so linear regression and the Poisson and exponential models were excluded every time, and the parts of the method for numerical outputs have not been exercised. The code that computed each analysis's mechanical steps was also written for that analysis alone, and its records label it as not reviewed.
+The project carried one workflow through four analyses of three datasets: heart failure, twice, sepsis and mobile phone prices. Each analysis fixed its problem, metric, baseline and test data before any model was fitted, chose among the book's configurations by nested cross-validation, and evaluated the chosen model once on its test data. Every choice was written down as a Decision Record; the 63 records still in force hold 199 rules applied, each tagged with its source (Table 3). This shows that the procedure can be followed from the data to a recommendation and leaves a record a reader can check rule by rule. It does not show that the procedure works for every kind of problem. All four outputs were categories, so linear regression and the Poisson and exponential models were excluded every time, and the parts of the method for numerical outputs have not been exercised. The code that computed each analysis's mechanical steps was also written for that analysis alone, and its records label it as not reviewed.
 
 Three of the four recommendations were logistic regression: plain in the Heart Failure rerun, and with L2 regularisation in Sepsis and Mobile Price. The fourth, in the original Heart Failure analysis, was a decision tree of depth 3. The selection confidence was High only in Mobile Price, where logistic regression with L2 led every other configuration by more than the variation of the difference across the folds. In the other three it was Low, each time for the same reason: the recommended model could not be told apart from the runner-up (C1 none), while it was clearly ahead of its baseline (C2 clear). In those three the data did not single out one configuration, and the choice among the leaders was made by the rule that prefers the simpler model; in the rerun that rule recommended plain logistic regression although logistic regression with squares and cubes had the higher cross-validated mean (0.7064 against 0.6627). A Low confidence therefore says that another configuration near the top would have served about as well, not that the recommended model fails to beat its baseline. That reading needs one qualification in the original Heart Failure analysis, where C2 was measured against the most common class, which scores an F2 of 0. Against flagging every patient, its agreed baseline, the tree's cross-validated F2 at threshold 0.5 (0.5567) was below (0.7032). Four analyses, all with categorical outputs, also do not show that logistic regression is generally the better choice.
 
@@ -204,7 +215,7 @@ The ranking made before any model was fitted placed the cross-validation winner 
 
 The two Heart Failure analyses were evaluated on the same 60 patients, 19 of whom died. The original analysis decided on F2 and did not meet its success criterion: its tree reached a test F2 of 0.6780, where the criterion required more than 0.7903. The rerun decided on PR-AUC and met its criterion: 0.6983 against 0.3167 for flagging nobody, and still above it after subtracting the fold spread. The two outcomes answer different questions. PR-AUC summarises how well a model ranks patients by risk across all thresholds (Lindholm et al., 2026), so the rerun's result shows that its logistic model orders these patients by risk better than chance. F2 at a threshold scores one rule for whom to flag. On that measure, at their tuned thresholds, both models were below flagging every patient on the test data: 0.6780 for the tree and 0.6400 for the logistic model, against 0.6985. In nested cross-validation the logistic model's F2 (0.7127) was above flagging every patient on the training rows (0.7038), and the tree's (0.6943) below it. The change of metric and criterion therefore explains why one analysis met its criterion and the other did not; it does not show that the rerun's model is a better rule for whom to flag, nor that the changes to the method improved the prediction. The figures come from 60 patients, and the fold spreads of F2 at the tuned threshold (0.0865 for the tree, 0.0614 for the logistic model) are larger than the differences between the two models' test F2 and between either and flagging every patient. The rerun also reused a test set whose result was already known, so its test result is a like-for-like comparison with the original rather than a fresh estimate of performance on new patients.
 
-Of the 199 rules applied, 97 were the book's advice, 36 were facts from the book turned into advice and 55 were ours; six were rules not in the guide, and five carried no tag because they recorded that a rule had nothing to act on or cited the working contract (Table 2). The mix varied with the problem: Sepsis applied the most of the book's advice (31 of 52 rules), Mobile Price the most of ours (18 of 50). The method follows the book where a result is decided, in the held-out test data, the comparison by cross-validation and the start from simple models, and is ours mainly in how that practice is turned into rules and thresholds. The five changes made during the work kept that balance: two brought the diagnosis closer to the book, in how error is measured when one outcome is rare and in judging underfitting against what the application needs, and three filled gaps the four chapters leave. Some gaps showed up first as rules not in the guide: Sepsis stratified its folds by hospital before the guide allowed it, and a change on 27 October made that a rule. A further change on the same day altered how the work is done rather than what the method computes: the agent writes and runs all the code, and every decision that is the user's is put as two to four numbered options, each with its trade-off and book page. Mobile Price and the rerun were worked through under it from the start. Table 2 does not show it, since it counts the rules applied, not how decisions were put to the user. The tally also counts each rule once whatever its effect on the result, so it shows how the rules applied are sourced, not how much each source weighed in a recommendation.
+Of the 199 rules applied, 97 were the book's advice, 36 were facts from the book turned into advice and 55 were ours; six were rules not in the guide, and five carried no tag because they recorded that a rule had nothing to act on or cited the working contract (Table 3). The mix varied with the problem: Sepsis applied the most of the book's advice (31 of 52 rules), Mobile Price the most of ours (18 of 50). The method follows the book where a result is decided, in the held-out test data, the comparison by cross-validation and the start from simple models, and is ours mainly in how that practice is turned into rules and thresholds. The five changes made during the work kept that balance: two brought the diagnosis closer to the book, in how error is measured when one outcome is rare and in judging underfitting against what the application needs, and three filled gaps the four chapters leave. Some gaps showed up first as rules not in the guide: Sepsis stratified its folds by hospital before the guide allowed it, and a change on 27 October made that a rule. A further change on the same day altered how the work is done rather than what the method computes: the agent writes and runs all the code, and every decision that is the user's is put as two to four numbered options, each with its trade-off and book page. Mobile Price and the rerun were worked through under it from the start. Table 3 does not show it, since it counts the rules applied, not how decisions were put to the user. The tally also counts each rule once whatever its effect on the result, so it shows how the rules applied are sourced, not how much each source weighed in a recommendation.
 
 The work points to three next steps. Each analysis wrote its own interim core, labelled in its records as not reviewed; the workflow foresees a single core in `Code/advisor/`, built once and reviewed, and running the four analyses through it and comparing with their recorded outputs would show whether it reproduces them. In both Heart Failure analyses the model's F2 at its threshold was compared with flagging every patient, which reaches a high F2 when about a third of patients die; only the original made it the baseline, and Sepsis, which also tuned a threshold, did not report it. Reporting the F2 of flagging every patient wherever a threshold is tuned for F2 would put that comparison in every such analysis; it would be a change to the method, made as the five above were. Finally, a problem with a numerical or count output would exercise the parts of the method these four analyses never reached.
 
@@ -213,22 +224,35 @@ The work points to three next steps. Each analysis wrote its own interim core, l
 Problems met:
 - **The method changed while it was being applied.** Four of the five changes were made while Sepsis was in progress, three of them prompted by its data, and Sepsis re-ran a diagnosis pass under one of them; the fifth was made at the end of Mobile Price, prompted by its data. The first four were then used on Mobile Price, which had not prompted them, and all five on the Heart Failure rerun, whose data and earlier results the user and the advisor had already seen and whose test result was already known.
 - **The data carry their own limits.** In Mobile Price, the origin of the rows and the rule that set the price bands are undocumented, so no claim about real phones or a real market rests on it. In Sepsis, the label is constructed by the data's publisher from the Sepsis-3 criteria and starts six hours before onset, and patients who left intensive care before the outcome could be observed count as negatives. In Heart Failure, a patient recorded as not having died was not observed to die during a follow-up of varying length, which is not the same as surviving.
-- **The test sets are small where the outcome is rare, and the uncertainty is approximate.** Heart Failure was tested on 60 patients, 19 of whom died. Every reported uncertainty is the spread across the outer cross-validation folds, which are smaller than the test sets, so it approximates the uncertainty of the test result rather than measuring it.
+- **The Heart Failure test set is small, and every uncertainty is approximate.** Heart Failure was tested on 60 patients, 19 of whom died. Every reported uncertainty is the spread across the outer cross-validation folds, which are smaller than the test sets, so it approximates the uncertainty of the test result rather than measuring it.
 
 Not built or not tested:
 - **The interim cores are not reviewed.** Each analysis wrote its own, and some of the readings of the guide built into them were not checked, such as how the L2 strength converts for four classes in Mobile Price.
 - **Only categorical outputs were tested.** The configurations for numerical and count outputs were never fitted, so the rules that choose among them have not been tried on data.
 - **Only four chapters of the book are used.** Methods from other chapters, such as ensembles and neural networks, and survival analysis, which the book does not cover, were left out or flagged and never fitted, so the project says nothing about how they would compare.
-- **One person directed and reviewed the work.** The agent did the work and the author directed and reviewed each part; no independent review of the method, its changes or the code is recorded.
+- **One person directed and reviewed the work.** The agent did the work and the author directed and reviewed each part; no independent review of the method, its changes or the code is recorded. The supervisor has not yet reviewed the method changes or the open questions.
 
 ## Disclaimer
 
-This report was written with the help of agentic AI: designing the workflow, writing the code, running the example analysis and drafting the text. Each part was directed and reviewed by the author.
+This report was written with the help of agentic AI: designing the workflow, writing the code, running the four analyses and drafting the text. Each part was directed and reviewed by the author.
 
 ## Appendix
 
-*Pointers to the material behind this report: the working contract, the ML Guide, and the worked analyses.*
+The material behind this report:
+- The four analyses, each with a report and an appendix holding its data summary, problem definition, Decision Records, Recommendation Report, analysis log and code summary:
+  - Heart Failure (original): [Demonstration/Heart Failure/](Demonstration/Heart%20Failure/Demonstration%20Report.md), as `Demonstration Report.md` and `Demonstration Appendix.md`;
+  - Sepsis: [Demonstration/Sepsis/](Demonstration/Sepsis/Report.md);
+  - Mobile Price: [Demonstration/Mobile Price/](Demonstration/Mobile%20Price/Report.md);
+  - Heart Failure rerun: [Demonstration/Heart Failure rerun/](Demonstration/Heart%20Failure%20rerun/Report.md).
+- [ML Guide.md](ML%20Guide.md): the guide the advisor follows. Part I summarises the four chapters with page references, Part II is the selection procedure with a provenance tag on every rule, and its version note records the five changes to the method.
+- [instructions.md](instructions.md): the working contract for the step-by-step workflow.
+- [Code/outputs/project/provenance_tally.md](Code/outputs/project/provenance_tally.md): the tally behind Table 3, produced by `Code/project_01_provenance_tally.py`.
 
 ## References
 
+- Chicco, D. and Jurman, G. (2020). Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone. *BMC Medical Informatics and Decision Making*, 20, 16. [https://doi.org/10.1186/s12911-020-1023-5](https://doi.org/10.1186/s12911-020-1023-5).
+- Heart Failure Clinical Records [Dataset]. (2020). UCI Machine Learning Repository. [https://doi.org/10.24432/C5Z89R](https://doi.org/10.24432/C5Z89R).
 - Lindholm, A., Wahlström, N., Lindsten, F. and Schön, T. B. (2026). [*Machine Learning – A First Course for Engineers and Scientists*](https://smlbook.org/), 2nd edition, online draft version of 1 September 2026. Cambridge University Press (to be published).
+- Reyna, M., Josef, C., Jeter, R., Shashikumar, S., Moody, B., Westover, M. B., Sharma, A., Nemati, S. and Clifford, G. D. (2019). *Early Prediction of Sepsis from Clinical Data: the PhysioNet/Computing in Cardiology Challenge 2019* (version 1.0.0) [Dataset]. PhysioNet. [https://doi.org/10.13026/v64v-d857](https://doi.org/10.13026/v64v-d857).
+- Reyna, M. A., Josef, C. S., Jeter, R., Shashikumar, S. P., Westover, M. B., Nemati, S., Clifford, G. D. and Sharma, A. (2020). Early prediction of sepsis from clinical data: the PhysioNet/Computing in Cardiology Challenge 2019. *Critical Care Medicine*, 48(2), 210–217. [https://pmc.ncbi.nlm.nih.gov/articles/PMC6964870/](https://pmc.ncbi.nlm.nih.gov/articles/PMC6964870/).
+- Sharma, A. (2018). *Mobile Price Classification* [Dataset], version 1. Kaggle. [https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification](https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification).
