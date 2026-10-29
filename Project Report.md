@@ -210,7 +210,16 @@ The work points to three next steps. Each analysis wrote its own interim core, l
 
 ## Limitations
 
-*What qualifies the findings: problems met, and what was not built or not tested.*
+Problems met:
+- **The method changed while it was being applied.** Four of the five changes were made while Sepsis was in progress, three of them prompted by its data, and Sepsis re-ran a diagnosis pass under one of them; the fifth was made at the end of Mobile Price, prompted by its data. The first four were then used on Mobile Price, which had not prompted them, and all five on the Heart Failure rerun, whose data and earlier results the user and the advisor had already seen and whose test result was already known.
+- **The data carry their own limits.** In Mobile Price, the origin of the rows and the rule that set the price bands are undocumented, so no claim about real phones or a real market rests on it. In Sepsis, the label is constructed by the data's publisher from the Sepsis-3 criteria and starts six hours before onset, and patients who left intensive care before the outcome could be observed count as negatives. In Heart Failure, a patient recorded as not having died was not observed to die during a follow-up of varying length, which is not the same as surviving.
+- **The test sets are small where the outcome is rare, and the uncertainty is approximate.** Heart Failure was tested on 60 patients, 19 of whom died. Every reported uncertainty is the spread across the outer cross-validation folds, which are smaller than the test sets, so it approximates the uncertainty of the test result rather than measuring it.
+
+Not built or not tested:
+- **The interim cores are not reviewed.** Each analysis wrote its own, and some of the readings of the guide built into them were not checked, such as how the L2 strength converts for four classes in Mobile Price.
+- **Only categorical outputs were tested.** The configurations for numerical and count outputs were never fitted, so the rules that choose among them have not been tried on data.
+- **Only four chapters of the book are used.** Methods from other chapters, such as ensembles and neural networks, and survival analysis, which the book does not cover, were left out or flagged and never fitted, so the project says nothing about how they would compare.
+- **One person directed and reviewed the work.** The agent did the work and the author directed and reviewed each part; no independent review of the method, its changes or the code is recorded.
 
 ## Disclaimer
 
