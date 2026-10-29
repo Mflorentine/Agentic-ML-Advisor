@@ -4,19 +4,19 @@
 
 ## Abstract
 
-*The project in one paragraph: the problem it addresses, what was built in its three parts, what was found, and the main limitation.*
+*The project in one paragraph: the problems it addresses, the machine learning methods used and how they were chosen, how the work relates to smlbook.org, how the models were trained and validated, what was found, and the main limitation.*
 
 ## Introduction
 
-*The area the project belongs to and why it matters; the background to each of the three parts and the gap each addresses; and what this project does.*
+*The area the project belongs to and why it matters; the problems addressed by the analyses in `Demonstration/`; why the methods follow smlbook.org; and what this project does. It does not anticipate the results.*
 
 ## Methods
 
-*An overview figure of the system's parts and how they connect, then one sub-section per part.*
+*Three sub-sections: the machine learning methods used and how they were chosen; how the work relates to smlbook.org; and the training and validation methods. Results uses the same sub-headings in the same order.*
 
 ### The machine learning methods used
 
-*The model families and configurations the used, and how you chose between them for the given problem.*
+*The model families and configurations you used, and how you chose between them for each problem.*
 
 ### How it relates to smlbook.org
 
@@ -45,7 +45,7 @@
 
 ## Discussion
 
-*What the project achieved, what the findings on the three parts mean taken together, and what the work makes possible next.*
+*What the project achieved; what the findings mean taken together — the methods used and how they were chosen, how closely the work followed the book and what was added, and how the models were trained and validated; and what the work makes possible next.*
 
 ## Limitations
 
