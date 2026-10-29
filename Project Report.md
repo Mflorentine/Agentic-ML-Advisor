@@ -35,7 +35,38 @@ In Mobile Price, logistic regression with L2 was ahead of every other model by m
 
 ### How it relates to smlbook.org
 
-*Which chapters of the book you drew on and how it followed the book's advice. What else is added*
+The method rests on four chapters of Lindholm et al. (2026):
+- chapter 2, on supervised learning, k-nearest neighbours and decision trees;
+- chapter 3, on linear and logistic regression, polynomial terms with L2 regularisation, and generalised linear models;
+- chapter 4, on evaluating performance;
+- chapter 13, on the practical side of machine learning.
+
+What these chapters say is summarised, with page references, in Part I of the guide the advisor follows (`ML Guide.md`). Methods outside the four chapters are not used. Where the evidence suggests one might help, it is recorded as a flag and never claimed to be better. This happened once: in Sepsis, survival analysis was flagged for patients who left intensive care before the outcome could be observed, a topic the book does not cover.
+
+The method follows the book's practice at the points that decide a result (Lindholm et al., 2026):
+- **Before any model is fitted,** the problem is fixed by agreeing the test data, a single metric and a baseline the model must beat.
+- **The test data are held out** and used once, after every choice has been made.
+- **Models are compared** by k-fold cross-validation on the training data.
+- **The work starts simple,** and adds complexity only when diagnosing underfitting or overfitting calls for it.
+- **The work avoids ending with a complicated model** where a simpler one would have done.
+- **When one outcome is rare, or one kind of error costs more,** precision, recall and the precision–recall curve are used rather than the misclassification rate, and the decision threshold is a trade-off chosen by the user.
+
+Fitting every preprocessing step inside each cross-validation fold extends the book's rule that preprocessing is fitted on the training data only; the extension is ours.
+
+Much of the method is ours, and is marked as ours wherever it is used: the step-by-step workflow in which the user agrees each step before it is applied (`instructions.md`); the interim cores that compute the mechanical parts, so that the agent does not; the prior ranking of candidates before any model is fitted; the selection confidence reported with each recommendation; and the numerical thresholds that turn the book's advice into rules, such as treating two models as indistinguishable when their difference is less than half its variation across the folds. Every rule in Part II of the guide carries a tag saying whether it is the book's advice ([B]), a fact from the book that we turned into advice ([B→I]), or our own ([I]), and the Decision Records copy the tags of the rules they apply, so a reader can see how much of each choice rests on the book.
+
+The method changed five times while the analyses were worked through, each change made in the guide and recorded in its version note.
+- **Two moved it towards the book.**
+  - When one class is rare, the diagnosis now measures error with the agreed metric rather than the misclassification rate, following the book's warning that the misclassification rate misleads for imbalanced classes.
+  - Underfitting is judged against what the application needs, as the book judges performance against a reference level.
+
+  Both were prompted by Sepsis, where 3 % of patients developed sepsis.
+- **Three fill gaps the book leaves.**
+  - The cross-validation folds are stratified in the same way as the test split (prompted by Sepsis).
+  - The uncertainty of the test result is the spread of the metric across the outer cross-validation folds. The four chapters give no method for it; this one rests on the book's account of k-fold cross-validation and of how a held-out estimate varies with its size.
+  - Model variants with an input removed by backward elimination cannot be recommended unless the removal was kept, so that which inputs a model receives stays a decision taken with the user (prompted by Mobile Price).
+
+The original Heart Failure analysis chose its model and made its test evaluation before any of these changes. Sepsis was worked through while the first four were made. Mobile Price prompted the fifth. The Heart Failure rerun used the method with all five in place.
 
 ### Training and validation methods 
 
