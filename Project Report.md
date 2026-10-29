@@ -1,6 +1,4 @@
-# [Title]
-
-*A plain, literal title naming what the project built and what it is for.*
+# A step-by-step workflow for supervised machine learning with an AI agent, with every choice traced to a textbook
 
 ## Abstract
 
