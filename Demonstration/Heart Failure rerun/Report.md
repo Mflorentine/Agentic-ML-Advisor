@@ -79,7 +79,7 @@ The weights describe how this fitted model separates patients in these data. The
 
 The model met its success criterion. On the 60 held-out patients its area under the precision–recall curve, 0.6983, is above the share of deaths, 0.3167, by more than the variation across the folds. It ranks patients who died above those who did not more often than chance would.
 
-The threshold tells a different story from the ranking. At 0.10, chosen to weight missed deaths twice as heavily as false alarms, the model flags 49 of the 60 patients and catches 16 of the 19 deaths. But 33 of the 41 patients who did not die are flagged too, so the share of flagged patients who died, 0.3265, is close to the share of deaths overall. Its F2 on the held-out patients, 0.6400, is below the 0.6985 that flagging every patient would reach. As a ranking of risk, the model carries information. As a rule for whom to flag, at this threshold, it scores below flagging everyone on the measure the threshold was chosen for.
+The threshold tells a different story from the ranking. At 0.10, chosen to maximise F2, which counts recall twice as heavily as precision, the model flags 49 of the 60 patients and catches 16 of the 19 deaths. But 33 of the 41 patients who did not die are flagged too, so the share of flagged patients who died, 0.3265, is close to the share of deaths overall. Its F2 on the held-out patients, 0.6400, is below the 0.6985 that flagging every patient would reach. As a ranking of risk, the model carries information. As a rule for whom to flag, at this threshold, it scores below flagging everyone on the measure the threshold was chosen for.
 
 What a flag means is limited further by the data. A patient recorded as not having died was not observed to die during a follow-up of varying length; the source does not say how follow-up ended, so some of these patients may have died later. The unit of the platelet count is uncertain, and the model uses it as recorded. An earlier analysis of the same 60 held-out patients, using a decision tree, reached an F2 of 0.6780 under a different deciding metric and success criterion.
 
@@ -93,7 +93,7 @@ This report was written with the help of agentic AI at every stage: importing an
 
 ## Appendix
 
-*A pointer to [Appendix.md](Appendix.md), where the data, the decisions and the full workings are recorded.*
+The data, the decisions and the full workings behind this report are recorded in [Appendix.md](Appendix.md).
 
 ## References
 
