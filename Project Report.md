@@ -8,7 +8,17 @@
 
 ## Introduction
 
-*The area the project belongs to and why it matters; the problems addressed by the analyses in `Demonstration/`; why the methods follow smlbook.org; and what this project does. It does not anticipate the results.*
+Fitting a model is the smaller part of supervised machine learning. The larger part is the set of choices around it: what exactly is predicted and from what, which metric decides between models, which baseline a model must beat, which data are held back for the final test, which model types are compared, and when to stop. Made after the results are seen, these choices can turn an evaluation into a description of whatever happened to work, and unless they are written down as they are made, a reader cannot check them. The question becomes sharper when an AI agent does much of the work: a reader then needs to see not only what was chosen, but who chose it and on what grounds.
+
+Lindholm et al. (2026) set out a working practice for these choices: fix the problem, the metric, a baseline and the test data before any model is fitted; compare models by cross-validation on the training data; start simple and add complexity only when the errors call for it; and use the test data once, at the end. The book is openly available at smlbook.org, and its chapters 2, 3, 4 and 13 cover both the model types and this practice, so it gives a fixed reference against which each choice can be checked. Where the book gives advice, a choice can cite it; where it does not, the choice has to be marked as ours.
+
+This project builds a step-by-step workflow for carrying a supervised learning problem from the data to a model evaluated once on held-out test data, following that practice. An AI agent proposes each step and writes and runs all the code; the user takes every decision that is theirs. The book's advice is distilled into a guide in which every rule is tagged as the book's advice, a fact from the book turned into advice, or our own, and the mechanical parts of the model choice are computed by code rather than judged by the agent. Every choice is written down as it is made, with the tags of the rules it applies, so that each can be traced to its source. The aim is not the best possible model for any one problem, but a record of how each model was chosen that a reader can check against the book.
+
+The workflow was carried through four analyses of three public datasets:
+1. Heart Failure: predicting death during follow-up for 299 heart failure patients from eleven routine clinical measurements (Chicco and Jurman, 2020; Heart Failure Clinical Records, 2020).
+2. Sepsis: predicting, from a patient's first six hours in intensive care, whether the sepsis label switches on during hours 7 to 54, for 40,336 intensive-care patients at two US hospitals (Reyna et al., 2019, 2020).
+3. Mobile Price: predicting which of four price bands a mobile phone falls in from 20 of its specifications, for 2,000 phones (Sharma, 2018).
+4. Heart Failure rerun: the first problem again, on the same data and the same test patients, with the workflow as it stood after the changes made while the other analyses were worked through.
 
 ## Methods
 
