@@ -184,7 +184,15 @@ Of the five changes to the method listed under Methods, the original Heart Failu
 
 ### Training and validation methods
 
-*How many rows were used for training and testing, how much the results varied across cross-validation folds, and whether the success criterion was met in the single test evaluation.*
+The training and test rows of each analysis, with the positives or the rows per class, are in the table under Methods. The spread of the deciding metric across the outer folds for each recommended configuration, and whether each analysis's own success criterion was met, are in Table 1. Mobile Price needed no decision threshold. For the other three analyses, Table 3 gives the threshold chosen on the training data, the nested cross-validation result at that threshold, and the test F2; for the two Heart Failure analyses it also gives the F2 of flagging every patient.
+
+<small><b>Table 3.</b> Decision threshold, nested cross-validation at the tuned threshold, and F2 on the test data, with the F2 of flagging every patient.</small>
+
+| Analysis | Threshold | Nested CV F2 (fold SD) | Nested CV precision (fold SD) | Nested CV recall (fold SD) | Test F2 | Flag everyone: F2 on the training rows | Flag everyone: F2 on the test rows |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Heart Failure (original) | 0.2 | 0.6943 (0.0865) | not recorded | not recorded | 0.6780 | 0.7038 | 0.6985 |
+| Sepsis | 0.040 | 0.2204 (0.0182) | 0.0723 (0.0050) | 0.4582 (0.0737) | 0.2326 | not reported | not reported |
+| Heart Failure rerun | 0.10 | 0.7127 (0.0614) | 0.4012 (0.0553) | 0.8946 (0.1056) | 0.6400 | 0.7038 | 0.6985 |
 
 ## Discussion
 
