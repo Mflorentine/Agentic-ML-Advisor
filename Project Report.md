@@ -70,7 +70,26 @@ The original Heart Failure analysis chose its model and made its test evaluation
 
 ### Training and validation methods 
 
-*How the data is split, how candidate configurations are compared by cross-validation, and how the chosen one is evaluated once on held-out test data.*
+Each dataset was divided once into training data and test data, before any model was fitted (Lindholm et al., 2026). A fifth of the rows was set aside as test data. The rows were shuffled first, and the split was stratified, so that both parts keep the same share of each outcome. The test data were then locked: nothing in the exploration or the model choice read them.
+
+The Heart Failure rerun did not make a new split. At the user's choice, it reused the original analysis's test set, so that the two versions of the method are compared on exactly the same 60 patients. Those patients had already produced the original analysis's test result, which was known, so the rerun's test result is a like-for-like comparison rather than a fresh estimate.
+
+Models were compared on the training data alone, by cross-validation (Lindholm et al., 2026). The training data are divided into ten parts, or folds. Each model is fitted ten times, each time on nine folds, and scored on the tenth, which it has not seen; the ten scores are averaged. Every model was scored on the same ten folds, so two models can be compared fold by fold. The variation of the difference across the folds shows whether a gap between them is larger than chance would produce.
+
+Each model also has settings that must be chosen, such as the strength of its regularisation, the number of neighbours or the size of a tree. Choosing them on the same folds that score the model would make the score too favourable (Lindholm et al., 2026). So the settings were chosen inside each of the ten training parts by a second, smaller cross-validation with five folds, and only then was the model scored on the held-out fold. This is called nested cross-validation. Every step that learns from the data, such as rescaling the inputs, was also fitted inside the training part each time.
+
+Where the user wanted a flag rather than only a probability, a decision threshold was chosen after the model, on the training data only. It was set to maximise F2, which counts recall twice as heavily as precision, the trade-off the user chose (Lindholm et al., 2026).
+
+The chosen model was then refitted on all the training data and evaluated once on the test data, only after the user had approved it. The uncertainty reported with that result is the variation of the deciding metric across the ten outer folds. Each fold is smaller than the test set, so this approximates the uncertainty of the test result rather than measuring it; using it in this way is ours.
+
+| Analysis | Split | Training / test rows (positives) | Folds stratified by | Metric for comparing and tuning | Decision threshold | Uncertainty of the test result |
+| --- | --- | --- | --- | --- | --- | --- |
+| Heart Failure (original) | new | 239 / 60 (77 / 19 deaths) | outcome | F2 | chosen to maximise F2 | fold variation of F2 at the tuned threshold |
+| Sepsis | new, by patient | 31,270 / 7,818 (984 / 246 with sepsis) | outcome and hospital | PR-AUC | chosen to maximise F2 | fold variation of PR-AUC |
+| Mobile Price | new | 1,600 / 400 (400 / 100 per price band) | price band | accuracy | none (not needed) | fold variation of accuracy |
+| Heart Failure rerun | reused from the original | 239 / 60 (77 / 19 deaths) | outcome | PR-AUC | chosen to maximise F2 | fold variation of PR-AUC |
+
+All four analyses used seed 2026 for the split and the folds. PR-AUC is the area under the precision–recall curve, computed as average precision.
 
 
 ## Results
