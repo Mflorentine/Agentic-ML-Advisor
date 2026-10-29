@@ -158,7 +158,27 @@ Flagging every patient gives an F2 of 0.6985 on these test patients and 0.7038 o
 
 ### How it relates to smlbook.org
 
-*How much of each recommendation rested on the book's advice and how much on what was added, and whether cross-validation agreed with the ranking the book's guidance predicted.*
+Table 2 counts the rules applied in each analysis's Decision Records by the tag each carries: the book's advice ([B]), a fact from the book turned into advice ([B→I]), or ours ([I]). Each row of a record's table of rules applied is counted once, under one tag, taking a rule not in the guide (UNLISTED) first, then [B→I], then [B], then [I]; records later superseded in full, and the diagnosis records, which have no such table, are not counted.
+
+<small><b>Table 2.</b> Rules applied in the Decision Records in force, by provenance tag.</small>
+
+| Analysis | Records in force (of all) | Rules applied | [B] | [B→I] | [I] | UNLISTED | No tag |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Heart Failure (original) | 15 (19) | 45 | 17 | 12 | 15 | 1 | 0 |
+| Sepsis | 15 (20) | 52 | 31 | 11 | 7 | 3 | 0 |
+| Mobile Price | 17 (21) | 50 | 23 | 5 | 18 | 1 | 3 |
+| Heart Failure rerun | 16 (17) | 52 | 26 | 8 | 15 | 1 | 2 |
+| All four | 63 | 199 | 97 | 36 | 55 | 6 | 5 |
+
+The six UNLISTED rows are rules not in the guide, recorded as ours: in the original Heart Failure analysis, how the diagnosis judged whether the training error was above what the application needs, by comparing the training F2 with the flag-everyone reference; in Sepsis, the flag for survival analysis and the stratification of the test split and of the folds by hospital as well as outcome; in Mobile Price, the misclassification rate as the main metric for four classes, with the full confusion matrix reported; in the rerun, computing PR-AUC as average precision. The five untagged rows record that a rule had nothing to act on, such as no ranking entry applying or no hyperparameter to tune, or cite the working contract (`instructions.md`) rather than the guide.
+
+Before cross-validation, each analysis recorded the order it expected the kept configurations to take; the outcome compares that expectation with the order cross-validation produced. Prior agreement records whether the configuration that won cross-validation, among those ranked before any model was fitted, was first in the ranking (agree), in its top two (partial), or neither (disagree). Grounding counts the ranking entries behind the recommended configuration's prior score, by tag.
+- Heart Failure (original): expectation disagree, the decision tree, expected last, coming first; prior agreement disagree, the tree being third in the ranking; grounding one [B→I] entry, that an inspectable model was preferred.
+- Sepsis: expectation partial, the two logistic configurations leading as expected but k-nearest neighbours above the decision tree, the reverse of the order expected; prior agreement agree; grounding two [B→I] entries, that an inspectable model was preferred and that class probabilities or a tuned threshold were needed.
+- Mobile Price: expectation agree, the two logistic configurations leading; prior agreement disagree, logistic regression with L2 being third in a ranking in which no entry applied, so that every prior score was 0 and the order came from the number of add-ons alone; grounding none.
+- Heart Failure rerun: expectation disagree, logistic regression with squares and cubes, expected last of the four logistic configurations, coming first; prior agreement partial, the winner being second in the ranking; grounding one [B→I] entry, that class probabilities or a tuned threshold were needed.
+
+Of the five changes to the method listed under Methods, the original Heart Failure analysis ran under none. Sepsis ran under the first four, made while it was in progress, and its first diagnosis pass was re-run under the change to how underfitting is judged when one class is rare. Mobile Price ran under the first four from the start; the fifth was made after it finished, as a general rule in place of the reading of the guide agreed with the user at its recommendation step, and nothing was re-run. The Heart Failure rerun ran under all five.
 
 ### Training and validation methods
 
