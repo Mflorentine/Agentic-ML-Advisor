@@ -1,0 +1,216 @@
+{
+  "analyses": {
+    "Heart Failure (original)": {
+      "file": "Demonstration/Heart Failure/Demonstration Appendix.md",
+      "records_total": 19,
+      "superseded": [
+        "DR-05",
+        "DR-07",
+        "DR-09",
+        "DR-18"
+      ],
+      "in_force": {
+        "records": 15,
+        "rule_rows": 45,
+        "rows_by_strongest": {
+          "[B]": 17,
+          "[B→I]": 12,
+          "[I]": 15,
+          "UNLISTED": 1,
+          "none": 0
+        },
+        "tag_mentions": {
+          "[B]": 18,
+          "[B→I]": 12,
+          "[I]": 19,
+          "UNLISTED": 1,
+          "none": 0
+        }
+      },
+      "all_records": {
+        "records": 19,
+        "rule_rows": 61,
+        "rows_by_strongest": {
+          "[B]": 21,
+          "[B→I]": 18,
+          "[I]": 21,
+          "UNLISTED": 1,
+          "none": 0
+        },
+        "tag_mentions": {
+          "[B]": 22,
+          "[B→I]": 18,
+          "[I]": 27,
+          "UNLISTED": 1,
+          "none": 0
+        }
+      }
+    },
+    "Sepsis": {
+      "file": "Demonstration/Sepsis/Appendix.md",
+      "records_total": 20,
+      "superseded": [
+        "DR-06",
+        "DR-09",
+        "DR-10",
+        "DR-16",
+        "DR-18"
+      ],
+      "in_force": {
+        "records": 15,
+        "rule_rows": 52,
+        "rows_by_strongest": {
+          "[B]": 31,
+          "[B→I]": 11,
+          "[I]": 7,
+          "UNLISTED": 3,
+          "none": 0
+        },
+        "tag_mentions": {
+          "[B]": 31,
+          "[B→I]": 11,
+          "[I]": 14,
+          "UNLISTED": 3,
+          "none": 0
+        }
+      },
+      "all_records": {
+        "records": 20,
+        "rule_rows": 86,
+        "rows_by_strongest": {
+          "[B]": 41,
+          "[B→I]": 19,
+          "[I]": 18,
+          "UNLISTED": 5,
+          "none": 3
+        },
+        "tag_mentions": {
+          "[B]": 41,
+          "[B→I]": 19,
+          "[I]": 27,
+          "UNLISTED": 5,
+          "none": 3
+        }
+      }
+    },
+    "Mobile Price": {
+      "file": "Demonstration/Mobile Price/Appendix.md",
+      "records_total": 21,
+      "superseded": [
+        "DR-06",
+        "DR-12",
+        "DR-13",
+        "DR-14"
+      ],
+      "in_force": {
+        "records": 17,
+        "rule_rows": 50,
+        "rows_by_strongest": {
+          "[B]": 23,
+          "[B→I]": 5,
+          "[I]": 18,
+          "UNLISTED": 1,
+          "none": 3
+        },
+        "tag_mentions": {
+          "[B]": 23,
+          "[B→I]": 5,
+          "[I]": 19,
+          "UNLISTED": 1,
+          "none": 3
+        }
+      },
+      "all_records": {
+        "records": 21,
+        "rule_rows": 60,
+        "rows_by_strongest": {
+          "[B]": 26,
+          "[B→I]": 5,
+          "[I]": 24,
+          "UNLISTED": 1,
+          "none": 4
+        },
+        "tag_mentions": {
+          "[B]": 26,
+          "[B→I]": 5,
+          "[I]": 26,
+          "UNLISTED": 1,
+          "none": 4
+        }
+      }
+    },
+    "Heart Failure rerun": {
+      "file": "Demonstration/Heart Failure rerun/Appendix.md",
+      "records_total": 17,
+      "superseded": [
+        "DR-06"
+      ],
+      "in_force": {
+        "records": 16,
+        "rule_rows": 52,
+        "rows_by_strongest": {
+          "[B]": 26,
+          "[B→I]": 8,
+          "[I]": 15,
+          "UNLISTED": 1,
+          "none": 2
+        },
+        "tag_mentions": {
+          "[B]": 26,
+          "[B→I]": 8,
+          "[I]": 17,
+          "UNLISTED": 1,
+          "none": 2
+        }
+      },
+      "all_records": {
+        "records": 17,
+        "rule_rows": 56,
+        "rows_by_strongest": {
+          "[B]": 26,
+          "[B→I]": 9,
+          "[I]": 18,
+          "UNLISTED": 1,
+          "none": 2
+        },
+        "tag_mentions": {
+          "[B]": 26,
+          "[B→I]": 9,
+          "[I]": 20,
+          "UNLISTED": 1,
+          "none": 2
+        }
+      }
+    }
+  },
+  "totals": {
+    "in_force": {
+      "rows_by_strongest [B]": 97,
+      "rows_by_strongest [B→I]": 36,
+      "rows_by_strongest [I]": 55,
+      "rows_by_strongest UNLISTED": 6,
+      "rows_by_strongest none": 5,
+      "tag_mentions [B]": 98,
+      "tag_mentions [B→I]": 36,
+      "tag_mentions [I]": 69,
+      "tag_mentions UNLISTED": 6,
+      "tag_mentions none": 5,
+      "rule_rows": 199,
+      "records": 63
+    },
+    "all": {
+      "rows_by_strongest [B]": 114,
+      "rows_by_strongest [B→I]": 51,
+      "rows_by_strongest [I]": 81,
+      "rows_by_strongest UNLISTED": 8,
+      "rows_by_strongest none": 9,
+      "tag_mentions [B]": 115,
+      "tag_mentions [B→I]": 51,
+      "tag_mentions [I]": 100,
+      "tag_mentions UNLISTED": 8,
+      "tag_mentions none": 9,
+      "rule_rows": 263,
+      "records": 77
+    }
+  }
+}
