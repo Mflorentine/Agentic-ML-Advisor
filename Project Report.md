@@ -98,7 +98,61 @@ All four analyses used seed 2026 for the split and the folds. PR-AUC is the area
 
 ### The machine learning methods used
 
-*The configuration recommended for each problem, its test result against the baseline with its uncertainty, how the other configurations ranked, and how confident the selection was.*
+Table 1 gives, for each analysis, the recommended configuration and its single evaluation on the test data, on the metric agreed for that problem. The uncertainty is the standard deviation of that metric across the ten outer cross-validation folds. The selection confidence is followed by its three factors: the margin over the runner-up (C1), the margin over the baseline (C2), and whether more training data was still lowering the validation error (C3).
+
+<small><b>Table 1.</b> Recommended configuration and test result for each analysis.</small>
+
+| Analysis | Recommended configuration | Deciding metric | Test result (fold SD) | Baseline on the test data | Test rows (positives) | Selection confidence (C1, C2, C3) |
+| --- | --- | --- | --- | --- | --- | --- |
+| Heart Failure (original) | decision tree, depth 3, minimum leaf size 20; threshold 0.2 | F2 | 0.6780 (0.0865) | 0 (most common class) | 60 (19 deaths) | Low (none, clear, adequate) |
+| Sepsis | logistic regression with L2, λ = 10⁻³; threshold 0.040 | PR-AUC | 0.0847 (0.0156) | 0.0315 (flag nobody) | 7,818 (246 with sepsis) | Low (none, clear, adequate) |
+| Mobile Price | logistic regression with L2, λ = 10⁻⁵ | accuracy | 0.9600 (0.0141) | 0.2500 (most common band) | 400 (100 per band) | High (clear, clear, adequate) |
+| Heart Failure rerun | logistic regression; threshold 0.10 | PR-AUC | 0.6983 (0.0938) | 0.3167 (flag nobody) | 60 (19 deaths) | Low (none, clear, adequate) |
+
+**Heart Failure (original): cross-validation.** The mean F2 at threshold 0.5 was:
+- decision tree 0.5567;
+- logistic regression with squares and cubes 0.5286;
+- logistic regression, with and without L2, 0.4798 each;
+- the most common class 0.
+
+A variant of the tree with a wider range of leaf sizes, added by the diagnosis, scored 0.5207. The tree's margin over the runner-up was 0.0281 (spread 0.1422), and its margin over the baseline 0.5567 (spread 0.1124).
+
+**Sepsis: cross-validation.** The mean PR-AUC was:
+- logistic regression with L2 0.0930;
+- the same with squares and cubes 0.0907;
+- k-nearest neighbours 0.0706;
+- decision tree 0.0678;
+- flagging nobody 0.0315.
+
+The margin over the runner-up was 0.0023 (spread 0.0077), and over the baseline 0.0615 (spread 0.0156).
+
+**Mobile Price: cross-validation.** The mean accuracy was:
+- logistic regression with L2, with λ searched down to 10⁻⁸, 0.9706;
+- the same with λ searched down to 10⁻⁴, 0.9637;
+- with squares and cubes added, 0.9431;
+- decision tree 0.8281;
+- k-nearest neighbours 0.6250;
+- the most common band 0.2500.
+
+The margin over the runner-up was 0.0069 (spread 0.0055), and over the baseline 0.7206 (spread 0.0141).
+
+**Heart Failure rerun: cross-validation.** The mean PR-AUC was:
+- logistic regression with squares and cubes 0.7064;
+- the same with L2 0.6882;
+- logistic regression with L2 0.6703;
+- logistic regression 0.6627;
+- k-nearest neighbours 0.5633;
+- decision tree 0.5546;
+- flagging nobody 0.3221.
+
+The recommended model's margin over the runner-up was −0.0437 (spread 0.1171), and over the baseline 0.3406 (spread 0.0892).
+
+**The two Heart Failure analyses on the same 60 test patients (19 deaths).**
+- The original analysis's decision tree, at threshold 0.2, had a test F2 of 0.6780.
+- The rerun's logistic regression had a test PR-AUC of 0.6983, and a test F2 of 0.6400 at threshold 0.10.
+- In nested cross-validation at their tuned thresholds, the mean F2 was 0.6943 for the tree and 0.7127 for the logistic regression.
+
+Flagging every patient gives an F2 of 0.6985 on these test patients and 0.7038 on the 239 training patients.
 
 ### How it relates to smlbook.org
 
