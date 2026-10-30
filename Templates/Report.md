@@ -2,17 +2,21 @@
 
 *Chosen by the user at the end of step 5, from the titles suggested once the `Discussion` is written.*
 
+## Abstract
+
+*Written in step 5, after the `Discussion`: one paragraph giving the problem, the recommended model, its test result against the baseline with its uncertainty, whether the success criterion was met, and the main limitation. Every number in it is already in `Results`.*
+
 ## Introduction
 
 *The problem and its sub-tasks go in at the end of step 2, before anything is trained.*
 
 ## Methods
 
-*Written in step 4, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
+*Written in step 4. First, before the model choice, the data and the split, from the Appendix: the source, the rows used and excluded, the cleaning, the input design, and the train/test split. Then one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
 
 ## Results
 
-*Figures of the training data go in during step 3. In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
+*Figures of the training data go in during step 3. In step 4, for each sub-task: the recommended configuration; its test-set result against the baseline, with its uncertainty; whether the agreed success criterion was met, stated plainly as met or not met; where a decision threshold was tuned for F2 or another F-beta, the F-beta of flagging every case beside the model's; a summary of the ranking; the selection confidence; and evaluation figures such as learning curves or precision–recall curves.*
 
 ## Discussion
 
