@@ -94,6 +94,7 @@ This workspace is for working through a data analysis **one step at a time, with
   - One decision per question. If a step needs several decisions, ask them in order, or as a short numbered set when they are independent.
   - At the end of a step, the written check under *Ask whether the step is complete* comes first. The options then name what is still unsettled and include closing the step, with no option marked as recommended: a recommended "close" is the nod that check exists to prevent.
   - Keep the question open where the answer must be in the user's own words: the problem they want to solve (step 2), their experience with machine learning (step 1), and any expectation about P8. Record their words.
+- **Keep every message to the user short.** At most about five lines, then the decision as numbered options of one line each. The details go in `Appendix.md`, and the user can ask for more.
 - The steps below are the agreed order of work. Announce which step you are on when it is not obvious.
 
 ## Changing This Contract
