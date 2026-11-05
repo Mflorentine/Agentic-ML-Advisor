@@ -26,6 +26,34 @@ The workflow was carried through four analyses of three public datasets:
 
 The method is described under three headings, which Results follows in the same order.
 
+Figure 1 shows the parts of the workflow and how they connect: who asks, who decides, who computes and what is recorded.
+
+```mermaid
+flowchart TB
+    U["User<br>decides, approves and directs"]
+    A["AI agent<br>Claude Code in Claudian, in Obsidian<br>writes and runs all the code"]
+    I["instructions.md<br>the working contract and its five steps"]
+    G["ML Guide.md<br>Part I: the book, with page references<br>Part II: rules tagged [B], [B→I] or [I]"]
+    C["Interim core<br>computes the model choice: admissible set,<br>prior ranking, nested cross-validation,<br>selection confidence, recommendation"]
+    D[("Data in Attachments/<br>never modified")]
+    subgraph Out["Each analysis in Demonstration/"]
+        X["Appendix.md<br>Decision Records with the rules' tags,<br>analysis log, code summary"]
+        R["Report.md<br>built up step by step"]
+    end
+    A -- "asks: 2 to 4 numbered options" --> U
+    U -- "decides and approves" --> A
+    I -- "steps to follow" --> A
+    G -- "read before every model decision" --> A
+    G -- "Part II implemented in" --> C
+    A -- "property values and must-haves" --> C
+    D -- "training data, and test data once at the end" --> C
+    C -- "results, copied unchanged" --> A
+    A -- "records each decision" --> X
+    A -- "writes each step's part" --> R
+```
+
+<small><b>Figure 1.</b> The parts of the workflow and how they connect. Arrows show who asks, who decides, who computes and what is recorded.</small>
+
 ### The machine learning methods used
 
 The workflow chooses among a fixed set of model types from chapters 2 and 3 of Lindholm et al. (2026): linear regression, logistic regression, Poisson and exponential generalised linear models, k-nearest neighbours and decision trees. Polynomial terms (squares and cubes of the numerical inputs) and L2 regularisation can be added to the regression models where the book allows them. This gives fourteen configurations in all. Methods from other chapters, such as ensembles or neural networks, are not used. Which inputs a model receives, and whether any is transformed, is agreed with the user beforehand and is not part of the comparison. The choice among the fourteen is made in four steps. The four analyses illustrate them: the original Heart Failure analysis and its rerun, both on the heart failure clinical records (Chicco and Jurman, 2020; Heart Failure Clinical Records, 2020); Sepsis, on the PhysioNet/Computing in Cardiology Challenge 2019 data (Reyna et al., 2019, 2020); and Mobile Price, on the Mobile Price Classification data (Sharma, 2018).
