@@ -40,15 +40,19 @@ The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty template
 | Uses smlbook.org chapters 2, 3, 4 and 13 | Done: [ML Guide.md](ML%20Guide.md), with page references. |
 | Helps users choose ML techniques | Demonstrated on four analyses of three classification datasets: heart failure (binary, twice), sepsis (binary) and Mobile Price (four classes), each with its own interim core (`Code/core.py`, `Code/sepsis/core.py`, `Code/mobile/core.py`, `Code/hf2/core.py`). The reusable `Code/advisor/` is not yet built. |
 | Step-by-step guidance from formulation to evaluation | Demonstrated end to end, steps 1–5, on all four analyses: [Heart Failure](Demonstration/Heart%20Failure/), [Sepsis](Demonstration/Sepsis/), [Mobile Price](Demonstration/Mobile%20Price/) and the [Heart Failure rerun](Demonstration/Heart%20Failure%20rerun/). |
-| Project report | Written: [Project Report.md](Project%20Report.md) has its Title, Abstract, Introduction, Methods, Results, Discussion and Limitations. |
+| Project report | Finished: [Project Report.md](Project%20Report.md) has its Title, Abstract, Introduction, Methods, Results, Discussion and Limitations, with an overview figure of the workflow's parts (Figure 1) at the start of Methods. |
 | Available online through GitHub | Done. |
 
 The method changed five times during the project, each change recorded in the version note of [ML Guide.md](ML%20Guide.md). One further change, in [instructions.md](instructions.md), altered how decisions are put to the user: every decision that is the user's is offered as two to four numbered options, each with its trade-off.
 
+Later changes, made after the four analyses were finished:
+- **30 October.** [ML Guide.md](ML%20Guide.md) §16 adds the flag-everyone reference: wherever a decision threshold is tuned for F2 or another F_β, the F_β of flagging every case is reported beside the model's, on the training and the test rows. It is a reference only, not the baseline. The `Report.md` template gains an `Abstract`, a data-and-split paragraph opening `Methods`, the success criterion stated as met or not met in `Results`, and the flag-everyone F2 in `Results` where a threshold was tuned.
+- **3 November.** [instructions.md](instructions.md) asks the agent to keep every message to the user short: at most about five lines, then the decision as numbered options of one line each.
+
 ### Next steps
 
 - Build `Code/advisor/`, and check that it reproduces the four analyses' recorded outputs.
-- Report the F2 of flagging every patient wherever a decision threshold is tuned for F2.
+- Apply the flag-everyone F2 rule of 30 October in the next analysis that tunes a decision threshold for F2.
 - Try a problem with a numerical or count output, which the four analyses never reached.
 - The supervisor's review of the method changes and the open questions.
 
@@ -60,9 +64,9 @@ The method changed five times during the project, each change recorded in the ve
 | 2 | Define the machine learning problem | `Problem Definition` in the appendix; the problem and sub-tasks go into the report |
 | 3 | Explore and visualise the training data | Figures into the report's `Results` |
 | 4 | Select, train and evaluate | `Decision Records` and `Recommendation` in the appendix; `Methods` and `Results` in the report |
-| 5 | Conclusions and limitations | `Discussion` in the report |
+| 5 | Conclusions and limitations | `Discussion` and then `Abstract` in the report |
 
-Nothing enters a section before the step that owns it. The report is built up as the work proceeds rather than written at the end, and the workflow ends with model selection and evaluation: the `Discussion` in step 5 is its last part.
+Nothing enters a section before the step that owns it. The report is built up as the work proceeds rather than written at the end, and the workflow ends with model selection and evaluation: the `Discussion` and then the `Abstract` in step 5 are its last part.
 
 The report also carries a standing disclaimer, between `Discussion` and `Appendix`, saying it was written with the help of agentic AI at every stage. It is in the template from the outset rather than added at the end, and the agent will not remove it.
 
@@ -75,7 +79,7 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [ML Guide.md](ML%20Guide.md) | What the book says (Part I), the procedure the agent follows for every model decision (Part II), and the formats of its decision records and recommendation reports (Part III). Changed only with `FRAMEWORK`. |
 | [Templates/](Templates/) | The empty [Report.md](Templates/Report.md) and [Appendix.md](Templates/Appendix.md). Copied into each new analysis folder; not edited by an analysis. |
 | [Demonstration/](Demonstration/) | One folder per analysis, each with its own `Report.md` (the report, filled in through steps 2–5) and `Appendix.md` (the running record — data, problem, workings, decision records, recommendation, log, code guide — filled from step 1). It holds four, all finished: [Heart Failure/](Demonstration/Heart%20Failure/) ([Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md)), [Sepsis/](Demonstration/Sepsis/), [Mobile Price/](Demonstration/Mobile%20Price/) and [Heart Failure rerun/](Demonstration/Heart%20Failure%20rerun/). A finished analysis is not edited by a new one. |
-| [Project Report.md](Project%20Report.md) | Your report on your project: the machine learning methods you used and how you chose between them, how that relates to the book, and how the models were trained and validated. It is written from the analyses in `Demonstration/`, and is the only report at the top level. It is written: Title, Abstract, Introduction, Methods, Results, Discussion and Limitations. Not part of the five steps; the agent helps with it section by section, as set out in [instructions.md](instructions.md). |
+| [Project Report.md](Project%20Report.md) | Your report on your project: the machine learning methods you used and how you chose between them, how that relates to the book, and how the models were trained and validated. It is written from the analyses in `Demonstration/`, and is the only report at the top level. It is finished: Title, Abstract, Introduction, Methods, Results, Discussion and Limitations, with an overview figure of the workflow's parts at the start of Methods. Not part of the five steps; the agent helps with it section by section, as set out in [instructions.md](instructions.md). |
 | `Attachments/` | Your data. Never modified. Holds the data of the three analyses; see [Attachments/SOURCE.md](Attachments/SOURCE.md). Only the heart failure data is committed. The sepsis and Mobile Price data are kept locally under their licence terms. |
 | `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis has its own interim core, not reviewed: `Code/core.py` (Heart Failure; never changed, and `Code/advisor/` will replace it), `Code/sepsis/core.py` (Sepsis), `Code/mobile/core.py` (Mobile Price) and `Code/hf2/core.py` (Heart Failure rerun). Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. `Code/outputs/project/` holds the provenance tally behind the Project Report, made by `Code/project_01_provenance_tally.py`. Earlier analyses' scripts and outputs stay here, and a new analysis uses names that do not collide with them. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
