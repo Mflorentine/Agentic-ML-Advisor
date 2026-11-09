@@ -54,7 +54,6 @@ Later changes, made after the four analyses were finished:
 - Build `Code/advisor/`, and check that it reproduces the four analyses' recorded outputs.
 - Apply the flag-everyone F2 rule of 30 October in the next analysis that tunes a decision threshold for F2.
 - Try a problem with a numerical or count output, which the four analyses never reached.
-- The supervisor's review of the method changes and the open questions.
 
 ## The five steps
 
