@@ -111,12 +111,12 @@ Get the data in and establish what will be used.
 - Record provenance: where the file came from, when, and a checksum. Say why this file and not another, if that was a choice.
 - **Ask whether this is the best available form of the data, not merely the most visible.** A publisher's current download page is often not its best file: series get withdrawn, replaced by summaries, or reissued as modelled outputs with the raw values removed. Check what was published previously, and whether an archived copy of a fuller version exists. Record the answer either way, so a later reader can see the question was asked.
 - **Describe the file before judging it.** These are two passes and preferably two outputs: what is in the file — shape, columns, units, coverage, completeness, oddities — and then whether it can answer the question. The describing pass draws no conclusions by design. Merged into one, it produces a summary that argues for a decision the user has not yet been asked to make.
-- **Ask the admissibility questions that concern the data** (`ML Guide.md` §10), as closed questions, and record each answer as a Decision Record (`ADM`):
-  - **ADM-1** — is there a recorded output for the rows to be learned from? If not, this is not a supervised problem: stop and say so.
-  - **ADM-3** — do several rows belong to the same unit, or are rows ordered in time? Record the group or time column if there is one.
-  - **ADM-4** — will the cases the model is used on look like this data?
+- **Ask the admissibility questions that concern the data** (`ML Guide.md` §10), as closed questions, and record each answer as a Decision Record (`Admissibility`). Call each one by its number and name, ask it in plain words, and say in one sentence why it matters for this data:
+  - **Admissibility 1: outcome recorded** — is there a recorded output for the rows to be learned from? If not, this is not a supervised problem: stop and say so.
+  - **Admissibility 3: grouped or time-ordered rows** — do several rows belong to the same unit, or are rows ordered in time? Record the group or time column if there is one.
+  - **Admissibility 4: new cases like these** — will the cases the model is used on look like this data?
 
-  ADM-2 (whether the aim is prediction) is asked in step 2, with the problem.
+  Admissibility 2 (prediction or understanding) is asked in step 2, with the problem.
 - **Make the machine learning checks part of the describing pass:**
   - the candidate target column and how its labels were produced;
   - the output type it suggests (P1, to be confirmed in step 2);
@@ -138,10 +138,10 @@ Get the data in and establish what will be used.
 | **Units** | The unit of every column, and whether it is a **measurement or model output**. A plausible column name is not a unit — check the documentation. |
 | **Scope** | Which rows are used, why, what was excluded, and what that exclusion costs. |
 | **Missing data** | Whether values are imputed or left missing, and the evidence for the choice. Check whether gaps are systematic before deciding. |
-| **Grouping and time order** | Whether several rows belong to the same unit or are ordered in time (ADM-3), the group or time column, and how that constrains the split and the folds. |
+| **Grouping and time order** | Whether several rows belong to the same unit or are ordered in time (Admissibility 3), the group or time column, and how that constrains the split and the folds. |
 | **Cleaning** | Every value altered or set to missing, with the reason and the count. Prefer setting known-wrong values to missing over correcting them. |
 | **Accepted as-is** | Problems found and deliberately *not* fixed, and why. A known flaw left in place is a decision and must be visible. |
-| **Admissibility** | The answers to ADM-1, ADM-3 and ADM-4, with the Decision Record IDs. |
+| **Admissibility** | The answers to Admissibility 1, 3 and 4, with the Decision Record IDs. |
 | **Target and leakage** | The candidate target, how its labels were produced, and any columns set aside because they could leak the target, with the reason. |
 | **Experience level** | The user's stated experience with machine learning. |
 
@@ -152,7 +152,7 @@ A decision that is later reversed **stays in the record, marked superseded**. Th
 Agree what is to be predicted, and how success will be judged, before any model is fitted.
 
 - **Ask the user what problem they want to solve.** That is the framing to ask for. They may answer with a goal, a decision they want to support, or a hunch about what drives the outcome — record it in their own terms rather than translating it.
-- **Ask ADM-2** (`ML Guide.md` §10): is the main aim to predict the outcome for new cases, or to understand how the variables are connected? If it is to understand, tell the user that this workflow optimises prediction and does not establish how variables are connected, and continue only if they confirm. Record the answer as a Decision Record.
+- **Ask Admissibility 2: prediction or understanding** (`ML Guide.md` §10): is the main aim to predict the outcome for new cases, or to understand how the variables are connected? If it is to understand, tell the user that this workflow optimises prediction and does not establish how variables are connected, and continue only if they confirm. Record the answer as a Decision Record.
 - **Turn the problem into a formulation**, with the user, and record each item:
   - what is predicted (y) and from what (x);
   - the output type (P1, §11) — numeric, count, non-negative real, binary, multiclass or ordinal; for an ordinal output, ask whether to treat it as multiclass or numeric;
@@ -171,17 +171,17 @@ Agree what is to be predicted, and how success will be judged, before any model 
 - **Assess feasibility:**
   - Is the output recorded, and recorded well enough?
   - Are there enough rows for the number of inputs?
-  - Do grouping or time order (ADM-3) constrain the split?
+  - Do grouping or time order (Admissibility 3) constrain the split?
   - Is the problem answerable at all with the configurations in scope?
 
   If it needs a method outside the four chapters, say so now.
 - **Keep it at that level.** Do not choose models or design figures yet — steps 3 and 4 exist for that.
 - **Record the outcome in the `Problem Definition` section of `Appendix.md`**, in three parts:
-  - `Discussion` — how the problem was arrived at, what was considered and ruled out, and the ADM-2 answer;
+  - `Discussion` — how the problem was arrived at, what was considered and ruled out, and the Admissibility 2 answer;
   - `Problem` — the formulation above;
   - `Sub-tasks` — the separately answerable parts, each with its own output and success criterion.
 - **Record the properties known so far** as a Decision Record (`PROP`): P1, P5–P8 from the user; P2–P4 computed from the file.
-- **Fix the split and lock the test set.** Agree the test fraction with the user (§3). Split by group if ADM-3 found groups, and record the seed. Then set the test set aside: nothing in steps 3 and 4 reads it until the final evaluation. Record the split as a Decision Record (`SPLIT`).
+- **Fix the split and lock the test set.** Agree the test fraction with the user (§3). Split by group if Admissibility 3 found groups, and record the seed. Then set the test set aside: nothing in steps 3 and 4 reads it until the final evaluation. Record the split as a Decision Record (`SPLIT`).
 - **Write it before anything is fitted**, so it is on the record that the problem preceded the result.
 - **Then, before any analysis starts, write the problem and its sub-tasks into the `Introduction` of `Report.md`.** Insert a brief text — do not ask permission first. Then tell the user it is there, that they can edit it themselves, and that they can ask you to change it. This is the one thing that enters `Report.md` early: it fixes in the report itself what was asked, before any result is known, so the write-up cannot quietly become a report of whatever turned out to work.
 - **The `Introduction` never anticipates its conclusions.** It says what is being examined and how it will be approached. It does not say what was found, and it does not say what the analysis will turn out not to support. Two sentences of this kind would have to come out: *"A decision tree turns out to predict best."* and *"As we discuss later, the small test set limits how far the result can be trusted."* Both are results, moved early.
@@ -276,7 +276,7 @@ The rules that govern this step:
 
 - **Check required practice and gates against the data rather than asserting them.** Preprocessing is fitted inside the cross-validation folds (REQ-1); k-NN inputs are normalised (REQ-2); a configuration the gates excluded is not run. Each is visible in the core's output, and a Decision Record that asserts one without that evidence is incomplete.
 - **Establish that the labels are what they claim to be before interpreting any result.** A target that the source has imputed, modelled or derived from the inputs is not an independent outcome, and a model that predicts it well has learned the construction, not the world. Check this before 4a rather than after.
-- **Use folds that match the structure of the data.** Group folds where rows share a unit (ADM-3), stratified folds for classification (§16). Say which were used and why.
+- **Use folds that match the structure of the data.** Group folds where rows share a unit (Admissibility 3), stratified folds for classification (§16). Say which were used and why.
 - **Report the result, its uncertainty, and the data it came from.** A test result without its uncertainty is not a result, and an uncertainty without the number of test rows behind it cannot be judged. Always report the baseline beside it.
 - **When nothing beats the baseline, say what the evaluation was able to detect.** Report it as a fact about the data — how many rows, how much the outcome varies, how wide the fold spread was — and let the reader weigh it. A sub-task with no recommendation is a result, recorded in a `FINAL` record that says so.
 - **Recompute the number that carries the claim independently, wherever that is cheap.** Recompute the test metric from the saved test predictions with a separate call, rather than reading it out of the core's summary. Two routes to the same figure catch both a reporting slip and stale output; one route catches neither.

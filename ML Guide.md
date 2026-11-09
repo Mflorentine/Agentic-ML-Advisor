@@ -6,7 +6,7 @@ This is a set of notes written in our own words, not a substitute for the book. 
 
 The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours. **Part III (sections 24–25) fixes the record formats** the advisor writes into `Appendix.md`: the Decision Record and the Recommendation Report.
 
-**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. 16 October 2026 (`FRAMEWORK`): the example folder in §24.1 is now `Demonstration/Sepsis/`; nothing else changed. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
+**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. 16 October 2026 (`FRAMEWORK`): the example folder in §24.1 is now `Demonstration/Sepsis/`; nothing else changed. 9 November 2026 (`FRAMEWORK`): the admissibility checks are renamed from ADM-1 … ADM-4 to *Admissibility 1 … 4*, each with a short name, and the record type from `ADM` to `Admissibility`; §10 now says how the checks are put to the user. The questions, answers and actions are unchanged. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
 
 **Scope.** The chapters used are 2, 3, 4 and 13. Every other method — L1/LASSO included — is flagged and not used (section 23).
 
@@ -302,14 +302,16 @@ A **configuration** is a model family × an input-transformation type × a regul
 
 ## 10. Admissibility
 
-Each check is a fixed question with closed answers. It is asked in step 1 or 2 and recorded in a Decision Record. Only ADM-1 is a gate.
+Each check is a fixed question with closed answers. It is asked in step 1 or 2 and recorded in a Decision Record. Only Admissibility 1 is a gate.
 
-| ID | Question | Answers → action | Basis |
+When a check is put to the user, it is called by its number and its name (for example *Admissibility 3: grouped or time-ordered rows*), asked in plain words, and introduced with one sentence on why it matters for the user's data. Versions of this guide before 9 November 2026 called the checks ADM-1 … ADM-4 and the record type `ADM`; records written under those versions keep the old names.
+
+| Check | Question | Answers → action | Basis |
 | --- | --- | --- | --- |
-| ADM-1 | Is there a recorded output y for the rows to be learned from? | no → stop: not a supervised problem | `[B p.15]` |
-| ADM-2 | Is the main aim to predict y for new cases, or to understand how the variables are connected? | predict → continue · understand → tell the user that this workflow optimises prediction and does not establish how variables are connected; continue only if they confirm. The book says the distinction "is not a clear-cut" one, so this is a question, not a gate. | `[B p.20]` |
-| ADM-3 | Do several rows belong to the same unit, or are rows ordered in time? | none → random split · group column *X* → split and cross-validate by group · time column *Y* → autoregressive reformulation if the user wants it, otherwise flag time-series modelling as out of scope | `[B pp.16, 38–39, 329]` |
-| ADM-4 | Will the cases the model is used on look like the data we have? | yes → continue · no or unsure → agree with the user which data validation and test sets should come from before splitting | `[B pp.328–329]` |
+| Admissibility 1: outcome recorded | Is there a recorded output y for the rows to be learned from? | no → stop: not a supervised problem | `[B p.15]` |
+| Admissibility 2: prediction or understanding | Is the main aim to predict y for new cases, or to understand how the variables are connected? | predict → continue · understand → tell the user that this workflow optimises prediction and does not establish how variables are connected; continue only if they confirm. The book says the distinction "is not a clear-cut" one, so this is a question, not a gate. | `[B p.20]` |
+| Admissibility 3: grouped or time-ordered rows | Do several rows belong to the same unit, or are rows ordered in time? | none → random split · group column *X* → split and cross-validate by group · time column *Y* → autoregressive reformulation if the user wants it, otherwise flag time-series modelling as out of scope | `[B pp.16, 38–39, 329]` |
+| Admissibility 4: new cases like these | Will the cases the model is used on look like the data we have? | yes → continue · no or unsure → agree with the user which data validation and test sets should come from before splitting | `[B pp.328–329]` |
 
 Whether an out-of-scope method is needed is not decided here. It is decided from evidence, in the diagnosis loop (DX-10), and recorded as a flag (section 20).
 
@@ -420,7 +422,7 @@ SEQ-3 is how "add-ons come later" (p. 331) is honoured. The basic pipeline is sh
 | --- | --- | --- |
 | Outer CV (comparison) | 10-fold, shuffled, seed recorded; the same folds for every configuration | `[B pp.72–73]` (k = 10 realistic) |
 | Classification | Stratified folds | `[I]` |
-| Grouped rows (ADM-3) | Group folds | `[B p.329]` |
+| Grouped rows (Admissibility 3) | Group folds | `[B p.329]` |
 | Hyperparameter tuning | Inner 5-fold grid search within each outer training fold | `[I]`; tuning on the comparison folds would make them optimistic (p. 74). Nested CV kept despite its cost (decided 10 October 2026). |
 | Grids | k ∈ {1, 3, 5, 7, 9, 15, 21, 31, 51} (below the inner training size); tree max depth ∈ {1, 2, 3, 4, 5, 6, 8, 10, 15, 20} × minimum leaf size ∈ {1, 5, 10, 20}; degree ∈ {2, 3}; λ ∈ {10⁻⁴, 10⁻³, …, 10⁴} | `[I]` |
 | Selection metric | The single metric agreed in step 2 | `[B p.330]` |
@@ -535,11 +537,11 @@ Every explanation states the trust limits: E_new is an average over data like th
 USER PROBLEM (own words) + ML experience level
 │
 ├─ ADMISSIBILITY (section 10; closed questions, step 1–2)
-│   ADM-1 output y recorded? ──────── no → STOP: not supervised (p.15)
-│   ADM-2 aim: predict or understand? ─ understand → explain limits; continue only if user confirms (p.20)
-│   ADM-3 groups / time order? ─────── group col → group split + group CV (p.329)
-│                                      time col → autoregressive reformulation or FLAG (pp.16, 38–39)
-│   ADM-4 future cases like our data? ─ no/unsure → agree val/test source with user (pp.328–329)
+│   Admissibility 1 output y recorded? ──────── no → STOP: not supervised (p.15)
+│   Admissibility 2 aim: predict or understand? ─ understand → explain limits; continue only if user confirms (p.20)
+│   Admissibility 3 groups / time order? ─────── group col → group split + group CV (p.329)
+│                                                time col → autoregressive reformulation or FLAG (pp.16, 38–39)
+│   Admissibility 4 future cases like our data? ─ no/unsure → agree val/test source with user (pp.328–329)
 │
 ├─ FORMULATION (step 2, metadata only)
 │   P1 output type → task gate (section 12) · metric · success criterion · baseline · achievable level
@@ -625,9 +627,9 @@ A Decision Record (DR) is the unit of the advisor's reasoning trace. Every decis
 
 | Type | Written when | Guide | Workflow step |
 | --- | --- | --- | --- |
-| `ADM` | Each admissibility question (ADM-1 … ADM-4) is answered. One DR per question. | §10 | 1–2 |
+| `Admissibility` | Each admissibility question (Admissibility 1 … 4) is answered. One DR per question. | §10 | 1–2 |
 | `FORM` | The formulation is agreed: y, x, P1, metric, success criterion, baseline, achievable level, must-haves (P5, P6), expectations (P7, P8) | §11, §12 | 2 |
-| `SPLIT` | The train/test split is fixed (random or grouped, with its seed) and the test set locked | §10 (ADM-3), §16 | 2 |
+| `SPLIT` | The train/test split is fixed (random or grouped, with its seed) and the test set locked | §10 (Admissibility 3), §16 | 2 |
 | `PROP` | The property values P1–P10 are recorded: P1–P8 in step 2; P9–P10 from training data in step 3, in a new `PROP` DR that supersedes the first | §11 | 2–3 |
 | `ADMSET` | The admissible set is built: task gate, must-haves, MOD-1, MOD-2 | §9, §12 | 4 |
 | `PRIOR` | The prior ranking is made, **before any training** | §13, §15 | 4 |
@@ -649,7 +651,7 @@ Fields appear in this order. A field that does not apply is written `n/a`, never
 | **Date** | ISO date | |
 | **Question** | The decision that had to be made, as one question | Must be answerable from the evidence listed |
 | **Evidence** | Table: item · value · evidence tag · where | Evidence tag: `M`, `T`, `CV` or `TEST` (§8). "Where" names the output file, the metadata field, or the user's statement (quoted). |
-| **Rules applied** | Table: rule ID · result · provenance · effect | IDs from this guide: `ADM-n`, `Pn`, task gate, `MOD-n`, `REQ-n`, `SEQ-n`, matrix entries written `Pn=value→column` (e.g. `P1=count→GLM`), `On`, `DX-n`, `Sn`, `C1`–`C3`, §19 steps. Provenance `[B p.x]`, `[B→I p.x]` or `[I]`, copied from this guide. A rule not in the guide is written `UNLISTED [I]` with its wording. |
+| **Rules applied** | Table: rule ID · result · provenance · effect | IDs from this guide: `Admissibility n`, `Pn`, task gate, `MOD-n`, `REQ-n`, `SEQ-n`, matrix entries written `Pn=value→column` (e.g. `P1=count→GLM`), `On`, `DX-n`, `Sn`, `C1`–`C3`, §19 steps. Provenance `[B p.x]`, `[B→I p.x]` or `[I]`, copied from this guide. A rule not in the guide is written `UNLISTED [I]` with its wording. |
 | **Thresholds applied** | Table: threshold · value used · value compared | Every `[I]` threshold the decision used (Appendix to Part II), with the actual number it was compared against |
 | **Options considered** | Structural configurations or actions | Configurations named as in §9, e.g. `Logistic + poly + L2`; diagnosis-loop additions marked `post-prior` |
 | **Expectation** | What the advisor expects the next result to show, and why | Required for `PRIOR` and `DX`: the expected CV order, or the expected effect of the action. `n/a` otherwise. |
@@ -816,7 +818,7 @@ It is written at the end of step 4 for a sub-task, after its `FINAL` DR. Parts 9
 
 | # | Part | Content | Source DRs |
 | --- | --- | --- | --- |
-| 1 | **Problem** | What is predicted (y) from what (x); output type (P1); the agreed metric; success criterion; baseline; achievable level if known; must-haves (P5, P6); stated expectations (P7, P8, quoted); admissibility answers (ADM-1 … ADM-4) and the split. | `ADM`, `FORM`, `SPLIT` |
+| 1 | **Problem** | What is predicted (y) from what (x); output type (P1); the agreed metric; success criterion; baseline; achievable level if known; must-haves (P5, P6); stated expectations (P7, P8, quoted); admissibility answers (Admissibility 1 … 4) and the split. | `Admissibility`, `FORM`, `SPLIT` |
 | 2 | **Recommendation** | The configuration (§9 name), its tuned hyperparameters, and the selection confidence level, in two sentences. | `FINAL` |
 | 3 | **Test-set result** | E_new on the agreed metric with its uncertainty (method still to be decided, §5.2), n_test, the baseline's result on the same test set, and whether the success criterion is met. Classification: the confusion matrix, plus the PR or ROC curve where §5.5 calls for it; the decision threshold and how it was set (§16). | `FINAL` |
 | 4 | **Why this configuration** | Four strands, in the order of §7. Constraints: the task gate, must-haves and MOD-1/MOD-2 that shaped the admissible set. CV evidence: the margin over the runner-up and over the baseline, each with its spread. Simplicity: whether the §19 within-noise step decided it, with add-on counts. Prior support: the matrix entries behind its prior score, with provenance tags. | `ADMSET`, `PRIOR`, `CV`, `FINAL` |
@@ -853,7 +855,7 @@ The experience level is recorded in step 1. It changes how much is explained, ne
 ```markdown
 ### Sub-task N — <short name>
 
-**1. Problem.** … ADM: … Split: … (DR-xx, DR-xx)
+**1. Problem.** … Admissibility: … Split: … (DR-xx, DR-xx)
 
 **2. Recommendation.** `<configuration>` with <hyperparameters>. Selection confidence: <High / Medium / Low>.
 
