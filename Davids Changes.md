@@ -80,7 +80,7 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **Why.** In the xG data goals are 10 % of shots, so almost every model predicts "no goal" and the misclassification rate stays near 0.10 whatever the model does: the diagnosis would be blind. The book calls the misclassification rate "problematic for imbalanced problems" (SML p. 91) and leaves the error function to the problem (SML p. 67). Raised by the agent at step 4b; David: "yes".
 - **In practice.** Analyses whose metric is the misclassification rate or squared error are unchanged.
 
-### 14. Write up the model selection before the test (10 November, @@HASH@@)
+### 14. Write up the model selection before the test (10 November, `242070d`)
 
 - **What changed.** A new sub-step, 4f′, between the recommendation and the test: `Methods` is made to match what was done, a first `Results` paragraph reports the cross-validation comparison, the recommended configuration and its selection confidence, and figures from cross-validation (such as the comparison of configurations and the learning curve) are added. Only then is the user asked about the test set. At 4h the test result is added after it; nothing written at 4f′ is reworded because of the test result, and any change is logged.
 - **Why.** "Shouldn't we write up training and maybe add some figures before moving on to test?" Writing the selection down first fixes it in the report before the test result is known, following the book's order: choose on validation data, then test once (SML pp. 74, 328).
