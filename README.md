@@ -16,14 +16,15 @@ Every model choice is recorded as it is made. Each decision gets a Decision Reco
 
 1. Install the environment — [Setup.md](Setup.md) covers Obsidian, `uv` and Python.
 2. Put your data in `Attachments/`.
-3. Open a Claudian conversation and ask for step 1: import and describe the data. The agent first asks for a name and copies the two templates in `Templates/` into a new folder, for example `Demonstration/Sepsis/`; your report and appendix are written there.
+3. Open a Claudian conversation and ask for step 1: import and describe the data. The agent first asks for a name for the analysis and copies the two templates in `Templates/` to the top of the workspace as [Project Report.md](Project%20Report.md) and [Appendix.md](Appendix.md). You work in those two files throughout.
 4. Work through the five steps, one request at a time.
+5. When the analysis is finished, say so: the agent submits it to `Demonstration/<Name>/` and resets the two root files for the next analysis.
 
 ## Example analysis
 
 [Demonstration/Heart Failure/](Demonstration/Heart%20Failure/) holds a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5. Its [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md) is the full record behind it, including every decision record. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
 
-The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty templates. Each new analysis gets its own copy of both, in its own folder under `Demonstration/`.
+The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty templates. Each new analysis starts from a copy of both at the top of the workspace, and moves to its own folder under `Demonstration/` when it is finished.
 
 ## Progress
 
@@ -41,7 +42,7 @@ See [Note for Florentine.md](Note%20for%20Florentine.md) for how the method is t
 
 - Build `Code/advisor/`.
 - Finish the sepsis and Mobile Price demonstrations. All are classification problems, making three datasets in total with heart failure.
-- Finish the project report, [Project Report.md](Project%20Report.md).
+- Write the report on the project as a whole, from [Templates/Whole-Project Report.md](Templates/Whole-Project%20Report.md).
 
 ## The five steps
 
@@ -65,9 +66,9 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [instructions.md](instructions.md) | The working contract. The agent reads this; you change it by prefixing a message with `FRAMEWORK`. |
 | [ML Guide.md](ML%20Guide.md) | What the book says (Part I), the procedure the agent follows for every model decision (Part II), and the formats of its decision records and recommendation reports (Part III). Changed only with `FRAMEWORK`. |
 | [Glossary.md](Glossary.md) | The checks and properties the advisor works through (Admissibility 1–4, Property 1–10), in plain words, with what each one changes, plus the other labels you will see in the decision records. Start here to see what criteria an analysis follows. Changed only with `FRAMEWORK`, together with the guide. |
-| [Templates/](Templates/) | The empty [Report.md](Templates/Report.md) and [Appendix.md](Templates/Appendix.md). Copied into each new analysis folder; not edited by an analysis. |
-| [Demonstration/](Demonstration/) | One folder per analysis, each with its own `Report.md` (the report, filled in through steps 2–5) and `Appendix.md` (the running record — data, problem, workings, decision records, recommendation, log, code guide — filled from step 1). [Heart Failure/](Demonstration/Heart%20Failure/) is the finished example: [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md). A finished analysis is not edited by a new one. |
-| [Project Report.md](Project%20Report.md) | The report on the project itself — the advisor and this workspace — not on any analysis, and the only report at the top level. A template: headings, each with a note on what goes there. Not part of the five steps. |
+| [Templates/](Templates/) | The empty [Report.md](Templates/Report.md) and [Appendix.md](Templates/Appendix.md), copied to the top of the workspace when an analysis starts; and [Whole-Project Report.md](Templates/Whole-Project%20Report.md), the template for a report on the project as a whole. Not edited by an analysis. |
+| [Project Report.md](Project%20Report.md) and [Appendix.md](Appendix.md) | The analysis in progress: the report, built up through the five steps, and the running record (data, problem, workings, decision records, recommendation, log, code guide), filled from step 1. This is where you work. |
+| [Demonstration/](Demonstration/) | Finished analyses, one folder each, submitted from the top of the workspace when an analysis is finished, each with its own `Report.md` and `Appendix.md`. [Heart Failure/](Demonstration/Heart%20Failure/) is the finished example: [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md). A finished analysis is not edited by a new one. |
 | `Attachments/` | Your data. Never modified. Holds the heart failure data used by the example analysis; see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
 | `Code/` | The environment and `viz_style.py`, which carries the figure conventions. Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core in its own folder, for example `Code/sepsis/core.py`; the example analysis used `Code/core.py` (not reviewed), which is never changed and which `Code/advisor/` will replace. Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. The example's scripts and outputs stay here; a new analysis uses names that do not collide with them. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
@@ -76,7 +77,7 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 
 Two documents, two readers.
 
-`Report.md` is the argument: what was asked, what was done, what was found, and what it does not support. It stays short, carries no diagnostic detail, and every number in it comes from generated output rather than from anyone's memory.
+`Project Report.md` is the argument: what was asked, what was done, what was found, and what it does not support. It stays short, carries no diagnostic detail, and every number in it comes from generated output rather than from anyone's memory.
 
 `Appendix.md` is the record, and it fills up from the first step. Every decision with its reasoning and what it cost, every workings, every check that changed nothing, and every decision that was later reversed — marked superseded rather than deleted, because a reader cannot judge a choice without seeing the alternatives.
 
