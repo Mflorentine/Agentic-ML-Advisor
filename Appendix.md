@@ -4,19 +4,477 @@
 
 ## Data Summary
 
-*Written in step 1, and covering only the data the analysis actually uses. Provenance with a checksum, the unit of every column and whether it is a measurement or a model output, which rows are used and what was excluded, how missing values are handled, what was cleaned and what was deliberately left alone. A decision that is later reversed stays here, marked superseded. Also records the ML-specific checks: the answers to the admissibility questions (`ML Guide.md` §10), the candidate target and the quality of its labels, the output type, class counts, the number of inputs after encoding and the share that are categorical, columns that could leak the target, and the user's ML experience level.*
+### Provenance
+
+- File: `Attachments/Student Dropout/data.csv`.
+- Source: UCI Machine Learning Repository, [Predict Students' Dropout and Academic Success](https://archive.ics.uci.edu/dataset/697), dataset 697, DOI 10.24432/C5MC89. Downloaded on 10 November 2026 by the user, from the UCI page. Not the publisher's live file of a different form: the user's answer is that it is the best available form (see below).
+- Licence: CC BY 4.0, as stated on the UCI page (found by search on 10 November 2026; the page itself was not opened in this step).
+- Citation given by UCI: Realinho, Vieira Martins, Machado and Baptista (2021), with the DOI above.
+- Why this file: the user wants it for work on student outcomes in education.
+- Institution: not named on the UCI page, which says only "a higher education institution" in Portugal. As stated by the user: all four creators are at the Instituto Politécnico de Portalegre, so it is likely the source. **Unverified:** the page does not state the institution, and the creators' affiliations have not been checked.
+- Years: not given on the UCI page. As stated by the user: a later paper by the same authors (Realinho et al., 2022, *Data*) gives the enrolment years as 2008/09 to 2018/19. **Unverified:** that paper has not been opened or checked.
+- Best available form: the user judged this file to be the best available form. No archived or fuller version was searched for; the user's answer is recorded as given.
+- Checked against the UCI metadata (archive.ics.uci.edu, dataset 697 API, read 10 November 2026): 4,424 instances and 36 features, matching the file (36 inputs and `Target`). The checksum is recorded below for later comparison.
+- SHA-256: `3ef126de5cefff26eb11fbb4237f1a1401cb64b488e2f1d598c23cedeb4c45ae`; 533,230 bytes.
+- Checked with `Code/dropout/01_describe_data.py`, output `Code/outputs/dropout/01_describe.md`. The file itself is not modified.
+
+### Describing pass (what is in the file)
+
+- Shape: 4,424 data rows, 37 columns: 36 candidate inputs and `Target`.
+- Format: semicolon-separated, UTF-8 with a byte-order mark, CRLF line endings, one header row.
+- Header: one name carries a trailing tab, `Daytime/evening attendance	`, as found in the file. The script strips it when reading; the original file is not changed.
+- Missing values: none. Fully duplicated rows: none.
+- Candidate target `Target`, three labels: Graduate 2,209 (49.9%), Dropout 1,421 (32.1%), Enrolled 794 (17.9%). The UCI page says the status is taken at the end of the normal duration of the course (DR-04).
+- Types: 36 inputs are numeric (integer or decimal). None are text. Nine integer columns carry code lists in the UCI documentation and are categorical (DR-05): `Marital status`, `Application mode`, `Course`, `Previous qualification`, `Nacionality`, the two parents' qualifications and the two parents' occupations. The yes/no flags and counts stay as 0/1 or whole numbers.
+- Columns that look like period-level economic values: `Unemployment rate`, `Inflation rate` and `GDP` each take only 9 or 10 distinct values across the 4,424 rows, so many rows share the same value. Whether rows are grouped by period was asked as Admissibility 3; the user answered one row per student (DR-02).
+- Units: the UCI documentation gives no units for any of the 37 variables (the field is null throughout). The units are stated in the description only for `Unemployment rate` and `Inflation rate` (%). `GDP` has no stated unit. The documentation gives ranges of 0 to 200 for the previous and admission grades and 0 to 20 for the semester grades.
+- Documentation inconsistency: the description of `Curricular units 2nd sem (without evaluations)` says "1st semester". Kept as the publisher's wording; recorded here, not corrected.
+
+### User's experience
+
+Intermediate, in the user's own words (recorded 10 November 2026). The depth of explanation follows this level; it does not change what is reported.
+
+### Decisions in step 1
+
+| Decision | What was recorded | Record |
+| --- | --- | --- |
+| Target and leakage | The candidate target is `Target`, a three-class label. The UCI page says it is the student's status at the end of the normal course duration (3 years, 4 for Nursing). The inputs are information known at enrolment and the first and second semester results. The user set no column aside: nothing in the documentation shows a column recorded after the outcome. | DR-04 |
+| Categorical inputs | Nine columns categorical (25% of the 36 inputs); flags and counts numeric. | DR-05 |
+| Scope | All 4,424 rows used; no exclusion, no cleaning. | DR-06 |
+| Missing data | None present (0 cells). Nothing imputed. | DR-06 |
+| Accepted as-is | The publisher says it preprocessed the data for anomalies, unexplainable outliers and missing values, without saying what it changed. The data is used as published. The description inconsistency above is kept. | DR-06 |
+| Grouping and time order | One row per student (DR-02). | DR-02 |
+| Units | Not given by the publisher; see above. Not inferred from column names. | DR-06 |
+
+### Decisions still open in step 1
+
+The institution and years are recorded as the user stated them, both unverified. The publisher gives no units, which are recorded as unknown. Step 1 is not yet closed.
 
 ## Problem Definition
 
-*Written in step 2, before anything is trained. Three parts. `Discussion`: how the problem was arrived at, what was ruled out, and whether it is a prediction problem. `Problem`: what is predicted, from what, the output type, the agreed metric, the success criterion, the baseline and the achievable level, the must-have requirements, and any expectations the user states about the relationship (quoted). `Sub-tasks`: the separately answerable parts. Ends with the train/test split, its seed, and the statement that the test set is locked.*
+### Discussion
+
+Four candidate formulations were offered, each taken from what the variables mean and not from any result: dropout after year one (Dropout yes/no from enrolment information and both semesters' results); dropout before year one (the three-way status from enrolment information only); the three-way status at the end of the course; and the second-semester grade. No model was fitted to compare them. The user chose dropout after year one, and the other three are not pursued in this analysis. Admissibility 2 was answered "predict new students" (DR-07), so the prediction workflow applies. For the 794 students still Enrolled at the end of the course, the user chose to count them as not dropped out, rather than leave them out (DR-08).
+
+### Problem
+
+- **Predicted (y):** Dropout yes/no. Dropout = 1; Graduate and Enrolled = 0 (DR-08).
+- **From (x):** all 36 inputs: enrolment information and the first and second semester results. Nine are categorical (DR-04, DR-05).
+- **Output type (Property 1):** binary (DR-11).
+- **Use:** as the candidate describes it, deciding which students receive support after year one. The user has not stated the use beyond that description.
+- **Costs of errors:** a missed dropout costs more than an unneeded flag (user, DR-09).
+- **Metric that decides between models:** F2 (user, DR-09).
+- **Monitored alongside:** recall, precision and the confusion matrix (user, DR-09).
+- **Success criterion:** on the locked test rows, the chosen model's F2 is above the F2 of flagging every student on the same rows (user, confirmed, DR-09).
+- **Baseline:** the most common training class, "not dropout" for every student, F2 = 0 (SEQ-1, DR-09). Flagging every student is a reference reported beside the model, not the baseline.
+- **Achievable level:** not known.
+- **Must-haves:** no requirement on interpretability (Property 5). A decision threshold is tuned on training data (Property 6). No predictions outside the range of the data (Property 7).
+- **Expectations about the relationship (Property 8):** none stated by the user, recorded as unknown.
+- **Split:** random, 20% test, stratified by Dropout, seed 2026: 3,539 training and 885 test students. The test set is locked until the final evaluation (DR-10).
+
+### Sub-tasks
+
+1. Dropout after year one: predict Dropout yes/no for new students from enrolment information and the first and second semester results. Success is the criterion above, measured by F2 on the locked test set, against the two references.
 
 ## Analysis
 
-*The workings, one sub-heading per sub-task, added as steps 3 and 4 proceed: exploration of the training data, cross-validation tables, learning curves, diagnostics, error analysis, checks that changed nothing, and anything computed but not reported.*
+### Properties 9 and 10 (step 3)
+
+Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dropout/core.py`, on the 3,539 training students only. Results and the core's version are in DR-12. Property 10 is balanced: Dropout is 32.1% of the training rows, above the 20% line. Property 9 is no: an unregularised logistic regression reaches 89.4% training accuracy, not 100%, so the classes are not perfectly separable. The test set is not read.
+
+### Figure 1: approved units by outcome (step 3)
+
+`Code/dropout/fig1_approved_units.py` plots the total of first- and second-semester approved units, per student, for the 3,539 training students. The horizontal axis is the total; each bar is the share of its outcome's students with that total. The plotted numbers are in `Code/outputs/dropout/fig1_approved_units.csv`. In the Dropout group, 436 of 1,137 students have a total of zero approved units; in the not-dropout group, 99 of 2,402 do. These counts are from the file and are not interpretations. Light and dark variants are in `Code/outputs/dropout/figures/` and `figures/dark/`. The figure is in `Project Report.md`, under Results, The training data.
 
 ## Decision Records
 
-*The advisor's reasoning trace, one record per decision, written when the decision is made, in the format of `ML Guide.md` §24. Records are never renumbered; a reversed decision stays, marked superseded.*
+### DR-01 · Admissibility · step 1
+
+- **Sub-task:** none yet (before step 2).
+- **Date:** 2026-11-10.
+- **Question:** Is there a recorded outcome for the rows the model would learn from? (*Admissibility 1: outcome recorded*)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| `Target` column | Graduate 2,209 · Dropout 1,421 · Enrolled 794; no missing values | M | `Code/outputs/dropout/01_describe.md` |
+| User's answer | "Yes, recorded" | M | the user, in step 1 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 1: outcome recorded | recorded | `[B SML p. 15]` | continue |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** continue · stop (not supervised).
+- **Expectation:** n/a.
+- **Decision:** The outcome is recorded for every row. The problem is supervised; work continues.
+- **Why not:** n/a.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered "Yes, recorded".
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Data Summary.
+
+### DR-02 · Admissibility · step 1
+
+- **Sub-task:** none yet (before step 2).
+- **Date:** 2026-11-10.
+- **Question:** Do several rows belong to the same unit, or are rows ordered in time? (*Admissibility 3: grouped or time-ordered rows*)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's answer | "One row per student" | M | the user, in step 1 |
+| Economic columns | `Unemployment rate`, `Inflation rate` and `GDP` take 9 or 10 distinct values each, so many rows share a value | M | `Code/outputs/dropout/01_describe.md` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 3: grouped or time-ordered rows | none | `[B SML pp. 16, 38–39, 329]` | random split; no group or time column |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** random split · group split · time-ordered reformulation.
+- **Expectation:** n/a.
+- **Decision:** No group or time column. Rows are treated as independent students and the split is random. The shared economic values are recorded as a fact about the file, not as a grouping; if the user later says that rows sharing a period belong together, this record is superseded.
+- **Why not:** n/a.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered "One row per student".
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Data Summary.
+
+### DR-03 · Admissibility · step 1
+
+- **Sub-task:** none yet (before step 2).
+- **Date:** 2026-11-10.
+- **Question:** Will the cases the model is used on look like these data? (*Admissibility 4: new cases like these*)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's answer | "Yes, same kind" (new students will be of the same kind: same kind of course, institution and period, recorded the same way) | M | the user, in step 1 |
+| Institution and years (user's statement, unverified) | Instituto Politécnico de Portalegre, likely; enrolment years 2008/09 to 2018/19 per Realinho et al. (2022) | M | the user, in step 1; see `Appendix.md`, Data Summary, Provenance |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 4: new cases like these | yes | `[B SML pp. 328–329]` | continue |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** continue · agree which data the validation and test sets should come from.
+- **Expectation:** n/a.
+- **Decision:** New cases are expected to look like these data. The estimate of error on new data is therefore an estimate for students like these. The institution and period are recorded as the user stated them, both unverified (Data Summary, Provenance): the institution is likely the Instituto Politécnico de Portalegre, and the enrolment years are 2008/09 to 2018/19 according to a later paper by the same authors.
+- **Why not:** n/a.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered "Yes, same kind".
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Data Summary.
+
+### DR-04 · Admissibility · step 1 (target and leakage)
+
+- **Sub-task:** none yet (before step 2).
+- **Date:** 2026-11-10.
+- **Question:** What is the candidate target, how was its label produced, and are any columns recorded after the outcome or derived from it (leakage)?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Target | `Target`, three classes: Dropout, Enrolled, Graduate | M | UCI API, target_col |
+| Label timing | "assessed at the end of the normal duration of the course" (3 years; 4 for Nursing) | M | UCI page, Additional Information; MDPI paper, Data 2022, 7, 146 (https://mdpi.com/2306-5729/7/11/146) |
+| Input timing | "information known at the time of student enrollment ... and the students' academic performance at the end of the first and second semesters" | M | UCI page, Additional Information |
+| User's decision | "Keep all inputs" | M | the user, in step 1 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 1: outcome recorded | recorded (DR-01) | `[B SML p. 15]` | continue |
+| Leakage check: no column recorded after the outcome or derived from it | none found in the documentation | `[I]` | no column set aside |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** keep all inputs · set aside the 1st and 2nd semester columns · set aside named columns.
+- **Expectation:** n/a.
+- **Decision:** The label is the student's status at the end of the normal course duration. No input is set aside as leakage. The 1st and 2nd semester results are recorded before that status, according to the documentation.
+- **Why not:** the semester columns were not set aside because the documentation does not record them after the outcome, and the user chose to keep all inputs.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered "Keep all inputs".
+- **Supersedes / superseded by:** none.
+- **Links:** `Code/outputs/dropout/01_describe.md`.
+
+### DR-05 · Input design · step 1 (categorical inputs)
+
+- **Sub-task:** none yet (before step 2).
+- **Date:** 2026-11-10.
+- **Question:** Which integer columns are treated as categorical codes, and which as numbers?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Columns with code lists in the UCI documentation | Marital status (6 codes), Application mode (18), Course (17), Previous qualification (about 22), Nacionality (21), Mother's and Father's qualification (about 30 and 33), Mother's and Father's occupation (codes, with 0 = student) | M | UCI API, variable descriptions |
+| User's decision | "Treat the code-list columns as categorical, and also the parents' occupation codes (they are codes, not amounts). Keep the yes/no flags as 0/1 numbers ... Keep the grade-like counts as numbers." | M | the user, in step 1 |
+| Counts | 9 of 36 inputs categorical (25.0%); 27 numeric; 220 observed levels; 247 columns after one-hot encoding with no column dropped | computed from the file | `Code/outputs/dropout/01_describe.md` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Input design (ML Guide §9): domain transformations and the choice of inputs, decided with the user, not a configuration axis | decided with the user | `[B→I SML p. 18]` | input design fixed; not chosen by cross-validation |
+
+- **Thresholds applied:** n/a. The share of categorical inputs for Property 4 is computed in step 2 (the High threshold is 50%).
+- **Options considered:** code-list columns only · code-list columns plus flags and occupations · other.
+- **Expectation:** n/a.
+- **Decision:** Nine integer columns are categorical, to be one-hot encoded inside the folds. The yes/no flags and counts are numbers.
+- **Why not:** the flags were not one-hot encoded, because that would add columns that duplicate the intercept, as the user noted from the Sepsis analysis.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered as quoted.
+- **Supersedes / superseded by:** none.
+- **Links:** `Code/dropout/01_describe_data.py`, `Code/outputs/dropout/01_describe.md`.
+
+### DR-06 · Scope and cleaning · step 1
+
+- **Sub-task:** none yet (before step 2).
+- **Date:** 2026-11-10.
+- **Question:** Which rows are used, what is cleaned, and what is accepted as published?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Rows | 4,424, all used | M | the user, in step 1 ("Use all 4,424 rows") |
+| Missing cells | 0 | T | `Code/outputs/dropout/01_describe.md` |
+| Fully duplicated rows | 0 | T | `Code/outputs/dropout/01_describe.md` |
+| Publisher's preprocessing | "a rigorous data preprocessing to handle data from anomalies, unexplainable outliers, and missing values" (not described) | M | UCI page, Additional Information |
+| Units | null for all 37 variables | M | UCI API |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Data summary decisions (step 1) | all rows used; no cleaning | `[I]` | none |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** use all rows · exclude rows with a stated reason.
+- **Expectation:** n/a.
+- **Decision:** All 4,424 rows are used, with no cleaning and no imputation. The publisher's preprocessing is accepted as published, and units are not inferred.
+- **Why not:** no exclusion, because no row was identified as wrong, and the user chose all rows.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered "Use all 4,424 rows".
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Data Summary.
+
+### DR-07 · Admissibility · step 2
+
+- **Sub-task:** none yet (the problem is being defined).
+- **Date:** 2026-11-10.
+- **Question:** Is the main aim to predict the outcome for new cases, or to understand how the variables are connected? (*Admissibility 2: prediction or understanding*)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's answer | "Predict new students" | M | the user, in step 2 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 2: prediction or understanding | predict | `[B SML p. 20]` | continue |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** predict new cases · understand the connections (needs the user's confirmation to continue).
+- **Expectation:** n/a.
+- **Decision:** The aim is prediction for new students. Work continues on the prediction workflow.
+- **Why not:** the understanding option was not chosen, so the confirmation it requires was not asked.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered "Predict new students".
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Problem Definition (to be written).
+
+### DR-08 · FORM · step 2 (what is predicted, and how Enrolled is handled)
+
+- **Sub-task:** none yet (the problem is being defined).
+- **Date:** 2026-11-10.
+- **Question:** What is predicted (y), from what (x), and how are the students still Enrolled treated?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Problem chosen | "Dropout after year one": predict Dropout yes/no from enrolment information and both semesters' results | M | the user, in step 2, chosen from four candidate formulations |
+| Enrolled | "Count as not dropped out": Enrolled and Graduate both count as no | M | the user, in step 2 |
+| Rows | 4,424 used; Dropout 1,421 (32.1%) | T | `Code/outputs/dropout/01_describe.md` |
+| Inputs | all 36 inputs, nine categorical (DR-04, DR-05) | M | DR-04, DR-05 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 1: outcome recorded | recorded (DR-01) | `[B SML p. 15]` | the problem is supervised |
+| Admissibility 2: prediction or understanding | predict (DR-07) | `[B SML p. 20]` | continue |
+| Admissibility 4: new cases like these | yes (DR-03) | `[B SML pp. 328–329]` | continue |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** Dropout yes/no from all 36 inputs (chosen) · Dropout yes/no from enrolment information only · three-way status · second-semester grade. Enrolled counted as not dropped out (chosen) · Enrolled left out.
+- **Expectation:** n/a.
+- **Decision:** Predict y = 1 if Dropout, 0 if Graduate or Enrolled, from all 36 inputs, for all 4,424 rows. The prediction is made with the first- and second-semester results available. Output type (Property 1) is binary, to be recorded in the PROP record.
+- **Why not:** the three-way status and the second-semester grade were not chosen; the enrolment-only version was not chosen, because the user chose the year-one version. Leaving Enrolled out was not chosen, because the user chose to keep all rows.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered as quoted.
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Data Summary; `Code/outputs/dropout/01_describe.md`.
+
+### DR-09 · FORM · step 2 (metric, success criterion, baseline, requirements)
+
+- **Sub-task:** none yet (the problem is being defined).
+- **Date:** 2026-11-10.
+- **Question:** Which single metric decides between models, what counts as success, what is the baseline, and what must the predictions satisfy?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Error costs | "Missed dropout costs more" | M | the user, in step 2 |
+| Metric | F2 score | M | the user, in step 2 |
+| Success criterion | "Beat flagging everyone": F2 of the chosen model on the test rows above the F2 of flagging every student on the same rows, 5p/(4p+1) with p the positive share of those rows | M | the user, in step 2; the definition is ours, to be confirmed with the user |
+| Baseline | most common training class: "not dropout" for every student, F2 = 0 | `[B SML pp. 330–331]` | ML Guide SEQ-1 |
+| Property 5: interpretability | none | M | the user, in step 2 |
+| Property 7: extrapolation | no | M | the user, in step 2 |
+| Property 8: expected shape | unknown: no expectation stated | M | the user, in step 2 |
+| Achievable level | not known | n/a | not yet asked |
+| Monitored alongside F2 | recall, precision, confusion matrix | M | the user, in step 2 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Property 1: output type = binary | binary | `[B SML pp. 17–18]` | classification; logistic regression, k-NN, tree in scope |
+| Property 6: probabilities or tuned threshold | yes: F2 needs a decision threshold chosen on training data | `[B SML pp. 92–93]` | threshold tuned in step 4 (guide §16) |
+| SEQ-1: baseline | most common training class | `[B SML pp. 330–331]` | baseline F2 = 0 |
+| Flag-everyone reference | reported beside the model; not the baseline; decides nothing | `[I]` | reference only, see note below |
+
+- **Thresholds applied:** flag-everyone F2 = 5p/(4p+1) for the positive share p; computed on the test rows at step 4g.
+- **Options considered:** F2 (chosen) · F1 (rejected: equal costs, contrary to the user's answer) · F-beta with another β · PR-AUC · plain accuracy (rejected: about one in three students is Dropout, so accuracy misleads, SML p. 91).
+- **Expectation:** n/a.
+- **Decision:** The model is compared by F2, with the missed-dropout cost weighted. Success: on the locked test set, the chosen model's F2 is above the F2 of flagging every student on the same rows. Baseline: the most common training class (F2 = 0).
+- **Why not:** the other metrics above, for the reasons given. Must-haves: none beyond Property 6.
+- **Note (a tension with the guide):** the guide describes the flag-everyone F2 as a reference that decides nothing (ML Guide §16). Using it as the success bar is the user's choice, recorded as theirs. If the guide's wording is to change, that is a FRAMEWORK change.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered as quoted; the success definition and the stratified split confirmed by the user.
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Problem Definition (to be written).
+
+### DR-10 · SPLIT · step 2
+
+- **Sub-task:** none yet (the problem is being defined).
+- **Date:** 2026-11-10.
+- **Question:** How is the data split into training and test rows, and is the test set locked?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Test fraction | 20% | M | the user, in step 2 |
+| Groups | none (one row per student) | M | DR-02 |
+| Seed | 2026 | M | the agent's choice, recorded here |
+| Stratification | by y (Dropout yes/no), so both sets keep the same share | M | the agent's choice, recorded here; informed to the user, not asked |
+| Result | train 3,539 (Dropout 1,137, 32.1%); test 885 (Dropout 284, 32.1%) | T | `Code/outputs/dropout/02_split.md` |
+| File | row_id, split, y | T | `Code/outputs/dropout/02_split.csv`, SHA-256 `b7fcf12c6df9d72eb96335cb0a40e116b0ba55ae8196d3375db7f0a02e4bf4d5` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 3: grouped or time-ordered rows | none: random split | `[B SML pp. 16, 38–39, 329]` | random |
+| Test set used once | locked until the final evaluation | `[B SML p. 74]`, `[B SML p. 328]` | no step before 4g reads split = test |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** 20% test (chosen) · 10% test (not chosen).
+- **Expectation:** n/a.
+- **Decision:** A random 20% test set, stratified by Dropout, seed 2026. The test rows are locked.
+- **Why not:** 10% test: the user chose 20%. Grouped split: no groups.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked (fraction) answered "20% test"; seed and stratification informed.
+- **Supersedes / superseded by:** none.
+- **Links:** `Code/dropout/02_split.py`, `Code/outputs/dropout/02_split.csv`, `Code/outputs/dropout/02_split.md`.
+
+### DR-11 · PROP · step 2 (Properties 1–8)
+
+- **Sub-task:** none yet (the problem is being defined).
+- **Date:** 2026-11-10.
+- **Question:** What are the values of Properties 1–8 for this formulation? (Properties 9–10 come from the training data in step 3.)
+- **Evidence:**
+
+| Property | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Property 1: output type | binary (Dropout yes/no) | M | DR-08 |
+| Property 2: data-to-parameter ratio | ample: 3,539 ÷ (247 + 1) = 14.3 | M | DR-10 and the encoding count in `Code/outputs/dropout/01_describe.md` |
+| Property 3: number of inputs | many: 247 after one-hot encoding | M | `Code/outputs/dropout/01_describe.md` |
+| Property 4: categorical share | low: 9 of 36 inputs = 25% | M | DR-05 |
+| Property 5: interpretability | none | M | DR-09 |
+| Property 6: probabilities or tuned threshold | yes: the F2 decision threshold is tuned on training data | M | DR-09 |
+| Property 7: extrapolation | no | M | DR-09 |
+| Property 8: expected shape | unknown: no expectation stated by the user | M | DR-09 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Property 2: limited if below 10 | ample (14.3) | `[I]` | ample |
+| Property 3: many if above 20 | many (247) | `[I]` | many |
+| Property 4: high if at least 50% | low (25%) | `[I]` | low |
+
+- **Thresholds applied:** Property 2: 10 (`[I]`); Property 3: 20 (`[I]`); Property 4: 50% (`[I]`).
+- **Options considered:** n/a (values, not choices).
+- **Expectation:** n/a.
+- **Decision:** Properties 1–8 as stated above.
+- **Why not:** n/a.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** informed for Properties 2–4 (computed); asked for 1, 5–8.
+- **Supersedes / superseded by:** superseded by DR-12 for Properties 9 and 10 only; Properties 1–8 stand.
+- **Links:** `Code/outputs/dropout/01_describe.md`, `Code/outputs/dropout/02_split.md`.
+
+### DR-12 · PROP · step 3 (Properties 9 and 10, training rows only)
+
+- **Sub-task:** none yet (the problem is being defined).
+- **Date:** 2026-11-10.
+- **Question:** Can the training classes be separated perfectly by a logistic regression with no regularisation, and is the class balance imbalanced? (Properties 9 and 10.)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Training rows | 3,539 (the test rows are not read) | T | DR-10, `Code/outputs/dropout/02_split.md` |
+| Smallest class share | 32.1%: Dropout 1,137; Graduate or Enrolled 2,402 | T | `Code/outputs/dropout/03_props_9_10.md` |
+| Training accuracy, unregularised logistic regression | 0.8938 (not 1.0); solver converged after 262 iterations of 10,000 | T | `Code/outputs/dropout/03_props_9_10.json` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Property 10: imbalanced if the smallest class is below 20% of training rows | balanced | `[I]` | the metric is handled as balanced (ML Guide §16) |
+| Property 9: yes if the training accuracy reaches 100% | no | `[I]` | MOD-1 does not apply; Logistic and Logistic + poly remain admissible |
+| MOD-1: separability = yes makes the unregularised logistic versions inadmissible | not triggered | `[B SML p. 61]` | none |
+
+- **Thresholds applied:** 20% smallest-class share (`[I]`), compared with 32.1%; 100% training accuracy (`[I]`), compared with 89.4%.
+- **Options considered:** n/a (properties are computed, not chosen).
+- **Expectation:** n/a.
+- **Decision:** Property 10: balanced. Property 9: no. These supersede the step 2 values for Properties 9 and 10 (DR-11).
+- **Why not:** n/a.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** the user approved the interim core before it ran. The result is informed, not asked.
+- **Supersedes / superseded by:** supersedes DR-11 for Properties 9 and 10.
+- **Code version:** `Code/dropout/core.py`, SHA-256 `f6833dbed41de83c78e4b76734b5627e49c3b6386c92c9f815593a226b4c9ea4` (interim core, not reviewed). Run by `Code/dropout/03_properties_9_10.py`.
+- **Note on the core:** the first run used `penalty=None`, which the installed scikit-learn deprecates. It gave the same result (training accuracy 0.8938, 262 iterations). The core was changed to `C=np.inf`, the replacement that scikit-learn names, before any output was used. The change does not alter the fit.
+- **Links:** `Code/dropout/core.py`, `Code/dropout/03_properties_9_10.py`, `Code/outputs/dropout/03_props_9_10.md`.
+
 
 ## Recommendation
 
@@ -24,15 +482,59 @@
 
 ## Analysis Log
 
-*A numbered row per step taken, added as the work happens. What was done, what it changed, and where the output is. Superseded decisions stay, marked as such — a reader cannot judge a choice without seeing the alternatives. A row that involved a decision names its Decision Record IDs.*
 
 | # | What was done | Output |
 | --- | --- | --- |
+| 1 | Started the `dropout` analysis. Copied `Templates/Report.md` and `Templates/Appendix.md` to the root (the root files already matched the templates, so there was no earlier analysis to submit). Ran the describing pass on `Attachments/Student Dropout/data.csv`. No cleaning, no decisions. | `Code/outputs/dropout/01_describe.md` |
+| 2 | Recorded the provenance (UCI, downloaded 10 November 2026, user judged it the best available form), the user's experience (intermediate) and the reason for the file. No cleaning, no decisions. | `Appendix.md`, Data Summary |
+| 3 | Asked Admissibility 1, 3 and 4 in closed questions. Answers: outcome recorded; one row per student (no grouping or time order); new cases of the same kind. | DR-01, DR-02, DR-03 in Decision Records |
+| 4 | Read the UCI documentation (API metadata, checked against the file's counts; no units given). Asked the leakage, categorical and rows questions. Answers: keep all inputs; nine categorical inputs; all 4,424 rows. Reran the describing pass with the categorical split. | DR-04, DR-05, DR-06; `Code/outputs/dropout/01_describe.md` |
+| 5 | Recorded the institution and enrolment years as the user stated them, both unverified (the UCI page names neither; the 2022 paper was not opened). | DR-03; `Appendix.md`, Data Summary, Provenance |
+| 6 | Step 1 closed by the user on 10 November 2026. The institution and years stay marked unverified; the 2022 paper has not been opened. Draft Abstract written in `Project Report.md`. | `Project Report.md`, Abstract |
+| 7 | Step 2 begun. The user chose one of four candidate formulations: Dropout yes/no after year one. Admissibility 2 answered: predict new students. The Enrolled rule chosen: counted as not dropped out. | DR-07, DR-08 |
+| 8 | Asked the error costs (missed dropout costs more), the metric (F2), the success criterion (beat flagging everyone), and Properties 5, 7 and 8 (no requirement; no extrapolation; no expectation). The baseline is the guide's SEQ-1 rule. | DR-09 |
+| 9 | Asked the test fraction: 20%. Wrote and ran the split: random, stratified by Dropout, seed 2026; train 3,539, test 885. Test set locked. Properties 1–8 recorded. | DR-10, DR-11; `Code/dropout/02_split.py`, `Code/outputs/dropout/02_split.md` |
+| 10 | Monitored metrics: recall, precision, confusion matrix. The user confirmed the success definition and the stratified split. Wrote the Problem Definition (Discussion, Problem, Sub-tasks), the Introduction, `Data and evaluation` in Methods, the references, and the draft Abstract in `Project Report.md`. No model fitted. | DR-09, DR-10; `Appendix.md` Problem Definition; `Project Report.md` |
+| 12 | Step 3 begun. Approved the interim core for Properties 9 and 10. Ran it on the training rows: balanced (smallest class 32.1%), not separable (training accuracy 0.8938). The core's first draft used a setting the installed scikit-learn deprecates; changed to the replacement before any output was used. | DR-12; `Code/dropout/core.py`, `Code/dropout/03_properties_9_10.py`, `Code/outputs/dropout/03_props_9_10.md` |
+| 13 | Proposed three training-data figures; the user chose approved units by outcome, with shares within each group and both semesters combined. Drew Figure 1 on the training rows, light and dark, and placed it in Results, The training data. Figure 1 in the report is the light variant. | `Code/outputs/dropout/figures/fig1_approved_units.png`; `Code/outputs/dropout/fig1_approved_units.csv`; `Project Report.md`, Results |
+| 11 | Step 2 closed by the user on 10 November 2026. Open and left as recorded: the decision the prediction serves (not yet stated in the user's words; the candidate's description stands in the Problem section), and the achievable level (not given). The book references are from the guide and not yet checked against the book's title page. | `Appendix.md` Problem Definition; `Project Report.md` |
 
 ## Code Summary
 
-*The guide to the analysis code, kept current whenever code is added or changed. What each file does, how to run it, what it reads and produces, and any parameter or seed that affects the result. Installation belongs in `Setup.md` at the top of the workspace, not here.*
+### `Code/dropout/01_describe_data.py`
+
+- Step 1, describing pass. Reads `Attachments/Student Dropout/data.csv` (never modified). Writes `Code/outputs/dropout/01_describe.md`: file checksum and line endings, the candidate target's counts, every column's type, missing count, distinct values and range, and a numeric summary.
+- Run: `cd Code && uv run python dropout/01_describe_data.py`.
+- Parameters: the categorical columns (DR-05) are a constant list in the script. No seeds.
+- Packages: `pandas` (listed in `Code/pyproject.toml`).
+
+### `Code/dropout/02_split.py`
+
+- Step 2, train/test split. Reads `Attachments/Student Dropout/data.csv` (never modified). Writes `Code/outputs/dropout/02_split.csv` (row_id, split, y) and `Code/outputs/dropout/02_split.md` (counts, seed, checksum). Fits no model.
+- Rule: random split, 20% test, stratified by y (Dropout = 1), seed 2026 (DR-10). The test rows are locked until the final evaluation.
+- Run: `cd Code && uv run python dropout/02_split.py`.
+- Parameters: `SEED = 2026`, `TEST_FRACTION = 0.20`. Packages: `pandas`, `scikit-learn` (listed in `Code/pyproject.toml`).
+
+### `Code/dropout/core.py` (interim core, not reviewed)
+
+- Implements Property 10 (class imbalance) and Property 9 (separability) for this analysis, on the training rows only. Every [I] threshold is a named constant (`IMBALANCE_SHARE = 0.20`, `SEPARABLE_TRAIN_ACCURACY = 1.0`). Holds the list of categorical inputs (DR-05).
+- Imported by `03_properties_9_10.py`; not run on its own.
+- Parameters: `SEPARABILITY_MAX_ITER = 10000` (convergence budget); seed 2026 passed to the solver.
+- Packages: `numpy`, `pandas`, `scikit-learn`.
+
+### `Code/dropout/03_properties_9_10.py`
+
+- Step 3. Reads `Attachments/Student Dropout/data.csv` and `Code/outputs/dropout/02_split.csv`. Uses the training rows only. Writes `Code/outputs/dropout/03_props_9_10.json` and `.md`, with the core's SHA-256.
+- Run: `cd Code && uv run python dropout/03_properties_9_10.py`.
+
+### `Code/dropout/fig1_approved_units.py`
+
+- Step 3, Figure 1. Reads `Attachments/Student Dropout/data.csv` and `Code/outputs/dropout/02_split.csv`; plots the training rows only. Writes `Code/outputs/dropout/figures/fig1_approved_units.png` (light), `figures/dark/fig1_approved_units.png` (dark) and `Code/outputs/dropout/fig1_approved_units.csv`.
+- Uses `Code/sml_style.py` for the style.
+- Run: `cd Code && uv run python dropout/fig1_approved_units.py`. No seed.
+
 
 ## References
 
-*Added as sources are cited. Always the last section.*
+- Lindholm, A., Wahlström, N., Lindsten, F. and Schön, T. B. (2026). *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft of 1 September 2026. [https://smlbook.org/](https://smlbook.org/). Details taken from `ML Guide.md`. Not yet checked against the title page on smlbook.org; the local copy in `Attachments/smlbook/` is not in the workspace.
+- Realinho, V., Vieira Martins, M., Machado, J. and Baptista, L. (2021). Predict Students' Dropout and Academic Success [Dataset]. UCI Machine Learning Repository. [https://doi.org/10.24432/C5MC89](https://doi.org/10.24432/C5MC89). Checked on the UCI dataset page and its metadata on 10 November 2026.

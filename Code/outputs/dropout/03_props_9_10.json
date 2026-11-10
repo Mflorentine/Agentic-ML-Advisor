@@ -1,0 +1,29 @@
+{
+  "core": "Code/dropout/core.py (interim core, not reviewed)",
+  "core_sha256": "f6833dbed41de83c78e4b76734b5627e49c3b6386c92c9f815593a226b4c9ea4",
+  "training_rows": 3539,
+  "properties": [
+    {
+      "property": "Property 9: classes perfectly separable",
+      "value": "no",
+      "training_accuracy": 0.8937552981068099,
+      "threshold": 1.0,
+      "solver_iterations": 262,
+      "max_iter": 10000,
+      "evidence": "T",
+      "provenance": "[I]"
+    },
+    {
+      "property": "Property 10: class imbalance",
+      "value": "balanced",
+      "smallest_class_share": 0.3212771969482905,
+      "class_counts": {
+        "0": 2402,
+        "1": 1137
+      },
+      "threshold": 0.2,
+      "evidence": "T",
+      "provenance": "[I]"
+    }
+  ]
+}
