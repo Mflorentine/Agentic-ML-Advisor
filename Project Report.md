@@ -1,4 +1,4 @@
-# Predicting first-year dropout in higher education with logistic regression
+# Predicting student dropout from first-year results with logistic regression
 
 ## Abstract
 
