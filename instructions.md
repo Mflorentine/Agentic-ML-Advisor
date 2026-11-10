@@ -361,6 +361,7 @@ Write the `Discussion` section of `Project Report.md`.
 - Nothing enters the `Discussion` that is not already established in `Results` or `Appendix.md`.
 - **Write the final `Abstract` once the `Discussion` is written**, replacing the draft and removing the word *Draft*. It summarises the problem, the approach, the results and what they support, and names nothing that is not in the report.
 - **Suggest a title once the `Discussion` is written.** Offer two or three plain, literal titles, say what each puts first, and let the user choose.
+- **Check that the content reflects the title, and consult the user.** Whenever a title is chosen or changed, by the user or the agent, read the report against it: does each word in the title describe what was done and found, does the report spend its space on what the title puts first, and could the title lead a reader to expect a claim the report does not make? Say plainly where they match and where they do not, quoting the sentences concerned, and offer the user both ways to resolve a mismatch: a title that fits the content, or a change to the content that fits the title without claiming more than the analysis supports. The user decides; record the check and the decision in the `Analysis Log`.
 
 ## When Something Changes
 
