@@ -96,7 +96,7 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **What changed.** Whenever a title is chosen or changed, the agent reads the report against it: whether each word describes what was done and found, whether the report spends its space on what the title puts first, and whether the title could lead a reader to expect a claim the report does not make. It reports where they match and where they do not, and offers both remedies, a title that fits or a change to the content that fits the title without overclaiming; the user decides (`instructions.md`, step 5).
 - **Why.** "Does the content reflect the title? You should check this and consult with user on it."
 
-### 17. A tidier workspace (10 November, @@HASH@@)
+### 17. A tidier workspace (10 November, `fa14a9f`)
 
 - **What changed.** The notes for collaborators moved into `Notes/` (`Davids Changes.md`, `Note for Florentine.md`; their links fixed). Local tool state is no longer offered to git (`copilot/copilot-conversations/`, `.copilot/`, `.claude/settings.local.json`). `Code/README.md` says which scripts, cores and outputs belong to which analysis. The README opens with a short *Start here* and lists the finished examples, now including xG. Nothing that a finished analysis refers to was moved.
 - **Why.** "Tidy up directory, so it is easy for a user to use." Moving the Heart Failure and Sepsis scripts, or the framework files, was considered and not done, because recorded paths would break.
