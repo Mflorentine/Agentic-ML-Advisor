@@ -74,3 +74,9 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **What changed.** When the agent presents a plan, a step or a method, it gives the book pages behind each part and says which parts are ours, checking the pages in the local copy of the book first (`instructions.md`, *Say in plain words what an action will do*).
 - **Why.** "When presenting something like this you should add book pages", said of the overview of step 4.
 
+### 13. Diagnosis uses the agreed metric (10 November, @@HASH@@)
+
+- **What changed.** In `ML Guide.md` §16, overfitting and underfitting are judged with the metric agreed in step 2 when it is an error function in its own right (log-loss in the xG analysis), instead of always with the misclassification rate. The learning-curve check (C3, §17) follows.
+- **Why.** In the xG data goals are 10 % of shots, so almost every model predicts "no goal" and the misclassification rate stays near 0.10 whatever the model does: the diagnosis would be blind. The book calls the misclassification rate "problematic for imbalanced problems" (SML p. 91) and leaves the error function to the problem (SML p. 67). Raised by the agent at step 4b; David: "yes".
+- **In practice.** Analyses whose metric is the misclassification rate or squared error are unchanged.
+
