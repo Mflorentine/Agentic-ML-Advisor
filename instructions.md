@@ -51,6 +51,7 @@ This workspace is for solving supervised machine learning problems with the user
 - **Ask the user's experience with machine learning in step 1**, record it in the `Data Summary`, and match the depth of explanation to it. The experience level changes how much is explained, never what is reported.
 - **Explaining concepts.** When a concept needs explaining, or the user asks what one means, explain it in plain words at the user's level.
   - Base the explanation on `ML Guide.md` Part I, and give the book page. Open the book at smlbook.org if the guide is not enough.
+  - **When the user asks what the book says, or whether something is in the book, always open the book and check before answering.** Do not answer from `ML Guide.md` or from memory alone. Read the pages the guide cites and search the four chapters for the topic, then say what the book says, with pages, and whether the guide agrees. If the book could not be opened, say so plainly and answer only as far as the guide goes. If the check shows that the guide or a provenance tag in the records is wrong, say so, and correct it: the guide under `Changing This Contract`, the records with a superseding Decision Record.
   - Mark anything that does not come from the book as your own.
   - If the concept is outside chapters 2, 3, 4 and 13, say so.
   - The explanation stays in the conversation, not in `Project Report.md` or the Decision Records. Add a short note to the `Analysis Log` saying which concept was explained and when.
