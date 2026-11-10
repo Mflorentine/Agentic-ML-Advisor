@@ -7,3 +7,6 @@ Attachments/*.csv -text
 Code/core.py -text
 # The same for each analysis's own interim core (e.g. Code/sepsis/core.py).
 Code/*/core.py -text
+
+# The xG interim core is identified by the SHA-256 of its bytes (its Decision Records quote it).
+Code/xg/core.py -text

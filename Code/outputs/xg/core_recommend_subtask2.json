@@ -1,0 +1,337 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "2",
+ "rows_used": "training only",
+ "recommendation": {
+  "entry": "Logistic + poly",
+  "configuration": "Logistic + poly",
+  "tuned_hyperparameters_cv": {
+   "params": {
+    "enc__num__degree": 3
+   },
+   "folds": "10/10"
+  }
+ },
+ "trace": {
+  "1_eligible": {
+   "Logistic": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06425999257306307,
+     0.0061478114549876105
+    ]
+   },
+   "Logistic + L2": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06424034809060639,
+     0.005977714346328664
+    ]
+   },
+   "Logistic + poly": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06720198567886089,
+     0.005466727011356414
+    ]
+   },
+   "Logistic + poly + L2": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06720151883374778,
+     0.0057043400909799185
+    ]
+   }
+  },
+  "2_candidates": {
+   "Logistic + poly": {
+    "cv_mean_logloss": 0.25764940939775677,
+    "margin_best_minus_this": [
+     0.0,
+     0.0
+    ]
+   },
+   "Logistic + poly + L2": {
+    "cv_mean_logloss": 0.25764987624286995,
+    "margin_best_minus_this": [
+     4.6684511310901566e-07,
+     0.0003863965982415823
+    ]
+   }
+  },
+  "3_choice": {
+   "Logistic + poly": {
+    "addons": 1,
+    "prior_score": -1,
+    "cv_mean_logloss": 0.25764940939775677
+   },
+   "Logistic + poly + L2": {
+    "addons": 2,
+    "prior_score": -1,
+    "cv_mean_logloss": 0.25764987624286995
+   }
+  },
+  "3_chosen": "Logistic + poly"
+ },
+ "selection_confidence": {
+  "level": "Low",
+  "C1": {
+   "value": "none",
+   "runner_up": "Logistic + poly + L2",
+   "margin": 4.6684511310901566e-07,
+   "spread": 0.0003863965982415823
+  },
+  "C2": {
+   "value": "clear",
+   "margin": [
+    0.06720198567886089,
+    0.005466727011356414
+   ]
+  },
+  "C3": {
+   "value": "adequate",
+   "logloss_val_80_minus_100": 0.0006673012218427199,
+   "threshold": ">= 0.5 x fold SD at 100 % (0.00582)"
+  },
+  "rule": "High: C1 clear, C2 clear, C3 adequate; Low: C1 none or C2 not clear; otherwise Medium"
+ },
+ "prior_agreement": {
+  "value": "disagree",
+  "cv_winner_among_prior_kept": "Logistic + poly",
+  "prior_order_kept": [
+   "Logistic",
+   "Logistic + L2",
+   "Logistic + poly",
+   "Logistic + poly + L2"
+  ]
+ },
+ "grounding": {
+  "[B\u2192I]": 1
+ },
+ "grounding_entries": [
+  {
+   "entry": "Property 3: number of inputs=many\u2192poly",
+   "score": -1,
+   "provenance": "[B\u2192I SML p. 59]"
+  }
+ ],
+ "breadth_note": {
+  "configurations_compared": 4,
+  "applies": false
+ },
+ "why_not": [
+  {
+   "configuration": "Linear",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + poly",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + poly + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Logistic",
+   "code": "OUTP",
+   "entry": "Logistic",
+   "evidence": {
+    "margin_rec_minus_this": 0.0029419931057977967,
+    "spread": 0.0010530651864369335,
+    "C2": "clear",
+    "addons": 0,
+    "rec_addons": 1
+   }
+  },
+  {
+   "configuration": "Logistic + L2",
+   "code": "OUTP",
+   "entry": "Logistic + L2",
+   "evidence": {
+    "margin_rec_minus_this": 0.0029616375882544842,
+    "spread": 0.0010113790227922472,
+    "C2": "clear",
+    "addons": 1,
+    "rec_addons": 1
+   }
+  },
+  {
+   "configuration": "Logistic + poly + L2",
+   "code": "SIMP",
+   "entry": "Logistic + poly + L2",
+   "evidence": {
+    "margin_rec_minus_this": 4.6684511310901566e-07,
+    "spread": 0.0003863965982415823,
+    "C2": "clear",
+    "addons": 2,
+    "rec_addons": 1
+   }
+  },
+  {
+   "configuration": "Poisson",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Poisson + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Exponential",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Exponential + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "kNN",
+   "code": "USER",
+   "evidence": "must-have Property 5: interpretability = inspectable [B\u2192I SML p. 347]; must-have Property 6: probabilities = yes [B\u2192I SML pp. 50, 53\u201354]"
+  },
+  {
+   "configuration": "Tree",
+   "code": "USER",
+   "evidence": "must-have Property 6: probabilities = yes [B\u2192I SML pp. 50, 53\u201354]"
+  }
+ ],
+ "learning_curve": [
+  {
+   "fraction": 0.1,
+   "e_train_mean": 0.08451088303241908,
+   "e_val_mean": 0.10505402701695613,
+   "e_val_fold_sd": 0.004838461993854418,
+   "logloss_train_mean": 0.2222093185744623,
+   "logloss_val_mean": 0.388828923837138,
+   "logloss_val_fold_sd": 0.03545577320941528
+  },
+  {
+   "fraction": 0.2,
+   "e_train_mean": 0.08903856372316328,
+   "e_val_mean": 0.09791979713615402,
+   "e_val_fold_sd": 0.0035326365423630273,
+   "logloss_train_mean": 0.23724110435093274,
+   "logloss_val_mean": 0.2942168185392907,
+   "logloss_val_fold_sd": 0.02254982819632481
+  },
+  {
+   "fraction": 0.3,
+   "e_train_mean": 0.08999318582058599,
+   "e_val_mean": 0.0971932623984677,
+   "e_val_fold_sd": 0.0028375526862958345,
+   "logloss_train_mean": 0.2423941455730537,
+   "logloss_val_mean": 0.2704138607109683,
+   "logloss_val_fold_sd": 0.005842502407412627
+  },
+  {
+   "fraction": 0.4,
+   "e_train_mean": 0.09216290372715635,
+   "e_val_mean": 0.0955426257693208,
+   "e_val_fold_sd": 0.002675432676705511,
+   "logloss_train_mean": 0.24671832357330423,
+   "logloss_val_mean": 0.26344060076325226,
+   "logloss_val_fold_sd": 0.0054567863871735536
+  },
+  {
+   "fraction": 0.5,
+   "e_train_mean": 0.09273966505730433,
+   "e_val_mean": 0.09453466233602223,
+   "e_val_fold_sd": 0.0021396451466474823,
+   "logloss_train_mean": 0.25012959023288006,
+   "logloss_val_mean": 0.26094383048094605,
+   "logloss_val_fold_sd": 0.005781349760879169
+  },
+  {
+   "fraction": 0.6,
+   "e_train_mean": 0.09297729990436628,
+   "e_val_mean": 0.09441509171343983,
+   "e_val_fold_sd": 0.002243532330098717,
+   "logloss_train_mean": 0.25126469446448735,
+   "logloss_val_mean": 0.2594343747547913,
+   "logloss_val_fold_sd": 0.005649782975193867
+  },
+  {
+   "fraction": 0.7,
+   "e_train_mean": 0.09275505036645998,
+   "e_val_mean": 0.09429452798305095,
+   "e_val_fold_sd": 0.0024633606997453514,
+   "logloss_train_mean": 0.2512028095593669,
+   "logloss_val_mean": 0.25870303498959213,
+   "logloss_val_fold_sd": 0.005697417094747722
+  },
+  {
+   "fraction": 0.8,
+   "e_train_mean": 0.09289296531149864,
+   "e_val_mean": 0.0940528889781184,
+   "e_val_fold_sd": 0.0021953562268090154,
+   "logloss_train_mean": 0.2510655486163483,
+   "logloss_val_mean": 0.2583167106195995,
+   "logloss_val_fold_sd": 0.006042566027209797
+  },
+  {
+   "fraction": 0.9,
+   "e_train_mean": 0.093076272301596,
+   "e_val_mean": 0.09401223851759985,
+   "e_val_fold_sd": 0.001910633838513678,
+   "logloss_train_mean": 0.25153896832701583,
+   "logloss_val_mean": 0.25772461549896947,
+   "logloss_val_fold_sd": 0.00613314358470553
+  },
+  {
+   "fraction": 1.0,
+   "e_train_mean": 0.0931835909956451,
+   "e_val_mean": 0.09393272961355384,
+   "e_val_fold_sd": 0.0018987171218912697,
+   "logloss_train_mean": 0.251979575942732,
+   "logloss_val_mean": 0.25764940939775677,
+   "logloss_val_fold_sd": 0.005820385678312622
+  }
+ ],
+ "decision_threshold": null,
+ "final_fit": {
+  "hyperparameters": {
+   "enc__num__degree": 3
+  },
+  "chosen_in_outer_folds": "10/10",
+  "inputs": [
+   "distance",
+   "angle",
+   "opp_in_triangle",
+   "gk_distance",
+   "body_part",
+   "technique",
+   "play_pattern",
+   "key_pass_type",
+   "under_pressure",
+   "first_time",
+   "one_on_one",
+   "open_goal",
+   "aerial_won",
+   "team"
+  ]
+ },
+ "uncertainty": {
+  "fold_sd_logloss": 0.005820385678312622,
+  "method": "spread of the metric across the outer folds (instructions.md, step 4g) [B\u2192I SML pp. 71\u201373]"
+ },
+ "subtask2_comparison": {
+  "subtask2_entry": "Logistic + poly",
+  "subtask1_entry": "Logistic + poly",
+  "margin": -0.001675869834383109,
+  "spread": 0.0011665122669334898,
+  "cv_part_met": false,
+  "rule": "margin >= 1 x spread (DR-11)"
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "1",
+ "order": [
+  {
+   "configuration": "Logistic",
+   "score": 0,
+   "addons": 0,
+   "entries": [],
+   "rank": 1,
+   "kept": true,
+   "role": "simple-first (SEQ-2)"
+  },
+  {
+   "configuration": "Logistic + L2",
+   "score": 0,
+   "addons": 1,
+   "entries": [],
+   "rank": 2,
+   "kept": true,
+   "role": "kept"
+  },
+  {
+   "configuration": "Logistic + poly",
+   "score": -1,
+   "addons": 1,
+   "entries": [
+    {
+     "entry": "Property 3: number of inputs=many\u2192poly",
+     "score": -1,
+     "provenance": "[B\u2192I SML p. 59]"
+    }
+   ],
+   "rank": 3,
+   "kept": true,
+   "role": "kept"
+  },
+  {
+   "configuration": "Logistic + poly + L2",
+   "score": -1,
+   "addons": 2,
+   "entries": [
+    {
+     "entry": "Property 3: number of inputs=many\u2192poly",
+     "score": -1,
+     "provenance": "[B\u2192I SML p. 59]"
+    }
+   ],
+   "rank": 4,
+   "kept": true,
+   "role": "kept"
+  }
+ ],
+ "simple_first": "Logistic",
+ "kept": [
+  "Logistic",
+  "Logistic + L2",
+  "Logistic + poly",
+  "Logistic + poly + L2"
+ ],
+ "baseline": "Baseline (training goal share)",
+ "not_kept": []
+}

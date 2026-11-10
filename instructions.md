@@ -4,11 +4,11 @@
 
 The work done in this folder should end in a report consistent with how the book's authors (Lindholm, Wahlström, Lindsten and Schön) would work. Every rule in this contract and in `ML Guide.md` serves that aim and is judged by it. In the book's terms (`ML Guide.md` Part I):
 
-- the aim is to predict the output for new cases, not to establish how variables are connected (p. 20);
-- the problem is defined by the validation data, the test data and a single-number metric, agreed before any model is fitted, with a baseline the model must beat (pp. 327, 330–331);
-- the work starts simple, and complexity is added only when the errors call for it (pp. 331–337);
-- models are compared on validation data or by k-fold cross-validation, and the chosen one is evaluated once on test data that has informed no choice (pp. 72–74, 328);
-- what is reported is an estimate of E_new, the error on new data like the evaluation data: an average-case claim that says nothing about the worst individual prediction (pp. 68–69, 347).
+- the aim is to predict the output for new cases, not to establish how variables are connected (SML p. 20);
+- the problem is defined by the validation data, the test data and a single-number metric, agreed before any model is fitted, with a baseline the model must beat (SML pp. 327, 330–331);
+- the work starts simple, and complexity is added only when the errors call for it (SML pp. 331–337);
+- models are compared on validation data or by k-fold cross-validation, and the chosen one is evaluated once on test data that has informed no choice (SML pp. 72–74, 328);
+- what is reported is an estimate of E_new, the error on new data like the evaluation data: an average-case claim that says nothing about the worst individual prediction (SML pp. 68–69, 347).
 
 Where this contract or `ML Guide.md` Part II goes beyond the book — the step-by-step working, the deterministic core, the prior ranking, the selection confidence — the addition is marked as ours (`[I]`, `[B→I]`) and must not contradict the book. If one turns out to, raise it with the user as a FRAMEWORK question rather than quietly following either.
 
@@ -16,20 +16,23 @@ Where this contract or `ML Guide.md` Part II goes beyond the book — the step-b
 
 Use this folder as the single source of truth for the analysis. Keep work in the locations below.
 
-**Each analysis has its own folder.** Once the user has put the data in `Attachments/`, a new analysis starts by copying `Templates/Report.md` and `Templates/Appendix.md` into a new folder under `Demonstration/` named for the analysis, for example `Demonstration/Sepsis/`, and all its writing happens there. Ask the user for the name before creating the folder. Throughout this contract, `Report.md` and `Appendix.md` mean the copies in the current analysis folder; the templates themselves are not edited as part of an analysis. Code and data stay in `Code/` and `Attachments/`, shared by all analyses. Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. Links inside the analysis folder's documents are relative to that folder, so a figure is linked as `../../Code/outputs/sepsis/…`. The only report at the top level of the workspace is `Project Report.md`.
+**The analysis in progress lives at the root.** The user works in two files at the top of the workspace: `Project Report.md`, the report on the current analysis, and `Appendix.md`, its running record. Throughout this contract, `Project Report.md` and `Appendix.md` mean these two root files. Once the user has put the data in `Attachments/`, a new analysis starts by asking the user for its name, then copying `Templates/Report.md` to `Project Report.md` and `Templates/Appendix.md` to `Appendix.md` at the root. If the root files still hold an earlier analysis, ask the user whether to submit it first; never overwrite it. The name is used for the analysis's code and output folders, for example `Code/sepsis/` and `Code/outputs/sepsis/`, and later for its folder under `Demonstration/`. Code and data stay in `Code/` and `Attachments/`, shared by all analyses. Links in the root files are relative to the root, so a figure is linked as `Code/outputs/sepsis/…`. The templates themselves are not edited as part of an analysis.
+
+**Submitting a finished analysis.** When the user says the analysis is finished, and only then, copy `Project Report.md` and `Appendix.md` into a new folder `Demonstration/<Name>/` as `Report.md` and `Appendix.md`, and rewrite their links to be relative to that folder (`../../Code/outputs/sepsis/…`). Check that every link resolves. Then reset the root files from the templates, ready for the next analysis. A submitted analysis is not edited afterwards, except under `FRAMEWORK`.
 
 | Location | Purpose |
 | --- | --- |
 | `Attachments/` | Source data, reference files and other inputs supplied for analysis. Do not modify originals. |
-| `Code/` | All executable analysis code and generated outputs. Arrives with the environment (`setup_env.sh`, `pyproject.toml`, `uv.lock`, `check_env.py`) and `viz_style.py`, which carries the figure conventions. `advisor/` will hold the deterministic core of the ML advisor once built (see `Machine Learning Scope and Reasoning`); until then each analysis writes its own interim core in its own folder, for example `Code/sepsis/core.py`. `Code/core.py` is the Heart Failure analysis's interim core and is never changed. Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. Analysis scripts and outputs are yours to add; `advisor/` is not edited as part of an analysis. Files that a finished analysis in `Demonstration/` refers to are not modified, overwritten or deleted: a new analysis gives its scripts and outputs names that do not collide with them. |
+| `Code/` | All executable analysis code and generated outputs. Arrives with the environment (`setup_env.sh`, `pyproject.toml`, `uv.lock`, `check_env.py`) and `sml_style.py`, which carries the figure conventions in the style of the book's figures (`viz_style.py` is the older convention, kept for the Heart Failure analysis). `advisor/` will hold the deterministic core of the ML advisor once built (see `Machine Learning Scope and Reasoning`); until then each analysis writes its own interim core in its own folder, for example `Code/sepsis/core.py`. `Code/core.py` is the Heart Failure analysis's interim core and is never changed. Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. Analysis scripts and outputs are yours to add; `advisor/` is not edited as part of an analysis. Files that a finished analysis in `Demonstration/` refers to are not modified, overwritten or deleted: a new analysis gives its scripts and outputs names that do not collide with them. |
 | `Setup.md` | How to install and run the workspace: Obsidian, `uv`, the Python environment, and the everyday commands. |
-| `Templates/` | The empty `Report.md` and `Appendix.md`, with their headings and notes. Copied into each new analysis folder; not edited as part of an analysis. |
-| `Report.md` (in the analysis folder) | The report on the user's own analysis, and nothing else. It arrives as a template and is built up across the steps rather than written at the end: the problem and its sub-tasks into the `Introduction` in step 2, figures into `Results` in step 3, the `Methods` and `Results` paragraphs in step 4, and the `Discussion` and then the `Abstract` in step 5. Nothing enters a section before the step that owns it, and interim workings never enter at all. Its last section is `References`, listing only the works the report itself cites (`References in the Report`); its template note reads *Works cited in this report, copied from the References of Appendix.md. Always the last section.* |
-| `Appendix.md` (in the analysis folder) | The running record of the work, written as you go from the first step. Eight sections in this order: `Data Summary` (the data actually used), `Problem Definition` (what is to be predicted, from what, and how that was arrived at), `Analysis` (the workings, one sub-heading per sub-task), `Decision Records` (the advisor's reasoning trace, one record per decision), `Recommendation` (the Recommendation Report for each sub-task), `Analysis Log` (a numbered row per step taken), `Code Summary` (a guide to the analysis code), and `References` last. Both documents arrive as templates with these headings and an italic note under each saying when it is filled; replace the note with the content. |
-| `Demonstration/` | One folder per analysis. `Demonstration/Heart Failure/` holds the finished heart failure analysis, kept for reference, as `Demonstration Report.md` and `Demonstration Appendix.md`. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it stay valid; links inside the two documents are relative to their own folder. A finished analysis is not edited as part of a new one. |
-| `Project Report.md` | The user's report on their project, and the only report at the top level. It is a template: headings, with a brief italic note under each saying what the section contains. How the agent helps the user fill it is set out in `The Project Report`. The agent writes in it only when the user asks. |
+| `Templates/` | The empty `Report.md` and `Appendix.md`, with their headings and notes, copied to the root as `Project Report.md` and `Appendix.md` at the start of each analysis; and `Whole-Project Report.md`, the template for a report on the project as a whole (see `A Report on the Project as a Whole`). Not edited as part of an analysis. |
+| `Project Report.md` (root) | The report on the analysis in progress, and nothing else. It is the document the user works in. It arrives as a template and is built up across the steps rather than written at the end: a draft `Abstract` from the end of step 1, kept current at the end of every step; the problem and its sub-tasks into the `Introduction`, and the `Data and evaluation` sub-section of `Methods`, in step 2; figures into `Results`, under `The training data`, in step 3; a draft `Methods` paragraph per sub-task at step 4b, once the method is agreed, and the final `Methods` and `Results` paragraphs at step 4h; and the `Discussion` and the final `Abstract` in step 5. Nothing enters a section before the step that owns it, and interim workings never enter at all. Its last section is `References`, listing only the works the report itself cites (`References in the Report`); its template note reads *Works cited in this report, copied from the References of Appendix.md. Always the last section.* |
+| `Appendix.md` (root) | The running record of the work, written as you go from the first step. Eight sections in this order: `Data Summary` (the data actually used), `Problem Definition` (what is to be predicted, from what, and how that was arrived at), `Analysis` (the workings, one sub-heading per sub-task), `Decision Records` (the advisor's reasoning trace, one record per decision), `Recommendation` (the Recommendation Report for each sub-task), `Analysis Log` (a numbered row per step taken), `Code Summary` (a guide to the analysis code), and `References` last. Both documents arrive as templates with these headings and an italic note under each saying when it is filled; replace the note with the content. |
+| `Demonstration/` | Finished analyses, one folder each, submitted from the root when the user says an analysis is finished (`Submitting a finished analysis`). `Demonstration/Heart Failure/` holds the finished heart failure analysis, kept for reference, as `Demonstration Report.md` and `Demonstration Appendix.md`. `Demonstration/Sepsis/` holds the sepsis analysis, finished, written before the root workflow. `Demonstration/Heart Failure rerun/`, `Demonstration/Mobile Price/` and `Demonstration/xG/` are finished analyses too, and `Demonstration/Whole-Project Report.md` is the report on the project as a whole. Their code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in them stay valid; links inside a submitted analysis's documents are relative to its own folder. A submitted analysis is not edited as part of a new one. |
 | `ML Guide.md` | The advisor's knowledge and reasoning procedure, distilled from chapters 2, 3, 4 and 13 of Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*. Part I is what the book says, with page references; Part II is the procedure the advisor follows for every model decision. Read it before every model decision. Changed only under `Changing This Contract`. |
-| *The book* | Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft, read at [smlbook.org](https://smlbook.org/). Not stored in this repository. It is the source of `ML Guide.md`; open it for the detail behind a page reference. |
+| `Notes/` | Notes for collaborators: `Davids Changes.md`, a running summary of every `FRAMEWORK` change, written for Florentine: date, commit, what changed, why and what it means in practice. Updated with every `FRAMEWORK` change (`Changing This Contract`); and `Note for Florentine.md`, the handover note. |
+| `Glossary.md` | The user-facing list of the admissibility checks (Admissibility 1–4) and the properties (Property 1–10), each with its short name, the question in plain words, its values, who decides it and what it changes, plus the other labels that appear in Decision Records. Point the user to it when a check or property is first raised. It follows `ML Guide.md` §8–§23, which is authoritative, and it is changed only under `Changing This Contract`, together with the guide. |
+| *The book* | Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft, from [smlbook.org](https://smlbook.org/). A local copy is kept in `Attachments/smlbook/` (the PDF and its extracted text, for searching), listed in `.gitignore` and never committed: the book is free for personal use only and may not be redistributed. If the copy is missing when the book is first needed, suggest to the user that it be downloaded from smlbook.org into `Attachments/smlbook/`, and download it only once they agree. Record the draft's date (on its title page) when it is downloaded, and say so if it differs from the version named in `ML Guide.md`. It is the source of `ML Guide.md`; open it for the detail behind a page reference. |
 
 ## Machine Learning Scope and Reasoning
 
@@ -39,18 +42,21 @@ This workspace is for solving supervised machine learning problems with the user
 - **Only the four chapters are in scope.** The solution space is the 14 configurations of §9: k-NN, decision tree, linear regression, logistic regression, Poisson and exponential GLMs, with polynomial terms and L2 regularisation where §9 allows them. Anything else — LASSO, ensembles, neural networks, kernel methods, time-series models, the negative binomial GLM (documented but not implemented) — is flagged and not used (§20, §23). A flag names the method and its chapter, and never claims the method would have done better.
 - **Rules propose, cross-validation decides, and the trace explains** (§7). Constraints decide what is admissible; cross-validation decides among configurations that can be told apart; simplicity decides among those that cannot. The prior ranking chooses what to try and records what is expected; it never decides.
 - **The deterministic core decides the mechanical parts; the agent does not compute them itself.** The core (`Code/advisor/` once built; until then the analysis's interim core) computes the admissible set (§12), the prior ranking (§13, §15), the nested cross-validation (§16), the selection confidence (§17) and the recommendation (§19). The agent elicits the property values and must-have requirements, answers the admissibility questions with the user, runs the diagnosis loop, writes the trace and explains the result. It passes inputs to the core, and copies the outputs into the Decision Records unchanged, with the code version. If it disagrees with an output, it says so in the record and raises it with the user. It never substitutes its own result.
-- **Until `Code/advisor/` exists, the core is an interim script.** For each analysis the agent writes its own interim core in the analysis's own code folder, for example `Code/sepsis/core.py`; `Code/core.py` belongs to the Heart Failure analysis and is never changed. The interim core implements the Part II sections it needs (§11 P9–P10, §12, §13/§15, §16, §17, §19) as literally as possible, with every `[I]` threshold as a named constant. The user sees the script before its first output is used: approval at step 4b covers it. Decision Records give the script's SHA-256 as the code version and label it "interim core, not reviewed". If the script changes after step 4b, a superseding Decision Record is written and the core is re-run from the earliest affected decision.
-- **Every rule carries its provenance** (§8). `[B p.x]` is explicit book advice; `[B→I p.x]` is a book fact that we have interpreted into advice; `[I]` is our own inference or threshold. Tags are copied from the guide into the Decision Records unchanged, and never upgraded.
+- **Until `Code/advisor/` exists, the core is an interim script.** For each analysis the agent writes its own interim core in the analysis's own code folder, for example `Code/sepsis/core.py`; `Code/core.py` belongs to the Heart Failure analysis and is never changed. The interim core implements the Part II sections it needs (§11 Properties 9–10, §12, §13/§15, §16, §17, §19) as literally as possible, with every `[I]` threshold as a named constant. The user sees the script before its first output is used: approval at step 4b covers it. Decision Records give the script's SHA-256 as the code version and label it "interim core, not reviewed". If the script changes after step 4b, a superseding Decision Record is written and the core is re-run from the earliest affected decision.
+- **Every rule carries its provenance** (§8). `[B SML p. x]` is explicit book advice; `[B→I SML p. x]` is a book fact that we have interpreted into advice; `[I]` is our own inference or threshold. Tags are copied from the guide into the Decision Records unchanged, and never upgraded.
+- **Checks and properties are always written with their short name**: *Admissibility 3: grouped or time-ordered rows*, *Property 5: interpretability*, never a bare number or code. The names are listed in `Glossary.md`. Earlier analyses keep the form they were written in.
+- **Book pages are written `SML p. x` or `SML pp. x–y`**, in conversation and in every document, including inside provenance tags. A bare "p. 5" is easily mistaken for a property or rule number. Pages in `ML Guide.md` follow the same form. Earlier analyses keep the form they were written in.
 - **Every property value carries its evidence** (§8). `M` comes from metadata or the user and is allowed from step 2; `T` is computed from the training data and allowed from step 3; `CV` comes from cross-validation in step 4; `TEST` appears only in the single final evaluation.
-- **The expected shape of a relationship comes only from the user or the domain** (P8, §11). Linear, curved or interacting relationships are never inferred from the data before models are fitted; unless the user states an expectation, P8 is `unknown`. Record the user's words.
+- **The expected shape of a relationship comes only from the user or the domain** (Property 8: expected shape, §11). Linear, curved or interacting relationships are never inferred from the data before models are fitted; unless the user states an expectation, Property 8: expected shape is `unknown`. Record the user's words.
 - **The test set is locked at the end of step 2 and used once per sub-task**, in the final evaluation, after the user has approved the recommended configuration (step 4).
 - **Ask the user's experience with machine learning in step 1**, record it in the `Data Summary`, and match the depth of explanation to it. The experience level changes how much is explained, never what is reported.
 - **Explaining concepts.** When a concept needs explaining, or the user asks what one means, explain it in plain words at the user's level.
   - Base the explanation on `ML Guide.md` Part I, and give the book page. Open the book at smlbook.org if the guide is not enough.
+  - **When the user asks what the book says, or whether something is in the book, always open the book and check before answering.** Use the local copy in `Attachments/smlbook/` (see *The book* in `Workspace Contract`). Do not answer from `ML Guide.md` or from memory alone. Read the pages the guide cites and search the four chapters for the topic, then say what the book says, with pages, and whether the guide agrees. If the book could not be opened, say so plainly and answer only as far as the guide goes. If the check shows that the guide or a provenance tag in the records is wrong, say so, and correct it: the guide under `Changing This Contract`, the records with a superseding Decision Record.
   - Mark anything that does not come from the book as your own.
   - If the concept is outside chapters 2, 3, 4 and 13, say so.
-  - The explanation stays in the conversation, not in `Report.md` or the Decision Records. Add a short note to the `Analysis Log` saying which concept was explained and when.
-- **The reasoning is recorded as it happens.** Every decision is a Decision Record in `Appendix.md`, in the structure set out in `ML Guide.md` and the Appendix template. Each sub-task ends with a Recommendation Report in the `Recommendation` section of the Appendix, assembled from its Decision Records. Rule IDs, provenance tags and threshold values belong in the Appendix; `Report.md` stays readable prose.
+  - The explanation stays in the conversation, not in `Project Report.md` or the Decision Records. Add a short note to the `Analysis Log` saying which concept was explained and when.
+- **The reasoning is recorded as it happens.** Every decision is a Decision Record in `Appendix.md`, in the structure set out in `ML Guide.md` and the Appendix template. Each sub-task ends with a Recommendation Report in the `Recommendation` section of the Appendix, assembled from its Decision Records. Rule IDs, provenance tags and threshold values belong in the Appendix; `Project Report.md` stays readable prose.
 
 ## Step-by-Step Working
 
@@ -60,6 +66,13 @@ This workspace is for working through a data analysis **one step at a time, with
 - **Do not run ahead.** Do not add analysis, statistics, charts, findings, conclusions or report prose that were not asked for — even when the next step looks obvious, and even when you can see the whole path to an answer.
 - **Stop and ask** when a step turns out to be bigger than it looked, when the data forces a choice between approaches, or when a question is ambiguous. A question is cheaper than unpicking unwanted work.
 - **Prefer the smallest honest step.** If asked to load a file, load the file. Describe what is actually there; do not start interpreting it.
+- **Say in plain words what an action will do before asking to do it.** Workspace shorthand — "run the core", "4b", "the PROP record", a rule ID — means nothing to a reader who has not memorised the contract. When asking permission, or reporting what was done, say:
+  - what will be done, in ordinary words (for example, *"fit one logistic regression to the training shots, only to check whether goals and non-goals can be separated perfectly"*), not the name of the script or command;
+  - what it uses and what it leaves alone (for example, *"training shots only; the test set is not touched"*);
+  - what comes out, and what that result will change;
+  - why it is needed now.
+
+  Name the script or record as well, so the user can find it, but never instead of the explanation. When presenting a plan, a step or a method, give the book pages behind each part (SML p. x), and say plainly which parts are not from the book but ours. Check the pages in the local copy of the book before quoting them. A term the user may not know is explained the first time it is used, or linked to `Glossary.md`.
 - **Say which step you are on, and announce every transition.** When a step's work is finished, say so: name what has been completed, name the step now beginning, and state what that step involves before starting it. Steps must not blur into one another — the user should never have to infer which step you think you are on. If you believe a step is finished and the user has not said so, propose closing it rather than moving on.
 - **Ask whether the step is complete; do not propose the next one.** When the work asked for is done, the question to put to the user is whether anything is missing from the step just worked on — *"have we thought of everything in step 2?"* — not *"shall we move on to step 3?"*. The second question invites a yes. A step closed on a nod is a step whose gaps surface three steps later, when fixing them means undoing work.
   - **Give the user something to answer.** *"Is step 2 done?"* asks them to audit the contract from memory. Name what the step covers, say which parts have been settled and which have not been discussed at all, and ask about those. *"We have the problem, the metric and three sub-tasks. We have not discussed what the second sub-task's success criterion should be, or whether the rows in this file are independent — is there anything else to settle before we close step 2?"*
@@ -68,11 +81,17 @@ This workspace is for working through a data analysis **one step at a time, with
   - **Put the check in writing, and wait for an answer rather than an absence of objection.** List what the step covered, which parts are settled, and which were never discussed. Then stop. A user who says nothing has not closed the step, and a user who replies about one item on the list has not closed the others — ask again about the rest.
 - **Work through sub-tasks one at a time.** Take the sub-tasks agreed in step 2 in order, and finish one — through to its final evaluation and Recommendation Report — before starting the next. Do not batch them, and do not answer a later one because it happens to fall out of the same code.
 - **Agree the method before applying it.** For each sub-task, the method is the admissible set, the prior ranking and the cross-validation protocol (step 4). Present them, with the property values they rest on, and get the user's agreement before any configuration is cross-validated. The diagnosis loop then runs within the agreed method (step 4 says which actions need the user), and the test set is used only after the user has approved the recommended configuration. If a method turns out to be unsound once started, stop and say so rather than quietly switching to another.
-- **`Report.md` is built up as the work proceeds, not written at the end.** Each step adds only its own part: the problem and its sub-tasks in step 2, the figures in step 3, the `Methods` and `Results` paragraphs in step 4, and the `Discussion` and then the `Abstract` in step 5. Nothing enters a section ahead of the step that owns it, and interim results, workings and observations always go in `Appendix.md` instead.
-- **The `Disclaimer` section is already written, and it stays.** `Report.md` arrives with a disclaimer between `Discussion` and `Appendix` saying the report was written with the help of agentic AI at every stage. It is not a placeholder and no step fills it in.
+- **`Project Report.md` is built up as the work proceeds, not written at the end.** Each step adds only its own part: the draft `Abstract` at the end of step 1, the problem and its sub-tasks and the `Data and evaluation` sub-section of `Methods` in step 2, the figures in step 3, the draft `Methods` at step 4b and the final `Methods` and `Results` paragraphs at step 4h, and the `Discussion` and final `Abstract` in step 5. Nothing enters a section ahead of the step that owns it, and interim results, workings and observations always go in `Appendix.md` instead.
+- **The `Abstract` shows what the analysis is doing, from step 1 on.** The report should show the work in progress, not only its end.
+  - At the end of step 1, write a first draft of the `Abstract` in `Project Report.md`, headed by the word *Draft*. Do not ask first; tell the user it is there.
+  - At the end of every later step, rewrite the draft so it says, in plain words, what is being predicted, from what data, how it is approached, and what has been done so far. About 150 words at most.
+  - The draft states a result only once it exists (from step 4g), and never anticipates one, under the same rule as the `Introduction` (step 2).
+  - It names only what is in the report. A configuration, method or sub-task that was dropped is not mentioned.
+  - In step 5, once the `Discussion` is written, the final `Abstract` replaces the draft and the word *Draft* is removed.
+- **The `Disclaimer` section is already written, and it stays.** `Project Report.md` arrives with a disclaimer between `Discussion` and `Appendix` saying the report was written with the help of agentic AI at every stage. It is not a placeholder and no step fills it in.
   - Do not remove it, do not soften it, and do not move it further down. If the user rewrites the wording, keep theirs.
   - It is in the template from the start rather than added at the end for the same reason the problem and its sub-tasks go in early: a fact about how the document was produced should not depend on anyone remembering to disclose it once the work is done.
-- **Do not leave markers in the report for work that was not done.** If a sub-task is dropped, a configuration abandoned, or a method considered and rejected, take it out of `Report.md` completely. Do not replace it with a note saying it was set aside. *"A fourth question was framed and then set aside without being tested"* reports on the process rather than the findings, and leaves the reader wondering what the answer would have been.
+- **Do not leave markers in the report for work that was not done.** If a sub-task is dropped, a configuration abandoned, or a method considered and rejected, take it out of `Project Report.md` completely. Do not replace it with a note saying it was set aside. *"A fourth question was framed and then set aside without being tested"* reports on the process rather than the findings, and leaves the reader wondering what the answer would have been.
   - This includes the `Introduction`. When a sub-task is dropped after step 2, remove it, renumber the rest, and do not annotate the gap.
   - A sentence or two in `Appendix.md` is the right record, in the `Analysis Log`. That is where a reader who wants to know what was tried and abandoned should look, and it is enough.
 - **At the stages where a document is yours to write, write it — do not ask first.** Then say what you changed and invite the user to edit it or to ask you for changes.
@@ -93,7 +112,7 @@ This workspace is for working through a data analysis **one step at a time, with
   - Mark a recommended option only where the contract allows a recommendation. Where it does not — for example the admissibility answers or the must-haves, which only the user can supply, or anything that would choose a model before step 4 — give the options without a recommendation and say why.
   - One decision per question. If a step needs several decisions, ask them in order, or as a short numbered set when they are independent.
   - At the end of a step, the written check under *Ask whether the step is complete* comes first. The options then name what is still unsettled and include closing the step, with no option marked as recommended: a recommended "close" is the nod that check exists to prevent.
-  - Keep the question open where the answer must be in the user's own words: the problem they want to solve (step 2), their experience with machine learning (step 1), and any expectation about P8. Record their words.
+  - Keep the question open where the answer must be in the user's own words: the problem they want to solve (step 2), their experience with machine learning (step 1), and any expectation about Property 8. Record their words.
 - **Keep every message to the user short.** At most about five lines, then the decision as numbered options of one line each. The details go in `Appendix.md`, and the user can ask for more.
 - The steps below are the agreed order of work. Announce which step you are on when it is not obvious.
 
@@ -102,6 +121,7 @@ This workspace is for working through a data analysis **one step at a time, with
 When the user prefixes a message with **FRAMEWORK**, they are changing this document.
 
 - Apply the change to `instructions.md` immediately.
+- **Add an entry to `Notes/Davids Changes.md`** at the same time: the date, the commit, what changed, why (in the user's words where they gave a reason), and what it means in practice, in plain words for a reader who was not in the conversation. Newest last. The file is a summary for Florentine; the full wording stays in the changed files.
 - Apply it to the analysis in progress at the same time, including retrospectively where it affects work already done. A rule that only takes effect next time is not in force.
 - Keep the edit to `instructions.md` in its own commit, touching no analysis content.
 - If the change conflicts with something already written here, say so rather than leaving the contract self-contradictory.
@@ -116,27 +136,27 @@ Work proceeds through these steps in order. Each is one or more separate exchang
 Get the data in and establish what will be used.
 
 - **The data is already in `Attachments/`.** The user puts the source files there before asking for step 1. Never modify them.
-- **Then create the analysis folder.** Ask the user for its name, then copy `Templates/Report.md` and `Templates/Appendix.md` into `Demonstration/<Name>/` (`Workspace Contract`). Everything this and later steps write goes into those copies.
+- **Then set up the working files.** Ask the user for the analysis's name, then copy `Templates/Report.md` to `Project Report.md` and `Templates/Appendix.md` to `Appendix.md` at the root (`Workspace Contract`). If the root files still hold an earlier analysis, ask whether to submit it first. Everything this and later steps write goes into those two files.
 - Record provenance: where the file came from, when, and a checksum. Say why this file and not another, if that was a choice.
 - **Ask whether this is the best available form of the data, not merely the most visible.** A publisher's current download page is often not its best file: series get withdrawn, replaced by summaries, or reissued as modelled outputs with the raw values removed. Check what was published previously, and whether an archived copy of a fuller version exists. Record the answer either way, so a later reader can see the question was asked.
 - **Describe the file before judging it.** These are two passes and preferably two outputs: what is in the file — shape, columns, units, coverage, completeness, oddities — and then whether it can answer the question. The describing pass draws no conclusions by design. Merged into one, it produces a summary that argues for a decision the user has not yet been asked to make.
-- **Ask the admissibility questions that concern the data** (`ML Guide.md` §10), as closed questions, and record each answer as a Decision Record (`ADM`):
-  - **ADM-1** — is there a recorded output for the rows to be learned from? If not, this is not a supervised problem: stop and say so.
-  - **ADM-3** — do several rows belong to the same unit, or are rows ordered in time? Record the group or time column if there is one.
-  - **ADM-4** — will the cases the model is used on look like this data?
+- **Ask the admissibility questions that concern the data** (`ML Guide.md` §10), as closed questions, and record each answer as a Decision Record (`Admissibility`). Call each one by its number and name, ask it in plain words, and say in one sentence why it matters for this data:
+  - **Admissibility 1: outcome recorded** — is there a recorded output for the rows to be learned from? If not, this is not a supervised problem: stop and say so.
+  - **Admissibility 3: grouped or time-ordered rows** — do several rows belong to the same unit, or are rows ordered in time? Record the group or time column if there is one.
+  - **Admissibility 4: new cases like these** — will the cases the model is used on look like this data?
 
-  ADM-2 (whether the aim is prediction) is asked in step 2, with the problem.
+  Admissibility 2 (prediction or understanding) is asked in step 2, with the problem.
 - **Make the machine learning checks part of the describing pass:**
   - the candidate target column and how its labels were produced;
-  - the output type it suggests (P1, to be confirmed in step 2);
+  - the output type it suggests (Property 1, to be confirmed in step 2);
   - class counts for a categorical target;
-  - the number of input columns, the number after one-hot encoding (P3), and the share that are categorical (P4);
+  - the number of input columns, the number after one-hot encoding (Property 3: number of inputs), and the share that are categorical (Property 4: categorical share);
   - columns that could leak the target (recorded after the outcome, or derived from it).
 
   Describe them; do not judge which model they point to.
 - **Ask the user's experience with machine learning**, and record it.
 - Write the `Data Summary` section of `Appendix.md`: shape, columns and what they mean, coverage, completeness, and anything unexpected.
-- **Do not touch `Report.md` at this stage.**
+- **In `Project Report.md`, write only the draft `Abstract`, at the end of step 1** (see *The `Abstract` shows what the analysis is doing*): two or three sentences on the data and what the analysis sets out to answer, as far as that is known. Nothing else in `Project Report.md` is touched in step 1.
 - When the user decides which subset to use, record the decision and its reasoning — then **delete the description of the data that will not be used**. The `Data Summary` documents only the data the analysis will actually use. A brief note of what was excluded and what that costs belongs with the decision; a full description of discarded data does not.
 
 **Every decision taken in step 1 goes in `Data Summary`**, each with its reasoning and what it cost. The test is simple: *could a later step be misled by not knowing this?* If so, record it. At minimum:
@@ -147,10 +167,10 @@ Get the data in and establish what will be used.
 | **Units** | The unit of every column, and whether it is a **measurement or model output**. A plausible column name is not a unit — check the documentation. |
 | **Scope** | Which rows are used, why, what was excluded, and what that exclusion costs. |
 | **Missing data** | Whether values are imputed or left missing, and the evidence for the choice. Check whether gaps are systematic before deciding. |
-| **Grouping and time order** | Whether several rows belong to the same unit or are ordered in time (ADM-3), the group or time column, and how that constrains the split and the folds. |
+| **Grouping and time order** | Whether several rows belong to the same unit or are ordered in time (Admissibility 3: grouped or time-ordered rows), the group or time column, and how that constrains the split and the folds. |
 | **Cleaning** | Every value altered or set to missing, with the reason and the count. Prefer setting known-wrong values to missing over correcting them. |
 | **Accepted as-is** | Problems found and deliberately *not* fixed, and why. A known flaw left in place is a decision and must be visible. |
-| **Admissibility** | The answers to ADM-1, ADM-3 and ADM-4, with the Decision Record IDs. |
+| **Admissibility** | The answers to Admissibility 1: outcome recorded, Admissibility 3: grouped or time-ordered rows, and Admissibility 4: new cases like these, with the Decision Record IDs. |
 | **Target and leakage** | The candidate target, how its labels were produced, and any columns set aside because they could leak the target, with the reason. |
 | **Experience level** | The user's stated experience with machine learning. |
 
@@ -161,44 +181,52 @@ A decision that is later reversed **stays in the record, marked superseded**. Th
 Agree what is to be predicted, and how success will be judged, before any model is fitted.
 
 - **Ask the user what problem they want to solve.** That is the framing to ask for. They may answer with a goal, a decision they want to support, or a hunch about what drives the outcome — record it in their own terms rather than translating it.
-- **Ask ADM-2** (`ML Guide.md` §10): is the main aim to predict the outcome for new cases, or to understand how the variables are connected? If it is to understand, tell the user that this workflow optimises prediction and does not establish how variables are connected, and continue only if they confirm. Record the answer as a Decision Record.
+- **Ask Admissibility 2: prediction or understanding** (`ML Guide.md` §10): is the main aim to predict the outcome for new cases, or to understand how the variables are connected? If it is to understand, tell the user that this workflow optimises prediction and does not establish how variables are connected, and continue only if they confirm. Record the answer as a Decision Record.
 - **Turn the problem into a formulation**, with the user, and record each item:
   - what is predicted (y) and from what (x);
-  - the output type (P1, §11) — numeric, count, non-negative real, binary, multiclass or ordinal; for an ordinal output, ask whether to treat it as multiclass or numeric;
+  - the output type (Property 1, §11) — numeric, count, non-negative real, binary, multiclass or ordinal; for an ordinal output, ask whether to treat it as multiclass or numeric;
   - what a prediction will be used for, and what each kind of error costs;
   - the single metric that will decide between models, and the metrics to monitor alongside it (§2);
   - the success criterion, in the units of the metric;
   - the baseline (§2) and, where it can be stated, the achievable level.
 - **Ask about requirements and expectations, and record the user's words:**
-  - must-haves — whether predictions must be inspectable or bounded (P5), and whether class probabilities or a tuned threshold are needed (P6);
-  - whether predictions will be needed outside the range of the data (P7);
-  - any expectation about the shape of the relationship (P8). If the user has none, P8 is `unknown`. Do not suggest one from the data.
-- **Do not fit or test anything.** No models, no plots of relationships, no correlations, no "just to check" calculations. Counting rows, inputs and categories for P2–P4 is allowed; it describes the file, not the relationship.
+  - must-haves — whether predictions must be inspectable or bounded (Property 5: interpretability), and whether class probabilities or a tuned threshold are needed (Property 6: probabilities);
+  - whether predictions will be needed outside the range of the data (Property 7: extrapolation);
+  - any expectation about the shape of the relationship (Property 8: expected shape). If the user has none, Property 8: expected shape is `unknown`. Do not suggest one from the data.
+- **Do not fit or test anything.** No models, no plots of relationships, no correlations, no "just to check" calculations. Counting rows, inputs and categories for Properties 2–4 is allowed; it describes the file, not the relationship.
 - **Work from metadata only:** column names, their documented meanings, and the `Data Summary` written in step 1.
 - **The reason is bias.** A problem defined after seeing which models happen to do well is not really being tested: the metric, the success criterion and the comparison set would be chosen to fit the result. Fixing them first is what keeps the later steps honest.
 - **Brainstorm with the user.** If they have no clear problem, suggest candidates from what the variables *mean* — what could usefully be predicted, and for what decision — not from what the data happens to show.
 - **Assess feasibility:**
   - Is the output recorded, and recorded well enough?
   - Are there enough rows for the number of inputs?
-  - Do grouping or time order (ADM-3) constrain the split?
+  - Do grouping or time order (Admissibility 3: grouped or time-ordered rows) constrain the split?
   - Is the problem answerable at all with the configurations in scope?
 
   If it needs a method outside the four chapters, say so now.
 - **Keep it at that level.** Do not choose models or design figures yet — steps 3 and 4 exist for that.
 - **Record the outcome in the `Problem Definition` section of `Appendix.md`**, in three parts:
-  - `Discussion` — how the problem was arrived at, what was considered and ruled out, and the ADM-2 answer;
+  - `Discussion` — how the problem was arrived at, what was considered and ruled out, and the Admissibility 2: prediction or understanding answer;
   - `Problem` — the formulation above;
   - `Sub-tasks` — the separately answerable parts, each with its own output and success criterion.
-- **Record the properties known so far** as a Decision Record (`PROP`): P1, P5–P8 from the user; P2–P4 computed from the file.
-- **Fix the split and lock the test set.** Agree the test fraction with the user (§3). Split by group if ADM-3 found groups, and record the seed. Then set the test set aside: nothing in steps 3 and 4 reads it until the final evaluation. Record the split as a Decision Record (`SPLIT`).
+- **Record the properties known so far** as a Decision Record (`PROP`): Property 1: output type, Properties 5–8 from the user; Properties 2–4 computed from the file.
+- **Fix the split and lock the test set.** Agree the test fraction with the user (§3). Split by group if Admissibility 3: grouped or time-ordered rows found groups, and record the seed. Then set the test set aside: nothing in steps 3 and 4 reads it until the final evaluation. Record the split as a Decision Record (`SPLIT`).
 - **Write it before anything is fitted**, so it is on the record that the problem preceded the result.
-- **Then, before any analysis starts, write the problem and its sub-tasks into the `Introduction` of `Report.md`.** Insert a brief text — do not ask permission first. Then tell the user it is there, that they can edit it themselves, and that they can ask you to change it. This is the one thing that enters `Report.md` early: it fixes in the report itself what was asked, before any result is known, so the write-up cannot quietly become a report of whatever turned out to work.
+- **Then, before any analysis starts, write the problem and its sub-tasks into the `Introduction` of `Project Report.md`.** Insert a brief text — do not ask permission first. Then tell the user it is there, that they can edit it themselves, and that they can ask you to change it. Together with the draft `Abstract` and `Data and evaluation` (below), this is what enters `Project Report.md` before any analysis: it fixes in the report itself what was asked, before any result is known, so the write-up cannot quietly become a report of whatever turned out to work. Then update the draft `Abstract`.
 - **The `Introduction` never anticipates its conclusions.** It says what is being examined and how it will be approached. It does not say what was found, and it does not say what the analysis will turn out not to support. Two sentences of this kind would have to come out: *"A decision tree turns out to predict best."* and *"As we discuss later, the small test set limits how far the result can be trusted."* Both are results, moved early.
   - **This holds even when the motive is honesty.** A pointer forward to a limitation feels like candour — it stops the introduction promising more than the report delivers. It is still a finding stated before the reader has seen any evidence for it, and it pre-empts the judgement the reader is entitled to make on reaching the discussion.
   - **Every limitation has a proper place, and it is not here.** In `Methods`, beside the model whose defect it is. In `Discussion`, beside the conclusion it qualifies. Step 5 already requires the second of those.
   - **Naming the approach is not anticipating the result.** *"We compare a small set of models by cross-validation"* is method, and belongs. *"No model clearly beats the baseline"* is a conclusion, and does not. The test is whether the sentence would have to change if the numbers came out differently.
+- **Then write the first sub-section of `Methods`, `Data and evaluation`.** Do not ask first; tell the user it is there. Everything in it is fixed by the end of step 2, and the book treats the validation data, the test data and the metric as what defines the problem (SML pp. 327, 330), so it enters the report before any model exists. It covers, in prose:
+  - the data: source, scope and what was excluded, and the cleaning that changed which rows are used;
+  - how the data was split, how groups were kept together, and that the test set was held out until the single final evaluation;
+  - the metric that decides between models, the metrics monitored alongside, the baseline and any reference model;
+  - each sub-task's success criterion.
+
+  It does not name model families or the selection procedure; those go in the per-sub-task paragraphs at step 4b. If a step 2 decision changes later, this sub-section is revised with it (`When Something Changes`).
+- **Keep the `Introduction` to the question and the approach.** The details of the data, split, metric and baseline belong in `Data and evaluation`; the `Introduction` names them only as far as a reader needs to follow the question.
 - **The `Introduction` has a fixed shape.** In order:
-  1. **Framing the problem** — two or three paragraphs: what is predicted and from what, how the output and inputs are measured, what a prediction is for and how success is judged, and the approach taken — comparing a small set of model types from the book by cross-validation, then evaluating the chosen one once on held-out data. Written in step 2, from the formulation already agreed.
+  1. **Framing the problem** — two or three paragraphs: what is predicted and from what, what a prediction is for and, in a sentence, how success is judged, and the approach taken — comparing a small set of model types from the book by cross-validation, then evaluating the chosen one once on held-out data. Written in step 2, from the formulation already agreed.
   2. **The sub-tasks**, as a numbered list.
 - **Do not open with a sentence about the report.** *"This report develops a model to predict X"* describes the document rather than the problem, and tells a reader nothing they will not get from the sub-tasks a few lines later. Open on the problem itself — what is unresolved, and why anyone should care.
 
@@ -207,15 +235,16 @@ Agree what is to be predicted, and how success will be judged, before any model 
 Show what the training data looks like for each sub-task, before any model is fitted. One sub-task at a time.
 
 - **Training data only.** Every figure and summary in this step uses the training rows. The test set stays locked.
-- **Compute P9 and P10 with the core** (`ML Guide.md` §11): whether the classes are perfectly separable, and whether they are imbalanced. Both come from the training data. Record them in a new `PROP` Decision Record that supersedes the step 2 one. The separability check fits a model, but only to establish a property, not to evaluate a candidate. It is run by the core (`Code/advisor/` once built; until then the analysis's interim core), and its result is not interpreted as a finding.
-- **Figures do not set P8.** A plot that looks linear or curved does not make it so for the advisor: P8 comes only from the user (§11). If a figure surprises the user, they may state or revise an expectation, and that is recorded with their words and the figure that prompted it.
+- **Compute Property 9: separability and Property 10: class imbalance with the core** (`ML Guide.md` §11): whether the classes are perfectly separable, and whether they are imbalanced. Both come from the training data. Record them in a new `PROP` Decision Record that supersedes the step 2 one. The separability check fits a model, but only to establish a property, not to evaluate a candidate. It is run by the core (`Code/advisor/` once built; until then the analysis's interim core), and its result is not interpreted as a finding.
+- **Figures do not set Property 8: expected shape.** A plot that looks linear or curved does not make it so for the advisor: Property 8: expected shape comes only from the user (§11). If a figure surprises the user, they may state or revise an expectation, and that is recorded with their words and the figure that prompted it.
 - **Decide the input design with the user** (`ML Guide.md` §9): domain transformations of inputs, such as a logarithm, and the choice of inputs. It is not a configuration axis and is not chosen by cross-validation. If it was not settled in step 2, settle it here, after setting out the trade-offs, and record it in a Decision Record with the user's words.
 - **Propose the chart before making it.** Say what it would plot, on which axes, over which rows, and what a reader would be able to see in it. Get the user's agreement before producing it. A chart is cheap to describe and expensive to argue about once it exists.
+- **Draw figures in the style of the book's figures** (`Code/sml_style.py`): serif type, a full box with small inward ticks, no grid, a legend with a thin frame, series told apart by line style as well as colour, and the book's palette (training error coral, held-out error lavender, classes red and blue). The workspace rules below (a light and a dark variant, a colour per variable, readable type) still apply. Check a rendered page of the book when in doubt.
 - **Let the data's job choose the form.** Comparing magnitudes across categories is a bar chart; a relationship between two continuous measures is a scatter; movement over time is a line; a distribution is a histogram. Choose from what has to be shown, not from what is easiest to produce.
 - **Plot the observations before the model.** The data goes in first and the fitted line or curve on top. A figure showing only a fit hides how well it describes anything.
 - **When the orientation is genuinely open, produce both and let the user choose.** If it is not obvious which variable belongs on which axis, or which should define the contour lines, make each version rather than arguing for one. Say which you would keep and why. The test is which version makes the claim in the accompanying paragraph visible: a figure whose axes hide the effect the text asserts is the wrong figure, however correct its numbers.
 - **One script per figure**, writing to the analysis's own output folder (for example `Code/outputs/sepsis/`), reading only from the cleaned training data, or from outputs written by the core (`Code/advisor/` once built; until then the analysis's interim core). A figure must never refit a model or recompute a number that is reported elsewhere, or it can drift from the numbers in the text.
-- **Once the data the plot will use is settled, add the plot to `Results` in `Report.md`.** Do not ask first. Number the figures, give each a caption saying what it shows, and put it in the report as soon as it exists.
+- **Once the data the plot will use is settled, add the plot to `Results` in `Project Report.md`**, under its first sub-section, `The training data`, which matches `Data and evaluation` in `Methods`. Do not ask first. Number the figures, give each a caption saying what it shows, and put it in the report as soon as it exists.
 - Then tell the user it is there and that they can decide whether to keep it. A plot is easier to judge in the report, at the size and in the place a reader will meet it, than as a file in `Code/outputs/`.
 - **Number figures in the order they appear.** If one is dropped or inserted, renumber the rest and update every reference to them in both documents.
 - Caption what the figure shows, not what it means. Interpretation is step 5.
@@ -232,6 +261,7 @@ Show what the training data looks like for each sub-task, before any model is fi
 - **Take every number in the text from the computed output, never from the figure.** Reading a value off a plot is the most reliable way to get a wrong number into prose, and it is invisible to a reader who trusts the figure.
 - **When a figure is regenerated, remind the user that Obsidian may still show the old image.** It caches the rendered file, so clicking away to another note and back refreshes it. Without that they may judge a figure they have already asked you to change.
 - If the user drops a figure, remove it from `Results` but leave the script and the generated file in place — the working stays in `Appendix.md` and `Code/outputs/` regardless.
+- **At the end of step 3, update the draft `Abstract`.**
 
 ### Step 4 — Select, train and evaluate
 
@@ -248,6 +278,8 @@ Answer each sub-task with a recommended configuration, a test-set result against
 
 Get the user's agreement before anything is cross-validated. This is the step's "agree the method before applying it".
 
+Once the user has agreed, **draft the `Methods` paragraph for the sub-task in `Project Report.md`**, under the sub-task's sub-heading, before anything is cross-validated: the configurations to be compared and how they were chosen, the nested cross-validation, the recommendation rule and the single final evaluation. Do not ask first; tell the user it is there. It fixes the method in the report before any result exists, as the `Introduction` fixes the question. It is revised at 4h.
+
 **4c — Cross-validation, round 1.** Call the core to cross-validate the baseline and the simple-first configuration (SEQ-3, §14), using nested cross-validation with the protocol in §16. Record the CV table (`CV`). If the simple-first configuration does not clearly beat the baseline, the diagnosis loop starts with DX-1 (§18): sanity checks, then a conversation with the user about the formulation. Do not go on to round 2 until that is resolved.
 
 **4d — Cross-validation, round 2.** Call the core to cross-validate the remaining kept configurations on the same folds. Record the CV table, and fill in the *outcome vs expectation* field of the `PRIOR` record — agree, partial or disagree. A disagreement is a finding: record it plainly and do not explain it away.
@@ -259,13 +291,22 @@ Get the user's agreement before anything is cross-validated. This is the step's 
 - **Stop at the first stopping rule that applies** (S1–S6), and record which.
 - **An action that needs an out-of-scope method is a flag** (DX-10, §20), not an action.
 
-**4f — Recommendation.** Call the core to apply the recommendation rule (§19) and compute the selection confidence (§17). Record the outcome in the `FINAL` record's §19 trace. If P6 requires a tuned decision threshold, it is chosen now, by cross-validation on the training data, with the user choosing the trade-off between error types (§16). Present to the user:
+**4f — Recommendation.** Call the core to apply the recommendation rule (§19) and compute the selection confidence (§17). Record the outcome in the `FINAL` record's §19 trace. If Property 6: probabilities requires a tuned decision threshold, it is chosen now, by cross-validation on the training data, with the user choosing the trade-off between error types (§16). Present to the user:
 
 - the recommended configuration and its tuned hyperparameters;
 - the CV table and the selection confidence, with the factors behind it;
 - prior agreement and grounding, reported alongside;
 - the why-not code for every other configuration;
 - the flags.
+
+**4f′ — Write up the selection, before the test.** Once the recommendation exists and before the user is asked about the test set, write what cross-validation showed into `Project Report.md`, so that it is fixed in the report before any test result is known (the book's order: choose on validation data, then test once, SML pp. 74, 328):
+
+- revise the draft `Methods` paragraph from 4b so it describes exactly what was done before the test. Remove completely anything that was not used, unless the user asks for it; a diagnosis pass that changed nothing reported stays in `Appendix.md`;
+- add the first `Results` paragraph for the sub-task, under its sub-heading: how the configurations compared in cross-validation against the baseline, with the variation across folds; the recommended configuration and its tuned hyperparameters; and the selection confidence with its factors;
+- add evaluation figures made from the training data and the cross-validation only (for example the comparison of configurations and the learning curve, SML p. 334), proposed to the user first, under the figure rules of step 3;
+- record the write-up in the `Analysis Log`.
+
+Nothing written here is reworded after the test because of the test result. If something has to change, the change and its reason are recorded in the `Analysis Log`.
 
 **Ask the user to approve using the test set.** It can be used once.
 
@@ -278,23 +319,29 @@ Get the user's agreement before anything is cross-validated. This is the step's 
 
 The test set is not used again for this sub-task. If the result leads anyone to want a different model, that is a new sub-task with a new split, recorded as such.
 
-The uncertainty of the test result is the spread (standard deviation) of the agreed metric across the outer cross-validation folds, for the recommended configuration and threshold, reported with the number of test rows and, for classification, the number of positives. It rests on the book's k-fold cross-validation and its point that a hold-out estimate varies less the larger the hold-out set; using the fold spread as the uncertainty is our step, `[B→I pp.71–73]`. Each outer fold is about a tenth of the training data, while the test set is a different size, so the fold spread approximates the uncertainty of the test result rather than measuring it. This is the method the Heart Failure analysis used.
+The uncertainty of the test result is the spread (standard deviation) of the agreed metric across the outer cross-validation folds, for the recommended configuration and threshold, reported with the number of test rows and, for classification, the number of positives. It rests on the book's k-fold cross-validation and its point that a hold-out estimate varies less the larger the hold-out set; using the fold spread as the uncertainty is our step, `[B→I SML pp. 71–73]`. Each outer fold is about a tenth of the training data, while the test set is a different size, so the fold spread approximates the uncertainty of the test result rather than measuring it. This is the method the Heart Failure analysis used.
 
-**4h — Write up.** Assemble the Recommendation Report in the `Recommendation` section of `Appendix.md` from the Decision Records. Then add to `Report.md` the data and split paragraph at the start of `Methods`, if it is not there yet, the `Methods` and `Results` paragraphs for the sub-task, and the evaluation figures to `Results`.
+**4h — Write up.** Assemble the Recommendation Report in the `Recommendation` section of `Appendix.md` from the Decision Records. Then add the test result to the sub-task's `Results` in `Project Report.md`, after the paragraph written at 4f′, with any test figures, and check the `Methods` paragraph still describes exactly what was done:
+
+- add what the diagnosis loop changed, if it changed what is reported;
+- **remove completely anything that was not used**: a configuration dropped, a method set aside, a check that changed nothing. It does not stay in the report, not even as a note that it was set aside, unless the user asks for it. The record of it is in `Appendix.md`;
+- record in the `Analysis Log` what the revision changed.
+
+Then update the draft `Abstract`.
 
 The rules that govern this step:
 
 - **Check required practice and gates against the data rather than asserting them.** Preprocessing is fitted inside the cross-validation folds (REQ-1); k-NN inputs are normalised (REQ-2); a configuration the gates excluded is not run. Each is visible in the core's output, and a Decision Record that asserts one without that evidence is incomplete.
 - **Establish that the labels are what they claim to be before interpreting any result.** A target that the source has imputed, modelled or derived from the inputs is not an independent outcome, and a model that predicts it well has learned the construction, not the world. Check this before 4a rather than after.
-- **Use folds that match the structure of the data.** Group folds where rows share a unit (ADM-3), stratified folds for classification (§16). Say which were used and why.
+- **Use folds that match the structure of the data.** Group folds where rows share a unit (Admissibility 3: grouped or time-ordered rows), stratified folds for classification (§16). Say which were used and why.
 - **Report the result, its uncertainty, and the data it came from.** A test result without its uncertainty is not a result, and an uncertainty without the number of test rows behind it cannot be judged. Always report the baseline beside it.
 - **When nothing beats the baseline, say what the evaluation was able to detect.** Report it as a fact about the data — how many rows, how much the outcome varies, how wide the fold spread was — and let the reader weigh it. A sub-task with no recommendation is a result, recorded in a `FINAL` record that says so.
 - **Recompute the number that carries the claim independently, wherever that is cheap.** Recompute the test metric from the saved test predictions with a separate call, rather than reading it out of the core's summary. Two routes to the same figure catch both a reporting slip and stale output; one route catches neither.
 - **Every number in the report comes from the generated output** — from the core's recorded outputs or the evaluation scripts. Never from memory, never read off a figure, never carried over from an earlier version of the analysis.
 - **Write the finding as a short paragraph in `Results`.** One paragraph per sub-task, added as soon as the test result exists.
-- **Keep `Methods` in step with `Results`, using the same sub-headings in the same order.** When a sub-task gets a paragraph in `Results`, it gets one in `Methods` at the same time. The two sections are written in parallel, so a reader can move between what was done and what was found without hunting.
-- **`Methods` says what was done and why that choice; `Results` says what came out.** In `Methods`: first the data and the split, written from the `Data Summary`, the input design and the `SPLIT` record in the Appendix — the source, the rows used and excluded, the cleaning, the input design, and the train/test split — then the configurations compared and how they were chosen, the nested cross-validation, the recommendation rule, and the final evaluation. In `Results`: the recommended configuration, the test result against the baseline, whether the agreed success criterion was met, stated plainly as met or not met, a summary of the ranking, and the selection confidence; and, where a decision threshold was tuned for F2 or another F_β, the F_β of flagging every case beside the model's (4g).
-- **`Methods` describes only what `Results` reports.** If a diagnostic, statistic or robustness check does not appear in `Results`, it does not appear in `Methods` either — it goes in `Appendix.md`. Naming a test in `Methods` and never reporting its outcome leaves the reader hunting for a result that is not there. The data and split paragraph is the one exception: it describes the material every result rests on rather than a check, comes before the sub-task sub-headings, and has no counterpart in `Results`.
+- **Keep `Methods` in step with `Results`, using the same sub-headings in the same order.** The first pair is `Data and evaluation` (step 2) and `The training data` (step 3); then one sub-heading per sub-task. The `Methods` paragraph is drafted at 4b, made to match what was done at 4f′, when the first `Results` paragraph is written, and checked again at 4h. The two sections are written in parallel, so a reader can move between what was done and what was found without hunting.
+- **`Methods` says what was done and why that choice; `Results` says what came out.** In `Methods`: the configurations compared and how they were chosen, the nested cross-validation, the recommendation rule, and the final evaluation. In `Results`: the recommended configuration, the test result against the baseline, whether the agreed success criterion was met, stated plainly as met or not met, a summary of the ranking, and the selection confidence; and, where a decision threshold was tuned for F2 or another F_β, the F_β of flagging every case beside the model's (4g).
+- **`Methods` describes only what `Results` reports.** If a diagnostic, statistic or robustness check does not appear in `Results`, it does not appear in `Methods` either — it goes in `Appendix.md`. Naming a test in `Methods` and never reporting its outcome leaves the reader hunting for a result that is not there.
 - **Keep the report clean.** It should read as an argument, not a technical log. Rule IDs, provenance tags, threshold values, CV tables beyond a summary, diagnosis passes and why-not codes belong in the Appendix: in the Decision Records and the Recommendation Report.
 - **Do not write up a check that changed nothing.** If something was queried, investigated, and the method and result stayed as they were, record it in the appendix and leave it out of the report entirely — not even in `Methods`. The report explains the choices that shape the reported numbers, not every alternative that was examined and found equivalent. A user asking a question in conversation is not a request for a paragraph in the report.
 - **Keep it short and to the point, and tie it to the sub-task it answers.** Name the sub-task, give the recommended configuration and its test result with its uncertainty, say whether the success criterion was met, and stop. Do not restate the method, do not narrate the process, and do not interpret — step 5 does that.
@@ -307,7 +354,7 @@ The rules that govern this step:
 
 ### Step 5 — Conclusions and limitations
 
-Write the `Discussion` section of `Report.md`, then the `Abstract`.
+Write the `Discussion` section of `Project Report.md`.
 
 - Interpret what the results support, and state plainly what they do not. Keep the two distinguishable in the reader's mind.
 - **Organise by theme, not by sub-task.** Results are reported sub-task by sub-task; a discussion earns its place by drawing them together. Agree the paragraph structure with the user before writing.
@@ -322,8 +369,9 @@ Write the `Discussion` section of `Report.md`, then the `Abstract`.
 - **No new analysis.** If a question arises that needs computing, say so and stop — that is a new step, not part of this one.
 - Interpretation belongs here; that is what the section is for. Grading the evidence still does not. Say what the data supports and what it cannot; do not tell the reader how much to be impressed.
 - Nothing enters the `Discussion` that is not already established in `Results` or `Appendix.md`.
-- **Write the `Abstract` once the `Discussion` is written.** One paragraph: the problem, the recommended model, its test result against the baseline with its uncertainty, whether the success criterion was met, and the main limitation. Every number in it is already in `Results`, and nothing enters it that is not already in `Results` or the `Discussion`. The rules against grading the evidence apply to it as to the rest of the report.
+- **Write the final `Abstract` once the `Discussion` is written**, replacing the draft and removing the word *Draft*. It summarises the problem, the approach, the results and what they support, and names nothing that is not in the report.
 - **Suggest a title once the `Discussion` is written.** Offer two or three plain, literal titles, say what each puts first, and let the user choose.
+- **Check that the content reflects the title, and consult the user.** Whenever a title is chosen or changed, by the user or the agent, read the report against it: does each word in the title describe what was done and found, does the report spend its space on what the title puts first, and could the title lead a reader to expect a claim the report does not make? Say plainly where they match and where they do not, quoting the sentences concerned, and offer the user both ways to resolve a mismatch: a title that fits the content, or a change to the content that fits the title without claiming more than the analysis supports. The user decides; record the check and the decision in the `Analysis Log`.
 
 ## When Something Changes
 
@@ -345,7 +393,7 @@ A refit, a re-cleaned value, a dropped figure or a renumbering makes some senten
 1. Inspect the relevant files in `Attachments/` before making claims about their contents.
 2. Put all analysis logic in `Code/`. Use clear, descriptive filenames and preserve a reproducible path from source data to results.
 3. Record the work in `Appendix.md` as it progresses — from the first step, not at the end. What the data contains, the problem and how it was reached, every decision as a Decision Record, each sub-task's Recommendation Report, and each step's actions in the `Analysis Log`.
-4. Write `Report.md` only as the steps above direct: each step adds its own part without being asked, and nothing else enters it. Write it for the intended audience, keep it concise, distinguish facts from interpretations, and link each material conclusion to supporting appendix evidence.
+4. Write `Project Report.md` only as the steps above direct: each step adds its own part without being asked, and nothing else enters it. Write it for the intended audience, keep it concise, distinguish facts from interpretations, and link each material conclusion to supporting appendix evidence.
 5. Update the `Code Summary` section of `Appendix.md` whenever code is added or materially changed. State what each important file does, how to run it, what it reads and produces, and any parameters or seeds that affect results. Keep installation and environment instructions in `Setup.md`.
 
 ## Python Environment
@@ -374,15 +422,15 @@ Run all Python through the workspace environment so results are reproducible. Fu
 
 ## References in the Report
 
-- **`Report.md` ends with a `References` section**, after `Appendix`. It lists only the works the report itself cites, and nothing else.
+- **`Project Report.md` ends with a `References` section**, after `Appendix`. It lists only the works the report itself cites, and nothing else.
 - **Every entry is cited in the text, and every citation has an entry.** Cite in author–date style: `(Smith, 2020)`, or `Smith (2020)` when the author is part of the sentence. A dataset without named authors is cited by its title.
 - **Copy each entry from the `References` of `Appendix.md`.** The Appendix holds the verified details. Never write an entry from memory. A work the report needs that isn't yet in the Appendix's `References` is opened, checked and added there first.
 - **Cite the book at the edition named in `ML Guide.md`**, linked to smlbook.org. Page references and provenance tags stay in the Appendix.
 - **Every entry is a link that resolves.** Check it before writing it.
 
-## The Project Report
+## A Report on the Project as a Whole
 
-`Project Report.md` is the user's own report on their project: the machine learning methods they used and how they chose between them, how that work relates to the book, and how the models were trained and validated. It is written from the user's analysis or analyses in `Demonstration/`, after the five steps have produced the material it draws on. It is not one of the five steps, and the rules for `Report.md` do not apply to it except where this section says so. The agent's job is to help the user work towards each section, not to write the report for them; it writes in the file only when the user asks.
+When the user asks for a report on the project as a whole, copy `Templates/Whole-Project Report.md` to the root as `Whole-Project Report.md`, and work on it as set out here. It is the user's own report on their project: the machine learning methods they used and how they chose between them, how that work relates to the book, and how the models were trained and validated. It is written from the user's finished analyses in `Demonstration/`, after the five steps have produced the material it draws on. It is not one of the five steps, and the rules for an analysis's `Project Report.md` do not apply to it except where this section says so. The agent's job is to help the user work towards each section, not to write the report for them; it writes in the file only when the user asks.
 
 - **It is a template.** It arrives with headings and a brief italic note under each saying what the section contains. When a section is written, its note is replaced with the content. The notes say *what* goes in a section; how the agent helps fill it is set out here. The template itself contains nothing from any analysis: the finished analyses in `Demonstration/` show what a worked analysis looks like, and are not copied into it.
 - **It reads as the book's authors would report the work** (`Purpose`). It uses the book's terms — training, validation and test data; E_new and how it was estimated; the baseline; the metric — and explains each choice against the book's practice, citing the book. What is ours is named as ours, never presented as the book's. When checking a section, compare every methodological claim with `ML Guide.md` Part I, and report any the book does not support, or any of ours that reads as the book's.
@@ -400,13 +448,14 @@ Run all Python through the workspace environment so results are reproducible. Fu
   - *Results: the machine learning methods used.* For each sub-task, the recommended configuration and its test result against the baseline, with its uncertainty, from `FINAL`; the cross-validation ranking from the `CV` tables; and the selection confidence with its factors (§17).
   - *Results: how it relates to smlbook.org.* The tally of provenance tags behind each recommendation, and the *outcome vs expectation* field of the `PRIOR` record — whether cross-validation agreed with the ranking the guide predicted. A disagreement is reported as found.
   - *Results: training and validation methods.* The training and test row counts (and positives, for classification) from `SPLIT` and `FINAL`, the spread of the metric across the outer folds, any tuned threshold, and whether the success criterion was met.
-  - *Results, Discussion and Limitations generally.* `Results` reports only what `Methods` describes. The rules on not grading the evidence, no emphasis in `Results`, and putting each limitation beside the conclusion it qualifies (steps 4 and 5) apply here too. `Discussion` and `Limitations` draw on the Recommendation Reports and the `Discussion` of each analysis's `Report.md`.
+  - *Results, Discussion and Limitations generally.* `Results` reports only what `Methods` describes. The rules on not grading the evidence, no emphasis in `Results`, and putting each limitation beside the conclusion it qualifies (steps 4 and 5) apply here too. `Discussion` and `Limitations` draw on the Recommendation Reports and the `Discussion` of each analysis's `Project Report.md`.
   - *Title, Abstract and Introduction.* Written last, once the sections they summarise exist. The `Introduction` does not anticipate the results, as in step 2.
 - **Every number comes from the records or the generated output**, never from memory or a figure, and is checked against them before it enters the report.
 - **Figures** follow the rules for figures in step 3. A figure already made for an analysis is linked, not regenerated.
-- **The `Disclaimer` is written and stays**, under the same rule as the disclaimer in `Report.md`.
+- **The `Disclaimer` is written and stays**, under the same rule as the disclaimer in an analysis's report.
 - **`Appendix` points to the material behind the report**: the user's analysis folders in `Demonstration/`, `ML Guide.md` and `instructions.md`.
 - **`References` follows `References in the Report`**, copying entries from the `References` of the analyses' `Appendix.md`; a work not yet there is opened and checked before it is written.
+
 
 ## Markdown Formatting
 
@@ -418,6 +467,8 @@ These documents are read and edited in Obsidian, which soft-wraps text to the wi
 - The same applies to Markdown written by scripts in `Code/`. Build each line as one string rather than emitting a wrapped block.
 
 ## Agent Operating Rules
+
+- **Do not show file-change boxes in the conversation.** The user does not want the diff boxes that appear when files are edited with the editor's own edit or write tools. Make changes to files with scripts instead, and say in the answer, in plain words, which files changed and what changed in them. The user can see the exact changes in the files themselves or with `git diff`.
 
 - Before changing analysis artifacts, inspect the relevant source data and existing documentation.
 - Make focused changes and do not overwrite unrelated user work.

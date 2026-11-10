@@ -1,0 +1,68 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "2",
+ "approved_by_user": "yes.",
+ "configuration": "Logistic + poly",
+ "hyperparameters": {
+  "enc__num__degree": 3
+ },
+ "inputs": [
+  "distance",
+  "angle",
+  "opp_in_triangle",
+  "gk_distance",
+  "body_part",
+  "technique",
+  "play_pattern",
+  "key_pass_type",
+  "under_pressure",
+  "first_time",
+  "one_on_one",
+  "open_goal",
+  "aerial_won",
+  "team"
+ ],
+ "n_test": 6693,
+ "test_goals": 642,
+ "test_matches": 319,
+ "baseline_share_from_training": 0.09989522888459058,
+ "results": {
+  "model": {
+   "logloss": 0.24637604798422258,
+   "brier": 0.07057338671633498,
+   "roc_auc": 0.8290236520211638,
+   "predicted_goals": 666.9930227867088
+  },
+  "baseline": {
+   "logloss": 0.3161160500495272,
+   "brier": 0.08673604556492906,
+   "roc_auc": 0.5,
+   "predicted_goals": 668.5987669245649
+  },
+  "statsbomb_xg": {
+   "logloss": 0.24009537909944864,
+   "brier": 0.06834153750310558,
+   "roc_auc": 0.8384502754623088,
+   "predicted_goals": 642.5307139725
+  }
+ },
+ "uncertainty": {
+  "fold_sd_logloss": 0.005820385678312622,
+  "method": "spread of the metric across the outer folds (instructions.md, step 4g) [B\u2192I SML pp. 71\u201373]"
+ },
+ "predictions_file": "Code/outputs/xg/core_test_predictions_subtask2.csv",
+ "success": {
+  "criterion": "CV margin over the sub-task 1 model >= 1 x spread, and lower test log-loss",
+  "cv_part": {
+   "subtask2_entry": "Logistic + poly",
+   "subtask1_entry": "Logistic + poly",
+   "margin": -0.001675869834383109,
+   "spread": 0.0011665122669334898,
+   "cv_part_met": false,
+   "rule": "margin >= 1 x spread (DR-11)"
+  },
+  "test_logloss_subtask1_model": 0.24572759705721992,
+  "test_part_met": false,
+  "met": false
+ }
+}

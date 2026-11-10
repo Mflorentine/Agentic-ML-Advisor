@@ -1,0 +1,25 @@
+input,level,shots,goals,share
+body_part,Right Foot,13787,1349,0.09784579676506855
+body_part,Left Foot,8470,774,0.09138134592680047
+body_part,Head,2503,333,0.1330403515781063
+body_part,Other,56,23,0.4107142857142857
+technique,Normal,18299,1761,0.09623476692715449
+technique,Half Volley,4115,398,0.09671931956257594
+technique,Volley,1813,224,0.12355212355212356
+technique,Lob,244,46,0.1885245901639344
+technique,Overhead Kick,160,17,0.10625
+technique,Backheel,95,14,0.14736842105263157
+technique,Diving Header,90,19,0.2111111111111111
+play_pattern,Regular Play,9920,982,0.09899193548387097
+play_pattern,From Throw In,5065,451,0.08904244817374136
+play_pattern,From Free Kick,3754,395,0.10522109749600426
+play_pattern,From Corner,2759,255,0.09242479159115621
+play_pattern,From Counter,1345,207,0.15390334572490708
+play_pattern,From Goal Kick,1120,107,0.09553571428571428
+play_pattern,From Keeper,493,50,0.10141987829614604
+play_pattern,From Kick Off,329,28,0.0851063829787234
+play_pattern,Other,31,4,0.12903225806451613
+key_pass_type,Regular,16964,1710,0.10080169771280359
+key_pass_type,none,6765,676,0.09992609016999261
+key_pass_type,Recovery,1049,90,0.08579599618684461
+key_pass_type,Interception,38,3,0.07894736842105263

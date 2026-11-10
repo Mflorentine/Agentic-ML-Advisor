@@ -1,0 +1,156 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "1",
+ "round": "post-prior",
+ "added": [
+  "Logistic + poly + L2, \u03bb 1e-8 to 1e-4"
+ ],
+ "table": {
+  "leader": "Logistic + poly + L2",
+  "metric": "log-loss (lower is better); margins in negative log-loss, positive = better",
+  "rows": [
+   {
+    "configuration": "Baseline (training goal share)",
+    "post_prior": false,
+    "round": "round1",
+    "tuned_hyperparameters": "n/a",
+    "cv_mean_logloss": 0.3248513950766176,
+    "fold_sd_logloss": 0.0013020104622481297,
+    "logloss_train": 0.32485266361671694,
+    "e_train_misclassification": 0.09989521917984702,
+    "e_val_misclassification": 0.09989444452657721,
+    "convergence_warnings": 0,
+    "margin_vs_leader": {
+     "mean": -0.06888966674125185,
+     "spread": 0.005239708208506775
+    }
+   },
+   {
+    "configuration": "Logistic",
+    "post_prior": false,
+    "round": "round1",
+    "tuned_hyperparameters": {
+     "params": {},
+     "folds": "10/10"
+    },
+    "cv_mean_logloss": 0.25895706536488783,
+    "fold_sd_logloss": 0.006001596781576248,
+    "logloss_train": 0.2576912880914336,
+    "e_train_misclassification": 0.09510440906007558,
+    "e_val_misclassification": 0.09542185255172517,
+    "convergence_warnings": 0,
+    "margin_vs_leader": {
+     "mean": -0.0029953370295220383,
+     "spread": 0.0008645541340453509
+    },
+    "margin_vs_baseline": {
+     "mean": 0.06589432971172982,
+     "spread": 0.005704113935001679,
+     "C2": "clear"
+    }
+   },
+   {
+    "configuration": "Logistic + L2",
+    "post_prior": false,
+    "round": "round2",
+    "tuned_hyperparameters": {
+     "params": {
+      "m__lam": 0.0001
+     },
+     "folds": "10/10"
+    },
+    "cv_mean_logloss": 0.2589312158941917,
+    "fold_sd_logloss": 0.005969730976696953,
+    "logloss_train": 0.2577021440117336,
+    "e_train_misclassification": 0.09501934679135651,
+    "e_val_misclassification": 0.0953007224908936,
+    "convergence_warnings": 0,
+    "margin_vs_leader": {
+     "mean": -0.0029694875588259007,
+     "spread": 0.0008063018419880753
+    },
+    "margin_vs_baseline": {
+     "mean": 0.06592017918242596,
+     "spread": 0.005696272429282552,
+     "C2": "clear"
+    }
+   },
+   {
+    "configuration": "Logistic + poly",
+    "post_prior": false,
+    "round": "round2",
+    "tuned_hyperparameters": {
+     "params": {
+      "enc__num__degree": 3
+     },
+     "folds": "10/10"
+    },
+    "cv_mean_logloss": 0.25597353956337365,
+    "fold_sd_logloss": 0.005306992308407249,
+    "logloss_train": 0.25428630316725104,
+    "e_train_misclassification": 0.09331345530780141,
+    "e_val_misclassification": 0.0934482088326958,
+    "convergence_warnings": 0,
+    "margin_vs_leader": {
+     "mean": -1.1811228007857499e-05,
+     "spread": 0.00035283442515987275
+    },
+    "margin_vs_baseline": {
+     "mean": 0.06887785551324399,
+     "spread": 0.0050205866925889945,
+     "C2": "clear"
+    }
+   },
+   {
+    "configuration": "Logistic + poly + L2",
+    "post_prior": false,
+    "round": "round2",
+    "tuned_hyperparameters": {
+     "params": {
+      "enc__num__degree": 3,
+      "m__lam": 0.0001
+     },
+     "folds": "10/10"
+    },
+    "cv_mean_logloss": 0.2559617283353658,
+    "fold_sd_logloss": 0.005503208377847163,
+    "logloss_train": 0.25442915421378504,
+    "e_train_misclassification": 0.09349702772016762,
+    "e_val_misclassification": 0.09385102845044896,
+    "convergence_warnings": 0,
+    "margin_vs_baseline": {
+     "mean": 0.06888966674125185,
+     "spread": 0.005239708208506775,
+     "C2": "clear"
+    }
+   },
+   {
+    "configuration": "Logistic + poly + L2, \u03bb 1e-8 to 1e-4",
+    "post_prior": true,
+    "round": "post-prior",
+    "tuned_hyperparameters": {
+     "params": {
+      "enc__num__degree": 3,
+      "m__lam": 0.0001
+     },
+     "folds": "9/10"
+    },
+    "cv_mean_logloss": 0.25599883615836827,
+    "fold_sd_logloss": 0.005524914738415569,
+    "logloss_train": 0.25441290364143443,
+    "e_train_misclassification": 0.09346119666359934,
+    "e_val_misclassification": 0.0939313820060938,
+    "convergence_warnings": 0,
+    "margin_vs_leader": {
+     "mean": -3.710782300249682e-05,
+     "spread": 0.00011734523969827801
+    },
+    "margin_vs_baseline": {
+     "mean": 0.06885255891824935,
+     "spread": 0.005253063080783081,
+     "C2": "clear"
+    }
+   }
+  ]
+ }
+}

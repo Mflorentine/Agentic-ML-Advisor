@@ -1,0 +1,27 @@
+StatsBomb open-data commit 4b73468fc5b0f1950f9f66fada70ad3a4f9327cb
+
+Matches per league: ENG 380, ESP 380, ITA 380, FRA 377, GER 34
+Event files read: 1551
+
+All shots by shot type: Open Play 36508, Free Kick 1801, Penalty 410, Corner 9
+Total shots: 38728
+
+ENG: Open Play 9415, Free Kick 401, Penalty 91, Corner 1
+ESP: Open Play 8661, Free Kick 409, Penalty 97, Corner 1
+ITA: Open Play 9396, Free Kick 479, Penalty 121, Corner 2
+FRA: Open Play 8260, Free Kick 460, Penalty 91, Corner 3
+GER: Open Play 776, Free Kick 52, Penalty 10, Corner 2
+
+Open-play shots by key-pass type: Regular 21937, (no key pass) 8903, Corner 2606, Free Kick 1387, Recovery 1365, Throw-in 240, Interception 51, Goal Kick 15, Kick Off 4
+Open-play shots excluded because the key pass is a Corner: ENG 694, ESP 607, ITA 601, FRA 643, GER 61; total 2606
+Open-play shots excluded because the key pass is a Free Kick: ENG 323, ESP 336, ITA 324, FRA 369, GER 35; total 1387
+Open-play shots excluded because the key pass is a Goal Kick: ENG 4, ESP 2, ITA 6, FRA 3, GER 0; total 15
+Open-play shots excluded because the key pass is a Kick Off: ENG 2, ESP 0, ITA 1, FRA 1, GER 0; total 4
+Open-play shots excluded because the key pass is a Throw-in: ENG 65, ESP 56, ITA 57, FRA 56, GER 6; total 240
+Kept shots whose possession contains an earlier corner (not excluded, reported only): 3584
+
+Open-play shots kept: 32256; goals among them: 3203
+Freeze-frame player rows: 394917
+SHA-256 shots_open_play.csv: 00bdc7fe28b7ab5d99d07e62d26021327bf50cf22ea7c8ac0eda76ee3b725657
+SHA-256 freeze_frames_open_play.csv: 13abf16078b3aca406e8b466f06789526605bd7997ba076c3cad753046a0649d
+SHA-256 SHA256SUMS_raw.txt: 17c312fbe2c425c45a3a673c5f0fe8778aa32b9876c443829ae531a893e4312e
