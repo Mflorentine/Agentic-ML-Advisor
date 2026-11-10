@@ -29,6 +29,7 @@ Use this folder as the single source of truth for the analysis. Keep work in the
 | `Demonstration/` | One folder per analysis. `Demonstration/Heart Failure/` holds the finished heart failure analysis, kept for reference, as `Demonstration Report.md` and `Demonstration Appendix.md`. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it stay valid; links inside the two documents are relative to their own folder. A finished analysis is not edited as part of a new one. |
 | `Project Report.md` | The user's report on their project, and the only report at the top level. It is a template: headings, with a brief italic note under each saying what the section contains. How the agent helps the user fill it is set out in `The Project Report`. The agent writes in it only when the user asks. |
 | `ML Guide.md` | The advisor's knowledge and reasoning procedure, distilled from chapters 2, 3, 4 and 13 of Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*. Part I is what the book says, with page references; Part II is the procedure the advisor follows for every model decision. Read it before every model decision. Changed only under `Changing This Contract`. |
+| `Criteria.md` | The user-facing list of the admissibility checks (Admissibility 1–4) and the properties (Property 1–10), each with its short name, the question in plain words, its values, who decides it and what it changes, plus the other labels that appear in Decision Records. Point the user to it when a check or property is first raised. It follows `ML Guide.md` §8–§23, which is authoritative, and it is changed only under `Changing This Contract`, together with the guide. |
 | *The book* | Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft, read at [smlbook.org](https://smlbook.org/). Not stored in this repository. It is the source of `ML Guide.md`; open it for the detail behind a page reference. |
 
 ## Machine Learning Scope and Reasoning
@@ -39,11 +40,12 @@ This workspace is for solving supervised machine learning problems with the user
 - **Only the four chapters are in scope.** The solution space is the 14 configurations of §9: k-NN, decision tree, linear regression, logistic regression, Poisson and exponential GLMs, with polynomial terms and L2 regularisation where §9 allows them. Anything else — LASSO, ensembles, neural networks, kernel methods, time-series models, the negative binomial GLM (documented but not implemented) — is flagged and not used (§20, §23). A flag names the method and its chapter, and never claims the method would have done better.
 - **Rules propose, cross-validation decides, and the trace explains** (§7). Constraints decide what is admissible; cross-validation decides among configurations that can be told apart; simplicity decides among those that cannot. The prior ranking chooses what to try and records what is expected; it never decides.
 - **The deterministic core decides the mechanical parts; the agent does not compute them itself.** The core (`Code/advisor/` once built; until then the analysis's interim core) computes the admissible set (§12), the prior ranking (§13, §15), the nested cross-validation (§16), the selection confidence (§17) and the recommendation (§19). The agent elicits the property values and must-have requirements, answers the admissibility questions with the user, runs the diagnosis loop, writes the trace and explains the result. It passes inputs to the core, and copies the outputs into the Decision Records unchanged, with the code version. If it disagrees with an output, it says so in the record and raises it with the user. It never substitutes its own result.
-- **Until `Code/advisor/` exists, the core is an interim script.** For each analysis the agent writes its own interim core in the analysis's own code folder, for example `Code/sepsis/core.py`; `Code/core.py` belongs to the Heart Failure analysis and is never changed. The interim core implements the Part II sections it needs (§11 P9–P10, §12, §13/§15, §16, §17, §19) as literally as possible, with every `[I]` threshold as a named constant. The user sees the script before its first output is used: approval at step 4b covers it. Decision Records give the script's SHA-256 as the code version and label it "interim core, not reviewed". If the script changes after step 4b, a superseding Decision Record is written and the core is re-run from the earliest affected decision.
+- **Until `Code/advisor/` exists, the core is an interim script.** For each analysis the agent writes its own interim core in the analysis's own code folder, for example `Code/sepsis/core.py`; `Code/core.py` belongs to the Heart Failure analysis and is never changed. The interim core implements the Part II sections it needs (§11 Properties 9–10, §12, §13/§15, §16, §17, §19) as literally as possible, with every `[I]` threshold as a named constant. The user sees the script before its first output is used: approval at step 4b covers it. Decision Records give the script's SHA-256 as the code version and label it "interim core, not reviewed". If the script changes after step 4b, a superseding Decision Record is written and the core is re-run from the earliest affected decision.
 - **Every rule carries its provenance** (§8). `[B SML p. x]` is explicit book advice; `[B→I SML p. x]` is a book fact that we have interpreted into advice; `[I]` is our own inference or threshold. Tags are copied from the guide into the Decision Records unchanged, and never upgraded.
-- **Book pages are written `SML p. x` or `SML pp. x–y`**, in conversation and in every document, including inside provenance tags. A bare "p. 5" is easily read as the property P5. Pages in `ML Guide.md` follow the same form. Earlier analyses keep the form they were written in.
+- **Checks and properties are always written with their short name**: *Admissibility 3: grouped or time-ordered rows*, *Property 5: interpretability*, never a bare number or code. The names are listed in `Criteria.md`. Earlier analyses keep the form they were written in.
+- **Book pages are written `SML p. x` or `SML pp. x–y`**, in conversation and in every document, including inside provenance tags. A bare "p. 5" is easily mistaken for a property or rule number. Pages in `ML Guide.md` follow the same form. Earlier analyses keep the form they were written in.
 - **Every property value carries its evidence** (§8). `M` comes from metadata or the user and is allowed from step 2; `T` is computed from the training data and allowed from step 3; `CV` comes from cross-validation in step 4; `TEST` appears only in the single final evaluation.
-- **The expected shape of a relationship comes only from the user or the domain** (P8, §11). Linear, curved or interacting relationships are never inferred from the data before models are fitted; unless the user states an expectation, P8 is `unknown`. Record the user's words.
+- **The expected shape of a relationship comes only from the user or the domain** (Property 8: expected shape, §11). Linear, curved or interacting relationships are never inferred from the data before models are fitted; unless the user states an expectation, Property 8: expected shape is `unknown`. Record the user's words.
 - **The test set is locked at the end of step 2 and used once per sub-task**, in the final evaluation, after the user has approved the recommended configuration (step 4).
 - **Ask the user's experience with machine learning in step 1**, record it in the `Data Summary`, and match the depth of explanation to it. The experience level changes how much is explained, never what is reported.
 - **Explaining concepts.** When a concept needs explaining, or the user asks what one means, explain it in plain words at the user's level.
@@ -120,9 +122,9 @@ Get the data in and establish what will be used.
   Admissibility 2 (prediction or understanding) is asked in step 2, with the problem.
 - **Make the machine learning checks part of the describing pass:**
   - the candidate target column and how its labels were produced;
-  - the output type it suggests (P1, to be confirmed in step 2);
+  - the output type it suggests (Property 1, to be confirmed in step 2);
   - class counts for a categorical target;
-  - the number of input columns, the number after one-hot encoding (P3), and the share that are categorical (P4);
+  - the number of input columns, the number after one-hot encoding (Property 3: number of inputs), and the share that are categorical (Property 4: categorical share);
   - columns that could leak the target (recorded after the outcome, or derived from it).
 
   Describe them; do not judge which model they point to.
@@ -139,10 +141,10 @@ Get the data in and establish what will be used.
 | **Units** | The unit of every column, and whether it is a **measurement or model output**. A plausible column name is not a unit — check the documentation. |
 | **Scope** | Which rows are used, why, what was excluded, and what that exclusion costs. |
 | **Missing data** | Whether values are imputed or left missing, and the evidence for the choice. Check whether gaps are systematic before deciding. |
-| **Grouping and time order** | Whether several rows belong to the same unit or are ordered in time (Admissibility 3), the group or time column, and how that constrains the split and the folds. |
+| **Grouping and time order** | Whether several rows belong to the same unit or are ordered in time (Admissibility 3: grouped or time-ordered rows), the group or time column, and how that constrains the split and the folds. |
 | **Cleaning** | Every value altered or set to missing, with the reason and the count. Prefer setting known-wrong values to missing over correcting them. |
 | **Accepted as-is** | Problems found and deliberately *not* fixed, and why. A known flaw left in place is a decision and must be visible. |
-| **Admissibility** | The answers to Admissibility 1, 3 and 4, with the Decision Record IDs. |
+| **Admissibility** | The answers to Admissibility 1: outcome recorded, Admissibility 3: grouped or time-ordered rows, and Admissibility 4: new cases like these, with the Decision Record IDs. |
 | **Target and leakage** | The candidate target, how its labels were produced, and any columns set aside because they could leak the target, with the reason. |
 | **Experience level** | The user's stated experience with machine learning. |
 
@@ -156,33 +158,33 @@ Agree what is to be predicted, and how success will be judged, before any model 
 - **Ask Admissibility 2: prediction or understanding** (`ML Guide.md` §10): is the main aim to predict the outcome for new cases, or to understand how the variables are connected? If it is to understand, tell the user that this workflow optimises prediction and does not establish how variables are connected, and continue only if they confirm. Record the answer as a Decision Record.
 - **Turn the problem into a formulation**, with the user, and record each item:
   - what is predicted (y) and from what (x);
-  - the output type (P1, §11) — numeric, count, non-negative real, binary, multiclass or ordinal; for an ordinal output, ask whether to treat it as multiclass or numeric;
+  - the output type (Property 1, §11) — numeric, count, non-negative real, binary, multiclass or ordinal; for an ordinal output, ask whether to treat it as multiclass or numeric;
   - what a prediction will be used for, and what each kind of error costs;
   - the single metric that will decide between models, and the metrics to monitor alongside it (§2);
   - the success criterion, in the units of the metric;
   - the baseline (§2) and, where it can be stated, the achievable level.
 - **Ask about requirements and expectations, and record the user's words:**
-  - must-haves — whether predictions must be inspectable or bounded (P5), and whether class probabilities or a tuned threshold are needed (P6);
-  - whether predictions will be needed outside the range of the data (P7);
-  - any expectation about the shape of the relationship (P8). If the user has none, P8 is `unknown`. Do not suggest one from the data.
-- **Do not fit or test anything.** No models, no plots of relationships, no correlations, no "just to check" calculations. Counting rows, inputs and categories for P2–P4 is allowed; it describes the file, not the relationship.
+  - must-haves — whether predictions must be inspectable or bounded (Property 5: interpretability), and whether class probabilities or a tuned threshold are needed (Property 6: probabilities);
+  - whether predictions will be needed outside the range of the data (Property 7: extrapolation);
+  - any expectation about the shape of the relationship (Property 8: expected shape). If the user has none, Property 8: expected shape is `unknown`. Do not suggest one from the data.
+- **Do not fit or test anything.** No models, no plots of relationships, no correlations, no "just to check" calculations. Counting rows, inputs and categories for Properties 2–4 is allowed; it describes the file, not the relationship.
 - **Work from metadata only:** column names, their documented meanings, and the `Data Summary` written in step 1.
 - **The reason is bias.** A problem defined after seeing which models happen to do well is not really being tested: the metric, the success criterion and the comparison set would be chosen to fit the result. Fixing them first is what keeps the later steps honest.
 - **Brainstorm with the user.** If they have no clear problem, suggest candidates from what the variables *mean* — what could usefully be predicted, and for what decision — not from what the data happens to show.
 - **Assess feasibility:**
   - Is the output recorded, and recorded well enough?
   - Are there enough rows for the number of inputs?
-  - Do grouping or time order (Admissibility 3) constrain the split?
+  - Do grouping or time order (Admissibility 3: grouped or time-ordered rows) constrain the split?
   - Is the problem answerable at all with the configurations in scope?
 
   If it needs a method outside the four chapters, say so now.
 - **Keep it at that level.** Do not choose models or design figures yet — steps 3 and 4 exist for that.
 - **Record the outcome in the `Problem Definition` section of `Appendix.md`**, in three parts:
-  - `Discussion` — how the problem was arrived at, what was considered and ruled out, and the Admissibility 2 answer;
+  - `Discussion` — how the problem was arrived at, what was considered and ruled out, and the Admissibility 2: prediction or understanding answer;
   - `Problem` — the formulation above;
   - `Sub-tasks` — the separately answerable parts, each with its own output and success criterion.
-- **Record the properties known so far** as a Decision Record (`PROP`): P1, P5–P8 from the user; P2–P4 computed from the file.
-- **Fix the split and lock the test set.** Agree the test fraction with the user (§3). Split by group if Admissibility 3 found groups, and record the seed. Then set the test set aside: nothing in steps 3 and 4 reads it until the final evaluation. Record the split as a Decision Record (`SPLIT`).
+- **Record the properties known so far** as a Decision Record (`PROP`): Property 1: output type, Properties 5–8 from the user; Properties 2–4 computed from the file.
+- **Fix the split and lock the test set.** Agree the test fraction with the user (§3). Split by group if Admissibility 3: grouped or time-ordered rows found groups, and record the seed. Then set the test set aside: nothing in steps 3 and 4 reads it until the final evaluation. Record the split as a Decision Record (`SPLIT`).
 - **Write it before anything is fitted**, so it is on the record that the problem preceded the result.
 - **Then, before any analysis starts, write the problem and its sub-tasks into the `Introduction` of `Report.md`.** Insert a brief text — do not ask permission first. Then tell the user it is there, that they can edit it themselves, and that they can ask you to change it. This is the one thing that enters `Report.md` early: it fixes in the report itself what was asked, before any result is known, so the write-up cannot quietly become a report of whatever turned out to work.
 - **The `Introduction` never anticipates its conclusions.** It says what is being examined and how it will be approached. It does not say what was found, and it does not say what the analysis will turn out not to support. Two sentences of this kind would have to come out: *"A decision tree turns out to predict best."* and *"As we discuss later, the small test set limits how far the result can be trusted."* Both are results, moved early.
@@ -199,8 +201,8 @@ Agree what is to be predicted, and how success will be judged, before any model 
 Show what the training data looks like for each sub-task, before any model is fitted. One sub-task at a time.
 
 - **Training data only.** Every figure and summary in this step uses the training rows. The test set stays locked.
-- **Compute P9 and P10 with the core** (`ML Guide.md` §11): whether the classes are perfectly separable, and whether they are imbalanced. Both come from the training data. Record them in a new `PROP` Decision Record that supersedes the step 2 one. The separability check fits a model, but only to establish a property, not to evaluate a candidate. It is run by the core (`Code/advisor/` once built; until then the analysis's interim core), and its result is not interpreted as a finding.
-- **Figures do not set P8.** A plot that looks linear or curved does not make it so for the advisor: P8 comes only from the user (§11). If a figure surprises the user, they may state or revise an expectation, and that is recorded with their words and the figure that prompted it.
+- **Compute Property 9: separability and Property 10: class imbalance with the core** (`ML Guide.md` §11): whether the classes are perfectly separable, and whether they are imbalanced. Both come from the training data. Record them in a new `PROP` Decision Record that supersedes the step 2 one. The separability check fits a model, but only to establish a property, not to evaluate a candidate. It is run by the core (`Code/advisor/` once built; until then the analysis's interim core), and its result is not interpreted as a finding.
+- **Figures do not set Property 8: expected shape.** A plot that looks linear or curved does not make it so for the advisor: Property 8: expected shape comes only from the user (§11). If a figure surprises the user, they may state or revise an expectation, and that is recorded with their words and the figure that prompted it.
 - **Decide the input design with the user** (`ML Guide.md` §9): domain transformations of inputs, such as a logarithm, and the choice of inputs. It is not a configuration axis and is not chosen by cross-validation. If it was not settled in step 2, settle it here, after setting out the trade-offs, and record it in a Decision Record with the user's words.
 - **Propose the chart before making it.** Say what it would plot, on which axes, over which rows, and what a reader would be able to see in it. Get the user's agreement before producing it. A chart is cheap to describe and expensive to argue about once it exists.
 - **Let the data's job choose the form.** Comparing magnitudes across categories is a bar chart; a relationship between two continuous measures is a scatter; movement over time is a line; a distribution is a histogram. Choose from what has to be shown, not from what is easiest to produce.
@@ -251,7 +253,7 @@ Get the user's agreement before anything is cross-validated. This is the step's 
 - **Stop at the first stopping rule that applies** (S1–S6), and record which.
 - **An action that needs an out-of-scope method is a flag** (DX-10, §20), not an action.
 
-**4f — Recommendation.** Call the core to apply the recommendation rule (§19) and compute the selection confidence (§17). Record the outcome in the `FINAL` record's §19 trace. If P6 requires a tuned decision threshold, it is chosen now, by cross-validation on the training data, with the user choosing the trade-off between error types (§16). Present to the user:
+**4f — Recommendation.** Call the core to apply the recommendation rule (§19) and compute the selection confidence (§17). Record the outcome in the `FINAL` record's §19 trace. If Property 6: probabilities requires a tuned decision threshold, it is chosen now, by cross-validation on the training data, with the user choosing the trade-off between error types (§16). Present to the user:
 
 - the recommended configuration and its tuned hyperparameters;
 - the CV table and the selection confidence, with the factors behind it;
@@ -277,7 +279,7 @@ The rules that govern this step:
 
 - **Check required practice and gates against the data rather than asserting them.** Preprocessing is fitted inside the cross-validation folds (REQ-1); k-NN inputs are normalised (REQ-2); a configuration the gates excluded is not run. Each is visible in the core's output, and a Decision Record that asserts one without that evidence is incomplete.
 - **Establish that the labels are what they claim to be before interpreting any result.** A target that the source has imputed, modelled or derived from the inputs is not an independent outcome, and a model that predicts it well has learned the construction, not the world. Check this before 4a rather than after.
-- **Use folds that match the structure of the data.** Group folds where rows share a unit (Admissibility 3), stratified folds for classification (§16). Say which were used and why.
+- **Use folds that match the structure of the data.** Group folds where rows share a unit (Admissibility 3: grouped or time-ordered rows), stratified folds for classification (§16). Say which were used and why.
 - **Report the result, its uncertainty, and the data it came from.** A test result without its uncertainty is not a result, and an uncertainty without the number of test rows behind it cannot be judged. Always report the baseline beside it.
 - **When nothing beats the baseline, say what the evaluation was able to detect.** Report it as a fact about the data — how many rows, how much the outcome varies, how wide the fold spread was — and let the reader weigh it. A sub-task with no recommendation is a result, recorded in a `FINAL` record that says so.
 - **Recompute the number that carries the claim independently, wherever that is cheap.** Recompute the test metric from the saved test predictions with a separate call, rather than reading it out of the core's summary. Two routes to the same figure catch both a reporting slip and stale output; one route catches neither.

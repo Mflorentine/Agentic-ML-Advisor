@@ -2,11 +2,11 @@
 
 A working guide to choosing, training and evaluating a supervised machine learning model, distilled from four chapters of Lindholm, Wahlström, Lindsten and Schön, *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft of 1 September 2026, read at [smlbook.org](https://smlbook.org/). The chapters are 2 (supervised learning, k-NN, decision trees), 3 (linear and logistic regression, polynomial regression with L2 regularisation, generalised linear models), 4 (evaluating performance) and 13 (user aspects of machine learning).
 
-This is a set of notes written in our own words, not a substitute for the book. Every entry gives the printed page number it rests on, so the claim can be checked. Book pages are always written `SML p. x` or `SML pp. x–y`, including inside provenance tags, so that a page can never be mistaken for a property ID such as P5. **Printed page = PDF page − 10** (chapter 2 starts on printed page 15, PDF page 25). Where a line is our own inference or practice rather than something the book says, it is marked *(not from the book)*.
+This is a set of notes written in our own words, not a substitute for the book. Every entry gives the printed page number it rests on, so the claim can be checked. Book pages are always written `SML p. x` or `SML pp. x–y`, including inside provenance tags, so that a page can never be mistaken for a property ID such as Property 5: interpretability. **Printed page = PDF page − 10** (chapter 2 starts on printed page 15, PDF page 25). Where a line is our own inference or practice rather than something the book says, it is marked *(not from the book)*.
 
 The guide has two parts. **Part I (sections 1–6) is knowledge**: what the book says, with pages. **Part II (sections 7–23) is the advisor's reasoning procedure**: how that knowledge is turned into a recommendation, a ranking, a confidence level and a reasoning trace. Part II is our construction. Every rule in it carries a provenance tag (section 8), so a reader can see how much of any recommendation is the book's and how much is ours. **Part III (sections 24–25) fixes the record formats** the advisor writes into `Appendix.md`: the Decision Record and the Recommendation Report.
 
-**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. 16 October 2026 (`FRAMEWORK`): the example folder in §24.1 is now `Demonstration/Sepsis/`; nothing else changed. 9 November 2026 (`FRAMEWORK`): the admissibility checks are renamed from ADM-1 … ADM-4 to *Admissibility 1 … 4*, each with a short name, and the record type from `ADM` to `Admissibility`; §10 now says how the checks are put to the user. The questions, answers and actions are unchanged. 10 November 2026 (`FRAMEWORK`): book pages are written `SML p. x` / `SML pp. x–y` throughout, including in provenance tags (`[B SML p. x]`, `[B→I SML p. x]`), so that they cannot be confused with property IDs (P1–P10); no page number or rule changed. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
+**Version.** v3.1, 12 October 2026: Part III added (record formats). v3, 10 October 2026: Parts I and II. 14 October 2026: scope note added (chapters 2, 3, 4 and 13); wording corrected in §4.7, §23 and §24.5 (no step 7; statsmodels not installed); the procedure is unchanged. 15 October 2026 (`FRAMEWORK`): each analysis now has its own folder, so Part III says that `Appendix.md` and `Report.md` are the copies in that folder (§24.1, §25.1); the formats are unchanged. 16 October 2026 (`FRAMEWORK`): the example folder in §24.1 is now `Demonstration/Sepsis/`; nothing else changed. 9 November 2026 (`FRAMEWORK`): the admissibility checks are renamed from ADM-1 … ADM-4 to *Admissibility 1 … 4*, each with a short name, and the record type from `ADM` to `Admissibility`; §10 now says how the checks are put to the user. The questions, answers and actions are unchanged. 10 November 2026 (`FRAMEWORK`): book pages are written `SML p. x` / `SML pp. x–y` throughout, including in provenance tags (`[B SML p. x]`, `[B→I SML p. x]`), so that they cannot be confused with property IDs (P1–P10); no page number or rule changed. 10 November 2026 (`FRAMEWORK`): properties are written *Property n: short name* (previously P1 … P10), and admissibility checks always carry their short name; `Criteria.md` added as the user-facing list of both; no rule, value or threshold changed. Changes to Parts II and III are made only under `FRAMEWORK` (`instructions.md`, `Changing This Contract`) and recorded here.
 
 **Scope.** The chapters used are 2, 3, 4 and 13. Every other method — L1/LASSO included — is flagged and not used (section 23).
 
@@ -302,7 +302,7 @@ A **configuration** is a model family × an input-transformation type × a regul
 
 ## 10. Admissibility
 
-Each check is a fixed question with closed answers. It is asked in step 1 or 2 and recorded in a Decision Record. Only Admissibility 1 is a gate.
+Each check is a fixed question with closed answers. It is asked in step 1 or 2 and recorded in a Decision Record. Only Admissibility 1 (outcome recorded) is a gate.
 
 When a check is put to the user, it is called by its number and its name (for example *Admissibility 3: grouped or time-ordered rows*), asked in plain words, and introduced with one sentence on why it matters for the user's data. Versions of this guide before 9 November 2026 called the checks ADM-1 … ADM-4 and the record type `ADM`; records written under those versions keep the old names.
 
@@ -317,26 +317,26 @@ Whether an out-of-scope method is needed is not decided here. It is decided from
 
 ## 11. Property dictionary
 
-The prior ranking uses only these properties. Each has a fixed set of values, a decider, an evidence tag and an operational definition. A property whose value is not known is recorded as `unknown` and contributes nothing.
+The prior ranking uses only these properties. Each is written *Property n: short name* (for example *Property 5: interpretability*), in conversation and in every document; the short names are the ones in `Criteria.md`. Versions of this guide before 10 November 2026 wrote them P1 … P10. Each has a fixed set of values, a decider, an evidence tag and an operational definition. A property whose value is not known is recorded as `unknown` and contributes nothing.
 
 | ID | Property | Values | Decided by | Evidence | Operational definition |
 | --- | --- | --- | --- | --- | --- |
-| P1 | Output type | numeric · count · non-negative real · binary · multiclass · ordinal | user, checked against data | M | Count = non-negative integers with no fixed upper limit (SML pp. 61–62). Non-negative real = continuous, never below 0. Ordinal → see section 12. |
-| P2 | Data-to-parameter ratio | ample · limited | computed | M | n_train ÷ (number of input columns after one-hot encoding + 1). Limited if < 10 `[I]`. |
-| P3 | Number of inputs | few · many | computed | M | Input columns after encoding. Many if > 20 `[I]`. |
-| P4 | Share of categorical inputs | low · high | computed | M | Share of original input columns that are categorical. High if ≥ 50 % `[I]`. |
-| P5 | Interpretability needed | none · inspectable · worst-case bound | user | M | Inspectable = a person must be able to follow how predictions are made. Worst-case bound = a limit on how wrong any prediction can be (SML p. 347). |
-| P6 | Probabilities or a tuned threshold needed | yes · no | user | M | The user needs class probabilities, or will choose a trade-off between error types (SML pp. 50, 53–54, 92–93). |
-| P7 | Predictions beyond the training range | yes · no | user | M | The model will be used on input values outside the range seen in training. |
-| P8 | Expected shape | linear · curved · interactions/irregular · unknown | **user or domain expectation only** | M | Never inferred from the data before fitting (decided 10 October 2026). Default `unknown`. Recorded with the user's words quoted. |
-| P9 | Classes perfectly separable | yes · no | computed | T | Classification only. Yes if logistic regression with negligible regularisation reaches 100 % training accuracy `[I]`. |
-| P10 | Class imbalance | balanced · imbalanced | computed | T | Classification only. Imbalanced if the smallest class is < 20 % of training rows `[I]`. Changes the metric and threshold handling (§5.5, SML p. 91), not the family. |
+| Property 1 | Output type | numeric · count · non-negative real · binary · multiclass · ordinal | user, checked against data | M | Count = non-negative integers with no fixed upper limit (SML pp. 61–62). Non-negative real = continuous, never below 0. Ordinal → see section 12. |
+| Property 2 | Data-to-parameter ratio | ample · limited | computed | M | n_train ÷ (number of input columns after one-hot encoding + 1). Limited if < 10 `[I]`. |
+| Property 3 | Number of inputs | few · many | computed | M | Input columns after encoding. Many if > 20 `[I]`. |
+| Property 4 | Share of categorical inputs | low · high | computed | M | Share of original input columns that are categorical. High if ≥ 50 % `[I]`. |
+| Property 5 | Interpretability needed | none · inspectable · worst-case bound | user | M | Inspectable = a person must be able to follow how predictions are made. Worst-case bound = a limit on how wrong any prediction can be (SML p. 347). |
+| Property 6 | Probabilities or a tuned threshold needed | yes · no | user | M | The user needs class probabilities, or will choose a trade-off between error types (SML pp. 50, 53–54, 92–93). |
+| Property 7 | Predictions beyond the training range | yes · no | user | M | The model will be used on input values outside the range seen in training. |
+| Property 8 | Expected shape | linear · curved · interactions/irregular · unknown | **user or domain expectation only** | M | Never inferred from the data before fitting (decided 10 October 2026). Default `unknown`. Recorded with the user's words quoted. |
+| Property 9 | Classes perfectly separable | yes · no | computed | T | Classification only. Yes if logistic regression with negligible regularisation reaches 100 % training accuracy `[I]`. |
+| Property 10 | Class imbalance | balanced · imbalanced | computed | T | Classification only. Imbalanced if the smallest class is < 20 % of training rows `[I]`. Changes the metric and threshold handling (§5.5, SML p. 91), not the family. |
 
 ## 12. Gates, compulsory modifiers and required practice
 
-**Task gate (from P1).**
+**Task gate (from Property 1: output type).**
 
-| P1 | Admissible families | Basis |
+| Property 1 | Admissible families | Basis |
 | --- | --- | --- |
 | numeric | Linear, k-NN, Tree | `[B SML p. 17]` |
 | count | Poisson, Linear, k-NN, Tree | `[B SML pp. 17, 61–63]` |
@@ -348,15 +348,15 @@ The prior ranking uses only these properties. Each has a fixed set of values, a 
 
 | Must-have | Families that meet it | Basis |
 | --- | --- | --- |
-| P5 = inspectable | Linear, Logistic, Poisson, Exponential, Tree; k-NN only if "showing the most similar past cases" is acceptable to the user | `[B→I SML p. 347]` (the book: models from ch. 2–3 can "to some degree" be inspected) |
-| P5 = worst-case bound | Tree (regression: every prediction lies within the leaf range); Logistic | `[B→I SML p. 347]` (the book's examples) |
-| P6 = yes | Logistic | `[B→I SML pp. 50, 53–54]` |
+| Property 5: interpretability = inspectable | Linear, Logistic, Poisson, Exponential, Tree; k-NN only if "showing the most similar past cases" is acceptable to the user | `[B→I SML p. 347]` (the book: models from ch. 2–3 can "to some degree" be inspected) |
+| Property 5: interpretability = worst-case bound | Tree (regression: every prediction lies within the leaf range); Logistic | `[B→I SML p. 347]` (the book's examples) |
+| Property 6: probabilities = yes | Logistic | `[B→I SML pp. 50, 53–54]` |
 
 **Compulsory modifiers.**
 
 | ID | Condition | Effect | Basis |
 | --- | --- | --- | --- |
-| MOD-1 | P9 = yes | `Logistic` and `Logistic + poly` are inadmissible; only the `+ L2` versions remain | `[B SML p. 61]` — without regularisation the optimal parameters are not finite for separable data, and it is common practice to train with L2 |
+| MOD-1 | Property 9: separability = yes | `Logistic` and `Logistic + poly` are inadmissible; only the `+ L2` versions remain | `[B SML p. 61]` — without regularisation the optimal parameters are not finite for separable data, and it is common practice to train with L2 |
 | MOD-2 | Parameters ≥ n_train, or exactly collinear inputs | Linear and GLM configurations without L2 are inadmissible | `[B→I SML pp. 46–47, 65]` — the least-squares solution is not unique when XᵀX is not invertible; that L2 fixes this is our reading of eq. 3.49 |
 
 **Required practice** (whenever the configuration is used):
@@ -378,23 +378,23 @@ A configuration's score is the sum of its **family column** plus the **`+ poly` 
 
 | Property value | Linear | Logistic | GLM | k-NN | Tree | + poly | + L2 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| P1 = count or non-negative real | −1 `[B SML p. 62]` | | +1 `[B SML pp. 61–62]` | | | | |
-| P2 = limited | | | | | −1 `[I]` | −1 `[B→I SML pp. 59–60]` | +1 `[B→I SML p. 60]` |
-| P3 = many | | | | −1 `[I]` | | −1 `[B→I SML p. 59]` | |
-| P4 = high | | | | −1 `[I]` | | | |
-| P5 = inspectable (not a must-have) | +1 `[B→I SML p. 347]` | +1 `[B→I SML p. 347]` | +1 `[B→I SML p. 347]` | | +1 `[B→I SML p. 347]` | −1 `[I]` | |
-| P5 = worst-case bound (not a must-have) | | +1 `[B→I SML p. 347]` | | | +1 `[B→I SML p. 347]` | | |
-| P6 = yes (not a must-have) | | +1 `[B→I SML pp. 50, 53–54]` | | | | | |
-| P7 = yes | | | | −1 `[B→I SML p. 26]` | −1 `[I]` | | |
-| P8 = linear | +1 `[B→I SML p. 41]` | +1 `[B→I SML p. 55]` | +1 `[B→I SML p. 63]` | | | | |
-| P8 = curved | −1 `[B→I SML pp. 58–59]` | | | +1 `[B→I SML p. 26]` | | +1 `[B→I SML p. 59]` | |
-| P8 = interactions/irregular | −1 `[B→I SML p. 41]` | −1 `[B→I SML p. 55]` | −1 `[B→I SML p. 63]` | +1 `[B→I SML p. 24]` | +1 `[B→I SML pp. 27–29]` | | |
+| Property 1: output type = count or non-negative real | −1 `[B SML p. 62]` | | +1 `[B SML pp. 61–62]` | | | | |
+| Property 2: data-to-parameter ratio = limited | | | | | −1 `[I]` | −1 `[B→I SML pp. 59–60]` | +1 `[B→I SML p. 60]` |
+| Property 3: number of inputs = many | | | | −1 `[I]` | | −1 `[B→I SML p. 59]` | |
+| Property 4: categorical share = high | | | | −1 `[I]` | | | |
+| Property 5: interpretability = inspectable (not a must-have) | +1 `[B→I SML p. 347]` | +1 `[B→I SML p. 347]` | +1 `[B→I SML p. 347]` | | +1 `[B→I SML p. 347]` | −1 `[I]` | |
+| Property 5: interpretability = worst-case bound (not a must-have) | | +1 `[B→I SML p. 347]` | | | +1 `[B→I SML p. 347]` | | |
+| Property 6: probabilities = yes (not a must-have) | | +1 `[B→I SML pp. 50, 53–54]` | | | | | |
+| Property 7: extrapolation = yes | | | | −1 `[B→I SML p. 26]` | −1 `[I]` | | |
+| Property 8: expected shape = linear | +1 `[B→I SML p. 41]` | +1 `[B→I SML p. 55]` | +1 `[B→I SML p. 63]` | | | | |
+| Property 8: expected shape = curved | −1 `[B→I SML pp. 58–59]` | | | +1 `[B→I SML p. 26]` | | +1 `[B→I SML p. 59]` | |
+| Property 8: expected shape = interactions/irregular | −1 `[B→I SML p. 41]` | −1 `[B→I SML p. 55]` | −1 `[B→I SML p. 63]` | +1 `[B→I SML p. 24]` | +1 `[B→I SML pp. 27–29]` | | |
 
 **Reading the entries.**
-- **P1** is the only row resting on explicit book advice: count data "is not well described by a linear regression model", and a distribution with support matching the data should be chosen (SML pp. 61–62).
-- **P2:** high-degree polynomials overfit easily (SML pp. 59–60) and regularisation counters overfitting (SML p. 60). Trees are marked down because a deep tree overfits `[I]`.
-- **P8 rows** apply only when the user or domain states the expectation. The family's entry follows from what the book says it can represent: a straight line, a linear boundary, a piecewise-constant fit (SML pp. 24, 26, 41, 55).
-- **P10 has no row.** Imbalance changes the metric and threshold (§5.5), not the family.
+- **Property 1: output type** is the only row resting on explicit book advice: count data "is not well described by a linear regression model", and a distribution with support matching the data should be chosen (SML pp. 61–62).
+- **Property 2: data-to-parameter ratio:** high-degree polynomials overfit easily (SML pp. 59–60) and regularisation counters overfitting (SML p. 60). Trees are marked down because a deep tree overfits `[I]`.
+- **Property 8: expected shape rows** apply only when the user or domain states the expectation. The family's entry follows from what the book says it can represent: a straight line, a linear boundary, a piecewise-constant fit (SML pp. 24, 26, 41, 55).
+- **Property 10: class imbalance has no row.** Imbalance changes the metric and threshold (§5.5), not the family.
 
 ## 14. Sequencing rules (never scored)
 
@@ -414,7 +414,7 @@ SEQ-3 is how "add-ons come later" (SML p. 331) is honoured. The basic pipeline i
 4. **Keep:** the baseline, the simple-first configuration (SEQ-2) and the three highest-ranked others. If there is a tie at third place, keep every tied configuration. Every configuration not kept gets `DISF`.
 5. **Record:** the prior is written as a Decision Record before any training, including the advisor's expectation of the CV order.
 
-**Expected behaviour.** When P8 is unknown, which is the default, most configurations within a task score alike, and the prior is driven by P1, P2, P3 and the user's requirements. This is intended. The prior encodes what the advisor can know before fitting, and nothing more.
+**Expected behaviour.** When Property 8: expected shape is unknown, which is the default, most configurations within a task score alike, and the prior is driven by Property 1: output type, Property 2: data-to-parameter ratio, Property 3: number of inputs and the user's requirements. This is intended. The prior encodes what the advisor can know before fitting, and nothing more.
 
 ## 16. Cross-validation protocol (fixed)
 
@@ -422,7 +422,7 @@ SEQ-3 is how "add-ons come later" (SML p. 331) is honoured. The basic pipeline i
 | --- | --- | --- |
 | Outer CV (comparison) | 10-fold, shuffled, seed recorded; the same folds for every configuration | `[B SML pp. 72–73]` (k = 10 realistic) |
 | Classification | Stratified folds | `[I]` |
-| Grouped rows (Admissibility 3) | Group folds | `[B SML p. 329]` |
+| Grouped rows (Admissibility 3: grouped or time-ordered rows) | Group folds | `[B SML p. 329]` |
 | Hyperparameter tuning | Inner 5-fold grid search within each outer training fold | `[I]`; tuning on the comparison folds would make them optimistic (SML p. 74). Nested CV kept despite its cost (decided 10 October 2026). |
 | Grids | k ∈ {1, 3, 5, 7, 9, 15, 21, 31, 51} (below the inner training size); tree max depth ∈ {1, 2, 3, 4, 5, 6, 8, 10, 15, 20} × minimum leaf size ∈ {1, 5, 10, 20}; degree ∈ {2, 3}; λ ∈ {10⁻⁴, 10⁻³, …, 10⁴} | `[I]` |
 | Selection metric | The single metric agreed in step 2 | `[B SML p. 330]` |
@@ -431,7 +431,7 @@ SEQ-3 is how "add-ons come later" (SML p. 331) is honoured. The basic pipeline i
 | Spread | The standard deviation (not the standard error) of those 10 fold differences. The fold estimates are not independent, because the training sets overlap; using the SD rather than the SE is deliberately cautious. | `[I]` |
 | Diagnosis errors | E_train and E_val computed with the book's default error function (misclassification rate or squared error, SML p. 67), whatever the selection metric | `[I]` |
 | Learning curve | For the leading configuration only: training fractions 10 %, 20 %, …, 100 % on the outer folds | `[B SML pp. 334–336]` |
-| Decision threshold | Default 0.5 (SML p. 53). Tuned only if P6 = yes, after model selection, by CV on training data, with the trade-off chosen by the user. | `[B→I SML pp. 53–54, 92–93]` |
+| Decision threshold | Default 0.5 (SML p. 53). Tuned only if Property 6: probabilities = yes, after model selection, by CV on training data, with the trade-off chosen by the user. | `[B→I SML pp. 53–54, 92–93]` |
 
 ## 17. Confidence
 
@@ -477,7 +477,7 @@ The loop runs on cross-validation only and ends before the test set is used. Hyp
 | DX-2 | O2 | Stop and rethink the problem and method with the user | `[B SML p. 78]` |
 | DX-3 | O5 | Extend the grid in that direction and rerun | `[I]` |
 | DX-4 | O3 | Less flexibility: add L2 to a parametric configuration without it; remove polynomial terms; feature selection by backward elimination compared by CV; ask whether more data is available | `[B SML pp. 60, 333, 346]` |
-| DX-5 | O4 | More flexibility: add polynomial terms (if P3 = few); add k-NN or Tree if not already compared; ask whether more input variables exist | `[B SML pp. 333–334]` |
+| DX-5 | O4 | More flexibility: add polynomial terms (if Property 3: number of inputs = few); add k-NN or Tree if not already compared; ask whether more input variables exist | `[B SML pp. 333–334]` |
 | DX-6 | O6 | Tell the user more data is likely to help | `[B SML pp. 334–336]` |
 | DX-7 | Criterion not met and none of O1–O6 holds | Error analysis with the user: show a sample (up to 100) of validation errors; the user groups the causes; the largest group is addressed first | `[B SML pp. 336–337]` |
 | DX-8 | The user or the error analysis finds wrong labels | Correct validation and test labels first, training labels if worth it — the user decides | `[B SML pp. 337–338]` |
@@ -537,18 +537,19 @@ Every explanation states the trust limits: E_new is an average over data like th
 USER PROBLEM (own words) + ML experience level
 │
 ├─ ADMISSIBILITY (section 10; closed questions, step 1–2)
-│   Admissibility 1 output y recorded? ──────── no → STOP: not supervised (SML p. 15)
-│   Admissibility 2 aim: predict or understand? ─ understand → explain limits; continue only if user confirms (SML p. 20)
-│   Admissibility 3 groups / time order? ─────── group col → group split + group CV (SML p. 329)
-│                                                time col → autoregressive reformulation or FLAG (SML pp. 16, 38–39)
-│   Admissibility 4 future cases like our data? ─ no/unsure → agree val/test source with user (SML pp. 328–329)
+│   Admissibility 1: outcome recorded ──────────── no → STOP: not supervised (SML p. 15)
+│   Admissibility 2: prediction or understanding ─ understand → explain limits; continue only if user confirms (SML p. 20)
+│   Admissibility 3: grouped or time-ordered rows ─ group col → group split + group CV (SML p. 329)
+│                                                  time col → autoregressive reformulation or FLAG (SML pp. 16, 38–39)
+│   Admissibility 4: new cases like these ──────── no/unsure → agree val/test source with user (SML pp. 328–329)
 │
 ├─ FORMULATION (step 2, metadata only)
-│   P1 output type → task gate (section 12) · metric · success criterion · baseline · achievable level
-│   must-haves (P5, P6) · expectations (P7, P8 — user/domain only)
+│   Property 1: output type → task gate (section 12) · metric · success criterion · baseline · achievable level
+│   must-haves (Property 5: interpretability, Property 6: probabilities)
+│   expectations (Property 7: extrapolation, Property 8: expected shape — user/domain only)
 │   split fixed, seed recorded → TEST SET LOCKED
 │
-├─ PROPERTIES (section 11)   P2–P4 computed (M) · P9–P10 computed on training data (T)
+├─ PROPERTIES (section 11)   Properties 2–4 computed (M) · Properties 9–10 computed on training data (T)
 │
 ├─ ADMISSIBLE SET   14 configurations → task gate → must-haves (USER) → MOD-1/MOD-2 (EXCL)
 │
@@ -593,11 +594,11 @@ Every number below is ours (`[I]`). Each is reported in the Decision Record wher
 
 | Where | Threshold | Value |
 | --- | --- | --- |
-| P2 | Limited data-to-parameter ratio | < 10 |
-| P3 | Many inputs | > 20 |
-| P4 | High categorical share | ≥ 50 % |
-| P9 | Separability test | 100 % training accuracy with negligible regularisation |
-| P10 | Imbalance | smallest class < 20 % |
+| Property 2 | Limited data-to-parameter ratio | < 10 |
+| Property 3 | Many inputs | > 20 |
+| Property 4 | High categorical share | ≥ 50 % |
+| Property 9 | Separability test | 100 % training accuracy with negligible regularisation |
+| Property 10 | Imbalance | smallest class < 20 % |
 | §15 | Number kept besides baseline and simple-first | 3 (plus ties) |
 | §16 | Outer / inner folds; grids | 10 / 5; as listed |
 | C1 | Clear / moderate / none | ≥ 1 / 0.5–1 / < 0.5 × spread |
@@ -628,9 +629,9 @@ A Decision Record (DR) is the unit of the advisor's reasoning trace. Every decis
 | Type | Written when | Guide | Workflow step |
 | --- | --- | --- | --- |
 | `Admissibility` | Each admissibility question (Admissibility 1 … 4) is answered. One DR per question. | §10 | 1–2 |
-| `FORM` | The formulation is agreed: y, x, P1, metric, success criterion, baseline, achievable level, must-haves (P5, P6), expectations (P7, P8) | §11, §12 | 2 |
-| `SPLIT` | The train/test split is fixed (random or grouped, with its seed) and the test set locked | §10 (Admissibility 3), §16 | 2 |
-| `PROP` | The property values P1–P10 are recorded: P1–P8 in step 2; P9–P10 from training data in step 3, in a new `PROP` DR that supersedes the first | §11 | 2–3 |
+| `FORM` | The formulation is agreed: y, x, Property 1: output type, metric, success criterion, baseline, achievable level, must-haves (Property 5: interpretability, Property 6: probabilities), expectations (Property 7: extrapolation, Property 8: expected shape) | §11, §12 | 2 |
+| `SPLIT` | The train/test split is fixed (random or grouped, with its seed) and the test set locked | §10 (Admissibility 3: grouped or time-ordered rows), §16 | 2 |
+| `PROP` | The property values Properties 1–10 are recorded: Properties 1–8 in step 2; Properties 9–10 from training data in step 3, in a new `PROP` DR that supersedes the first | §11 | 2–3 |
 | `ADMSET` | The admissible set is built: task gate, must-haves, MOD-1, MOD-2 | §9, §12 | 4 |
 | `PRIOR` | The prior ranking is made, **before any training** | §13, §15 | 4 |
 | `CV` | A cross-validation round is completed. Round 1 is always the baseline and the simple-first configuration (SEQ-3); round 2 the other kept configurations; later rounds come from the diagnosis loop. | §14, §16 | 4 |
@@ -651,7 +652,7 @@ Fields appear in this order. A field that does not apply is written `n/a`, never
 | **Date** | ISO date | |
 | **Question** | The decision that had to be made, as one question | Must be answerable from the evidence listed |
 | **Evidence** | Table: item · value · evidence tag · where | Evidence tag: `M`, `T`, `CV` or `TEST` (§8). "Where" names the output file, the metadata field, or the user's statement (quoted). |
-| **Rules applied** | Table: rule ID · result · provenance · effect | IDs from this guide: `Admissibility n`, `Pn`, task gate, `MOD-n`, `REQ-n`, `SEQ-n`, matrix entries written `Pn=value→column` (e.g. `P1=count→GLM`), `On`, `DX-n`, `Sn`, `C1`–`C3`, §19 steps. Provenance `[B SML p. x]`, `[B→I SML p. x]` or `[I]`, copied from this guide. A rule not in the guide is written `UNLISTED [I]` with its wording. |
+| **Rules applied** | Table: rule ID · result · provenance · effect | IDs from this guide: `Admissibility n: name`, `Property n: name`, task gate, `MOD-n`, `REQ-n`, `SEQ-n`, matrix entries written `Property n: name=value→column` (e.g. `Property 1: output type=count→GLM`), `On`, `DX-n`, `Sn`, `C1`–`C3`, §19 steps. Provenance `[B SML p. x]`, `[B→I SML p. x]` or `[I]`, copied from this guide. A rule not in the guide is written `UNLISTED [I]` with its wording. |
 | **Thresholds applied** | Table: threshold · value used · value compared | Every `[I]` threshold the decision used (Appendix to Part II), with the actual number it was compared against |
 | **Options considered** | Structural configurations or actions | Configurations named as in §9, e.g. `Logistic + poly + L2`; diagnosis-loop additions marked `post-prior` |
 | **Expectation** | What the advisor expects the next result to show, and why | Required for `PRIOR` and `DX`: the expected CV order, or the expected effect of the action. `n/a` otherwise. |
@@ -682,7 +683,7 @@ Applied by the advisor before writing a DR, and by the advisor evaluation afterw
 2. Every `[B SML p. x]` and `[B→I SML p. x]` has a page within chapters 2, 3, 4 or 13. *(The exact printed page ranges of the four chapters are still to be recorded in this guide.)*
 3. `TEST` evidence appears only in `FINAL`. There is one `FINAL` per sub-task, unless a superseded one is marked.
 4. `T` evidence never appears in a DR from step 2.
-5. **P8 evidence is always `M`, with the user's or the domain source's words quoted.** It is never `T` or `CV`.
+5. **Property 8: expected shape evidence is always `M`, with the user's or the domain source's words quoted.** It is never `T` or `CV`.
 6. `PRIOR` comes before the first `CV` DR. The round-1 `CV` DR contains only the baseline and the simple-first configuration.
 7. Every option considered is either the decision or has a why-not code. The `FINAL` why-not table covers all 14 structural configurations.
 8. The admissible set, prior ranking, CV table, confidence level and recommendation in the DRs are identical to the reference code's recorded output, and the inputs passed to it match the property values in the `PROP` DR.
@@ -749,43 +750,43 @@ Angle-bracket values are placeholders. The example is a `PRIOR` record for a hyp
 
 | Item | Value | Tag | Where |
 | --- | --- | --- | --- |
-| P1 output type | count | M | DR-03 (FORM) |
-| P2 data-to-parameter ratio | ample (<ratio>) | M | DR-05 (PROP) |
-| P3 number of inputs | few (<p>) | M | DR-05 (PROP) |
-| P5 interpretability | inspectable, not a must-have | M | user, step 2: "<quote>" |
-| P8 expected shape | curved | M | user, step 2: "<quote>" |
+| Property 1: output type | count | M | DR-03 (FORM) |
+| Property 2: data-to-parameter ratio | ample (<ratio>) | M | DR-05 (PROP) |
+| Property 3: number of inputs | few (<p>) | M | DR-05 (PROP) |
+| Property 5: interpretability | inspectable, not a must-have | M | user, step 2: "<quote>" |
+| Property 8: expected shape | curved | M | user, step 2: "<quote>" |
 
 **Rules applied**
 
 | Rule | Result | Provenance | Effect |
 | --- | --- | --- | --- |
-| Task gate, P1 = count | Poisson, Linear, k-NN, Tree admissible | [B SML pp. 17, 61–63] | from DR-06 (ADMSET) |
-| P1=count→Linear | holds | [B SML p. 62] | −1 on Linear configurations |
-| P1=count→GLM | holds | [B SML pp. 61–62] | +1 on Poisson configurations |
-| P5=inspectable→Linear, GLM, Tree | holds | [B→I SML p. 347] | +1 each |
-| P5=inspectable→+poly | holds | [I] | −1 on `+ poly` configurations |
-| P8=curved→Linear | holds | [B→I SML pp. 58–59] | −1 on Linear configurations |
-| P8=curved→k-NN | holds | [B→I SML p. 26] | +1 |
-| P8=curved→+poly | holds | [B→I SML p. 59] | +1 on `Linear + poly`, `Linear + poly + L2` |
+| Task gate, Property 1: output type = count | Poisson, Linear, k-NN, Tree admissible | [B SML pp. 17, 61–63] | from DR-06 (ADMSET) |
+| Property 1: output type=count→Linear | holds | [B SML p. 62] | −1 on Linear configurations |
+| Property 1: output type=count→GLM | holds | [B SML pp. 61–62] | +1 on Poisson configurations |
+| Property 5: interpretability=inspectable→Linear, GLM, Tree | holds | [B→I SML p. 347] | +1 each |
+| Property 5: interpretability=inspectable→+poly | holds | [I] | −1 on `+ poly` configurations |
+| Property 8: expected shape=curved→Linear | holds | [B→I SML pp. 58–59] | −1 on Linear configurations |
+| Property 8: expected shape=curved→k-NN | holds | [B→I SML p. 26] | +1 |
+| Property 8: expected shape=curved→+poly | holds | [B→I SML p. 59] | +1 on `Linear + poly`, `Linear + poly + L2` |
 | SEQ-2 | simple-first = `Poisson` | [B SML p. 331]; GLM as simple-first [I] | kept |
 
 **Thresholds applied**
 
 | Threshold | Value used | Value compared |
 | --- | --- | --- |
-| P2 limited ratio | < 10 | <ratio> |
-| P3 many inputs | > 20 | <p> |
+| Property 2: data-to-parameter ratio, limited | < 10 | <ratio> |
+| Property 3: number of inputs, many | > 20 | <p> |
 | Kept besides baseline and simple-first | 3 (+ ties) | — |
 
 - **Options considered:** `Poisson`, `Poisson + L2`, `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2`, `kNN`, `Tree`
-- **Expectation:** `Poisson` and `Poisson + L2` rank above `Tree` and `kNN`, and all Linear configurations rank last, because the count output (P1) is the only explicit-advice entry and favours the GLM.
+- **Expectation:** `Poisson` and `Poisson + L2` rank above `Tree` and `kNN`, and all Linear configurations rank last, because the count output (Property 1: output type) is the only explicit-advice entry and favours the GLM.
 - **Decision:** Keep baseline; `Poisson` (simple-first, score <s>); `Poisson + L2` (<s>); `Tree` (<s>); `kNN` (<s>). Prior order: `Poisson` = `Poisson + L2` by score; `Poisson` first on fewer add-ons.
 
 **Why not**
 
 | Configuration | Code | Evidence |
 | --- | --- | --- |
-| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2` | DISF | scores <s>: P1=count→Linear −1, P8=curved→Linear −1 |
+| `Linear`, `Linear + L2`, `Linear + poly`, `Linear + poly + L2` | DISF | scores <s>: Property 1: output type=count→Linear −1, Property 8: expected shape=curved→Linear −1 |
 | Logistic configurations, `Exponential`, `Exponential + L2` | EXCL | task gate (DR-06) |
 
 **Reference code**
@@ -818,7 +819,7 @@ It is written at the end of step 4 for a sub-task, after its `FINAL` DR. Parts 9
 
 | # | Part | Content | Source DRs |
 | --- | --- | --- | --- |
-| 1 | **Problem** | What is predicted (y) from what (x); output type (P1); the agreed metric; success criterion; baseline; achievable level if known; must-haves (P5, P6); stated expectations (P7, P8, quoted); admissibility answers (Admissibility 1 … 4) and the split. | `Admissibility`, `FORM`, `SPLIT` |
+| 1 | **Problem** | What is predicted (y) from what (x); Property 1: output type; the agreed metric; success criterion; baseline; achievable level if known; must-haves (Property 5: interpretability, Property 6: probabilities); stated expectations (Property 7: extrapolation, Property 8: expected shape, quoted); admissibility answers (Admissibility 1 … 4) and the split. | `Admissibility`, `FORM`, `SPLIT` |
 | 2 | **Recommendation** | The configuration (§9 name), its tuned hyperparameters, and the selection confidence level, in two sentences. | `FINAL` |
 | 3 | **Test-set result** | E_new on the agreed metric with its uncertainty (method still to be decided, §5.2), n_test, the baseline's result on the same test set, and whether the success criterion is met. Classification: the confusion matrix, plus the PR or ROC curve where §5.5 calls for it; the decision threshold and how it was set (§16). | `FINAL` |
 | 4 | **Why this configuration** | Four strands, in the order of §7. Constraints: the task gate, must-haves and MOD-1/MOD-2 that shaped the admissible set. CV evidence: the margin over the runner-up and over the baseline, each with its spread. Simplicity: whether the §19 within-noise step decided it, with add-on counts. Prior support: the matrix entries behind its prior score, with provenance tags. | `ADMSET`, `PRIOR`, `CV`, `FINAL` |
