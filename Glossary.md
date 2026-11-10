@@ -1,6 +1,8 @@
 # Glossary
 
-The questions and properties the advisor uses to decide what can be modelled and which models to try, in plain words. This is a reading list for the user. The rules themselves are in `ML Guide.md` (§10 for the admissibility checks, §11–§13 for the properties), and where the two differ, the guide is authoritative. Book pages are to Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, written SML p. x. Thresholds marked *ours* are the framework's own choices, not the book's.
+The questions and properties the advisor uses to decide what can be modelled and which models to try, in plain words. This is a reading list for the user. The rules themselves are in `ML Guide.md` (§10 for the admissibility checks, §11–§13 for the properties), and where the two differ, the guide is authoritative. Book pages are to Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, written SML p. x. Thresholds marked *ours* are the framework's own choices, not the book's. The list is the same for every analysis: it describes the procedure, not any particular problem.
+
+Analyses written before November 2026 use older labels: ADM-1 … ADM-4 for *Admissibility 1 … 4*, P1 … P10 for *Property 1 … 10*, and page numbers without `SML`.
 
 ## Admissibility checks
 
@@ -10,7 +12,7 @@ Asked before any modelling, in steps 1 and 2. Each answer is recorded as a Decis
 | --- | --- | --- | --- | --- |
 | **Admissibility 1: outcome recorded** | Is the outcome recorded for the rows the model learns from? | No → the problem is not supervised learning, and the work stops. This is the only check that can stop it. | 1 | SML p. 15 |
 | **Admissibility 2: prediction or understanding** | Is the aim to predict the outcome for new cases, or to understand how the variables are connected? | Understanding → you are told that the workflow optimises prediction and does not show how variables are connected, and the work continues only if you confirm. | 2 | SML p. 20 |
-| **Admissibility 3: grouped or time-ordered rows** | Do several rows belong to the same unit (a patient, a match), or are they ordered in time? | Grouped → the data is split and cross-validated by group, so a unit is never on both sides. Ordered in time → either rebuild the problem from past values, or flag time-series modelling as out of scope. | 1 | SML pp. 16, 38–39, 329 |
+| **Admissibility 3: grouped or time-ordered rows** | Do several rows belong to the same unit (for example, several measurements of one person), or are they ordered in time? | Grouped → the data is split and cross-validated by group, so a unit is never on both sides. Ordered in time → either rebuild the problem from past values, or flag time-series modelling as out of scope. | 1 | SML pp. 16, 38–39, 329 |
 | **Admissibility 4: new cases like these** | Will the cases the model is used on look like this data? | No or unsure → agree with you where the validation and test data should come from before the data is split. | 1 | SML pp. 328–329 |
 
 ## Properties
