@@ -850,21 +850,278 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Thresholds applied:** the 2 × ratio (`[I]`), compared with E_train 0.1945 against 0.0190 (O4) and gap 0.0095 against 0.3890 (O3).
 - **Options considered:** DX-5 (chosen as the action that holds) · DX-2 (rethink the problem, for O2, if O2 held) · DX-1 (not triggered).
 - **Expectation:** the action is expected to show a lower E_train for more flexibility or more information; no expectation is written for a stop.
-- **Decision:** O4 holds. The only available DX-5 action asks about more input variables, which needs the user. The loop stops here until the user answers.
+- **Decision:** O4 holds. The only available DX-5 action asks about more input variables, which needs the user. The user answered that there are none. The loop passes to DX-10 (see DR-23).
 - **Why not:** DX-3, DX-4 and DX-6 are not triggered, because O5, O3 and O6 do not hold (O6 not reached). O2 is not testable and is raised.
 - **Confidence:** n/a.
 - **Outcome vs expectation:** n/a.
-- **User involvement:** asked (pending): O2 treatment, and the DX-5 question about more input variables.
+- **User involvement:** asked, answered: O2 treated as not holding ("Treat O2 as not holding"); no more input variables ("No more inputs").
 - **Supersedes / superseded by:** none.
 - **Stopping check:** none of S1–S6 applies yet; the loop waits for the user (S5 if the user stops it).
 - **Note on O6:** the learning curve (§16: training fractions 10% to 100% on the outer folds) is needed for C3 at 4f. It is not computed here, because O4 holds first in the order. It will be computed, with its code shown for approval, when the loop resumes.
 - **Code version:** the observations come from `Code/dropout/cv.py` (SHA-256 `fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29`) and the CV outputs (round 1, round 2).
 - **Links:** `Code/outputs/dropout/06_cv_round1.md`, `Code/outputs/dropout/07_cv_round2.md`.
 
+### DR-23 · FLAG · step 4e (diagnosis pass 2: the remaining action is out of scope)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** After O4 (underfitting) holds and no in-scope action remains, does the evidence suggest a method outside the solution space might help? (ML Guide §18 DX-10, §20, §23)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| O4 holds | E_train 0.1945 ≥ 2 × gap 0.0095 | CV | DR-22 |
+| In-scope actions for O4 | more polynomial terms: not offered (Property 3 = many); k-NN and Tree: excluded by the must-have (DR-15, DR-16); more input variables: none (user, DR-22) | M | DR-22 |
+| O2 | treated as not holding (user) | M | DR-22 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| DX-10: the only remaining action is out of scope → flag it | applies | scope decision | a flag, not an action |
+| S4: the next action is out of scope | applies | `[I]` | the loop stops (S4) |
+
+- **Flags (not applied, not tested):**
+  - Bagging, random forests and boosting (more flexible combinations of trees): Chapter 8 (§23). The evidence suggested is O4: E_train is high relative to the gap. This might help; it was not tested and is not claimed to do better.
+  - Neural networks: Chapters 6–7 (§23). The same evidence. Not tested; not claimed to do better.
+  - Kernel methods, support vector machines: Chapter 9 (§23). The same evidence. Not tested; not claimed to do better.
+- **Thresholds applied:** n/a.
+- **Options considered:** these three flags. None is applied.
+- **Expectation:** n/a (flags make no claim about outcome).
+- **Decision:** Record the three flags. Stop the loop under S4. The recommendation step (4f) applies to the configurations compared.
+- **Why not:** none is applied, because each is outside the solution space (§9) and the book's chapter in §23 places it outside scope.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** informed. The user answered the DX-5 question (DR-22).
+- **Supersedes / superseded by:** none.
+- **Stopping check:** S4 (the next action is out of scope). S1 to S3, S5 and S6 do not apply: S1 and S2 need the test set, which is not used here; S3 needs two passes with no gain, and only one pass with an in-scope action was run.
+- **Links:** `Appendix.md`, DR-22; these flags belong in the Discussion as open possibilities, with their chapters (step 5).
+
+### DR-24 · CV · step 4f (learning curve and C3)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Is the learning curve of the leading configuration still falling at 100% of the training data (C3, ML Guide §17)?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Validation error (misclassification) by training fraction, mean over 10 outer folds | 10%: 0.2227; 20%: 0.2083; 30%: 0.2097; 40%: 0.2111; 50%: 0.1989; 60%: 0.2049; 70%: 0.2032; 80%: 0.2020; 90%: 0.2032; 100%: 0.2040 | CV | `Code/outputs/dropout/08_learning_curve.csv` |
+| Drop from 80% to 100% (E_val at 80% minus at 100%) | −0.0020 (the error is slightly higher at 100%) | CV | `Code/outputs/dropout/08_recommendation.json` |
+| Fold SD of E_val at 100% | 0.0307; threshold 0.5 × SD = 0.0153 | CV | as above |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| C3: limited if E_val at 100% is lower than at 80% by at least 0.5 × its fold SD | not met (the drop is negative) | `[B→I SML pp. 334–336]` + `[I]` | C3 = adequate |
+| Learning curve: leading configuration only, training fractions 10% to 100% on the outer folds | applied; each fraction uses its outer fold's round-1 L2 strength and threshold, not re-tuned | `[B SML pp. 334–336]` | a limitation: the settings are not re-tuned at each fraction |
+
+- **Thresholds applied:** 0.5 × fold SD (`[I]`), compared with a drop of −0.0020.
+- **Options considered:** adequate · limited.
+- **Expectation:** n/a.
+- **Decision:** C3 = adequate. The validation error is flat from about 50% of the training data onward.
+- **Why not:** limited was not chosen, because the error is not still falling.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** the code was approved before it ran (4f).
+- **Supersedes / superseded by:** none.
+- **Code version:** `Code/dropout/recommend.py`, SHA-256 `7168a855946942edce9a492cdee9002aba856ba670f8056eb5e771cc3c60dded` (interim core, not reviewed); `Code/dropout/cv.py`, SHA-256 `fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29`. Run by `Code/dropout/08_recommendation.py`.
+- **Links:** `Code/outputs/dropout/08_learning_curve.csv`, `08_recommendation.md`, `08_recommendation.json`.
+
+### DR-25 · FORM · step 4f (final tuning on all training rows)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Which L2 strength and F2 threshold are used for the single test refit at 4g (ML Guide §16: the threshold is chosen by CV on training data, with the trade-off chosen by the user)?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Method | 5-fold stratified CV on all 3,539 training rows, seed 2026; grid λ 1e-4 to 1e4 and threshold 0.05 to 0.95; chosen by mean inner F2 | CV | `Code/dropout/cv.py` (`inner_search`) |
+| Chosen values | L2 strength 0.01; F2 threshold 0.20; inner mean F2 0.8305 | CV | `Code/outputs/dropout/08_recommendation.json` |
+| Trade-off | F2: missed dropouts weighted (user, DR-09) | M | DR-09 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §16 decision threshold, as amended (10 November 2026): tuned inside the CV for F2 | applied | `[B→I SML pp. 53–54, 92–93]` + `[I]` | threshold 0.20 for the test refit |
+| §16 final CV on training data | applied | `[I]` | λ 0.01 for the test refit |
+
+- **Thresholds applied:** threshold grid 0.05 to 0.95 (`[I]`).
+- **Options considered:** the values chosen on all training rows (chosen); the per-fold modes (λ 0.001, threshold 0.15) not used.
+- **Expectation:** n/a.
+- **Decision:** For the test refit: L2 strength 0.01 and F2 threshold 0.20. These are chosen on training data only.
+- **Why not:** the per-fold modes were not used, because the final model is chosen by one CV on all training rows, as §16 specifies.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** informed; the trade-off is the user's (DR-09).
+- **Supersedes / superseded by:** none.
+- **Links:** `Code/outputs/dropout/08_recommendation.json`.
+
+### DR-26 · FINAL · step 4f (recommendation rule and selection confidence; the test result at 4g)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Which configuration does the recommendation rule (§19) choose, with what confidence (§17), and why are the others not chosen (§20)?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Logistic + L2 | mean F2 0.8311; SD 0.0323 | CV | DR-20, DR-21 |
+| Logistic + poly + L2 | mean F2 0.8305; SD 0.0274 | CV | DR-21 |
+| Margin leader minus other | +0.0006, SD 0.0116 | CV | `Code/outputs/dropout/08_recommendation.json` |
+| C2 (margin over the baseline), both | clear | CV | DR-20, DR-21 |
+| C1 (margin over the runner-up) | none (0.0006 is below 0.5 × 0.0116) | CV | as above |
+| C3 | adequate | CV | DR-24 |
+| Prior (DR-18) | Logistic + L2 first (score 0); Logistic + poly + L2 second (score −1) | M | `Code/outputs/dropout/04b_prior.md` |
+| Must-have (DR-15) | probabilities = yes: both configurations meet it | M | DR-15 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §19 step 1, eligible: C2 clear and every must-have met | both eligible | `[I]` | both candidates |
+| §19 step 2, candidates: the best CV mean, plus eligible configurations within 0.5 × spread | both (the margin 0.0006 is below 0.5 × 0.0116) | `[I]` | both candidates |
+| §19 step 3, choose: fewest add-ons, then higher prior score, then better CV mean | Logistic + L2 (no add-ons) | `[B SML p. 332]` | recommended |
+| §17 confidence, Low if C1 = none or C2 not clear | Low (C1 = none) | `[I]` | confidence Low |
+| Prior agreement (§17) | agree: the CV leader by mean F2 is the prior's first | `[B SML p. 331]` | none |
+| Grounding (§17): matrix entries behind the prior score of Logistic + L2 | none scored (score 0); the must-have row is not scored | M | 0 [B], 0 [B→I], 0 [I] |
+| Breadth note (§17): more than 10 configurations compared | no: two configurations | `[I]` | none |
+
+- **Thresholds applied:** C1 at 1 × and 0.5 × the spread (`[I]`): 0.0006 against 0.0116 and 0.0058. C2 at 1 × the spread (`[I]`): 0.8311 against 0.0323.
+- **Options considered:** Logistic + L2 (recommended) · Logistic + poly + L2 (not chosen: one add-on, no margin) · Logistic and Logistic + poly (EXCL, MOD-2) · the other eleven structural configurations (EXCL or USER).
+- **Expectation:** n/a.
+- **Decision:** Recommend Logistic + L2, with L2 strength 0.01 and F2 threshold 0.20 (DR-25). Selection confidence: Low. The factors are C1 none, C2 clear, C3 adequate, and prior agreement agree.
+- **Why-not codes (all 14 structural configurations, §20):**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| Linear, Linear + L2, Linear + poly, Linear + poly + L2 | EXCL | task gate, Property 1 = binary (DR-16, DR-17) |
+| Poisson, Poisson + L2, Exponential, Exponential + L2 | EXCL | task gate, Property 1 = binary |
+| Logistic | EXCL | MOD-2: exactly collinear design, unregularised (DR-17) |
+| Logistic + poly | EXCL | MOD-2: exactly collinear design, unregularised (DR-17) |
+| kNN | USER | must-have: probabilities (DR-15) |
+| Tree | USER | must-have: probabilities (DR-15) |
+| Logistic + poly + L2 | SIMP | could not be told apart from the recommendation (margin 0.0006 < 0.5 × 0.0116); the simpler one chosen (DR-26) |
+
+- **Flags:** three, from DR-23 (bagging and boosting, Chapter 8; neural networks, Chapters 6–7; kernel methods, Chapter 9). None applied, none tested.
+- **Breadth note:** two configurations compared, so no optimism warning applies.
+- **Confidence:** Low.
+- **User involvement:** the method was agreed at 4b. The user is asked to approve the test-set use next.
+- **Supersedes / superseded by:** none.
+- **Code version:** `Code/dropout/recommend.py`, SHA-256 `7168a855946942edce9a492cdee9002aba856ba670f8056eb5e771cc3c60dded`; `Code/dropout/cv.py`, SHA-256 `fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29`. Run by `Code/dropout/08_recommendation.py`.
+- **Test result:** not yet. Step 4g refits the recommended configuration on all training rows and evaluates the locked test set once, after your approval.
+
+### DR-27 · FINAL · step 4g (single test-set evaluation of the recommended configuration)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** How does the recommended configuration (Logistic + L2) perform on the locked test set, against the baseline and the flag-everyone reference, and is the success criterion met?
+- **Use of the test set:** once, approved by the user at 4f′. The test set is not used again for this sub-task.
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Refit | Logistic + L2, L2 strength 0.01, F2 threshold 0.20, on 3,539 training rows | TEST | DR-25 |
+| Test rows | 885, of which 284 Dropout (32.1%) | TEST | `Code/outputs/dropout/09_final_test.md` |
+| F2 on the test rows, Logistic + L2 | 0.8350 | TEST | `Code/outputs/dropout/09_final_test.json` |
+| F2, recomputed from the confusion counts (second route) | 0.8350; the two routes agree | TEST | `Code/dropout/09_final_test.py` (assertion) |
+| Precision, recall | 0.6756; 0.8873 | TEST | as above |
+| Confusion matrix (actual × predicted) | TN 480, FP 121; FN 32, TP 252 | TEST | as above |
+| Baseline on the same rows (most common training class) | F2 0.0000 | TEST | as above |
+| Flag-everyone reference on the same rows, 5p/(4p + 1) with p = 0.3209 | F2 0.7026 | TEST | as above |
+| Uncertainty: SD across the ten outer folds of F2 (the method of ML Guide §5.2) | 0.0323 (fold mean 0.8311) | CV | `Code/outputs/dropout/07_cv_round2.csv` |
+| Success criterion: F2 above flagging every student on the same rows | met | TEST | as above |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Test set used once per sub-task; the baseline reported beside the result | applied | `[B SML pp. 74, 328]` | locked |
+| Uncertainty: fold SD, with the number of test rows and positives reported | applied | `[B→I SML pp. 71–73]` + `[I]` | 885 rows, 284 positives |
+| Flag-everyone reference: reported beside the model on the test rows; not the baseline; decides nothing | applied | `[I]` | reference only |
+| Success criterion (agreed at step 2, DR-09) | met | M | none |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** n/a (the evaluation was a single run of the agreed configuration).
+- **Expectation:** n/a.
+- **Decision:** The success criterion is met. Test F2 0.8350, against 0.7026 for flagging every student on the same rows and 0.0000 for the baseline. The fold SD is 0.0323.
+- **Why not:** n/a.
+- **Confidence:** Low (DR-26); the test result does not change the confidence, which rests on the cross-validation factors.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, approved the test use (4f′); the script was approved before it ran.
+- **Supersedes / superseded by:** none.
+- **Code version:** `Code/dropout/cv.py`, SHA-256 `fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29` (interim core, not reviewed); `Code/dropout/09_final_test.py`.
+- **Links:** `Code/outputs/dropout/09_final_test.md`, `09_final_test.json`, `09_test_predictions.csv`.
+
 
 ## Recommendation
 
-*Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
+### Sub-task 1 — Dropout after year one
+
+**1. Problem.** Predict Dropout yes/no (Dropout = 1; Graduate or still Enrolled = 0) for students not yet in the data, from all 36 inputs: enrolment information and the first and second semester results; nine inputs categorical, rare levels grouped (DR-05, DR-08, DR-13). Output: binary (Property 1, DR-11). Metric: F2 (DR-09). Success criterion: on the test rows, the model's F2 above the F2 of flagging every student on the same rows (DR-09). Baseline: most common training class, F2 = 0 (DR-09). Must-have: class probabilities (Property 6, DR-15). Property 5: none; Property 7: no; Property 8: unknown (DR-09). Admissibility 1: outcome recorded (DR-01); Admissibility 2: predict new students (DR-07); Admissibility 3: one row per student, no grouping (DR-02); Admissibility 4: yes, same kind of student (DR-03). Split: random, 20% test, stratified by Dropout, seed 2026: 3,539 training and 885 test rows (DR-10).
+
+**2. Recommendation.** Logistic regression with an L2 penalty (`Logistic + L2`), L2 strength 0.01 and F2 decision threshold 0.20, chosen by 5-fold cross-validation on all training rows (DR-25). Selection confidence: Low (DR-26).
+
+**3. Test-set result.** F2 = 0.8350 on the test rows (uncertainty: SD across the ten outer folds of F2, 0.0323), n_test = 885, of which 284 Dropout. Baseline on the same rows: F2 = 0.0000. Success criterion: met. Threshold 0.20, chosen inside the cross-validation on training data for F2 (DR-19, DR-25). Flag-everyone F2: 0.703 on the training rows (mean over the outer folds, DR-20) and 0.7026 on the test rows, beside the model's 0.831 (training folds) and 0.8350 (test). Confusion matrix on the test rows: TN 480, FP 121, FN 32, TP 252. Precision 0.6756; recall 0.8873 (DR-27).
+
+**4. Why this configuration.**
+- Constraints: the task gate admits Logistic, k-NN and Tree for a binary output (DR-16). The must-have, class probabilities, excludes k-NN and Tree (USER, DR-15). MOD-2 excludes plain Logistic and Logistic + poly, because the encoded design is exactly collinear and their coefficients are not unique without L2 (DR-17).
+- CV evidence: margin over the baseline 0.8311 (spread 0.0323), clear (DR-20). Margin over the runner-up, Logistic + poly + L2: 0.0006 in favour of Logistic + L2 (spread 0.0116), so none (DR-26).
+- Simplicity: the §19 within-noise step applies. Both configurations are candidates; the fewer add-ons rule chooses Logistic + L2 (no add-ons; DR-26).
+- Prior support: score 0, with no matrix entries scored (DR-18, DR-26).
+
+**5. Ranking.**
+
+| Configuration | Prior rank | Prior score | Post-prior | CV mean F2 | Margin vs recommended (± spread) | Margin vs baseline (± spread) | Code |
+| --- | ---: | ---: | --- | ---: | --- | --- | --- |
+| Logistic + L2 | 1 | 0 | no | 0.8311 | recommended | +0.8311 (± 0.0323) | recommended |
+| Logistic + poly + L2 | 2 | −1 | no | 0.8305 | −0.0006 (± 0.0116) | +0.8305 (± 0.0274) | SIMP |
+| Baseline (most common class) | n/a | n/a | n/a | 0.0000 | n/a | n/a | n/a |
+
+**6. Prior versus evidence.** Agree: the cross-validation leader by mean F2 (Logistic + L2) is the prior's first. The expectation that Logistic + poly + L2 would tie or do worse was met: it ties (DR-18, DR-21).
+
+**7. Why not the others.**
+- EXCL (task gate): Linear, Linear + L2, Linear + poly, Linear + poly + L2, Poisson, Poisson + L2, Exponential, Exponential + L2 (DR-16, DR-17).
+- EXCL (MOD-2, exactly collinear design, unregularised): Logistic, Logistic + poly (DR-17).
+- USER (must-have, class probabilities): kNN, Tree (DR-15).
+- DISF: none. All admissible configurations were kept (DR-18).
+- BASE: none. Both admissible configurations beat the baseline clearly (DR-20, DR-21).
+- OUTP: none. Logistic + poly + L2 is not clearly outperformed by the recommendation.
+- SIMP: Logistic + poly + L2. It could not be told apart from the recommendation: its margin is 0.0006, below half the spread (0.0116); the simpler one is chosen (DR-26).
+- Flags, not applied and not tested (DR-23): bagging, random forests and boosting (Chapter 8, SML §23); neural networks (Chapters 6–7); kernel methods and support vector machines (Chapter 9). Each might help with the underfitting observed at O4 (DR-22); none was tested, and none is claimed to do better.
+
+**8. Confidence.** Selection confidence Low: C1 none (margin 0.0006 against spread 0.0116), C2 clear (0.8311 against 0.0323), C3 adequate (the validation error at 100% of the training data is not lower than at 80%; the drop is −0.0020 against a threshold of 0.0153) (DR-24, DR-26). Rule: Low if C1 = none or C2 not clear. Prior agreement: agree. Grounding of the recommended configuration: [B] 0, [B→I] 0, [I] 0 (score 0, no matrix entries scored). Breadth note: two configurations compared; no optimism warning applies.
+
+**9. How the model predicts.** The model adds up the inputs, each multiplied by a weight learned from the training data, and turns the total into a probability between 0 and 1 that the student drops out. A student is flagged when that probability is at least 0.20. The L2 penalty keeps the weights small, so that no single input dominates; its strength, 0.01, was chosen by cross-validation (DR-25). Each category of a categorical input has its own weight, with rare categories grouped into "other" (DR-13). The predictions are only as good as the average student resembling those in the data: the model is not a rule for any single student.
+
+**10. Use and limits.** The model can flag students for review in this kind of course, at this kind of institution, and at a comparable time (DR-03). It has not been checked on students from another institution or period. Its error is an average over students like these; it says nothing about the worst single prediction. The test estimate has a spread of 0.032 across folds, with 885 test rows and 284 Dropout cases, so a few predictions either way move F2 noticeably. Data limits from step 1, each beside the claim it qualifies: the outcome is the status at the end of the normal course length, as the UCI page describes it, and students still Enrolled are counted as not dropped out (DR-04, DR-08). The publisher's preprocessing for outliers and missing values is not described, and the data are used as published (DR-06). No units are given for any column, and the economic columns take about ten values shared by many students (DR-02, DR-06). The institution and enrolment years are not verified (Data Summary, Provenance).
+
+**11. Improvement history.**
+- Pass 1 (DR-22): O1 does not hold; O2 is not testable (the criterion is in F2 and E_train is a misclassification rate), treated as not holding by the user; O5 does not hold; O3 does not hold (gap 0.0095 against 2 × E_train 0.3890); O4 holds (E_train 0.1945 at least 2 × gap 0.0190). Action DX-5: more polynomial terms not offered (Property 3 = many); k-NN and Tree excluded by the must-have; more input variables: none, by the user's answer.
+- Pass 2 (DR-23): the remaining action is out of scope; three flags recorded, none applied. Stopped by S4.
+- The learning curve (C3) was computed at 4f, not as a diagnosis pass (DR-24).
+
+**12. Thresholds applied.**
+
+| Threshold | Value used | Value compared |
+| --- | --- | --- |
+| Rare category level (DR-13) | fewer than 10 training students | level counts in `Code/outputs/dropout/04_input_design.md` |
+| Property 2, limited data-to-parameter ratio | < 10 | 27.0 (DR-14) |
+| Property 3, many inputs | > 20 | 130 (DR-14) |
+| Property 4, high categorical share | ≥ 50% | 25% (DR-05) |
+| Property 10, imbalance | smallest class < 20% | 32.1% (DR-12) |
+| Property 9, separability | training accuracy 100% | 89.4% (DR-12) |
+| Diagnosis O3 and O4, ratio | 2 | gap 0.0095; E_train 0.1945 (DR-22) |
+| C1 and C2, margins | 1 × spread; 0.5 × for C1 | 0.0006 against 0.0116; 0.8311 against 0.0323 (DR-26) |
+| C3, learning curve | 0.5 × fold SD | drop −0.0020 against 0.0153 (DR-24) |
+| F2 threshold grid, inner CV | 0.05 to 0.95 in steps of 0.05 | selected 0.20 (DR-25) |
+| L2 strength grid, inner CV | 10⁻⁴ to 10⁴ | selected 0.01 (DR-25) |
+
+**13. Trace and provenance.** DR-01 to DR-27 (DR-16 and DR-17 both recorded; DR-16 is superseded by DR-17; DR-11 is partly superseded by DR-12 and DR-14). Tag occurrences across these records: [B SML] 33 · [B→I SML] 16 · [I] 50 · UNLISTED 0. A tag written in more than one table counts more than once.
+
 
 ## Analysis Log
 
@@ -897,6 +1154,12 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 24 | Step 4c, round 1. Approved the cross-validation code, ran it on the training rows (about three minutes). First run failed on a type error in the grouping step; fixed without changing the method and re-run. Baseline mean F2 0.0000; Logistic + L2 mean F2 0.8311 (SD 0.0323), a clear margin on every fold. Round 2 may start. No test set read. | DR-20; `Code/dropout/cv.py`, `Code/dropout/06_cv_round1.py`; `Code/outputs/dropout/06_cv_round1.md` |
 | 25 | Step 4d, round 2: Logistic + poly + L2 on the same ten folds (background run, about 10 minutes). Mean F2 0.8305 (SD 0.0274); margin over Logistic + L2 −0.0006 (SD 0.0116), none. Prior agreement: agree. No test set read. | DR-21, DR-18 (outcome field); `Code/dropout/07_cv_round2.py`; `Code/outputs/dropout/07_cv_round2.md` |
 | 26 | Step 4e, diagnosis pass 1 (DR-22). Observations for Logistic + L2 computed from the CV means: O1 no; O2 not testable (criterion in F2, E_train a misclassification rate); O5 no; O3 no; O4 holds, so DX-5 is the action; its only available step asks about more input variables, which needs the user. The loop stops for the user's answer. Learning curve not yet computed. No test set read. | DR-22; `Code/outputs/dropout/06_cv_round1.md`, `07_cv_round2.md` |
+| 27 | Step 4e, pass 2. The user answered: O2 treated as not holding; no more input variables. The only remaining action for O4 is out of scope, so three flags are recorded (bagging and boosting, Chapter 8; neural networks, Chapters 6–7; kernel methods, Chapter 9), none applied. Loop stops under S4. C3 (learning curve) still to be computed for 4f. No test set read. | DR-22, DR-23 |
+| 28 | Step 4f. Approved the 4f code and ran it: learning curve (C3 adequate; the validation error is flat from about 50% of the training data); final tuning on all training rows (L2 strength 0.01, F2 threshold 0.20); recommendation Logistic + L2 by §19 (both eligible; the simpler chosen); confidence Low (C1 none). Test set not read. | DR-24, DR-25, DR-26; `Code/dropout/recommend.py`, `Code/dropout/08_recommendation.py`; `Code/outputs/dropout/08_recommendation.md`, `08_learning_curve.csv` |
+| 29 | Step 4f-prime: written up before the test set is used. Methods, Dropout after year one: revised to match what was done (plain logistic excluded and why; final tuning on all training data; the tie rule of §19; the learning-curve factor). Results, Dropout after year one: first paragraph with the cross-validation comparison, the recommended configuration and its settings, the selection confidence and its factors, prior agreement, and the flag-everyone reference. Figures proposed to the user before any are drawn. Test set not read. | `Project Report.md`, Methods and Results |
+| 30 | Figure 3 (learning curve of Logistic + L2, training and cross-validation data only) drawn after the user chose it at 4f-prime; light and dark. Placed in Results under Dropout after year one. Its y-axis widened once so the 10% error bar is not clipped. | `Code/dropout/fig3_learning_curve.py`; `Code/outputs/dropout/figures/fig3_learning_curve.png`; `Code/outputs/dropout/fig3_learning_curve_summary.csv`; `Project Report.md`, Results |
+| 31 | Step 4g: the test set used once, approved at 4f-prime. Refitted Logistic + L2 (L2 strength 0.01, threshold 0.20) on the 3,539 training rows; scored the 885 test rows once. Test F2 0.8350 (recomputed two ways, agreeing); baseline 0.0000; flag-everyone reference 0.7026; uncertainty (fold SD) 0.0323; success criterion met. Test set not to be used again for this sub-task. | DR-27; `Code/dropout/09_final_test.py`; `Code/outputs/dropout/09_final_test.md`, `09_final_test.json`, `09_test_predictions.csv` |
+| 32 | Step 4h: Recommendation Report written (13 parts, §25) in the Recommendation section from DR-01 to DR-27. Test result added to Results, after Figure 3. Methods checked: it describes what was done (plain logistic excluded; final tuning; §19 tie rule; learning-curve factor). Abstract updated with the test result. Tag tally in part 13. | Appendix.md, Recommendation; Project Report.md, Results, Abstract |
 
 ## Code Summary
 
@@ -968,6 +1231,26 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 - Step 4d, round 2. Runs Logistic + poly + L2 with `cv.py` on the same outer folds as round 1 and combines it with the round-1 rows. Computes the margins, C1 and C2. Writes `Code/outputs/dropout/07_cv_round2.csv`, `.md` and `.json`.
 - Run: `cd Code && uv run python dropout/07_cv_round2.py`. Seed 2026. About 10 minutes.
+
+### `Code/dropout/recommend.py` (interim core, not reviewed)
+
+- Step 4f. The learning curve for the leading configuration (training fractions 10% to 100% on the outer folds), the C3 check, the final tuning on all training rows (through `cv.inner_search`), and the §19 recommendation with the §17 confidence. Imports `cv.py`.
+- Parameters: the fractions (0.1 to 1.0), seed 2026 (`cv.SEED`).
+
+### `Code/dropout/08_recommendation.py`
+
+- Step 4f. Reads the training rows and `07_cv_round2.csv`. Writes `Code/outputs/dropout/08_learning_curve.csv`, `08_recommendation.md` and `.json`.
+- Run: `cd Code && uv run python dropout/08_recommendation.py`. About two minutes.
+
+### `Code/dropout/fig3_learning_curve.py`
+
+- Step 4f, Figure 3. Reads `Code/outputs/dropout/08_learning_curve.csv` (training and cross-validation data only). Writes the light and dark figures and `fig3_learning_curve_summary.csv`. Uses `Code/sml_style.py`.
+- Run: `cd Code && uv run python dropout/fig3_learning_curve.py`. No seed.
+
+### `Code/dropout/09_final_test.py`
+
+- Step 4g, the single test evaluation. Reads the settings from `08_recommendation.json` and the test rows (only here). Refits Logistic + L2 on the training rows, scores the test rows once, computes the baseline, the flag-everyone reference, the uncertainty (fold SD from `07_cv_round2.csv`), and the F2 by a second route (confusion counts). Writes `09_final_test.json`, `09_final_test.md` and `09_test_predictions.csv`.
+- Run: `cd Code && uv run python dropout/09_final_test.py`. Do not re-run after the result is recorded: the test set has been used once for this sub-task.
 
 
 ## References

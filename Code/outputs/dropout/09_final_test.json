@@ -1,0 +1,25 @@
+{
+  "configuration": "Logistic + L2",
+  "lambda": 0.01,
+  "threshold": 0.2,
+  "n_train": 3539,
+  "n_test": 885,
+  "test_positives": 284,
+  "test_positive_share": 0.32090395480225986,
+  "F2_test_model": 0.8349900596421471,
+  "precision_test": 0.675603217158177,
+  "recall_test": 0.8873239436619719,
+  "confusion_matrix": {
+    "TN": 480,
+    "FP": 121,
+    "FN": 32,
+    "TP": 252
+  },
+  "F2_test_baseline": 0.0,
+  "F2_test_flag_everyone_reference": 0.70262246412667,
+  "success_criterion_met": true,
+  "uncertainty_fold_SD_F2": 0.03228846692476781,
+  "cv_fold_mean_F2": 0.8311143403872927,
+  "core": "Code/dropout/cv.py (interim core, not reviewed)",
+  "core_sha256": "fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29"
+}

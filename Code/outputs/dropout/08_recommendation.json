@@ -1,0 +1,54 @@
+{
+  "learning_curve_C3": {
+    "E_val_80_mean": 0.20204222083513387,
+    "E_val_100_mean": 0.2040212224516253,
+    "drop_80_to_100": -0.0019790016164914076,
+    "fold_SD_at_100": 0.03066744564371462,
+    "threshold": 0.01533372282185731,
+    "C3": "adequate"
+  },
+  "final_tuning_all_training_rows": {
+    "degree": 1.0,
+    "lambda": 0.01,
+    "threshold": 0.2,
+    "inner_mean_F2": 0.8305219950969078
+  },
+  "section_19_17": {
+    "eligible": [
+      "Logistic + L2",
+      "Logistic + poly + L2"
+    ],
+    "best_CV_mean": "Logistic + L2",
+    "candidates": [
+      "Logistic + L2",
+      "Logistic + poly + L2"
+    ],
+    "chosen": "Logistic + L2",
+    "C1": "none",
+    "C2": "clear",
+    "C3": "adequate",
+    "confidence": "Low"
+  },
+  "summary": {
+    "Logistic + L2": {
+      "F2_mean": 0.8311143403872927,
+      "C1": "none",
+      "C2": "clear",
+      "margin_to_best_sd_ratio": 0.0
+    },
+    "Logistic + poly + L2": {
+      "F2_mean": 0.8304653814133698,
+      "C1": "none",
+      "C2": "clear",
+      "margin_to_best_sd_ratio": 0.05595623288360408
+    }
+  },
+  "margin_leader_minus_other": {
+    "mean": 0.0006489589739230416,
+    "sd": 0.011597617289086579
+  },
+  "core_sha256": {
+    "cv.py": "fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29",
+    "recommend.py": "7168a855946942edce9a492cdee9002aba856ba670f8056eb5e771cc3c60dded"
+  }
+}
