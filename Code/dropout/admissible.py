@@ -3,7 +3,7 @@
 Applies, in order, to the 14 structural configurations of ML Guide section 9:
   1. task gate (section 12): Property 1 output type decides the admissible families;
   2. must-haves the user has stated (section 12): a configuration that cannot meet one gets USER;
-  3. compulsory modifiers (section 12): MOD-1 (separability) and MOD-2 (parameters or collinearity).
+  3. compulsory modifiers (section 12): MOD-1 (separability) and MOD-2 (parameters or collinearity; covers logistic regression, amended 10 November 2026).
 
 Why-not codes (ML Guide section 20): EXCL for the task gate and MOD-1/MOD-2; USER for a must-have.
 Reads only the property values and the must-have list passed in. It fits nothing.
@@ -70,8 +70,9 @@ def admissible_set(props: dict, must_haves: list) -> list:
             out.append(rec)
             continue
 
-        # 3. MOD-2: parameters >= n_train, or exact collinearity, makes unregularised linear and GLM fits inadmissible
-        if family in {"Linear", "Poisson", "Exponential"} and not l2:
+        # 3. MOD-2 (ML Guide section 12, amended 10 November 2026): parameters >= n_train, or exact collinearity,
+        #    makes unregularised linear, logistic, Poisson and exponential fits inadmissible
+        if family in {"Linear", "Logistic", "Poisson", "Exponential"} and not l2:
             if props["params_ge_n_train"] or props["exact_collinearity"]:
                 rec.update(admissible=False, code="EXCL",
                            reason="MOD-2: parameters >= n_train or exact collinearity; unregularised fit inadmissible")
