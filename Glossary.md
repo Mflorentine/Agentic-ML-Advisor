@@ -1,4 +1,4 @@
-# Criteria
+# Glossary
 
 The questions and properties the advisor uses to decide what can be modelled and which models to try, in plain words. This is a reading list for the user. The rules themselves are in `ML Guide.md` (§10 for the admissibility checks, §11–§13 for the properties), and where the two differ, the guide is authoritative. Book pages are to Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*, written SML p. x. Thresholds marked *ours* are the framework's own choices, not the book's.
 
