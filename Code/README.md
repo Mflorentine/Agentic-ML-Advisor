@@ -23,6 +23,7 @@ Each finished analysis refers to these files by path, so they are not moved or r
 | Sepsis (finished) | `sepsis_01_describe_data.py` … `sepsis_14_fig6_confusion.py` | `sepsis/core.py`, with `sepsis/props_dr11.json` | `outputs/sepsis/` | `../Demonstration/Sepsis/` |
 | Mobile Price (finished) | `mobile_01_describe_data.py` … `mobile_09_fig4_confusion.py` | `mobile/core.py`, with `mobile/props_dr09.json` | `outputs/mobile/` | `../Demonstration/Mobile Price/` |
 | xG (finished) | `xg/01_download_shots.py` … `xg/13_fig_learning_curves_team.py`, with `xg/features.py` and `xg/xg_style.py` | `xg/core.py`, with `xg/inputs/` | `outputs/xg/` and `outputs/xg/figures/` | `../Demonstration/xG/` |
+| Student Dropout (finished) | `dropout/01_describe_data.py` … `dropout/09_final_test.py`, with the figure scripts `dropout/fig1_approved_units.py` to `dropout/fig3_learning_curve.py` | `dropout/cv.py`, with `dropout/core.py`, `dropout/admissible.py`, `dropout/prior.py` and `dropout/recommend.py` | `outputs/dropout/` and `outputs/dropout/figures/` | `../Demonstration/Student Dropout/` |
 
 Each script says at the top what it reads, what it writes and how to run it. The full guide to an analysis's code is the `Code Summary` section of its `Appendix.md`.
 
