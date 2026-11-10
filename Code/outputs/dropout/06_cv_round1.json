@@ -1,0 +1,85 @@
+{
+  "round": 1,
+  "configurations": [
+    "Baseline",
+    "Logistic + L2"
+  ],
+  "outer_folds": 10,
+  "inner_folds": 5,
+  "seed": 2026,
+  "lambda_grid": [
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0,
+    1000.0,
+    10000.0
+  ],
+  "threshold_grid": [
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95
+  ],
+  "core": "Code/dropout/cv.py (interim core, not reviewed)",
+  "core_sha256": "fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29",
+  "baseline": {
+    "F2_mean": 0.0,
+    "F2_sd": 0.0,
+    "E_train_mean": 0.32127719289946893,
+    "E_val_mean": 0.32127686816792306
+  },
+  "logistic_L2": {
+    "F2_mean": 0.8311143403872927,
+    "F2_sd": 0.03228846692476781,
+    "E_train_mean": 0.19452986525625748,
+    "E_val_mean": 0.2040212224516253
+  },
+  "margin_L2_minus_baseline_mean": 0.8311143403872927,
+  "margin_L2_minus_baseline_sd": 0.03228846692476781,
+  "C2_margin_over_baseline": "clear",
+  "logistic_L2_chosen_lambda_mode": 0.001,
+  "logistic_L2_chosen_threshold_mode": 0.15,
+  "logistic_L2_lambda_per_fold": [
+    0.001,
+    0.001,
+    0.001,
+    0.001,
+    0.01,
+    0.001,
+    0.001,
+    0.01,
+    0.001,
+    0.01
+  ],
+  "logistic_L2_threshold_per_fold": [
+    0.15,
+    0.15,
+    0.15,
+    0.15,
+    0.2,
+    0.15,
+    0.15,
+    0.2,
+    0.15,
+    0.15
+  ]
+}

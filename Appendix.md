@@ -91,6 +91,10 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 `Code/dropout/fig2_tuition_share.py` plots, for the 3,539 training students, the share who dropped out in each group of tuition status. Fees up to date: 762 of 3,104 students dropped out. Fees not up to date: 375 of 435. The plotted numbers are in `Code/outputs/dropout/fig2_tuition_share.csv`. Light and dark variants are in `Code/outputs/dropout/figures/` and `figures/dark/`. The figure is in `Project Report.md`, under Results, The training data, as Figure 2. The two groups differ greatly in size, so the bar for fees not up to date rests on 435 students. The figure describes the training rows only; it does not establish a cause.
 
+### Cross-validation, round 1 (step 4c)
+
+`Code/dropout/06_cv_round1.py` with `Code/dropout/cv.py` (interim core, not reviewed). Round 1 is the baseline and Logistic + L2 on the 3,539 training students, on 10 stratified outer folds (seed 2026). The full table is in `Code/outputs/dropout/06_cv_round1.md`; the decision is DR-20.
+
 ## Decision Records
 
 ### DR-01 · Admissibility · step 1
@@ -726,6 +730,45 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Supersedes / superseded by:** none. The FRAMEWORK change to §16 (10 November 2026) is applied: the threshold rule now matches this record.
 - **Links:** `Project Report.md`, Methods, Dropout after year one.
 
+### DR-20 · CV · step 4c (round 1: baseline and Logistic + L2)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Does Logistic + L2 beat the baseline by a clear margin in the outer folds, so that round 2 may start (SEQ-3)?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Outer folds | 10, stratified and shuffled, seed 2026; the same folds for both configurations; inner 5 folds | CV | `Code/outputs/dropout/06_cv_round1.md` |
+| Baseline (most common class) | mean F2 0.0000, SD 0.0000; E_train 0.3213, E_val 0.3213 | CV | as above |
+| Logistic + L2 | mean F2 0.8311, SD 0.0323; E_train 0.1945, E_val 0.2040 | CV | as above |
+| Margin over baseline (fold by fold) | mean 0.8311, SD 0.0323; every fold positive (0.7692 to 0.8643) | CV | `Code/outputs/dropout/06_cv_round1.csv` |
+| Chosen hyperparameters | L2 strength 0.001 in 7 folds, 0.01 in 3; threshold 0.15 in 8 folds, 0.20 in 2 | CV | as above |
+| Flag-everyone reference (not the baseline) | F2 0.7030 mean, SD 0.0012, on the outer test folds | CV | computed from the same folds, 5p/(4p + 1) |
+| Environment | Python 3.12.15, scikit-learn 1.9.1, pandas 3.0.5, numpy 2.5.2 | M | `check_env.py` output |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| SEQ-3: the simple-first configuration must beat the baseline before the others are compared | beats it | `[B SML pp. 331–332]` | round 2 may start; no DX-1 |
+| C2 margin over the baseline: clear if the margin is at least 1 × spread | clear (0.8311 ≥ 0.0323) | `[I]` | none |
+| §16 protocol: nested CV; threshold tuned inside each configuration (DR-19); preprocessing refitted inside each fold (REQ-1) | applied | `[B SML p. 27]`, `[I]`, `[B→I SML pp. 53–54, 92–93]` | the comparison is at each configuration's own threshold |
+
+- **Thresholds applied:** the C2 margin threshold (1 × spread, `[I]`), compared with 0.8311 against 0.0323.
+- **Options considered:** round 2 may start (chosen) · DX-1 sanity checks (not needed: the simple-first configuration beats the baseline).
+- **Expectation:** n/a for round 1 (the expectation is in DR-18 for round 2).
+- **Decision:** Logistic + L2 beats the baseline clearly on every outer fold. Round 2, Logistic + poly + L2 on the same folds, may start (4d).
+- **Why not:** DX-1 was not triggered, because the baseline comparison is clear.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** the cross-validation code was approved before it ran (4c).
+- **Supersedes / superseded by:** none.
+- **Code version:** `Code/dropout/cv.py`, SHA-256 `fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29` (interim core, not reviewed). Run by `Code/dropout/06_cv_round1.py` (about three minutes).
+- **Note on the code:** the first run failed on a type error in the grouping step, where integer codes and the label "other" were encoded together. The grouped values are now text before encoding. The method is unchanged. The record uses the corrected code.
+- **Note on the reference:** the flag-everyone F2 is reported beside the model as §16 requires. It is not the baseline and decides nothing.
+- **Links:** `Code/outputs/dropout/06_cv_round1.md`, `06_cv_round1.csv`, `06_cv_round1.json`.
+
 
 ## Recommendation
 
@@ -759,6 +802,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 21 | Step 4b begun. Prior ranking on the two admissible configurations: Logistic + L2 (score 0) and Logistic + poly + L2 (score −1); both kept with the baseline. Expectation recorded. Method not yet agreed; no cross-validation run. | DR-18; `Code/dropout/prior.py`, `Code/dropout/04b_prior.py`, `Code/outputs/dropout/04b_prior.md` |
 | 22 | Step 4b: the method agreed by the user (DR-18 PRIOR; DR-19 threshold tuned inside each configuration, poly for non-binary inputs). Drafted the `Methods` sub-section `Dropout after year one` in `Project Report.md`. Departure from §16's threshold wording recorded; FRAMEWORK change applied the same day. No cross-validation run. | DR-18, DR-19; `Project Report.md`, Methods |
 | 23 | FRAMEWORK (user): §16 decision threshold wording changed to match DR-19 (tuned inside each configuration's inner CV when the selection metric is F2 or another F_β). `ML Guide.md` version note and §16 row updated; interim core unchanged. Not committed. | `ML Guide.md`; DR-19 |
+| 24 | Step 4c, round 1. Approved the cross-validation code, ran it on the training rows (about three minutes). First run failed on a type error in the grouping step; fixed without changing the method and re-run. Baseline mean F2 0.0000; Logistic + L2 mean F2 0.8311 (SD 0.0323), a clear margin on every fold. Round 2 may start. No test set read. | DR-20; `Code/dropout/cv.py`, `Code/dropout/06_cv_round1.py`; `Code/outputs/dropout/06_cv_round1.md` |
 
 ## Code Summary
 
@@ -814,6 +858,17 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 - Step 4a. Builds the training design under DR-13 (rare levels grouped, training rows only), computes its parameter count and rank, and calls the core with the property values and the must-have from DR-15. Writes `Code/outputs/dropout/04a_admissible_set.json` and `.md`.
 - Run: `cd Code && uv run python dropout/04a_admissible_set.py`. No seed; the rank check is deterministic.
+
+### `Code/dropout/cv.py` (interim core, not reviewed)
+
+- Step 4c. The nested cross-validation for the dropout analysis (ML Guide section 16, as amended 10 November 2026): outer 10 stratified shuffled folds, seed 2026; inner 5 folds with the grid for lambda (1e-4 to 1e4), the degree (2 or 3, poly only) and the F2 threshold (0.05 to 0.95). Rare levels, one-hot encoding and standardisation are fitted inside each training fold. Powers apply to the 19 non-binary numeric inputs.
+- The lambda-to-C mapping (C = 1 / (lambda × n)) is an assumption read from SML eq. 3.50; see the comment in the file.
+- Imported by `06_cv_round1.py`; not run on its own.
+
+### `Code/dropout/06_cv_round1.py`
+
+- Step 4c, round 1. Reads the data and the training split, runs the baseline and Logistic + L2, writes `Code/outputs/dropout/06_cv_round1.csv`, `.md` and `.json`.
+- Run: `cd Code && uv run python dropout/06_cv_round1.py`. Seed 2026. About three minutes.
 
 
 ## References

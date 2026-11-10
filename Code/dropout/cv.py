@@ -60,7 +60,8 @@ class RareGrouper(BaseEstimator, TransformerMixin):
     def transform(self, X):
         Z = X[self.cols].copy()
         for c in self.cols:
-            Z[c] = Z[c].where(Z[c].isin(self.kept_[c]), other="other")
+            # text, so that integer codes and the label "other" can be encoded together
+            Z[c] = Z[c].where(Z[c].isin(self.kept_[c]), other="other").astype(str)
         return Z
 
 
