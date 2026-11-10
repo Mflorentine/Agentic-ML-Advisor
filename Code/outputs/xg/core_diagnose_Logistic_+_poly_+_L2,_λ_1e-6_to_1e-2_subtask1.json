@@ -1,0 +1,161 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "1",
+ "configuration": "Logistic + poly + L2, \u03bb 1e-6 to 1e-2",
+ "diagnosis_error": "log-loss",
+ "e_train": 0.25441290364143443,
+ "e_val": 0.25599883615836827,
+ "gap": 0.0015859325169338412,
+ "misclassification_alongside": {
+  "train": 0.09346119666359934,
+  "val": 0.0939313820060938,
+  "gap": 0.0004701853424944613,
+  "O3_would_hold": false,
+  "O4_would_hold": true,
+  "C3_would_be_limited": false
+ },
+ "observations": {
+  "O1": {
+   "holds": false,
+   "C2": "clear"
+  },
+  "O2": {
+   "holds": false,
+   "training_logloss": 0.25441290364143443,
+   "criterion_on_training_shots": {
+    "ll_baseline": 0.32485270671947547,
+    "ll_statsbomb": 0.24973237744701687,
+    "required_logloss": 0.2572444103742627
+   },
+   "note": "UNLISTED [I] interpretation j"
+  },
+  "O3": {
+   "holds": false,
+   "gap": 0.0015859325169338412,
+   "e_train": 0.25441290364143443
+  },
+  "O4": {
+   "holds": true,
+   "gap": 0.0015859325169338412,
+   "e_train": 0.25441290364143443
+  },
+  "O5": {
+   "holds": false,
+   "by_parameter": {
+    "m__lam": {
+     "folds_at_edge": 0,
+     "holds": false
+    }
+   }
+  },
+  "O6": {
+   "holds": false,
+   "C3": {
+    "value": "adequate",
+    "logloss_val_80_minus_100": 0.0003136810789775568,
+    "threshold": ">= 0.5 x fold SD at 100 % (0.00552)"
+   }
+  }
+ },
+ "priority_order": [
+  "O1",
+  "O2",
+  "O5",
+  "O3",
+  "O4",
+  "O6"
+ ],
+ "first_that_holds": "O4",
+ "learning_curve": [
+  {
+   "fraction": 0.1,
+   "e_train_mean": 0.0890722871107725,
+   "e_val_mean": 0.09550138783253789,
+   "e_val_fold_sd": 0.0017032468680201853,
+   "logloss_train_mean": 0.2439746621793503,
+   "logloss_val_mean": 0.2646233613273156,
+   "logloss_val_fold_sd": 0.007932432906340697
+  },
+  {
+   "fraction": 0.2,
+   "e_train_mean": 0.0916413211732897,
+   "e_val_mean": 0.09449557582918588,
+   "e_val_fold_sd": 0.001372571694850133,
+   "logloss_train_mean": 0.2488718120877739,
+   "logloss_val_mean": 0.25886559307161855,
+   "logloss_val_fold_sd": 0.006077528213513222
+  },
+  {
+   "fraction": 0.3,
+   "e_train_mean": 0.09217776278578783,
+   "e_val_mean": 0.09449440258399171,
+   "e_val_fold_sd": 0.0017016960073439023,
+   "logloss_train_mean": 0.24965807924842065,
+   "logloss_val_mean": 0.2581290426252014,
+   "logloss_val_fold_sd": 0.005346434555503805
+  },
+  {
+   "fraction": 0.4,
+   "e_train_mean": 0.09329639424928728,
+   "e_val_mean": 0.09445593193848019,
+   "e_val_fold_sd": 0.0014450344029667975,
+   "logloss_train_mean": 0.25225888146907643,
+   "logloss_val_mean": 0.257206431613219,
+   "logloss_val_fold_sd": 0.005440286742308908
+  },
+  {
+   "fraction": 0.5,
+   "e_train_mean": 0.09362692840012955,
+   "e_val_mean": 0.09425331268606048,
+   "e_val_fold_sd": 0.001775597365601515,
+   "logloss_train_mean": 0.2545960240229067,
+   "logloss_val_mean": 0.2570052719113743,
+   "logloss_val_fold_sd": 0.005492080064143164
+  },
+  {
+   "fraction": 0.6,
+   "e_train_mean": 0.09371650695486441,
+   "e_val_mean": 0.09413249415390391,
+   "e_val_fold_sd": 0.0017883303929304333,
+   "logloss_train_mean": 0.2550613370571105,
+   "logloss_val_mean": 0.2565160978351496,
+   "logloss_val_fold_sd": 0.005466042039859085
+  },
+  {
+   "fraction": 0.7,
+   "e_train_mean": 0.09324069364379776,
+   "e_val_mean": 0.09429412516205278,
+   "e_val_fold_sd": 0.0016462787609907421,
+   "logloss_train_mean": 0.2545173322973612,
+   "logloss_val_mean": 0.25644883247141587,
+   "logloss_val_fold_sd": 0.005560965693029641
+  },
+  {
+   "fraction": 0.8,
+   "e_train_mean": 0.09352501717996983,
+   "e_val_mean": 0.0939313195678928,
+   "e_val_fold_sd": 0.0019623607820048318,
+   "logloss_train_mean": 0.25407951975003484,
+   "logloss_val_mean": 0.2563125172373458,
+   "logloss_val_fold_sd": 0.005507890856145801
+  },
+  {
+   "fraction": 0.9,
+   "e_train_mean": 0.09341065112132169,
+   "e_val_mean": 0.09365013379392975,
+   "e_val_fold_sd": 0.0020004507785652513,
+   "logloss_train_mean": 0.2541892848816553,
+   "logloss_val_mean": 0.25599533705362665,
+   "logloss_val_fold_sd": 0.005662995773512807
+  },
+  {
+   "fraction": 1.0,
+   "e_train_mean": 0.09346119666359934,
+   "e_val_mean": 0.0939313820060938,
+   "e_val_fold_sd": 0.0014231902605205823,
+   "logloss_train_mean": 0.25441290364143443,
+   "logloss_val_mean": 0.25599883615836827,
+   "logloss_val_fold_sd": 0.005524914738415569
+  }
+ ]
+}

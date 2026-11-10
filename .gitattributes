@@ -5,3 +5,6 @@ Attachments/*.csv -text
 # The interim core is identified by the SHA-256 of its bytes (Decision Records quote it),
 # so it is checked out byte for byte too.
 Code/core.py -text
+
+# The xG interim core is identified by the SHA-256 of its bytes (its Decision Records quote it).
+Code/xg/core.py -text

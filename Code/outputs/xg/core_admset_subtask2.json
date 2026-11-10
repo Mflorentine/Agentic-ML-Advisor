@@ -1,0 +1,101 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "2",
+ "task_gate": {
+  "Property 1: output type": "binary",
+  "families": [
+   "Logistic",
+   "Tree",
+   "kNN"
+  ],
+  "provenance": "[B SML pp. 17, 49\u201357]"
+ },
+ "must_haves": {
+  "Property 5: interpretability": {
+   "value": "inspectable",
+   "must_have": true
+  },
+  "Property 6: probabilities": {
+   "value": "yes",
+   "must_have": true
+  }
+ },
+ "MOD-1": {
+  "Property 9: separability": "no",
+  "applies": false,
+  "provenance": "[B SML p. 61]"
+ },
+ "MOD-2": {
+  "plain": {
+   "parameters": 109,
+   "n_train": 24816,
+   "rank": 109,
+   "applies": false
+  },
+  "poly": {
+   "parameters": 117,
+   "n_train": 24816,
+   "rank": 117,
+   "applies": false
+  },
+  "provenance": "[B\u2192I SML pp. 46\u201347, 65]"
+ },
+ "admissible": [
+  "Logistic",
+  "Logistic + L2",
+  "Logistic + poly",
+  "Logistic + poly + L2"
+ ],
+ "removed": [
+  {
+   "configuration": "Linear",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + poly",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + poly + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Poisson",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Poisson + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Exponential",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Exponential + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "kNN",
+   "code": "USER",
+   "evidence": "must-have Property 5: interpretability = inspectable [B\u2192I SML p. 347]; must-have Property 6: probabilities = yes [B\u2192I SML pp. 50, 53\u201354]"
+  },
+  {
+   "configuration": "Tree",
+   "code": "USER",
+   "evidence": "must-have Property 6: probabilities = yes [B\u2192I SML pp. 50, 53\u201354]"
+  }
+ ]
+}

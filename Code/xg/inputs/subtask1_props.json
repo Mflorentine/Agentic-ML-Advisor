@@ -1,0 +1,12 @@
+{"source": "DR-14 (step 3), DR-11 (formulation)",
+ "properties": {
+  "1": {"value": "binary"},
+  "2": {"value": "ample"},
+  "3": {"value": "many"},
+  "4": {"value": "high"},
+  "5": {"value": "none"},
+  "6": {"value": "yes", "must_have": true},
+  "7": {"value": "no"},
+  "8": {"value": "unknown"},
+  "9": {"value": "no"},
+  "10": {"value": "imbalanced"}}}

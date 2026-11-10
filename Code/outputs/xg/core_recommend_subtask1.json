@@ -1,0 +1,366 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "1",
+ "rows_used": "training only",
+ "recommendation": {
+  "entry": "Logistic + poly",
+  "configuration": "Logistic + poly",
+  "tuned_hyperparameters_cv": {
+   "params": {
+    "enc__num__degree": 3
+   },
+   "folds": "10/10"
+  }
+ },
+ "trace": {
+  "1_eligible": {
+   "Logistic": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06589432971172982,
+     0.005704113935001679
+    ]
+   },
+   "Logistic + L2": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06592017918242596,
+     0.005696272429282552
+    ]
+   },
+   "Logistic + poly": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06887785551324399,
+     0.0050205866925889945
+    ]
+   },
+   "Logistic + poly + L2": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06888966674125185,
+     0.005239708208506775
+    ]
+   },
+   "Logistic + poly + L2, \u03bb 1e-8 to 1e-4": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06885255891824935,
+     0.005253063080783081
+    ]
+   },
+   "Logistic + poly + L2, \u03bb 1e-6 to 1e-2": {
+    "C2": "clear",
+    "margin_vs_baseline": [
+     0.06885255891824935,
+     0.005253063080783081
+    ]
+   }
+  },
+  "2_candidates": {
+   "Logistic + poly + L2": {
+    "cv_mean_logloss": 0.2559617283353658,
+    "margin_best_minus_this": [
+     0.0,
+     0.0
+    ]
+   },
+   "Logistic + poly": {
+    "cv_mean_logloss": 0.25597353956337365,
+    "margin_best_minus_this": [
+     1.1811228007857499e-05,
+     0.00035283442515987275
+    ]
+   },
+   "Logistic + poly + L2, \u03bb 1e-8 to 1e-4": {
+    "cv_mean_logloss": 0.25599883615836827,
+    "margin_best_minus_this": [
+     3.710782300249682e-05,
+     0.00011734523969827801
+    ]
+   },
+   "Logistic + poly + L2, \u03bb 1e-6 to 1e-2": {
+    "cv_mean_logloss": 0.25599883615836827,
+    "margin_best_minus_this": [
+     3.710782300249682e-05,
+     0.00011734523969827801
+    ]
+   }
+  },
+  "3_choice": {
+   "Logistic + poly + L2": {
+    "addons": 2,
+    "prior_score": -1,
+    "cv_mean_logloss": 0.2559617283353658
+   },
+   "Logistic + poly": {
+    "addons": 1,
+    "prior_score": -1,
+    "cv_mean_logloss": 0.25597353956337365
+   },
+   "Logistic + poly + L2, \u03bb 1e-8 to 1e-4": {
+    "addons": 2,
+    "prior_score": -1,
+    "cv_mean_logloss": 0.25599883615836827
+   },
+   "Logistic + poly + L2, \u03bb 1e-6 to 1e-2": {
+    "addons": 2,
+    "prior_score": -1,
+    "cv_mean_logloss": 0.25599883615836827
+   }
+  },
+  "3_chosen": "Logistic + poly"
+ },
+ "selection_confidence": {
+  "level": "Low",
+  "C1": {
+   "value": "none",
+   "runner_up": "Logistic + poly + L2",
+   "margin": -1.1811228007857499e-05,
+   "spread": 0.00035283442515987275
+  },
+  "C2": {
+   "value": "clear",
+   "margin": [
+    0.06887785551324399,
+    0.0050205866925889945
+   ]
+  },
+  "C3": {
+   "value": "adequate",
+   "logloss_val_80_minus_100": 0.0003987344213657318,
+   "threshold": ">= 0.5 x fold SD at 100 % (0.00531)"
+  },
+  "rule": "High: C1 clear, C2 clear, C3 adequate; Low: C1 none or C2 not clear; otherwise Medium"
+ },
+ "prior_agreement": {
+  "value": "disagree",
+  "cv_winner_among_prior_kept": "Logistic + poly + L2",
+  "prior_order_kept": [
+   "Logistic",
+   "Logistic + L2",
+   "Logistic + poly",
+   "Logistic + poly + L2"
+  ]
+ },
+ "grounding": {
+  "[B\u2192I]": 1
+ },
+ "grounding_entries": [
+  {
+   "entry": "Property 3: number of inputs=many\u2192poly",
+   "score": -1,
+   "provenance": "[B\u2192I SML p. 59]"
+  }
+ ],
+ "breadth_note": {
+  "configurations_compared": 6,
+  "applies": false
+ },
+ "why_not": [
+  {
+   "configuration": "Linear",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + poly",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Linear + poly + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Logistic",
+   "code": "OUTP",
+   "entry": "Logistic",
+   "evidence": {
+    "margin_rec_minus_this": 0.002983525801514181,
+    "spread": 0.0010543734963458344,
+    "C2": "clear",
+    "addons": 0,
+    "rec_addons": 1
+   }
+  },
+  {
+   "configuration": "Logistic + L2",
+   "code": "OUTP",
+   "entry": "Logistic + L2",
+   "evidence": {
+    "margin_rec_minus_this": 0.0029576763308180433,
+    "spread": 0.0010196187719586833,
+    "C2": "clear",
+    "addons": 1,
+    "rec_addons": 1
+   }
+  },
+  {
+   "configuration": "Logistic + poly + L2",
+   "code": "SIMP",
+   "entry": "Logistic + poly + L2",
+   "evidence": {
+    "margin_rec_minus_this": -1.1811228007857499e-05,
+    "spread": 0.00035283442515987275,
+    "C2": "clear",
+    "addons": 2,
+    "rec_addons": 1
+   }
+  },
+  {
+   "configuration": "Poisson",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Poisson + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Exponential",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "Exponential + L2",
+   "code": "EXCL",
+   "evidence": "task gate, Property 1: output type = binary: admissible families ['Logistic', 'Tree', 'kNN'] [B SML pp. 17, 49\u201357]"
+  },
+  {
+   "configuration": "kNN",
+   "code": "USER",
+   "evidence": "must-have Property 6: probabilities = yes [B\u2192I SML pp. 50, 53\u201354]"
+  },
+  {
+   "configuration": "Tree",
+   "code": "USER",
+   "evidence": "must-have Property 6: probabilities = yes [B\u2192I SML pp. 50, 53\u201354]"
+  }
+ ],
+ "learning_curve": [
+  {
+   "fraction": 0.1,
+   "e_train_mean": 0.08822320586265957,
+   "e_val_mean": 0.09574540313426402,
+   "e_val_fold_sd": 0.0021307374886209395,
+   "logloss_train_mean": 0.24345187140847485,
+   "logloss_val_mean": 0.2678941810786317,
+   "logloss_val_fold_sd": 0.007815185262020468
+  },
+  {
+   "fraction": 0.2,
+   "e_train_mean": 0.09168933790561187,
+   "e_val_mean": 0.09429401488025521,
+   "e_val_fold_sd": 0.0015963461260851157,
+   "logloss_train_mean": 0.2485979388593301,
+   "logloss_val_mean": 0.2601386766625119,
+   "logloss_val_fold_sd": 0.0057839939874324234
+  },
+  {
+   "fraction": 0.3,
+   "e_train_mean": 0.09199632635339426,
+   "e_val_mean": 0.09437480197803395,
+   "e_val_fold_sd": 0.0016274010927157915,
+   "logloss_train_mean": 0.2494555589609937,
+   "logloss_val_mean": 0.25900397027400845,
+   "logloss_val_fold_sd": 0.005086943381098511
+  },
+  {
+   "fraction": 0.4,
+   "e_train_mean": 0.09307117258144806,
+   "e_val_mean": 0.094535735033934,
+   "e_val_fold_sd": 0.001669185868701959,
+   "logloss_train_mean": 0.2520547937099689,
+   "logloss_val_mean": 0.2578046471027425,
+   "logloss_val_fold_sd": 0.005354921549164719
+  },
+  {
+   "fraction": 0.5,
+   "e_train_mean": 0.09358978456520657,
+   "e_val_mean": 0.09405148574271047,
+   "e_val_fold_sd": 0.0017111474770125415,
+   "logloss_train_mean": 0.25443388372622844,
+   "logloss_val_mean": 0.25754280765441706,
+   "logloss_val_fold_sd": 0.005414029182543694
+  },
+  {
+   "fraction": 0.6,
+   "e_train_mean": 0.09374555469170759,
+   "e_val_mean": 0.09389055380560483,
+   "e_val_fold_sd": 0.0014155073626767876,
+   "logloss_train_mean": 0.25490970415561287,
+   "logloss_val_mean": 0.25662416210134287,
+   "logloss_val_fold_sd": 0.005372773653508241
+  },
+  {
+   "fraction": 0.7,
+   "e_train_mean": 0.09323387621752306,
+   "e_val_mean": 0.09393128425558414,
+   "e_val_fold_sd": 0.0014655375492691005,
+   "logloss_train_mean": 0.2543529602519416,
+   "logloss_val_mean": 0.25668598817222066,
+   "logloss_val_fold_sd": 0.005484970257607305
+  },
+  {
+   "fraction": 0.8,
+   "e_train_mean": 0.09337383578346195,
+   "e_val_mean": 0.0937704980275886,
+   "e_val_fold_sd": 0.0013221766473615975,
+   "logloss_train_mean": 0.25392855026667355,
+   "logloss_val_mean": 0.2563722739847394,
+   "logloss_val_fold_sd": 0.005273292828424439
+  },
+  {
+   "fraction": 0.9,
+   "e_train_mean": 0.09326105015661881,
+   "e_val_mean": 0.09356883661576114,
+   "e_val_fold_sd": 0.0018143785587167276,
+   "logloss_train_mean": 0.25405596455219037,
+   "logloss_val_mean": 0.2559640606367271,
+   "logloss_val_fold_sd": 0.0054331715434353875
+  },
+  {
+   "fraction": 1.0,
+   "e_train_mean": 0.09331345530780141,
+   "e_val_mean": 0.0934482088326958,
+   "e_val_fold_sd": 0.001548950825593871,
+   "logloss_train_mean": 0.25428630316725104,
+   "logloss_val_mean": 0.25597353956337365,
+   "logloss_val_fold_sd": 0.005306992308407249
+  }
+ ],
+ "decision_threshold": null,
+ "final_fit": {
+  "hyperparameters": {
+   "enc__num__degree": 3
+  },
+  "chosen_in_outer_folds": "10/10",
+  "inputs": [
+   "distance",
+   "angle",
+   "opp_in_triangle",
+   "gk_distance",
+   "body_part",
+   "technique",
+   "play_pattern",
+   "key_pass_type",
+   "under_pressure",
+   "first_time",
+   "one_on_one",
+   "open_goal",
+   "aerial_won"
+  ]
+ },
+ "uncertainty": {
+  "fold_sd_logloss": 0.005306992308407249,
+  "method": "spread of the metric across the outer folds (instructions.md, step 4g) [B\u2192I SML pp. 71\u201373]"
+ }
+}

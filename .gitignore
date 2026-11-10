@@ -38,7 +38,9 @@ Code/outputs/sepsis/private/
 
 # StatsBomb open data 2015/16 (raw JSON, 409 MB) and the shot tables derived from it: rebuilt by Code/xg/01_download_shots.py
 Attachments/statsbomb-open-data-2015-16/raw/
+Attachments/statsbomb-open-data-2015-16/doc/
 Code/outputs/xg/*.csv
+Code/outputs/xg/split/
 
 # Local tool state: Obsidian Copilot conversations and caches, Claude Code local settings
 copilot/copilot-conversations/

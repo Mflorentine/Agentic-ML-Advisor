@@ -1,0 +1,51 @@
+{
+ "core_version_sha256": "a45bd1384791408b4ab2af6941fb04a4be1356c7c6c67fe48d44ac61416b2806",
+ "subtask": "1",
+ "round": "round1",
+ "added": [
+  "Baseline (training goal share)",
+  "Logistic"
+ ],
+ "table": {
+  "leader": "Logistic",
+  "metric": "log-loss (lower is better); margins in negative log-loss, positive = better",
+  "rows": [
+   {
+    "configuration": "Baseline (training goal share)",
+    "post_prior": false,
+    "round": "round1",
+    "tuned_hyperparameters": "n/a",
+    "cv_mean_logloss": 0.3248513950766176,
+    "fold_sd_logloss": 0.0013020104622481297,
+    "logloss_train": 0.32485266361671694,
+    "e_train_misclassification": 0.09989521917984702,
+    "e_val_misclassification": 0.09989444452657721,
+    "convergence_warnings": 0,
+    "margin_vs_leader": {
+     "mean": -0.06589432971172982,
+     "spread": 0.005704113935001679
+    }
+   },
+   {
+    "configuration": "Logistic",
+    "post_prior": false,
+    "round": "round1",
+    "tuned_hyperparameters": {
+     "params": {},
+     "folds": "10/10"
+    },
+    "cv_mean_logloss": 0.25895706536488783,
+    "fold_sd_logloss": 0.006001596781576248,
+    "logloss_train": 0.2576912880914336,
+    "e_train_misclassification": 0.09510440906007558,
+    "e_val_misclassification": 0.09542185255172517,
+    "convergence_warnings": 0,
+    "margin_vs_baseline": {
+     "mean": 0.06589432971172982,
+     "spread": 0.005704113935001679,
+     "C2": "clear"
+    }
+   }
+  ]
+ }
+}

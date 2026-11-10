@@ -1,0 +1,12 @@
+{"source": "DR-22 (step 4a, sub-task 2), from DR-14 with Property 5 settled by the user",
+ "properties": {
+  "1": {"value": "binary"},
+  "2": {"value": "ample"},
+  "3": {"value": "many"},
+  "4": {"value": "high"},
+  "5": {"value": "inspectable", "must_have": true},
+  "6": {"value": "yes", "must_have": true},
+  "7": {"value": "no"},
+  "8": {"value": "unknown"},
+  "9": {"value": "no"},
+  "10": {"value": "imbalanced"}}}

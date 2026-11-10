@@ -1,0 +1,12 @@
+Scope: leagues excluded ['GER']: 674 shots (72 goals), 34 matches
+Input after scope: 31582 shots, 3131 goals
+Rule duration: 1 shots (0 goals)
+Rule own_half: 41 shots (0 goals)
+Rule no_opposing_gk: 31 shots (10 goals)
+Overlap own_half & no_opposing_gk: 0
+Removed in total: 73 shots (10 goals)
+Team names harmonised: 189 shots (Caen -> Stade Malherbe Caen, Marseille -> Olympique de Marseille)
+Output: 31509 shots, 3121 goals (0.0991); teams 80; freeze-frame rows 385457
+By league: ENG 8305, ESP 7638, FRA 7173, ITA 8393
+SHA-256 shots_clean.csv: 5d46319e8cd5805c15477920fc1eeeadec89b579f68aef7084a11d37d39efd85
+SHA-256 freeze_frames_clean.csv: 6a6c2b4a591abac2f0f7aeeaf19d75d0e2f4d47726ff0249f69191198e710387

@@ -1,0 +1,75 @@
+{
+ "core_version_sha256": "26da0c6637b9a433d2c58f174f06c1bb9f06be7e63730809d3f4b62e4a372f86",
+ "training_rows": 24816,
+ "subtasks": {
+  "1": {
+   "inputs": [
+    "distance",
+    "angle",
+    "opp_in_triangle",
+    "gk_distance",
+    "body_part",
+    "technique",
+    "play_pattern",
+    "key_pass_type",
+    "under_pressure",
+    "first_time",
+    "one_on_one",
+    "open_goal",
+    "aerial_won"
+   ],
+   "Property 9: separability": {
+    "value": "no",
+    "training_accuracy_negligible_regularisation": 0.9046985815602837,
+    "C_used": 100000000.0,
+    "threshold": "100 % training accuracy",
+    "provenance": "[I]"
+   },
+   "Property 10: class imbalance": {
+    "value": "imbalanced",
+    "smallest_class_share": 0.09989522888459058,
+    "class_counts": {
+     "0": 22337,
+     "1": 2479
+    },
+    "threshold": "< 20%",
+    "provenance": "[I]"
+   }
+  },
+  "2": {
+   "inputs": [
+    "distance",
+    "angle",
+    "opp_in_triangle",
+    "gk_distance",
+    "body_part",
+    "technique",
+    "play_pattern",
+    "key_pass_type",
+    "under_pressure",
+    "first_time",
+    "one_on_one",
+    "open_goal",
+    "aerial_won",
+    "team"
+   ],
+   "Property 9: separability": {
+    "value": "no",
+    "training_accuracy_negligible_regularisation": 0.9057462927143778,
+    "C_used": 100000000.0,
+    "threshold": "100 % training accuracy",
+    "provenance": "[I]"
+   },
+   "Property 10: class imbalance": {
+    "value": "imbalanced",
+    "smallest_class_share": 0.09989522888459058,
+    "class_counts": {
+     "0": 22337,
+     "1": 2479
+    },
+    "threshold": "< 20%",
+    "provenance": "[I]"
+   }
+  }
+ }
+}

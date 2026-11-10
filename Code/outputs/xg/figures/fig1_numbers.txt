@@ -1,0 +1,3 @@
+training shots 24816; goals 2479; share 0.0999
+shots inside the penalty area (x >= 102, 18 <= y <= 62): 14181
+goals inside the penalty area: 2154

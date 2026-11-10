@@ -62,3 +62,18 @@ The files are the original download and are never modified.
 A copy from Kaggle (`tea340yashjoshi/sepsis-prediction-dataset`, a single combined CSV) was tried first and replaced: it was truncated at exactly 52 MiB, partway through a row, and covered 14,057 patients. It was deleted on 15 October 2026.
 
 Citation required by the PhysioNet page when the resource is used: Reyna et al. (2019), the dataset, version 1.0.0, [https://doi.org/10.13026/v64v-d857](https://doi.org/10.13026/v64v-d857); the original Challenge paper in *Critical Care Medicine* (2019); and the standard PhysioNet citation. Full entries to be copied from the page and checked before any report cites them.
+
+## `statsbomb-open-data-2015-16/`
+
+| Item | Value |
+| --- | --- |
+| Source | StatsBomb Open Data, [github.com/statsbomb/open-data](https://github.com/statsbomb/open-data), pinned to commit `4b73468fc5b0f1950f9f66fada70ad3a4f9327cb` (repository HEAD on 9 November 2026). Season 2015/16 (`season_id` 27) of five competitions: Premier League (`competition_id` 2), La Liga (11), Serie A (12), Ligue 1 (7), 1. Bundesliga (9). |
+| Downloaded | 9 November 2026, by the agent at the user's request, with `Code/xg/01_download_shots.py` |
+| Terms | The repository's README: anyone who publishes, shares or distributes research, analysis or insights based on the data must state StatsBomb as the source and use its logo. The full user agreement is `doc/LICENSE.pdf` (not yet read). The raw files are listed in `.gitignore` and are not committed. |
+| Format | JSON as exported from the StatsBomb API. Each file is stored as its original bytes, gzip-compressed: `raw/matches/<competition_id>_<season_id>.json.gz` (5 files) and `raw/events/<match_id>.json.gz` (1,551 files). |
+| Matches | ENG 380, ESP 380, ITA 380, FRA 377, GER 34. The open data holds only 34 Bundesliga matches for this season. |
+| Size | 409 MB on disk, compressed |
+| Documentation | `doc/`: `README.md`, `LICENSE.pdf`, `Open Data Events v4.0.0.pdf`, `Open Data Matches v3.0.0.pdf`, from the same commit |
+| SHA-256 | Per-file SHA-256 of the uncompressed original bytes is in `SHA256SUMS_raw.txt` (1,556 lines, `<sha256>  raw/<path>`, sorted). That file's own SHA-256 is `17c312fbe2c425c45a3a673c5f0fe8778aa32b9876c443829ae531a893e4312e`. |
+
+The files are the original download and are never modified. The shot tables derived from them are in `Code/outputs/xg/` (see the xG analysis's `Appendix.md`).
