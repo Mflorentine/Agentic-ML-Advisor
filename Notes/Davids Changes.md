@@ -101,3 +101,8 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **What changed.** The notes for collaborators moved into `Notes/` (`Davids Changes.md`, `Note for Florentine.md`; their links fixed). Local tool state is no longer offered to git (`copilot/copilot-conversations/`, `.copilot/`, `.claude/settings.local.json`). `Code/README.md` says which scripts, cores and outputs belong to which analysis. The README opens with a short *Start here* and lists the finished examples, now including xG. Nothing that a finished analysis refers to was moved.
 - **Why.** "Tidy up directory, so it is easy for a user to use." Moving the Heart Failure and Sepsis scripts, or the framework files, was considered and not done, because recorded paths would break.
 
+### 18. The whole-project report at the top of the workspace (10 November, not yet committed)
+
+- **What changed.** The whole-project report is now `Whole-Project Report.md` at the top of the workspace, and `Project Report.md` there is reset from `Templates/Report.md` for the next analysis. In `instructions.md`, the `Demonstration/` row names the root file, not `Demonstration/Whole-Project Report.md`. Two links in `README.md` point to the root file.
+- **Why.** "Rename my finished whole-project report so the root Project Report.md is free for the next analysis, as instructions.md now says."
+- **In practice.** The whole-project report stays at the top of the workspace and is not part of `Demonstration/`. A finished analysis is still submitted to its own folder under `Demonstration/`. The file was renamed with a plain file move, not through Obsidian, so Obsidian did not update its links; the links that needed changing were edited by hand and the links were checked afterwards.
