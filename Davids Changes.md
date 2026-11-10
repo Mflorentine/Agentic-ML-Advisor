@@ -69,7 +69,7 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **Why.** "Remove these file changes boxes that sometime come up in answers."
 - **In practice.** The exact changes are no longer previewed in the chat; they can be read in the files or with `git diff`.
 
-### 12. Book pages when presenting a plan (10 November, @@HASH@@)
+### 12. Book pages when presenting a plan (10 November, `e8a0cc8`)
 
 - **What changed.** When the agent presents a plan, a step or a method, it gives the book pages behind each part and says which parts are ours, checking the pages in the local copy of the book first (`instructions.md`, *Say in plain words what an action will do*).
 - **Why.** "When presenting something like this you should add book pages", said of the overview of step 4.
