@@ -653,6 +653,79 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Code version:** `Code/dropout/admissible.py`, SHA-256 `6996334d85a3e4caddb20b1982e182a29d9b892e9d86d581a589b9ec2a39df68` (interim core, not reviewed). Guide: `ML Guide.md` v3.1 with the 10 November 2026 FRAMEWORK entry. Run by `Code/dropout/04a_admissible_set.py`.
 - **Links:** `Code/outputs/dropout/04a_admissible_set.md`, `Code/outputs/dropout/04a_admissible_set.json`.
 
+### DR-18 · PRIOR · step 4b
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Status:** agreed by the user at 4b (method approved; threshold and flag choices in DR-19). No cross-validation has been run. Nothing is used from the test set.
+- **Question:** Which admissible configurations are kept for cross-validation, and what order does the prior expect?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Admissible set | Logistic + L2, Logistic + poly + L2 | M | DR-17, `Code/outputs/dropout/04a_admissible_set.md` |
+| Property 3: number of inputs | many (130 after encoding) | M | DR-14 |
+| Property 6: probabilities | yes; must-have, so its matrix row (not a must-have) is not scored | M | DR-15 |
+| Property 8: expected shape | unknown | M | DR-09 |
+| Other properties | Property 1 binary (no row); Property 2 ample (no row); Property 4 low; Property 5 none; Property 7 no; Properties 9–10 no and balanced: no rows | M, T | DR-08, DR-11, DR-12, DR-14 |
+| Scores | Logistic + L2: 0 · Logistic + poly + L2: −1 (Property 3 = many → + poly −1) | computed | `Code/outputs/dropout/04b_prior.md` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Suitability matrix, Property 3 = many → + poly | −1 | `[B→I SML p. 59]` | Logistic + poly + L2 scores −1 |
+| Matrix row Property 6 = yes is marked not a must-have | not scored, since Property 6 is a must-have | `[B→I SML pp. 50, 53–54]` | Logistic + L2 scores 0, not +1 |
+| Keep rule: baseline, simple-first (SEQ-2) and the three highest others (ties at third) | all of them kept; only one other configuration exists | `[B SML p. 331]` + `[I]` | none dropped |
+| SEQ-2: simple-first with no add-ons; its +L2 version if MOD-2 applies | Logistic + L2 | `[B SML p. 331]`; MOD-2 (DR-17) | simple-first |
+| SEQ-3: cross-validate the baseline and the simple-first first | round 1 is the baseline and Logistic + L2 | `[B SML pp. 331–332]` | round 2 is Logistic + poly + L2 |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** Logistic + L2 (simple-first, rank 1, kept) · Logistic + poly + L2 (rank 2, kept) · the baseline (always kept, SEQ-1).
+- **Expectation:** Logistic + L2 ranks above Logistic + poly + L2 in cross-validation, or the two are close. The reason: the poly terms add columns to a design with many inputs (ML Guide §13, Property 3), and the expected shape of the relationship is unknown, so the data give no evidence for curvature. If cross-validation shows the poly version clearly better, that disagrees with the expectation and will be recorded as such.
+- **Decision:** Keep the baseline, Logistic + L2 and Logistic + poly + L2. None is DISF. The prior order is Logistic + L2, then Logistic + poly + L2.
+- **Why not:** n/a; no configuration is excluded at this step.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a until round 2 (4d).
+- **User involvement:** the method is for the user's agreement at 4b. The property values come from the user's answers recorded in DR-08, DR-09 and DR-15.
+- **Supersedes / superseded by:** none.
+- **Code version:** `Code/dropout/prior.py`, SHA-256 `746cce17fc35a82f60c0f3d895787eb1fac42b18d8e1e5631cb08c0042aab24c` (interim core, not reviewed). Run by `Code/dropout/04b_prior.py`.
+- **Links:** `Code/outputs/dropout/04b_prior.md`, `Code/outputs/dropout/04b_prior.json`.
+
+### DR-19 · FORM · step 4b (method choices: threshold and polynomial terms)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Where is the F2 decision threshold tuned, and which inputs get polynomial terms?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Threshold: user's answer | "Tune inside each model": the threshold is tuned in each configuration's inner CV for F2, as the L2 strength is | M | the user, in step 4b |
+| Polynomial terms: user's answer | "Non-binary inputs only" | M | the user, in step 4b |
+| Binary inputs excluded from the powers | Displaced, Educational special needs, Debtor, Tuition fees up to date, Gender, Scholarship holder, International, Daytime/evening attendance (8 inputs) | M | `Code/outputs/dropout/01_describe.md` |
+| Non-binary numeric inputs given the powers | 19 inputs (counts, grades, age, application order, unemployment, inflation, GDP) | T | `Code/outputs/dropout/01_describe.md` |
+| Approval of the method and `prior.py` | approved | M | the user, in step 4b |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| §16 decision threshold: "Default 0.5. Tuned only if Property 6 = yes, after model selection, by CV on training data, with the trade-off chosen by the user." | **departure**: the threshold is tuned inside each configuration's inner CV, before the comparison | `[B→I SML pp. 53–54, 92–93]` + `[I]` | the comparison is at each configuration's best threshold; the §16 wording must be made to match by FRAMEWORK, which is not yet asked |
+| Threshold grid | 0.05 to 0.95 in steps of 0.05 (19 values) | `[I]` (proposed by the agent; shown in the code before 4c) | inner-loop search |
+| §9 polynomial terms: powers of each numerical input | the powers of the 8 binary inputs equal the inputs themselves, so they add no new models; powers are taken for the 19 non-binary numeric inputs | `[B→I SML p. 59]`, `[I]` | the family of models is unchanged; the design has no duplicated columns from the powers |
+
+- **Thresholds applied:** the threshold grid (above); the 10-fold outer and 5-fold inner CV (§16); seed 2026.
+- **Options considered:** threshold tuned inside each model (chosen) · literal §16 order: selection at 0.5, then tuning · selection by PR-AUC · poly for all numeric inputs · poly for non-binary inputs only (chosen).
+- **Expectation:** n/a.
+- **Decision:** tune the F2 threshold inside each configuration's inner CV over the grid; apply the polynomial terms to the 19 non-binary numeric inputs only.
+- **Why not:** literal §16 order was not chosen, because at the default threshold the comparison would ignore the cost the user set for missed dropouts. PR-AUC was not chosen, because it changes the metric agreed in step 2. Powers of the flags were not taken, since they repeat the flags.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered as quoted; approved the method.
+- **Supersedes / superseded by:** none. The FRAMEWORK change to §16 (10 November 2026) is applied: the threshold rule now matches this record.
+- **Links:** `Project Report.md`, Methods, Dropout after year one.
+
 
 ## Recommendation
 
@@ -683,6 +756,9 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 18 | Recorded the step 4a outputs; no test set read. | `Appendix.md` Decision Records |
 | 19 | Identified the 11 linear dependencies in the 4a design (nine one-hot redundancies, and two data facts in the training rows: attendance follows course, and International is the complement of the Portuguese-nationality column). No model fitted. | DR-16 note |
 | 20 | FRAMEWORK (user): MOD-2 covers logistic regression. Amended ML Guide §9, §12 and §13 (naming of GLMs), the interim core `admissible.py`, and the rule text. Re-ran 4a: two admissible configurations (Logistic + L2, Logistic + poly + L2). DR-16 superseded by DR-17. Nothing committed; `Notes/Davids Changes.md` left unchanged at the user's request. | DR-16, DR-17; `ML Guide.md`; `Code/dropout/admissible.py`; `Code/outputs/dropout/04a_admissible_set.md` |
+| 21 | Step 4b begun. Prior ranking on the two admissible configurations: Logistic + L2 (score 0) and Logistic + poly + L2 (score −1); both kept with the baseline. Expectation recorded. Method not yet agreed; no cross-validation run. | DR-18; `Code/dropout/prior.py`, `Code/dropout/04b_prior.py`, `Code/outputs/dropout/04b_prior.md` |
+| 22 | Step 4b: the method agreed by the user (DR-18 PRIOR; DR-19 threshold tuned inside each configuration, poly for non-binary inputs). Drafted the `Methods` sub-section `Dropout after year one` in `Project Report.md`. Departure from §16's threshold wording recorded; FRAMEWORK change applied the same day. No cross-validation run. | DR-18, DR-19; `Project Report.md`, Methods |
+| 23 | FRAMEWORK (user): §16 decision threshold wording changed to match DR-19 (tuned inside each configuration's inner CV when the selection metric is F2 or another F_β). `ML Guide.md` version note and §16 row updated; interim core unchanged. Not committed. | `ML Guide.md`; DR-19 |
 
 ## Code Summary
 

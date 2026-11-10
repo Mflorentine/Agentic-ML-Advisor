@@ -1,0 +1,49 @@
+{
+  "core": "Code/dropout/prior.py (interim core, not reviewed)",
+  "core_sha256": "746cce17fc35a82f60c0f3d895787eb1fac42b18d8e1e5631cb08c0042aab24c",
+  "admissible_source": "Code/outputs/dropout/04a_admissible_set.json",
+  "values": {
+    "Property 1": "binary",
+    "Property 2": "ample",
+    "Property 3": "many",
+    "Property 4": "low",
+    "Property 5": "none",
+    "Property 6": "yes",
+    "Property 7": "no",
+    "Property 8": "unknown",
+    "Property 9": "no",
+    "Property 10": "balanced"
+  },
+  "must_haves": [
+    "Property 6"
+  ],
+  "ranking": [
+    {
+      "configuration": "Logistic + L2",
+      "score": 0,
+      "rank": 1,
+      "entries": []
+    },
+    {
+      "configuration": "Logistic + poly + L2",
+      "score": -1,
+      "rank": 2,
+      "entries": [
+        {
+          "property": "Property 3",
+          "value": "many",
+          "column": "+ poly",
+          "score": -1,
+          "tag": "[B\u2192I SML p. 59]"
+        }
+      ]
+    }
+  ],
+  "simple_first_SEQ2": "Logistic + L2",
+  "kept": [
+    "BASELINE",
+    "Logistic + L2",
+    "Logistic + poly + L2"
+  ],
+  "DISF": []
+}

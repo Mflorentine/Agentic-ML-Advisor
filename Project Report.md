@@ -28,6 +28,14 @@ The outcome is binary: Dropout is 1, and Graduate or still Enrolled is 0. Dropou
 
 The metric that decides between models is F2, the F-beta score with β = 2, which weights recall (the share of dropouts flagged) twice as heavily as precision (the share of flags that were right) (Lindholm et al., 2026). Recall, precision and the confusion matrix are reported alongside it. The baseline is the most common training class, which here means "not dropout" for every student. That baseline has F2 = 0. Flagging every student is reported beside each model as a reference. The success criterion is that the chosen model's F2 on the test set is above the F2 of flagging every student on the same test rows.
 
+### Dropout after year one
+
+The admissible configurations were set before any model was compared. Class probabilities are required, so only logistic regression is admissible. Two configurations remain: logistic regression with an L2 penalty, and the same with polynomial terms in the non-binary numeric inputs. The baseline, which always predicts "not dropout", is included in every comparison. Logistic regression with the L2 penalty is the simple-first model. It is compared with the baseline first, and the polynomial version is added afterwards.
+
+Each configuration is compared by nested cross-validation on the training data. The outer loop uses 10 stratified, shuffled folds with seed 2026, the same for every configuration. Within each outer training set, an inner 5-fold grid search chooses the L2 strength, over values from 10⁻⁴ to 10⁴, and, for the polynomial version, the degree (2 or 3). The decision threshold is also chosen in the inner loop, by F2 over a grid from 0.05 to 0.95, so that each configuration is compared at its own best threshold.
+
+The comparison between two configurations is the mean of the ten outer-fold differences in F2, and its uncertainty is the standard deviation of those differences. A configuration is eligible for recommendation if it beats the baseline by a clear margin, which is at least one standard deviation, and meets every requirement. The recommended configuration is the eligible one with the best mean F2. A tie is broken by the fewer add-ons, then by the prior ranking, then by the mean. The chosen configuration is refitted on all training data, and the locked test set is evaluated once, with the baseline evaluated on the same rows.
+
 ## Results
 
 ### The training data
