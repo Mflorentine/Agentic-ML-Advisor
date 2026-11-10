@@ -86,6 +86,10 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 `Code/dropout/fig1_approved_units.py` plots the total of first- and second-semester approved units, per student, for the 3,539 training students. The horizontal axis is the total; each bar is the share of its outcome's students with that total. The plotted numbers are in `Code/outputs/dropout/fig1_approved_units.csv`. In the Dropout group, 436 of 1,137 students have a total of zero approved units; in the not-dropout group, 99 of 2,402 do. These counts are from the file and are not interpretations. Light and dark variants are in `Code/outputs/dropout/figures/` and `figures/dark/`. The figure is in `Project Report.md`, under Results, The training data.
 
+### Figure 2: dropout share by tuition status (step 3)
+
+`Code/dropout/fig2_tuition_share.py` plots, for the 3,539 training students, the share who dropped out in each group of tuition status. Fees up to date: 762 of 3,104 students dropped out. Fees not up to date: 375 of 435. The plotted numbers are in `Code/outputs/dropout/fig2_tuition_share.csv`. Light and dark variants are in `Code/outputs/dropout/figures/` and `figures/dark/`. The figure is in `Project Report.md`, under Results, The training data, as Figure 2. The two groups differ greatly in size, so the bar for fees not up to date rests on 435 students. The figure describes the training rows only; it does not establish a cause.
+
 ## Decision Records
 
 ### DR-01 · Admissibility · step 1
@@ -497,6 +501,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 10 | Monitored metrics: recall, precision, confusion matrix. The user confirmed the success definition and the stratified split. Wrote the Problem Definition (Discussion, Problem, Sub-tasks), the Introduction, `Data and evaluation` in Methods, the references, and the draft Abstract in `Project Report.md`. No model fitted. | DR-09, DR-10; `Appendix.md` Problem Definition; `Project Report.md` |
 | 12 | Step 3 begun. Approved the interim core for Properties 9 and 10. Ran it on the training rows: balanced (smallest class 32.1%), not separable (training accuracy 0.8938). The core's first draft used a setting the installed scikit-learn deprecates; changed to the replacement before any output was used. | DR-12; `Code/dropout/core.py`, `Code/dropout/03_properties_9_10.py`, `Code/outputs/dropout/03_props_9_10.md` |
 | 13 | Proposed three training-data figures; the user chose approved units by outcome, with shares within each group and both semesters combined. Drew Figure 1 on the training rows, light and dark, and placed it in Results, The training data. Figure 1 in the report is the light variant. | `Code/outputs/dropout/figures/fig1_approved_units.png`; `Code/outputs/dropout/fig1_approved_units.csv`; `Project Report.md`, Results |
+| 14 | Drew Figure 2 (dropout share by tuition status, training rows only) after the user's yes, light and dark, and placed it in Results, The training data. Updated the draft Abstract to mention it. | `Code/outputs/dropout/figures/fig2_tuition_share.png`; `Code/outputs/dropout/fig2_tuition_share.csv`; `Project Report.md`, Results and Abstract |
 | 11 | Step 2 closed by the user on 10 November 2026. Open and left as recorded: the decision the prediction serves (not yet stated in the user's words; the candidate's description stands in the Problem section), and the achievable level (not given). The book references are from the guide and not yet checked against the book's title page. | `Appendix.md` Problem Definition; `Project Report.md` |
 
 ## Code Summary
@@ -532,6 +537,12 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - Step 3, Figure 1. Reads `Attachments/Student Dropout/data.csv` and `Code/outputs/dropout/02_split.csv`; plots the training rows only. Writes `Code/outputs/dropout/figures/fig1_approved_units.png` (light), `figures/dark/fig1_approved_units.png` (dark) and `Code/outputs/dropout/fig1_approved_units.csv`.
 - Uses `Code/sml_style.py` for the style.
 - Run: `cd Code && uv run python dropout/fig1_approved_units.py`. No seed.
+
+### `Code/dropout/fig2_tuition_share.py`
+
+- Step 3, Figure 2. Reads `Attachments/Student Dropout/data.csv` and `Code/outputs/dropout/02_split.csv`; plots the training rows only. Writes `Code/outputs/dropout/figures/fig2_tuition_share.png` (light), `figures/dark/fig2_tuition_share.png` (dark) and `Code/outputs/dropout/fig2_tuition_share.csv`.
+- Uses `Code/sml_style.py` for the style.
+- Run: `cd Code && uv run python dropout/fig2_tuition_share.py`. No seed.
 
 
 ## References

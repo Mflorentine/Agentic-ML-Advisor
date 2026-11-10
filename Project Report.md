@@ -6,7 +6,7 @@
 
 *Draft*
 
-The analysis asks whether students who will drop out of a higher-education course can be identified after their first year. The data are 4,424 students with 36 inputs: enrolment information and results in the first and second semesters. The outcome is Dropout yes or no, with students still enrolled counted as not dropped out. The approach compares a small set of model types from the book by cross-validation, chooses one, and evaluates it once on a held-out test set of 885 students. Success is judged by F2, which weights catching dropouts more heavily than unneeded flags, and the chosen model must beat flagging every student. The problem, the metric and the split were fixed before any model was compared. So far the training data have been checked for class balance and separability, and the year-one results have been plotted. A single logistic regression was fitted only to check separability; no models have been compared.
+The analysis asks whether students who will drop out of a higher-education course can be identified after their first year. The data are 4,424 students with 36 inputs: enrolment information and results in the first and second semesters. The outcome is Dropout yes or no, with students still enrolled counted as not dropped out. The approach compares a small set of model types from the book by cross-validation, chooses one, and evaluates it once on a held-out test set of 885 students. Success is judged by F2, which weights catching dropouts more heavily than unneeded flags, and the chosen model must beat flagging every student. The problem, the metric and the split were fixed before any model was compared. So far the training data have been checked for class balance and separability, and the year-one results and tuition status have been plotted. A single logistic regression was fitted only to check separability; no models have been compared.
 
 ## Introduction
 
@@ -37,6 +37,12 @@ Each panel is one outcome, and each bar counts the students with a given total o
 ![[Code/outputs/dropout/figures/fig1_approved_units.png|640]]
 
 <small><b>Figure 1.</b> Total curricular units approved over the first and second semesters, for the training students: 1,137 who dropped out (left panel) and 2,402 who did not (right panel). Each bar is the share of its panel's students with the total shown on the horizontal axis; the bars in each panel sum to 100%.</small>
+
+Each bar is one group of training students, split by whether their tuition fees are up to date. The height of a bar is the share of that group who dropped out; the number under the bar is the number of students in the group.
+
+![[Code/outputs/dropout/figures/fig2_tuition_share.png|460]]
+
+<small><b>Figure 2.</b> Share of the training students who dropped out, for those whose tuition fees are up to date (left bar) and those whose fees are not (right bar). The number under each bar is the number of students in that group.</small>
 
 ## Discussion
 
