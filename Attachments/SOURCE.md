@@ -77,3 +77,18 @@ Citation required by the PhysioNet page when the resource is used: Reyna et al. 
 | SHA-256 | Per-file SHA-256 of the uncompressed original bytes is in `SHA256SUMS_raw.txt` (1,556 lines, `<sha256>  raw/<path>`, sorted). That file's own SHA-256 is `17c312fbe2c425c45a3a673c5f0fe8778aa32b9876c443829ae531a893e4312e`. |
 
 The files are the original download and are never modified. The shot tables derived from them are in `Code/outputs/xg/` (see the xG analysis's `Appendix.md`).
+
+## `Student Dropout/data.csv`
+
+| Item | Value |
+| --- | --- |
+| Source | UCI Machine Learning Repository, [Predict Students' Dropout and Academic Success](https://archive.ics.uci.edu/dataset/697), dataset 697, DOI [10.24432/C5MC89](https://doi.org/10.24432/C5MC89) |
+| Downloaded | 10 November 2026, by the user |
+| Licence | [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/), as stated on the UCI page (found by search, 10 November 2026) |
+| Format | CSV, semicolon-separated, UTF-8 with a byte-order mark, CRLF line endings, header row |
+| Size and rows | 533,230 bytes · 4,424 data rows × 37 columns (36 inputs and `Target`) |
+| SHA-256 | `3ef126de5cefff26eb11fbb4237f1a1401cb64b488e2f1d598c23cedeb4c45ae` |
+| Institution | Not named on the UCI page ("a higher education institution" in Portugal). As stated by the user, all four creators are at the Instituto Politécnico de Portalegre, so it is likely the source. **Unverified.** |
+| Enrolment years | Not given on the UCI page. As stated by the user, Realinho et al. (2022, *Data*) give 2008/09 to 2018/19. **Unverified:** that paper has not been opened. |
+
+The file is the original download and is never modified. Citation as given by UCI: Realinho, Vieira Martins, Machado and Baptista (2021), with the DOI above.
