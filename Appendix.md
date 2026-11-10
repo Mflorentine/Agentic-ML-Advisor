@@ -40,6 +40,7 @@ Intermediate, in the user's own words (recorded 10 November 2026). The depth of 
 | --- | --- | --- |
 | Target and leakage | The candidate target is `Target`, a three-class label. The UCI page says it is the student's status at the end of the normal course duration (3 years, 4 for Nursing). The inputs are information known at enrolment and the first and second semester results. The user set no column aside: nothing in the documentation shows a column recorded after the outcome. | DR-04 |
 | Categorical inputs | Nine columns categorical (25% of the 36 inputs); flags and counts numeric. | DR-05 |
+| Rare category levels | Levels with fewer than 10 training students grouped into "other", within each categorical input (step 3, the user's choice). | DR-13, DR-14 |
 | Scope | All 4,424 rows used; no exclusion, no cleaning. | DR-06 |
 | Missing data | None present (0 cells). Nothing imputed. | DR-06 |
 | Accepted as-is | The publisher says it preprocessed the data for anomalies, unexplainable outliers and missing values, without saying what it changed. The data is used as published. The description inconsistency above is kept. | DR-06 |
@@ -238,7 +239,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Confidence:** n/a.
 - **Outcome vs expectation:** n/a.
 - **User involvement:** asked, answered as quoted.
-- **Supersedes / superseded by:** none.
+- **Supersedes / superseded by:** none. Extended by DR-13 (rare levels grouped); the categorical list stands.
 - **Links:** `Code/dropout/01_describe_data.py`, `Code/outputs/dropout/01_describe.md`.
 
 ### DR-06 · Scope and cleaning · step 1
@@ -442,7 +443,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Confidence:** n/a.
 - **Outcome vs expectation:** n/a.
 - **User involvement:** informed for Properties 2–4 (computed); asked for 1, 5–8.
-- **Supersedes / superseded by:** superseded by DR-12 for Properties 9 and 10 only; Properties 1–8 stand.
+- **Supersedes / superseded by:** superseded by DR-12 for Properties 9 and 10, and by DR-14 for Properties 2 and 3; Properties 1, 4–8 stand.
 - **Links:** `Code/outputs/dropout/01_describe.md`, `Code/outputs/dropout/02_split.md`.
 
 ### DR-12 · PROP · step 3 (Properties 9 and 10, training rows only)
@@ -479,6 +480,141 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Note on the core:** the first run used `penalty=None`, which the installed scikit-learn deprecates. It gave the same result (training accuracy 0.8938, 262 iterations). The core was changed to `C=np.inf`, the replacement that scikit-learn names, before any output was used. The change does not alter the fit.
 - **Links:** `Code/dropout/core.py`, `Code/dropout/03_properties_9_10.py`, `Code/outputs/dropout/03_props_9_10.md`.
 
+### DR-13 · Input design · step 3 (rare category levels grouped)
+
+- **Sub-task:** none yet (before step 2 ends and step 4 begins).
+- **Date:** 2026-11-10.
+- **Question:** Are the rare levels of the categorical inputs grouped, and if so, at what threshold? (ML Guide §9: domain transformations and the choice of inputs, decided with the user.)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's answer | "2, with the threshold fewer than 10 training students" (option 2 of five offered: keep as recorded; group rare levels; logarithm of skewed counts; summary feature per semester; leave out economic columns) | M | the user, in step 3 |
+| Levels in training rows, before grouping | 212 across the nine categorical inputs | T | `Code/outputs/dropout/04_input_design.md` |
+| Columns after grouping | 103 (one per kept level, plus one other per input with rare levels) | T | `Code/outputs/dropout/04_input_design.md` |
+| Nationality | 21 levels, 17 with fewer than 10 training students (35 students); one level holds 97.4% | T | `Code/outputs/dropout/04_input_design.md` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Input design: domain transformations and the choice of inputs, decided with the user | grouping chosen | `[B→I SML p. 18]` | the input design is fixed; not a configuration axis |
+| REQ-1: preprocessing fitted on training data only, inside each fold | applies | `[B SML p. 27]` + `[I]` | the grouping counts come from the training rows of each fold or fit |
+| REQ-6: one-hot encode categorical inputs | applies after grouping | `[B SML p. 49]` | one column per kept level and one for other |
+| Rare-level grouping rule | grouped if fewer than 10 training students | `[I]`, threshold chosen by the user | as above |
+
+- **Thresholds applied:** 10 training students per level (the user's choice, `[I]`), compared with each level's training count in `Code/outputs/dropout/04_input_design.md`.
+- **Options considered:** keep the inputs as recorded (not chosen) · group rare levels with a threshold of 10 (chosen) · logarithm of the skewed counts (not chosen) · summary feature per semester, approved as a share of enrolled units (not chosen) · leave out the three economic columns (not chosen).
+- **Expectation:** n/a.
+- **Decision:** Within each categorical input, levels with fewer than 10 training students are grouped into one "other" level, using training counts only. The grouping is applied inside each fold or fit. The nine categorical inputs listed in DR-05 are the inputs this applies to. Other inputs are unchanged.
+- **Why not:** keeping the inputs as recorded leaves levels resting on very few students. The logarithm changes only the logistic regression and k-NN, and trees are unaffected by it. The summary feature and dropping the economic columns were not chosen.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked; answered as quoted. The user did not name the inputs: the rule is recorded as applying to all nine categorical inputs (to be confirmed).
+- **Supersedes / superseded by:** none. Extends DR-05.
+- **Links:** `Code/dropout/04_input_design_counts.py`, `Code/outputs/dropout/04_input_design.md`, `Code/outputs/dropout/04_input_design.csv`.
+
+### DR-14 · PROP · step 3 (Properties 2 and 3, recounted under DR-13)
+
+- **Sub-task:** none yet (before step 4 begins).
+- **Date:** 2026-11-10.
+- **Question:** What are Properties 2 and 3 once the rare levels are grouped, counted on the training rows?
+- **Evidence:**
+
+| Property | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Training rows | 3,539 | T | DR-10 |
+| Numeric inputs | 27 | M | DR-05 |
+| Categorical columns after grouping | 103 (from 212 training levels) | T | `Code/outputs/dropout/04_input_design.md` |
+| Inputs after encoding | 130 (27 + 103), from 239 before grouping on the training rows | T | `Code/outputs/dropout/04_input_design.md` |
+| Property 2: data-to-parameter ratio | 3,539 ÷ (130 + 1) = 27.0 | T | `Code/outputs/dropout/04_input_design.md` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Property 2: limited if below 10 | ample | `[I]` | ample |
+| Property 3: many if above 20 | many | `[I]` | many |
+| Property 4: categorical share, high at 50% or more | low (9 of 36 inputs, 25%): unchanged | `[I]` | low |
+
+- **Thresholds applied:** Property 2 at 10 (`[I]`), compared with 27.0; Property 3 at 20 (`[I]`), compared with 130.
+- **Options considered:** n/a (values, not choices).
+- **Expectation:** n/a.
+- **Decision:** Property 2: ample (27.0). Property 3: many (130). These supersede DR-11 for Properties 2 and 3. Properties 1, 4–8 are unchanged.
+- **Why not:** n/a.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** informed.
+- **Supersedes / superseded by:** supersedes DR-11 for Properties 2 and 3.
+- **Note on basis:** DR-11 counted the levels in the whole file (220 levels, 247 inputs after encoding, and a Property 2 of 14.3). This record counts the training rows only, so the figures differ. Both bases give the same values for both properties (ample; many).
+- **Links:** `Code/dropout/04_input_design_counts.py`, `Code/outputs/dropout/04_input_design.md`.
+
+### DR-15 · FORM · step 4a (must-have: class probabilities)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Must the predictions include class probabilities? (Property 6: probabilities, ML Guide section 12: must-have)
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's answer | "Yes, must-have" | M | the user, in step 4a |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Must-have: Property 6 probabilities = yes; families that meet it: Logistic | must-have stated | `[B→I SML pp. 50, 53–54]` | k-NN and Tree excluded with USER (DR-16) |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** must-have (chosen) · not a must-have (all six structural configurations remain).
+- **Expectation:** n/a.
+- **Decision:** Class probabilities are a must-have. The admissible set is limited to the Logistic configurations.
+- **Why not:** not a must-have was not chosen.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked, answered "Yes, must-have".
+- **Supersedes / superseded by:** none.
+- **Links:** `Appendix.md`, Problem Definition (must-haves, to be read with this record).
+
+### DR-16 · ADMSET · step 4a
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Which of the 14 structural configurations are admissible, given the property values and the must-have?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Property 1: output type | binary | M | DR-08, DR-11 |
+| Property 9: separability | no | T | DR-12 |
+| Parameters including the intercept | 131 (130 encoded inputs and the intercept) | T | `Code/outputs/dropout/04a_admissible_set.json` |
+| Parameters at least n_train (3,539) | no | T | as above |
+| Rank of the training design | 120 of 131: 11 linear dependencies (see note) | T | as above |
+| Must-have | Property 6: probabilities = yes | M | DR-15 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Task gate, Property 1 = binary | admits Logistic, k-NN and Tree | `[B SML pp. 17, 49–57]` | eight configurations EXCL (Linear, Poisson, Exponential, each with and without L2) |
+| Must-have, Property 6 = yes | admits Logistic only | `[B→I SML pp. 50, 53–54]` | k-NN and Tree USER |
+| MOD-1, Property 9 = yes | not triggered | `[B SML p. 61]` | none |
+| MOD-2, parameters ≥ n_train or exact collinearity, unregularised linear and GLM | not reached: these are excluded by the task gate already | `[B→I SML pp. 46–47, 65]` | none on this set |
+
+- **Thresholds applied:** n/a (the parameter count is compared with n_train: 131 against 3,539).
+- **Options considered:** all 14 structural configurations (section 9).
+- **Expectation:** n/a.
+- **Decision:** Admissible: Logistic, Logistic + L2, Logistic + poly, Logistic + poly + L2. Four of 14.
+- **Why not:** Linear (4), Poisson (2) and Exponential (2): EXCL, task gate. kNN and Tree: USER, must-have Property 6.
+- **Note on collinearity:** the rank check finds 11 linear dependencies among the 131 parameters, identified on the training rows (`Code/outputs/dropout/04a_dependencies.md`, from `Code/dropout/04a_dependencies.py`). (a) Nine come from the one-hot columns: within each categorical input the dummies sum to the intercept (eight "other" columns and Course's level 9991, which is the last level of a full set). (b) Two are data facts, true of the training rows: `Daytime/evening attendance` is a combination of the Course columns, because each course has one attendance mode; and `International` equals 1 minus the Portuguese-nationality column. They do not change the admissible set: MOD-2 applies only to unregularised linear and GLM fits, which the task gate has already excluded. They matter for the core's parametric fits without L2: the redundant columns are to be dropped, or the fit regularised, before the Logistic configurations are cross-validated (4c). Predictions are not affected by the redundancy; the coefficients are.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** the must-have is the user's (DR-15); the core was approved before it ran.
+- **Supersedes / superseded by:** none.
+- **Code version:** `Code/dropout/admissible.py`, SHA-256 `f1b5f5731021d5cddf27b8497cd5178cc48351671d4c3ad874edc7ffe662e6df` (interim core, not reviewed). Run by `Code/dropout/04a_admissible_set.py`.
+- **Links:** `Code/outputs/dropout/04a_admissible_set.md`, `Code/outputs/dropout/04a_admissible_set.json`.
+
 
 ## Recommendation
 
@@ -499,11 +635,15 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 8 | Asked the error costs (missed dropout costs more), the metric (F2), the success criterion (beat flagging everyone), and Properties 5, 7 and 8 (no requirement; no extrapolation; no expectation). The baseline is the guide's SEQ-1 rule. | DR-09 |
 | 9 | Asked the test fraction: 20%. Wrote and ran the split: random, stratified by Dropout, seed 2026; train 3,539, test 885. Test set locked. Properties 1–8 recorded. | DR-10, DR-11; `Code/dropout/02_split.py`, `Code/outputs/dropout/02_split.md` |
 | 10 | Monitored metrics: recall, precision, confusion matrix. The user confirmed the success definition and the stratified split. Wrote the Problem Definition (Discussion, Problem, Sub-tasks), the Introduction, `Data and evaluation` in Methods, the references, and the draft Abstract in `Project Report.md`. No model fitted. | DR-09, DR-10; `Appendix.md` Problem Definition; `Project Report.md` |
+| 11 | Step 2 closed by the user on 10 November 2026. Open and left as recorded: the decision the prediction serves (not yet stated in the user's words; the candidate's description stands in the Problem section), and the achievable level (not given). The book references are from the guide and not yet checked against the book's title page. | `Appendix.md` Problem Definition; `Project Report.md` |
 | 12 | Step 3 begun. Approved the interim core for Properties 9 and 10. Ran it on the training rows: balanced (smallest class 32.1%), not separable (training accuracy 0.8938). The core's first draft used a setting the installed scikit-learn deprecates; changed to the replacement before any output was used. | DR-12; `Code/dropout/core.py`, `Code/dropout/03_properties_9_10.py`, `Code/outputs/dropout/03_props_9_10.md` |
 | 13 | Proposed three training-data figures; the user chose approved units by outcome, with shares within each group and both semesters combined. Drew Figure 1 on the training rows, light and dark, and placed it in Results, The training data. Figure 1 in the report is the light variant. | `Code/outputs/dropout/figures/fig1_approved_units.png`; `Code/outputs/dropout/fig1_approved_units.csv`; `Project Report.md`, Results |
 | 14 | Drew Figure 2 (dropout share by tuition status, training rows only) after the user's yes, light and dark, and placed it in Results, The training data. Updated the draft Abstract to mention it. | `Code/outputs/dropout/figures/fig2_tuition_share.png`; `Code/outputs/dropout/fig2_tuition_share.csv`; `Project Report.md`, Results and Abstract |
 | 15 | Step 3 closed by the user on 10 November 2026. Figures 1 and 2 are the training-data figures in the report. The semester-grade scatter was offered and not chosen; it is not drawn and not in the report. | `Project Report.md`, Results, The training data |
-| 11 | Step 2 closed by the user on 10 November 2026. Open and left as recorded: the decision the prediction serves (not yet stated in the user's words; the candidate's description stands in the Problem section), and the achievable level (not given). The book references are from the guide and not yet checked against the book's title page. | `Appendix.md` Problem Definition; `Project Report.md` |
+| 16 | Input design: the user chose option 2, grouping rare category levels (fewer than 10 training students). Counted the result on the training rows: 212 levels become 103 columns; inputs after encoding 130; Property 2 27.0 (ample), Property 3 130 (many). Recorded as DR-13 and DR-14. | DR-13, DR-14; `Code/dropout/04_input_design_counts.py`, `Code/outputs/dropout/04_input_design.md` |
+| 17 | Step 4a begun. The user set class probabilities as a must-have (DR-15). Approved the admissible-set code and ran it on the training design: four of 14 configurations admissible (Logistic family). Eight excluded by the task gate; k-NN and Tree excluded by the must-have. Two linear dependencies in the design are not yet identified. | DR-15, DR-16; `Code/dropout/admissible.py`, `Code/dropout/04a_admissible_set.py`, `Code/outputs/dropout/04a_admissible_set.md` |
+| 18 | Recorded the step 4a outputs; no test set read. | `Appendix.md` Decision Records |
+| 19 | Identified the 11 linear dependencies in the 4a design (nine one-hot redundancies, and two data facts in the training rows: attendance follows course, and International is the complement of the Portuguese-nationality column). No model fitted. | DR-16 note |
 
 ## Code Summary
 
@@ -544,6 +684,21 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - Step 3, Figure 2. Reads `Attachments/Student Dropout/data.csv` and `Code/outputs/dropout/02_split.csv`; plots the training rows only. Writes `Code/outputs/dropout/figures/fig2_tuition_share.png` (light), `figures/dark/fig2_tuition_share.png` (dark) and `Code/outputs/dropout/fig2_tuition_share.csv`.
 - Uses `Code/sml_style.py` for the style.
 - Run: `cd Code && uv run python dropout/fig2_tuition_share.py`. No seed.
+
+### `Code/dropout/04_input_design_counts.py`
+
+- Step 3, input design. Counts the levels and encoded columns under the rare-level rule (fewer than 10 training students, DR-13). Training rows only; fits no model. Writes `Code/outputs/dropout/04_input_design.md` and `.csv`.
+- Run: `cd Code && uv run python dropout/04_input_design_counts.py`. Parameter: `RARE_MIN = 10`. No seed.
+
+### `Code/dropout/admissible.py` (interim core, not reviewed)
+
+- Step 4a. The admissible-set logic for the 14 structural configurations: the task gate (section 12), must-haves stated by the user, MOD-1 and MOD-2. Returns one record per configuration with its why-not code (EXCL or USER). Fits nothing.
+- Imported by `04a_admissible_set.py`.
+
+### `Code/dropout/04a_admissible_set.py`
+
+- Step 4a. Builds the training design under DR-13 (rare levels grouped, training rows only), computes its parameter count and rank, and calls the core with the property values and the must-have from DR-15. Writes `Code/outputs/dropout/04a_admissible_set.json` and `.md`.
+- Run: `cd Code && uv run python dropout/04a_admissible_set.py`. No seed; the rank check is deterministic.
 
 
 ## References

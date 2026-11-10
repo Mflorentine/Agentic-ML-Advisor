@@ -1,0 +1,10 @@
+input,levels_before,levels_kept,levels_grouped_into_other,students_in_other,columns_after_grouping
+Marital status,6,4,2,6,5
+Application mode,17,13,4,13,14
+Course,17,17,0,0,17
+Previous qualification,16,9,7,31,10
+Nacionality,21,4,17,35,5
+Mother's qualification,27,10,17,53,11
+Father's qualification,34,11,23,51,12
+Mother's occupation,32,13,19,60,14
+Father's occupation,42,14,28,63,15

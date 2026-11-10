@@ -1,0 +1,150 @@
+{
+  "core": "Code/dropout/admissible.py (interim core, not reviewed)",
+  "core_sha256": "f1b5f5731021d5cddf27b8497cd5178cc48351671d4c3ad874edc7ffe662e6df",
+  "must_haves": [
+    "Property 6: probabilities = yes"
+  ],
+  "properties_used": {
+    "output_type": "binary",
+    "separable": "no",
+    "n_train": 3539,
+    "n_params": 131,
+    "rank": 120,
+    "params_ge_n_train": false,
+    "exact_collinearity": true
+  },
+  "admissible_configurations": [
+    "Logistic",
+    "Logistic + L2",
+    "Logistic + poly",
+    "Logistic + poly + L2"
+  ],
+  "rows": [
+    {
+      "configuration": "Linear",
+      "family": "Linear",
+      "poly": false,
+      "l2": false,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "Linear + L2",
+      "family": "Linear",
+      "poly": false,
+      "l2": true,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "Linear + poly",
+      "family": "Linear",
+      "poly": true,
+      "l2": false,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "Linear + poly + L2",
+      "family": "Linear",
+      "poly": true,
+      "l2": true,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "Logistic",
+      "family": "Logistic",
+      "poly": false,
+      "l2": false,
+      "admissible": true,
+      "code": "",
+      "reason": ""
+    },
+    {
+      "configuration": "Logistic + L2",
+      "family": "Logistic",
+      "poly": false,
+      "l2": true,
+      "admissible": true,
+      "code": "",
+      "reason": ""
+    },
+    {
+      "configuration": "Logistic + poly",
+      "family": "Logistic",
+      "poly": true,
+      "l2": false,
+      "admissible": true,
+      "code": "",
+      "reason": ""
+    },
+    {
+      "configuration": "Logistic + poly + L2",
+      "family": "Logistic",
+      "poly": true,
+      "l2": true,
+      "admissible": true,
+      "code": "",
+      "reason": ""
+    },
+    {
+      "configuration": "Poisson",
+      "family": "Poisson",
+      "poly": false,
+      "l2": false,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "Poisson + L2",
+      "family": "Poisson",
+      "poly": false,
+      "l2": true,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "Exponential",
+      "family": "Exponential",
+      "poly": false,
+      "l2": false,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "Exponential + L2",
+      "family": "Exponential",
+      "poly": false,
+      "l2": true,
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "task gate: Property 1 = binary admits Logistic, Tree, kNN"
+    },
+    {
+      "configuration": "kNN",
+      "family": "kNN",
+      "poly": false,
+      "l2": false,
+      "admissible": false,
+      "code": "USER",
+      "reason": "must-have not met: Property 6: probabilities = yes"
+    },
+    {
+      "configuration": "Tree",
+      "family": "Tree",
+      "poly": false,
+      "l2": false,
+      "admissible": false,
+      "code": "USER",
+      "reason": "must-have not met: Property 6: probabilities = yes"
+    }
+  ]
+}
