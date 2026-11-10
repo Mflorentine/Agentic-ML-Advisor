@@ -63,7 +63,7 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **What changed.** Every FRAMEWORK change is summarised here as it is made, in the form above (`instructions.md`, *Changing This Contract*).
 - **Why.** David will send the summary to Florentine.
 
-### 11. No file-change boxes in answers (10 November, @@HASH@@)
+### 11. No file-change boxes in answers (10 November, `bced066`)
 
 - **What changed.** The agent no longer edits files with the tools that show a diff box in the conversation; it makes changes with scripts and says in the answer which files changed and how (`instructions.md`, *Agent Operating Rules*).
 - **Why.** "Remove these file changes boxes that sometime come up in answers."
