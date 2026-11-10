@@ -447,6 +447,8 @@ These documents are read and edited in Obsidian, which soft-wraps text to the wi
 
 ## Agent Operating Rules
 
+- **Do not show file-change boxes in the conversation.** The user does not want the diff boxes that appear when files are edited with the editor's own edit or write tools. Make changes to files with scripts instead, and say in the answer, in plain words, which files changed and what changed in them. The user can see the exact changes in the files themselves or with `git diff`.
+
 - Before changing analysis artifacts, inspect the relevant source data and existing documentation.
 - Make focused changes and do not overwrite unrelated user work.
 - After running or changing code, perform the narrowest useful validation and record the outcome in `Appendix.md` when it affects conclusions.
