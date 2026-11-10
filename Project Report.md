@@ -12,11 +12,11 @@
 
 ## Methods
 
-*Drafted in step 4b, once the method is agreed, and made final in step 4h, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
+*Opens with a sub-section `Data and evaluation`, written at the end of step 2: the data and its scope, the split and the held-out test set, the metric, the baseline and the success criteria. Then one sub-heading per sub-task, drafted in step 4b once the method is agreed and made final in step 4h, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
 
 ## Results
 
-*Figures of the training data go in during step 3. In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
+*Opens with a sub-section `The training data`, matching `Data and evaluation` in `Methods`: figures of the training data go in during step 3. In step 4: the recommended configuration, its test-set result against the baseline, a summary of the ranking, the selection confidence, and evaluation figures such as learning curves or precision–recall curves.*
 
 ## Discussion
 

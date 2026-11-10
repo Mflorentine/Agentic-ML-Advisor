@@ -23,7 +23,7 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 
 ### 3. Properties written with their names; a user-facing list (10 November, `c100768`, `2b71d3f`, `81bc900`, `cea92c3`)
 
-- **What changed.** P1 … P10 became *Property 1: output type*, *Property 2: data-to-parameter ratio*, and so on; checks and properties are never written as a bare number or code. A new file, [Glossary.md](Glossary.md), lists the four admissibility checks and ten properties in plain words: the question each asks, its values, who decides it and when, what it changes, and the book page. It also explains the other labels in the Decision Records (provenance tags, why-not codes, confidence factors, the core). First named `Criteria.md`, then renamed. It is the same for every analysis and maps the older labels (ADM-n, Pn) used by Heart Failure and Sepsis. Listed in the README.
+- **What changed.** P1 … P10 became *Property 1: output type*, *Property 2: data-to-parameter ratio*, and so on; checks and properties are never written as a bare number or code. A new file, [Glossary.md](../Glossary.md), lists the four admissibility checks and ten properties in plain words: the question each asks, its values, who decides it and when, what it changes, and the book page. It also explains the other labels in the Decision Records (provenance tags, why-not codes, confidence factors, the core). First named `Criteria.md`, then renamed. It is the same for every analysis and maps the older labels (ADM-n, Pn) used by Heart Failure and Sepsis. Listed in the README.
 - **Why.** "We should have a clean list the user can look at to see what criteria they are following."
 - **Unchanged.** No rule, value or threshold. Heart Failure and Sepsis keep their old labels, because their records copy outputs of `Code/core.py`, which uses them and is never changed.
 
@@ -95,4 +95,9 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 
 - **What changed.** Whenever a title is chosen or changed, the agent reads the report against it: whether each word describes what was done and found, whether the report spends its space on what the title puts first, and whether the title could lead a reader to expect a claim the report does not make. It reports where they match and where they do not, and offers both remedies, a title that fits or a change to the content that fits the title without overclaiming; the user decides (`instructions.md`, step 5).
 - **Why.** "Does the content reflect the title? You should check this and consult with user on it."
+
+### 17. A tidier workspace (10 November, @@HASH@@)
+
+- **What changed.** The notes for collaborators moved into `Notes/` (`Davids Changes.md`, `Note for Florentine.md`; their links fixed). Local tool state is no longer offered to git (`copilot/copilot-conversations/`, `.copilot/`, `.claude/settings.local.json`). `Code/README.md` says which scripts, cores and outputs belong to which analysis. The README opens with a short *Start here* and lists the finished examples, now including xG. Nothing that a finished analysis refers to was moved.
+- **Why.** "Tidy up directory, so it is easy for a user to use." Moving the Heart Failure and Sepsis scripts, or the framework files, was considered and not done, because recorded paths would break.
 

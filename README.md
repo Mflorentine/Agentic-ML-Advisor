@@ -12,19 +12,21 @@ This folder is built to stop that. The agent does one step per request and then 
 
 Every model choice is recorded as it is made. Each decision gets a Decision Record that names the evidence and the rule it rests on, with the book page — or says plainly that the rule is our own inference. The mechanical parts — which models are admissible, how they rank, how confident the choice is, which one is recommended — are computed by code, not argued by the agent.
 
-## Getting started
+## Start here
 
-1. Install the environment — [Setup.md](Setup.md) covers Obsidian, `uv` and Python.
-2. Put your data in `Attachments/`.
-3. Open a Claudian conversation and ask for step 1: import and describe the data. The agent first asks for a name for the analysis and copies the two templates in `Templates/` to the top of the workspace as [Project Report.md](Project%20Report.md) and [Appendix.md](Appendix.md). You work in those two files throughout.
-4. Work through the five steps, one request at a time.
-5. When the analysis is finished, say so: the agent submits it to `Demonstration/<Name>/` and resets the two root files for the next analysis.
+1. **Install** the environment: [Setup.md](Setup.md) covers Obsidian, `uv` and Python.
+2. **Put your data** in `Attachments/`.
+3. **Ask for step 1** in a Claudian conversation: import and describe the data. The agent asks for a name for the analysis and sets up two files at the top of the workspace, [Project Report.md](Project%20Report.md) and [Appendix.md](Appendix.md). **You work in those two files throughout.**
+4. **Work through the five steps**, one request at a time (below). To see the criteria the agent works through, open [Glossary.md](Glossary.md).
+5. **When the analysis is finished**, say so: the agent submits it to `Demonstration/<Name>/` and resets the two files for the next one.
 
-## Example analysis
+To see what a finished analysis looks like, open one in [Demonstration/](Demonstration/):
 
-[Demonstration/Heart Failure/](Demonstration/Heart%20Failure/) holds a completed example: predicting death during follow-up from the Heart Failure Clinical Records data (sub-task 1), worked through steps 1–5. Its [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md) is the full record behind it, including every decision record. Its code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
+- [xG/](Demonstration/xG/): an expected-goals model for football shots from StatsBomb open data, and whether knowing the team improves it. [Report](Demonstration/xG/Report.md), [Appendix](Demonstration/xG/Appendix.md).
+- [Heart Failure/](Demonstration/Heart%20Failure/): predicting death during follow-up from the Heart Failure Clinical Records data. [Report](Demonstration/Heart%20Failure/Demonstration%20Report.md), [Appendix](Demonstration/Heart%20Failure/Demonstration%20Appendix.md).
+- [Sepsis/](Demonstration/Sepsis/): stopped after step 1.
 
-The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty templates. Each new analysis starts from a copy of both at the top of the workspace, and moves to its own folder under `Demonstration/` when it is finished.
+Each finished analysis's code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it stay valid; [Code/README.md](Code/README.md) says which files belong to which analysis.
 
 ## Progress
 
@@ -33,12 +35,12 @@ The `Report.md` and `Appendix.md` in [Templates/](Templates/) are empty template
 | Agentic system that guides users through ML problem-solving | Done: the five-step workflow in [instructions.md](instructions.md). |
 | Uses smlbook.org chapters 2, 3, 4 and 13 | Done: [ML Guide.md](ML%20Guide.md), with page references. |
 | Helps users choose ML techniques | Done for classification, using an interim core (`Code/core.py`); the reusable `Code/advisor/` is next. |
-| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/Heart Failure/](Demonstration/Heart%20Failure/)). The sepsis demonstration is in progress ([Demonstration/Sepsis/](Demonstration/Sepsis/)). |
+| Step-by-step guidance from formulation to evaluation | Demonstrated end to end on the heart failure data ([Demonstration/Heart Failure/](Demonstration/Heart%20Failure/)) and the xG data ([Demonstration/xG/](Demonstration/xG/)). The sepsis demonstration stopped after step 1 ([Demonstration/Sepsis/](Demonstration/Sepsis/)). |
 | Available online through GitHub | Done. |
 
 ### Next steps
 
-See [Note for Florentine.md](Note%20for%20Florentine.md) for how the method is to be improved by working through the three datasets.
+See [Notes/Note for Florentine.md](Notes/Note%20for%20Florentine.md) for how the method is to be improved by working through the datasets, and [Notes/Davids Changes.md](Notes/Davids%20Changes.md) for the framework changes made since.
 
 - Build `Code/advisor/`.
 - Finish the sepsis and Mobile Price demonstrations. All are classification problems, making three datasets in total with heart failure.
@@ -68,9 +70,10 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [Glossary.md](Glossary.md) | The checks and properties the advisor works through (Admissibility 1–4, Property 1–10), in plain words, with what each one changes, plus the other labels you will see in the decision records. Start here to see what criteria an analysis follows. Changed only with `FRAMEWORK`, together with the guide. |
 | [Templates/](Templates/) | The empty [Report.md](Templates/Report.md) and [Appendix.md](Templates/Appendix.md), copied to the top of the workspace when an analysis starts; and [Whole-Project Report.md](Templates/Whole-Project%20Report.md), the template for a report on the project as a whole. Not edited by an analysis. |
 | [Project Report.md](Project%20Report.md) and [Appendix.md](Appendix.md) | The analysis in progress: the report, built up through the five steps, and the running record (data, problem, workings, decision records, recommendation, log, code guide), filled from step 1. This is where you work. |
-| [Demonstration/](Demonstration/) | Finished analyses, one folder each, submitted from the top of the workspace when an analysis is finished, each with its own `Report.md` and `Appendix.md`. [Heart Failure/](Demonstration/Heart%20Failure/) is the finished example: [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) and [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md). A finished analysis is not edited by a new one. |
-| `Attachments/` | Your data. Never modified. Holds the heart failure data used by the example analysis; see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
-| `Code/` | The environment and `sml_style.py`, which draws figures in the style of the book's (`viz_style.py` is kept for the Heart Failure example). Your scripts and outputs go here. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis writes an interim core in its own folder, for example `Code/sepsis/core.py`; the example analysis used `Code/core.py` (not reviewed), which is never changed and which `Code/advisor/` will replace. Each analysis writes its outputs and figures to its own folder, for example `Code/outputs/sepsis/`. The example's scripts and outputs stay here; a new analysis uses names that do not collide with them. |
+| [Demonstration/](Demonstration/) | Finished analyses, one folder each, submitted from the top of the workspace when an analysis is finished: [xG/](Demonstration/xG/), [Heart Failure/](Demonstration/Heart%20Failure/), and [Sepsis/](Demonstration/Sepsis/) (stopped after step 1). A finished analysis is not edited by a new one. |
+| `Attachments/` | Your data. Never modified. Holds the data of the example analyses, and a local copy of the book in `smlbook/` (not committed); see [Attachments/SOURCE.md](Attachments/SOURCE.md). |
+| [Notes/](Notes/) | Notes for collaborators: [Davids Changes.md](Notes/Davids%20Changes.md), a running summary of every framework change, and [Note for Florentine.md](Notes/Note%20for%20Florentine.md), the handover note. |
+| [Code/](Code/) | The Python environment, the figure style (`sml_style.py`), and each analysis's scripts, interim core and outputs. [Code/README.md](Code/README.md) says which files belong to which analysis. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
 
 ## Report and appendix
