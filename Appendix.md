@@ -11,8 +11,8 @@
 - Licence: CC BY 4.0, as stated on the UCI page (found by search on 10 November 2026; the page itself was not opened in this step).
 - Citation given by UCI: Realinho, Vieira Martins, Machado and Baptista (2021), with the DOI above.
 - Why this file: the user wants it for work on student outcomes in education.
-- Institution: not named on the UCI page, which says only "a higher education institution" in Portugal. As stated by the user: all four creators are at the Instituto Politécnico de Portalegre, so it is likely the source. **Unverified:** the page does not state the institution, and the creators' affiliations have not been checked.
-- Years: not given on the UCI page. As stated by the user: a later paper by the same authors (Realinho et al., 2022, *Data*) gives the enrolment years as 2008/09 to 2018/19. **Unverified:** that paper has not been opened or checked.
+- Institution: verified from the source paper (Realinho et al., 2022), as checked by the user. The paper says the dataset is part of "a Learning Analytic tool developed at the Polytechnic Institute of Portalegre", and that the models "provide information to the tutoring team at our higher education institution". The user's check also found that all four authors are at the Polytechnic Institute of Portalegre. The data therefore come from the authors' own institution, the Polytechnic Institute of Portalegre (Realinho et al., 2022). The agent did not read the paper: the fetch returned HTTP 403.
+- Years: verified from the source paper (Realinho et al., 2022), as checked by the user. The paper says students were "enrolled between the academic years 2008/2009 ... to 2018/2019". The UCI page gives no years.
 - Best available form: the user judged this file to be the best available form. No archived or fuller version was searched for; the user's answer is recorded as given.
 - Checked against the UCI metadata (archive.ics.uci.edu, dataset 697 API, read 10 November 2026): 4,424 instances and 36 features, matching the file (36 inputs and `Target`). The checksum is recorded below for later comparison.
 - SHA-256: `3ef126de5cefff26eb11fbb4237f1a1401cb64b488e2f1d598c23cedeb4c45ae`; 533,230 bytes.
@@ -45,11 +45,12 @@ Intermediate, in the user's own words (recorded 10 November 2026). The depth of 
 | Missing data | None present (0 cells). Nothing imputed. | DR-06 |
 | Accepted as-is | The publisher says it preprocessed the data for anomalies, unexplainable outliers and missing values, without saying what it changed. The data is used as published. The description inconsistency above is kept. | DR-06 |
 | Grouping and time order | One row per student (DR-02). | DR-02 |
+| First-year period | The inputs are the first and second semester results. The source paper does not use the words "first year". This analysis reads the two semesters as the first year: our reading, not a statement of the source. | DR-28 |
 | Units | Not given by the publisher; see above. Not inferred from column names. | DR-06 |
 
 ### Decisions still open in step 1
 
-The institution and years are recorded as the user stated them, both unverified. The publisher gives no units, which are recorded as unknown. Step 1 is not yet closed.
+The institution and years are verified from the source paper (DR-28). The publisher gives no units, which are recorded as unknown.
 
 ## Problem Definition
 
@@ -1056,6 +1057,43 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Code version:** `Code/dropout/cv.py`, SHA-256 `fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29` (interim core, not reviewed); `Code/dropout/09_final_test.py`.
 - **Links:** `Code/outputs/dropout/09_final_test.md`, `09_final_test.json`, `09_test_predictions.csv`.
 
+### DR-28 · Data summary · step 5 (source verification of institution and years; evidence update to DR-03)
+
+- **Sub-task:** none (the data summary and the report's data description).
+- **Date:** 2026-11-10.
+- **Question:** Can the institution and the enrolment years that DR-03 recorded as unverified be verified from the source paper?
+- **Type note:** this record checks Data Summary facts. It is not one of the types in ML Guide §24.2.
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Source paper | Realinho, Machado, Baptista and Martins (2022). Predicting Student Dropout and Academic Success. *Data*, 7(11), 146, DOI 10.3390/data7110146 | M | `Appendix.md`, References |
+| Quotation 1 | "a Learning Analytic tool developed at the Polytechnic Institute of Portalegre" | M | the user's check of the paper |
+| Quotation 2 | "provide information to the tutoring team at our higher education institution" | M | the user's check of the paper |
+| Quotation 3 | students "enrolled between the academic years 2008/2009 ... to 2018/2019" | M | the user's check of the paper |
+| Quotation 4 | performance "at the end of the first and second semesters" (inputs) | M | the user's check of the paper |
+| Quotation 5 | the paper does not say "first year" | M | the user's check of the paper |
+| Affiliations | all four authors are at the Polytechnic Institute of Portalegre | M | the user's check |
+| Agent's access | the publisher's page returned HTTP 403; the agent has not read the paper | n/a | the agent's fetch |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Source verification of the data's institution and period (Data Summary, Provenance) | verified from the paper, as checked by the user | M | the institution and years are no longer open |
+| First year (Data Summary, decisions) | not in the source; this analysis reads the two semesters as the first year | M | recorded as our reading, not the source's |
+
+- **Thresholds applied:** n/a.
+- **Options considered:** keep the institution and years unverified (DR-03) · verify them from the paper, as checked by the user (chosen).
+- **Expectation:** n/a.
+- **Decision:** The data come from the authors' own institution, the Polytechnic Institute of Portalegre, and the enrolments cover 2008/2009 to 2018/2019. The paper does not say "first year"; the first-year reading is ours.
+- **Why not:** n/a.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** the user checked the paper and supplied the quotations and the affiliations. The agent did not read the paper.
+- **Supersedes / superseded by:** updates the verification status recorded in DR-03. DR-03 is otherwise unchanged. The decision in DR-03 on admissibility stands.
+- **Links:** `Appendix.md`, References and Data Summary; `Project Report.md`, Introduction, Methods and Discussion; `Attachments/SOURCE.md`.
+
 
 ## Recommendation
 
@@ -1097,7 +1135,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 **9. How the model predicts.** The model adds up the inputs, each multiplied by a weight learned from the training data, and turns the total into a probability between 0 and 1 that the student drops out. A student is flagged when that probability is at least 0.20. The L2 penalty keeps the weights small, so that no single input dominates; its strength, 0.01, was chosen by cross-validation (DR-25). Each category of a categorical input has its own weight, with rare categories grouped into "other" (DR-13). The predictions are only as good as the average student resembling those in the data: the model is not a rule for any single student.
 
-**10. Use and limits.** The model can flag students for review in this kind of course, at this kind of institution, and at a comparable time (DR-03). It has not been checked on students from another institution or period. Its error is an average over students like these; it says nothing about the worst single prediction. The test estimate has a spread of 0.032 across folds, with 885 test rows and 284 Dropout cases, so a few predictions either way move F2 noticeably. Data limits from step 1, each beside the claim it qualifies: the outcome is the status at the end of the normal course length, as the UCI page describes it, and students still Enrolled are counted as not dropped out (DR-04, DR-08). The publisher's preprocessing for outliers and missing values is not described, and the data are used as published (DR-06). No units are given for any column, and the economic columns take about ten values shared by many students (DR-02, DR-06). The institution and enrolment years are not verified (Data Summary, Provenance).
+**10. Use and limits.** The model can flag students for review in this kind of course, at this kind of institution, and at a comparable time (DR-03). It has not been checked on students from another institution or period. Its error is an average over students like these; it says nothing about the worst single prediction. The test estimate has a spread of 0.032 across folds, with 885 test rows and 284 Dropout cases, so a few predictions either way move F2 noticeably. Data limits from step 1, each beside the claim it qualifies: the outcome is the status at the end of the normal course length, as the UCI page describes it, and students still Enrolled are counted as not dropped out (DR-04, DR-08). The publisher's preprocessing for outliers and missing values is not described, and the data are used as published (DR-06). No units are given for any column, and the economic columns take about ten values shared by many students (DR-02, DR-06). The institution (the authors' own, the Polytechnic Institute of Portalegre) and the enrolment years (2008/2009 to 2018/2019) are stated in the source paper (Realinho et al., 2022), as checked by the user (DR-28).
 
 **11. Improvement history.**
 - Pass 1 (DR-22): O1 does not hold; O2 is not testable (the criterion is in F2 and E_train is a misclassification rate), treated as not holding by the user; O5 does not hold; O3 does not hold (gap 0.0095 against 2 × E_train 0.3890); O4 holds (E_train 0.1945 at least 2 × gap 0.0190). Action DX-5: more polynomial terms not offered (Property 3 = many); k-NN and Tree excluded by the must-have; more input variables: none, by the user's answer.
@@ -1164,6 +1202,8 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 34 | Title chosen by the user: Predicting first-year dropout in higher education with logistic regression. Title check: "first year" is not established from the source (the two semesters as one year); the Data 2022 paper returned HTTP 403 to the fetch. The user will provide the paper; the wording stays until it is checked. The general reach of the title is bounded by the Discussion. Open. | Project Report.md, title, Abstract, Introduction |
 | 35 | Title changed by the user to "Predicting student dropout from first-year results with logistic regression". Title check run and recorded. Matches: the outcome (Dropout yes/no, status at the end of the normal course length, Graduate and still Enrolled counted as not dropout, Intro and Abstract); the method (logistic regression, the only family compared); "first-year" in the body is always the time of prediction, not the outcome period (Abstract, Introduction, Data and evaluation, Discussion). Open: (1) "first-year results" rests on the two semesters being one year, not verified (the Data 2022 paper returned HTTP 403); (2) "from first-year results" omits the enrolment information that is also an input (Abstract: 36 inputs describing enrolment, demographics and results); (3) the title does not name higher education or Portugal, while the Discussion limits the estimate to students like those in the data. Decision pending the user. | Project Report.md, title; Appendix.md, Analysis Log |
 | 36 | Title decision by the user: keep "Predicting student dropout from first-year results with logistic regression". The enrolment inputs are stated in the Abstract and Methods, so the title is not changed for them. Still open: the first-year equivalence of the two semesters (point 1 of row 35), pending the paper from the user. | Project Report.md, title; Appendix.md, Analysis Log |
+| 37 | Source verified by the user from Realinho et al. (2022), *Data* 7(11), 146: the dataset is part of a tool developed at the Polytechnic Institute of Portalegre, the paper says the models serve the tutoring team at the authors' own institution, and the enrolments are for 2008/2009 to 2018/2019; all four authors are at the institute. The agent did not read the paper (HTTP 403). The institution and years are verified (DR-28). The paper does not say "first year". | DR-28; `Appendix.md` Data Summary and References; `Project Report.md`; `Attachments/SOURCE.md` |
+| 38 | Title decision by the user: option 1, keep "Predicting student dropout from first-year results with logistic regression". The first-year reading (the two semesters as the first year) is recorded as our reading, not the source's. Row 35's open point on the first-year equivalence is closed in that form. | Project Report.md, Data and evaluation; Appendix.md, Data Summary |
 
 ## Code Summary
 
@@ -1261,3 +1301,4 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 - Lindholm, A., Wahlström, N., Lindsten, F. and Schön, T. B. (2026). *Machine Learning – A First Course for Engineers and Scientists*, 2nd edition, online draft of 1 September 2026. [https://smlbook.org/](https://smlbook.org/). Details taken from `ML Guide.md`. Not yet checked against the title page on smlbook.org; the local copy in `Attachments/smlbook/` is not in the workspace.
 - Realinho, V., Vieira Martins, M., Machado, J. and Baptista, L. (2021). Predict Students' Dropout and Academic Success [Dataset]. UCI Machine Learning Repository. [https://doi.org/10.24432/C5MC89](https://doi.org/10.24432/C5MC89). Checked on the UCI dataset page and its metadata on 10 November 2026.
+- Realinho, V., Machado, J., Baptista, L. and Martins, M. V. (2022). Predicting Student Dropout and Academic Success. *Data*, 7(11), 146. [https://doi.org/10.3390/data7110146](https://doi.org/10.3390/data7110146). Quotations and the enrolment years checked by the user against the paper; the agent's fetch of the paper returned HTTP 403, so the agent has not read it.

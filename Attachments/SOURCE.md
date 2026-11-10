@@ -88,7 +88,7 @@ The files are the original download and are never modified. The shot tables deri
 | Format | CSV, semicolon-separated, UTF-8 with a byte-order mark, CRLF line endings, header row |
 | Size and rows | 533,230 bytes · 4,424 data rows × 37 columns (36 inputs and `Target`) |
 | SHA-256 | `3ef126de5cefff26eb11fbb4237f1a1401cb64b488e2f1d598c23cedeb4c45ae` |
-| Institution | Not named on the UCI page ("a higher education institution" in Portugal). As stated by the user, all four creators are at the Instituto Politécnico de Portalegre, so it is likely the source. **Unverified.** |
-| Enrolment years | Not given on the UCI page. As stated by the user, Realinho et al. (2022, *Data*) give 2008/09 to 2018/19. **Unverified:** that paper has not been opened. |
+| Institution | The authors' own institution: the Polytechnic Institute of Portalegre (Realinho et al., 2022). Verified from the paper, as checked by the user: the dataset is part of "a Learning Analytic tool developed at the Polytechnic Institute of Portalegre". The UCI page does not name it. |
+| Enrolment years | 2008/2009 to 2018/2019, from Realinho et al. (2022, *Data*, 7(11), 146, DOI [10.3390/data7110146](https://doi.org/10.3390/data7110146)), as checked by the user. The UCI page gives no years. |
 
 The file is the original download and is never modified. Citation as given by UCI: Realinho, Vieira Martins, Machado and Baptista (2021), with the DOI above.
