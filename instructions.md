@@ -289,6 +289,15 @@ Once the user has agreed, **draft the `Methods` paragraph for the sub-task in `P
 - the why-not code for every other configuration;
 - the flags.
 
+**4f′ — Write up the selection, before the test.** Once the recommendation exists and before the user is asked about the test set, write what cross-validation showed into `Project Report.md`, so that it is fixed in the report before any test result is known (the book's order: choose on validation data, then test once, SML pp. 74, 328):
+
+- revise the draft `Methods` paragraph from 4b so it describes exactly what was done before the test. Remove completely anything that was not used, unless the user asks for it; a diagnosis pass that changed nothing reported stays in `Appendix.md`;
+- add the first `Results` paragraph for the sub-task, under its sub-heading: how the configurations compared in cross-validation against the baseline, with the variation across folds; the recommended configuration and its tuned hyperparameters; and the selection confidence with its factors;
+- add evaluation figures made from the training data and the cross-validation only (for example the comparison of configurations and the learning curve, SML p. 334), proposed to the user first, under the figure rules of step 3;
+- record the write-up in the `Analysis Log`.
+
+Nothing written here is reworded after the test because of the test result. If something has to change, the change and its reason are recorded in the `Analysis Log`.
+
 **Ask the user to approve using the test set.** It can be used once.
 
 **4g — Final evaluation.** Refit the recommended configuration on all training data and evaluate it once on the test set, with the baseline evaluated on the same test set. Record the `FINAL` Decision Record:
@@ -301,7 +310,7 @@ The test set is not used again for this sub-task. If the result leads anyone to 
 
 The uncertainty of the test result is the spread (standard deviation) of the agreed metric across the outer cross-validation folds, for the recommended configuration and threshold, reported with the number of test rows and, for classification, the number of positives. It rests on the book's k-fold cross-validation and its point that a hold-out estimate varies less the larger the hold-out set; using the fold spread as the uncertainty is our step, `[B→I SML pp. 71–73]`. This is the method the Heart Failure analysis used.
 
-**4h — Write up.** Assemble the Recommendation Report in the `Recommendation` section of `Appendix.md` from the Decision Records. Then add the `Results` paragraph for the sub-task to `Project Report.md`, with the evaluation figures, and revise the draft `Methods` paragraph from 4b so it describes exactly what was done:
+**4h — Write up.** Assemble the Recommendation Report in the `Recommendation` section of `Appendix.md` from the Decision Records. Then add the test result to the sub-task's `Results` in `Project Report.md`, after the paragraph written at 4f′, with any test figures, and check the `Methods` paragraph still describes exactly what was done:
 
 - add what the diagnosis loop changed, if it changed what is reported;
 - **remove completely anything that was not used**: a configuration dropped, a method set aside, a check that changed nothing. It does not stay in the report, not even as a note that it was set aside, unless the user asks for it. The record of it is in `Appendix.md`;
@@ -319,7 +328,7 @@ The rules that govern this step:
 - **Recompute the number that carries the claim independently, wherever that is cheap.** Recompute the test metric from the saved test predictions with a separate call, rather than reading it out of the core's summary. Two routes to the same figure catch both a reporting slip and stale output; one route catches neither.
 - **Every number in the report comes from the generated output** — from the core's recorded outputs or the evaluation scripts. Never from memory, never read off a figure, never carried over from an earlier version of the analysis.
 - **Write the finding as a short paragraph in `Results`.** One paragraph per sub-task, added as soon as the test result exists.
-- **Keep `Methods` in step with `Results`, using the same sub-headings in the same order.** The first pair is `Data and evaluation` (step 2) and `The training data` (step 3); then one sub-heading per sub-task. The `Methods` paragraph is drafted at 4b and made final at 4h, when the `Results` paragraph is written, so the two are finished together. The two sections are written in parallel, so a reader can move between what was done and what was found without hunting.
+- **Keep `Methods` in step with `Results`, using the same sub-headings in the same order.** The first pair is `Data and evaluation` (step 2) and `The training data` (step 3); then one sub-heading per sub-task. The `Methods` paragraph is drafted at 4b, made to match what was done at 4f′, when the first `Results` paragraph is written, and checked again at 4h. The two sections are written in parallel, so a reader can move between what was done and what was found without hunting.
 - **`Methods` says what was done and why that choice; `Results` says what came out.** In `Methods`: the configurations compared and how they were chosen, the nested cross-validation, the recommendation rule, and the final evaluation. In `Results`: the recommended configuration, the test result against the baseline, a summary of the ranking, and the selection confidence.
 - **`Methods` describes only what `Results` reports.** If a diagnostic, statistic or robustness check does not appear in `Results`, it does not appear in `Methods` either — it goes in `Appendix.md`. Naming a test in `Methods` and never reporting its outcome leaves the reader hunting for a result that is not there.
 - **Keep the report clean.** It should read as an argument, not a technical log. Rule IDs, provenance tags, threshold values, CV tables beyond a summary, diagnosis passes and why-not codes belong in the Appendix: in the Decision Records and the Recommendation Report.
