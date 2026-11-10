@@ -85,3 +85,9 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **What changed.** A new sub-step, 4f′, between the recommendation and the test: `Methods` is made to match what was done, a first `Results` paragraph reports the cross-validation comparison, the recommended configuration and its selection confidence, and figures from cross-validation (such as the comparison of configurations and the learning curve) are added. Only then is the user asked about the test set. At 4h the test result is added after it; nothing written at 4f′ is reworded because of the test result, and any change is logged.
 - **Why.** "Shouldn't we write up training and maybe add some figures before moving on to test?" Writing the selection down first fixes it in the report before the test result is known, following the book's order: choose on validation data, then test once (SML pp. 74, 328).
 
+### 15. Figures in the style of the book (10 November, @@HASH@@)
+
+- **What changed.** A new style module, `Code/sml_style.py`, draws every figure the way the book draws its data figures: serif type, a full box with small inward ticks, no grid, a legend with a thin black frame, series told apart by line style as well as colour, and the book's own colours (sampled from rendered pages of the local copy: training error coral, held-out error lavender, classes red and blue). The light and dark variants, one colour per variable and readable type stay as workspace rules. `Code/viz_style.py` is kept for the Heart Failure analysis, whose figures are not redrawn.
+- **Why.** "Could you standardise the figures format to keep in line with those in the SML book."
+- **In practice.** The xG analysis's figures were redrawn in the new style.
+
