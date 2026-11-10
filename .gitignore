@@ -20,8 +20,9 @@ __pycache__/
 # Obsidian local trash
 .trash/
 
-# The SML book is read at smlbook.org, not stored here (licence: personal use only)
+# The SML book: a local copy in Attachments/smlbook/, downloaded on first use; never committed (licence: personal use only)
 sml-book*.pdf
+Attachments/smlbook/
 
 # Sample Report from the upstream template (removed in b1759cb); kept locally, not tracked
 Sample Report/
@@ -34,3 +35,7 @@ Attachments/Mobile Price/
 
 # Patient-level derived sepsis tables (ODbL): kept locally, never committed
 Code/outputs/sepsis/private/
+
+# StatsBomb open data 2015/16 (raw JSON, 409 MB) and the shot tables derived from it: rebuilt by Code/xg/01_download_shots.py
+Attachments/statsbomb-open-data-2015-16/raw/
+Code/outputs/xg/*.csv
