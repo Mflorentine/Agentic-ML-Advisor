@@ -91,7 +91,7 @@ On 16 October 2026 David added the `Purpose` section at the top of `instructions
 - **Why.** "Could you standardise the figures format to keep in line with those in the SML book."
 - **In practice.** The xG analysis's figures were redrawn in the new style.
 
-### 16. Check the title against the content (10 November, @@HASH@@)
+### 16. Check the title against the content (10 November, `149c2f5`)
 
 - **What changed.** Whenever a title is chosen or changed, the agent reads the report against it: whether each word describes what was done and found, whether the report spends its space on what the title puts first, and whether the title could lead a reader to expect a claim the report does not make. It reports where they match and where they do not, and offers both remedies, a title that fits or a change to the content that fits the title without overclaiming; the user decides (`instructions.md`, step 5).
 - **Why.** "Does the content reflect the title? You should check this and consult with user on it."
