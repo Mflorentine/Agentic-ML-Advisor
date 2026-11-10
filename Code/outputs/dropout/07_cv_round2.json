@@ -1,0 +1,85 @@
+{
+  "round": 2,
+  "configurations": [
+    "Baseline",
+    "Logistic + L2",
+    "Logistic + poly + L2"
+  ],
+  "summary": {
+    "Baseline": {
+      "F2_mean": 0.0,
+      "F2_sd": 0.0,
+      "E_train_mean": 0.32127719289946893,
+      "E_val_mean": 0.32127686816792306
+    },
+    "Logistic + L2": {
+      "F2_mean": 0.8311143403872927,
+      "F2_sd": 0.03228846692476781,
+      "E_train_mean": 0.19452986525625746,
+      "E_val_mean": 0.20402122245162527
+    },
+    "Logistic + poly + L2": {
+      "F2_mean": 0.8304653814133698,
+      "F2_sd": 0.027390334568218024,
+      "E_train_mean": 0.17562981095668745,
+      "E_val_mean": 0.19101726924985196
+    }
+  },
+  "margins_mean_sd": {
+    "L2_vs_baseline": {
+      "mean": 0.8311143403872927,
+      "sd": 0.03228846692476781
+    },
+    "poly_vs_baseline": {
+      "mean": 0.8304653814133698,
+      "sd": 0.027390334568218024
+    },
+    "poly_vs_L2": {
+      "mean": -0.0006489589739230416,
+      "sd": 0.011597617289086579
+    }
+  },
+  "leader": "Logistic + L2",
+  "C1_margin_over_runner_up": "none",
+  "C2_margin_over_baseline": "clear",
+  "outer_folds": 10,
+  "seed": 2026,
+  "core": "Code/dropout/cv.py (interim core, not reviewed)",
+  "core_sha256": "fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29",
+  "poly_lambda_per_fold": [
+    0.001,
+    0.001,
+    0.001,
+    0.001,
+    0.01,
+    0.01,
+    0.001,
+    0.0001,
+    0.01,
+    0.001
+  ],
+  "poly_degree_per_fold": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "poly_threshold_per_fold": [
+    0.15,
+    0.2,
+    0.15,
+    0.2,
+    0.2,
+    0.2,
+    0.15,
+    0.2,
+    0.2,
+    0.15
+  ]
+}

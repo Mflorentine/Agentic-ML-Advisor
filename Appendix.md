@@ -95,6 +95,10 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 `Code/dropout/06_cv_round1.py` with `Code/dropout/cv.py` (interim core, not reviewed). Round 1 is the baseline and Logistic + L2 on the 3,539 training students, on 10 stratified outer folds (seed 2026). The full table is in `Code/outputs/dropout/06_cv_round1.md`; the decision is DR-20.
 
+### Cross-validation, round 2 (step 4d)
+
+`Code/dropout/07_cv_round2.py` with the same `cv.py`, on the same ten outer folds. Logistic + poly + L2 has mean F2 0.8305 against 0.8311 for Logistic + L2; the fold-by-fold difference is −0.0006 with SD 0.0116. Table: `Code/outputs/dropout/07_cv_round2.md`. Decision and prior agreement: DR-21 and DR-18.
+
 ## Decision Records
 
 ### DR-01 · Admissibility · step 1
@@ -690,7 +694,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Decision:** Keep the baseline, Logistic + L2 and Logistic + poly + L2. None is DISF. The prior order is Logistic + L2, then Logistic + poly + L2.
 - **Why not:** n/a; no configuration is excluded at this step.
 - **Confidence:** n/a.
-- **Outcome vs expectation:** n/a until round 2 (4d).
+- **Outcome vs expectation:** filled in by DR-21 (round 2): **agree**. Logistic + L2 is first by mean F2 (prior: first), and Logistic + poly + L2 ties with it (margin −0.0006, SD 0.0116), which is the expected tie.
 - **User involvement:** the method is for the user's agreement at 4b. The property values come from the user's answers recorded in DR-08, DR-09 and DR-15.
 - **Supersedes / superseded by:** none.
 - **Code version:** `Code/dropout/prior.py`, SHA-256 `746cce17fc35a82f60c0f3d895787eb1fac42b18d8e1e5631cb08c0042aab24c` (interim core, not reviewed). Run by `Code/dropout/04b_prior.py`.
@@ -769,6 +773,94 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Note on the reference:** the flag-everyone F2 is reported beside the model as §16 requires. It is not the baseline and decides nothing.
 - **Links:** `Code/outputs/dropout/06_cv_round1.md`, `06_cv_round1.csv`, `06_cv_round1.json`.
 
+### DR-21 · CV · step 4d (round 2: Logistic + poly + L2 on the same folds)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** How does Logistic + poly + L2 compare with Logistic + L2 and the baseline on the same outer folds, and does the CV order agree with the prior?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Baseline | mean F2 0.0000, SD 0.0000; E_train 0.3213, E_val 0.3213 | CV | `Code/outputs/dropout/07_cv_round2.md` |
+| Logistic + L2 | mean F2 0.8311, SD 0.0323; E_train 0.1945, E_val 0.2040 | CV | as above |
+| Logistic + poly + L2 | mean F2 0.8305, SD 0.0274; E_train 0.1756, E_val 0.1910 | CV | as above |
+| Margin, Logistic + poly + L2 minus Logistic + L2 | mean −0.0006, SD 0.0116 (fold by fold) | CV | as above |
+| Margin over the baseline | Logistic + L2 +0.8311 (SD 0.0323); Logistic + poly + L2 +0.8305 (SD 0.0274) | CV | as above |
+| Poly chosen settings | degree 2 in all folds; L2 strength 0.001 in 6 folds, 0.01 in 3, 0.0001 in 1; threshold 0.15 or 0.20 | CV | `Code/outputs/dropout/07_cv_round2.json` |
+| Prior (DR-18) | Logistic + L2 rank 1 (score 0); Logistic + poly + L2 rank 2 (score −1) | M | `Code/outputs/dropout/04b_prior.md` |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| C1, margin over the runner-up: clear if at least 1 × spread; moderate if at least 0.5 ×; otherwise none | none (|−0.0006| < 0.5 × 0.0116) | `[I]` | the two configurations are within noise |
+| C2, margin over the baseline: clear if at least 1 × spread | clear for the leader, Logistic + L2 (0.8311 ≥ 0.0323) | `[I]` | none |
+| Prior agreement: agree if the CV winner is the prior's first | agree: the CV leader by mean F2 is the prior's first | `[B SML p. 331]` (ordering rule as in §15) | none |
+| §19 candidates: the eligible configuration with the best CV mean, plus any eligible configuration whose margin to it is none | both are eligible (C2 clear for each); both are candidates | `[I]` | step 4f applies the choice rule |
+
+- **Thresholds applied:** C1 (1 × and 0.5 × the spread, `[I]`), compared with −0.0006 against 0.0116 and 0.0058. C2 (1 × the spread, `[I]`), compared with 0.8311 against 0.0323 (Logistic + L2) and 0.8305 against 0.0274 (poly).
+- **Options considered:** Logistic + L2 (leader by mean F2) · Logistic + poly + L2 (runner-up, margin none).
+- **Expectation:** n/a for round 2 itself (DR-18 gives the expectation). The outcome is recorded in DR-18.
+- **Decision:** Round 2 is complete on the same folds. The two configurations do not differ beyond noise on the margin. Both beat the baseline clearly. The recommendation (4f) applies §19 and is not decided here.
+- **Why not:** n/a: no configuration is dropped at this step.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a (this record is the outcome for DR-18).
+- **User involvement:** informed. The method was approved at 4b.
+- **Supersedes / superseded by:** none.
+- **Breadth note:** two configurations and the baseline compared; no configuration was added after the prior.
+- **Code version:** `Code/dropout/cv.py`, SHA-256 `{SHA}` (interim core, not reviewed; unchanged since round 1). Run by `Code/dropout/07_cv_round2.py`.
+- **Links:** `Code/outputs/dropout/07_cv_round2.md`, `07_cv_round2.csv`, `07_cv_round2.json`.
+
+### DR-22 · DX · step 4e (diagnosis pass 1, leading configuration Logistic + L2)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Which observation holds for the leading configuration, and which action follows (ML Guide §18)?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| E_train (mean over outer folds, misclassification rate: Property 10 = balanced) | 0.1945 | CV | `Code/outputs/dropout/06_cv_round1.md` |
+| E_val (mean over outer folds) | 0.2040 | CV | as above |
+| Gap = E_val − E_train | 0.0095 | CV | computed |
+| C2 margin over the baseline | clear | CV | DR-20 |
+| Chosen L2 strength (most common) | 0.001; per-fold values 0.0001, 0.001, 0.01: none at the grid edge in most folds | CV | `Code/outputs/dropout/06_cv_round1.json` |
+| Chosen threshold (most common) | 0.15; per-fold 0.15 or 0.20: not at the grid edge (0.05 or 0.95) | CV | as above |
+| Learning curve, C3 | not computed in this pass (see note) | n/a | n/a |
+
+- **Observations (in the §18 order O1 > O2 > O5 > O3 > O4 > O6):**
+
+| Observation | Test | Result | Note |
+| --- | --- | --- | --- |
+| O1 | C2 not clear | does not hold | C2 is clear |
+| O2 | E_train worse than the success criterion, when in the same units | **not testable** | the criterion is stated in F2; E_train is a misclassification rate (Property 10 = balanced, §16). The units differ, so the test cannot be made. Raised with the user. |
+| O5 | selected value at the grid edge in most outer folds | does not hold | λ and threshold interior |
+| O3 | gap ≥ 2 × E_train (0.0095 against 0.3890) | does not hold | |
+| O4 | E_train ≥ 2 × gap (0.1945 against 0.0190); Property 10 balanced, so no extra condition | **holds** | |
+| O6 | C3 = limited | not computed | not reached: O4 holds first |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| O4 underfitting, ratio test | holds | `[B→I SML p. 334]` + `[I]` ratio 2 | the action is DX-5 |
+| DX-5 actions: more polynomial terms only if Property 3 = few; add k-NN or Tree if not already compared; ask whether more input variables exist | poly not offered (Property 3 = many; compared in round 2); k-NN and Tree excluded by the must-have (USER, DR-16, DR-17), so not offered; **asking about more input variables needs the user** | `[B SML pp. 333–334]` | the loop stops for the user's answer |
+
+- **Thresholds applied:** the 2 × ratio (`[I]`), compared with E_train 0.1945 against 0.0190 (O4) and gap 0.0095 against 0.3890 (O3).
+- **Options considered:** DX-5 (chosen as the action that holds) · DX-2 (rethink the problem, for O2, if O2 held) · DX-1 (not triggered).
+- **Expectation:** the action is expected to show a lower E_train for more flexibility or more information; no expectation is written for a stop.
+- **Decision:** O4 holds. The only available DX-5 action asks about more input variables, which needs the user. The loop stops here until the user answers.
+- **Why not:** DX-3, DX-4 and DX-6 are not triggered, because O5, O3 and O6 do not hold (O6 not reached). O2 is not testable and is raised.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** asked (pending): O2 treatment, and the DX-5 question about more input variables.
+- **Supersedes / superseded by:** none.
+- **Stopping check:** none of S1–S6 applies yet; the loop waits for the user (S5 if the user stops it).
+- **Note on O6:** the learning curve (§16: training fractions 10% to 100% on the outer folds) is needed for C3 at 4f. It is not computed here, because O4 holds first in the order. It will be computed, with its code shown for approval, when the loop resumes.
+- **Code version:** the observations come from `Code/dropout/cv.py` (SHA-256 `fc11744d62cf6dc3e9cdf2f1591edeced0610fdf2a1d3a73b023071cb2a0cd29`) and the CV outputs (round 1, round 2).
+- **Links:** `Code/outputs/dropout/06_cv_round1.md`, `Code/outputs/dropout/07_cv_round2.md`.
+
 
 ## Recommendation
 
@@ -803,6 +895,8 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 22 | Step 4b: the method agreed by the user (DR-18 PRIOR; DR-19 threshold tuned inside each configuration, poly for non-binary inputs). Drafted the `Methods` sub-section `Dropout after year one` in `Project Report.md`. Departure from §16's threshold wording recorded; FRAMEWORK change applied the same day. No cross-validation run. | DR-18, DR-19; `Project Report.md`, Methods |
 | 23 | FRAMEWORK (user): §16 decision threshold wording changed to match DR-19 (tuned inside each configuration's inner CV when the selection metric is F2 or another F_β). `ML Guide.md` version note and §16 row updated; interim core unchanged. Not committed. | `ML Guide.md`; DR-19 |
 | 24 | Step 4c, round 1. Approved the cross-validation code, ran it on the training rows (about three minutes). First run failed on a type error in the grouping step; fixed without changing the method and re-run. Baseline mean F2 0.0000; Logistic + L2 mean F2 0.8311 (SD 0.0323), a clear margin on every fold. Round 2 may start. No test set read. | DR-20; `Code/dropout/cv.py`, `Code/dropout/06_cv_round1.py`; `Code/outputs/dropout/06_cv_round1.md` |
+| 25 | Step 4d, round 2: Logistic + poly + L2 on the same ten folds (background run, about 10 minutes). Mean F2 0.8305 (SD 0.0274); margin over Logistic + L2 −0.0006 (SD 0.0116), none. Prior agreement: agree. No test set read. | DR-21, DR-18 (outcome field); `Code/dropout/07_cv_round2.py`; `Code/outputs/dropout/07_cv_round2.md` |
+| 26 | Step 4e, diagnosis pass 1 (DR-22). Observations for Logistic + L2 computed from the CV means: O1 no; O2 not testable (criterion in F2, E_train a misclassification rate); O5 no; O3 no; O4 holds, so DX-5 is the action; its only available step asks about more input variables, which needs the user. The loop stops for the user's answer. Learning curve not yet computed. No test set read. | DR-22; `Code/outputs/dropout/06_cv_round1.md`, `07_cv_round2.md` |
 
 ## Code Summary
 
@@ -869,6 +963,11 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 
 - Step 4c, round 1. Reads the data and the training split, runs the baseline and Logistic + L2, writes `Code/outputs/dropout/06_cv_round1.csv`, `.md` and `.json`.
 - Run: `cd Code && uv run python dropout/06_cv_round1.py`. Seed 2026. About three minutes.
+
+### `Code/dropout/07_cv_round2.py`
+
+- Step 4d, round 2. Runs Logistic + poly + L2 with `cv.py` on the same outer folds as round 1 and combines it with the round-1 rows. Computes the margins, C1 and C2. Writes `Code/outputs/dropout/07_cv_round2.csv`, `.md` and `.json`.
+- Run: `cd Code && uv run python dropout/07_cv_round2.py`. Seed 2026. About 10 minutes.
 
 
 ## References
