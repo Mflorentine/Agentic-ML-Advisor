@@ -1,6 +1,6 @@
 {
   "core": "Code/dropout/admissible.py (interim core, not reviewed)",
-  "core_sha256": "f1b5f5731021d5cddf27b8497cd5178cc48351671d4c3ad874edc7ffe662e6df",
+  "core_sha256": "6996334d85a3e4caddb20b1982e182a29d9b892e9d86d581a589b9ec2a39df68",
   "must_haves": [
     "Property 6: probabilities = yes"
   ],
@@ -14,9 +14,7 @@
     "exact_collinearity": true
   },
   "admissible_configurations": [
-    "Logistic",
     "Logistic + L2",
-    "Logistic + poly",
     "Logistic + poly + L2"
   ],
   "rows": [
@@ -61,9 +59,9 @@
       "family": "Logistic",
       "poly": false,
       "l2": false,
-      "admissible": true,
-      "code": "",
-      "reason": ""
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "MOD-2: parameters >= n_train or exact collinearity; unregularised fit inadmissible"
     },
     {
       "configuration": "Logistic + L2",
@@ -79,9 +77,9 @@
       "family": "Logistic",
       "poly": true,
       "l2": false,
-      "admissible": true,
-      "code": "",
-      "reason": ""
+      "admissible": false,
+      "code": "EXCL",
+      "reason": "MOD-2: parameters >= n_train or exact collinearity; unregularised fit inadmissible"
     },
     {
       "configuration": "Logistic + poly + L2",

@@ -611,8 +611,46 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 - **Confidence:** n/a.
 - **Outcome vs expectation:** n/a.
 - **User involvement:** the must-have is the user's (DR-15); the core was approved before it ran.
-- **Supersedes / superseded by:** none.
+- **Supersedes / superseded by:** superseded by DR-17 (MOD-2 now covers logistic regression, ML Guide §12, amended 10 November 2026). Kept as recorded under the earlier rule.
 - **Code version:** `Code/dropout/admissible.py`, SHA-256 `f1b5f5731021d5cddf27b8497cd5178cc48351671d4c3ad874edc7ffe662e6df` (interim core, not reviewed). Run by `Code/dropout/04a_admissible_set.py`.
+- **Links:** `Code/outputs/dropout/04a_admissible_set.md`, `Code/outputs/dropout/04a_admissible_set.json`.
+
+### DR-17 · ADMSET · step 4a (supersedes DR-16)
+
+- **Sub-task:** dropout after year one.
+- **Date:** 2026-11-10.
+- **Question:** Which of the 14 structural configurations are admissible under MOD-2 as amended on 10 November 2026?
+- **Evidence:**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Property 1: output type | binary | M | DR-08, DR-11 |
+| Property 9: separability | no | T | DR-12 |
+| Parameters including the intercept | 131; below n_train (3,539) | T | `Code/outputs/dropout/04a_admissible_set.json` |
+| Rank of the training design | 120 of 131: exactly collinear (11 dependencies, `Code/outputs/dropout/04a_dependencies.md`) | T | as above |
+| Must-have | Property 6: probabilities = yes | M | DR-15 |
+| Rule amendment | MOD-2 covers unregularised Logistic and Logistic + poly; ML Guide §12, amended 10 November 2026 (FRAMEWORK) | M | `ML Guide.md` version note, §12, §9 |
+
+- **Rules applied:**
+
+| Rule | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Task gate, Property 1 = binary | admits Logistic, k-NN and Tree | `[B SML pp. 17, 49–57]` | eight configurations EXCL (Linear, Poisson, Exponential, with and without L2) |
+| Must-have, Property 6 = yes | admits Logistic only | `[B→I SML pp. 50, 53–54]` | k-NN and Tree USER |
+| MOD-1, Property 9 = yes | not triggered | `[B SML p. 61]` | none |
+| MOD-2, amended: exact collinearity makes unregularised Logistic and Logistic + poly inadmissible | triggered (rank 120 of 131) | `[B→I SML pp. 46–47, 61, 63, 65]` | Logistic and Logistic + poly EXCL |
+
+- **Thresholds applied:** n/a. The parameter count is compared with n_train: 131 against 3,539.
+- **Options considered:** all 14 structural configurations (section 9).
+- **Expectation:** n/a.
+- **Decision:** Admissible: Logistic + L2 and Logistic + poly + L2. Two of 14.
+- **Why not:** Logistic and Logistic + poly: EXCL, MOD-2 (non-unique coefficients without L2 under exact collinearity). Linear, Poisson and Exponential (with and without L2): EXCL, task gate. k-NN and Tree: USER, must-have Property 6.
+- **Consequence for 4b:** the simple-first configuration (SEQ-2) is Logistic + L2. Cross-validation compares two configurations and the baseline.
+- **Confidence:** n/a.
+- **Outcome vs expectation:** n/a.
+- **User involvement:** the user asked for the FRAMEWORK change (MOD-2 covers logistic regression), and set the must-have (DR-15).
+- **Supersedes / superseded by:** supersedes DR-16.
+- **Code version:** `Code/dropout/admissible.py`, SHA-256 `6996334d85a3e4caddb20b1982e182a29d9b892e9d86d581a589b9ec2a39df68` (interim core, not reviewed). Guide: `ML Guide.md` v3.1 with the 10 November 2026 FRAMEWORK entry. Run by `Code/dropout/04a_admissible_set.py`.
 - **Links:** `Code/outputs/dropout/04a_admissible_set.md`, `Code/outputs/dropout/04a_admissible_set.json`.
 
 
@@ -644,6 +682,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 | 17 | Step 4a begun. The user set class probabilities as a must-have (DR-15). Approved the admissible-set code and ran it on the training design: four of 14 configurations admissible (Logistic family). Eight excluded by the task gate; k-NN and Tree excluded by the must-have. Two linear dependencies in the design are not yet identified. | DR-15, DR-16; `Code/dropout/admissible.py`, `Code/dropout/04a_admissible_set.py`, `Code/outputs/dropout/04a_admissible_set.md` |
 | 18 | Recorded the step 4a outputs; no test set read. | `Appendix.md` Decision Records |
 | 19 | Identified the 11 linear dependencies in the 4a design (nine one-hot redundancies, and two data facts in the training rows: attendance follows course, and International is the complement of the Portuguese-nationality column). No model fitted. | DR-16 note |
+| 20 | FRAMEWORK (user): MOD-2 covers logistic regression. Amended ML Guide §9, §12 and §13 (naming of GLMs), the interim core `admissible.py`, and the rule text. Re-ran 4a: two admissible configurations (Logistic + L2, Logistic + poly + L2). DR-16 superseded by DR-17. Nothing committed; `Notes/Davids Changes.md` left unchanged at the user's request. | DR-16, DR-17; `ML Guide.md`; `Code/dropout/admissible.py`; `Code/outputs/dropout/04a_admissible_set.md` |
 
 ## Code Summary
 
@@ -693,7 +732,7 @@ Computed by `Code/dropout/03_properties_9_10.py` with the interim core `Code/dro
 ### `Code/dropout/admissible.py` (interim core, not reviewed)
 
 - Step 4a. The admissible-set logic for the 14 structural configurations: the task gate (section 12), must-haves stated by the user, MOD-1 and MOD-2. Returns one record per configuration with its why-not code (EXCL or USER). Fits nothing.
-- Imported by `04a_admissible_set.py`.
+- Imported by `04a_admissible_set.py`. MOD-2 covers Logistic as well (ML Guide §12, amended 10 November 2026; DR-17).
 
 ### `Code/dropout/04a_admissible_set.py`
 
