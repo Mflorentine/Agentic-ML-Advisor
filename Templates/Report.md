@@ -2,13 +2,17 @@
 
 *Chosen by the user at the end of step 5, from the titles suggested once the `Discussion` is written.*
 
+## Abstract
+
+*A first draft at the end of step 1, headed "Draft", rewritten at the end of every step to say what is being done; made final in step 5, once the `Discussion` is written.*
+
 ## Introduction
 
 *The problem and its sub-tasks go in at the end of step 2, before anything is trained.*
 
 ## Methods
 
-*Written in step 4, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
+*Drafted in step 4b, once the method is agreed, and made final in step 4h, one sub-heading per sub-task, in step with `Results`: how candidate configurations were chosen, how they were compared (nested cross-validation), how the recommendation was decided, and how the final model was evaluated.*
 
 ## Results
 
