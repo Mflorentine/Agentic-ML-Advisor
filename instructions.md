@@ -122,6 +122,7 @@ This workspace is for working through a data analysis **one step at a time, with
   - No internal codes in a message: no Property or Admissibility numbers, no MOD-, DR- or rule labels, no step shorthand such as "4b". Name a check or property in words, with its short name in brackets and without its number, for example *"whether several rows belong to the same person (called grouped or time-ordered rows)"*, and link `Glossary.md` the first time it is raised.
   - Name files by file name, so the user can find them (for example `Appendix.md`), but not the record labels inside them.
   - A plain explanation counts within the five-line limit above; the user can ask for more.
+  - Explain the user's own analysis, not the general procedure: say what happened in their data and why, in at most five lines. The general procedure stays in `ML Guide.md`. This does not change *Explaining concepts*: when the user asks what a concept means, explain the concept, using their own data as the example.
   - Each sentence must still be correct. Precise terms, numbers and codes stay in `Appendix.md`.
   - This rule governs the conversation only. `Project Report.md` and `Appendix.md` keep the book's terms.
 - The steps below are the agreed order of work. Announce which step you are on when it is not obvious.
