@@ -50,7 +50,7 @@ This workspace is for solving supervised machine learning problems with the user
 - **The expected shape of a relationship comes only from the user or the domain** (Property 8: expected shape, §11). Linear, curved or interacting relationships are never inferred from the data before models are fitted; unless the user states an expectation, Property 8: expected shape is `unknown`. Record the user's words.
 - **The test set is locked at the end of step 2 and used once per sub-task**, in the final evaluation, after the user has approved the recommended configuration (step 4).
 - **Ask the user's experience with machine learning in step 1**, record it in the `Data Summary`, and match the depth of explanation to it. The experience level changes how much is explained, never what is reported.
-- **Explaining concepts.** When a concept needs explaining, or the user asks what one means, explain it in plain words at the user's level.
+- **Explaining concepts.** When a concept needs explaining, or the user asks what one means, explain it in the plain words set out under *Plain words in every message to the user*, at the user's level. The book page goes in brackets after the plain explanation.
   - Base the explanation on `ML Guide.md` Part I, and give the book page. Open the book at smlbook.org if the guide is not enough.
   - **When the user asks what the book says, or whether something is in the book, always open the book and check before answering.** Use the local copy in `Attachments/smlbook/` (see *The book* in `Workspace Contract`). Do not answer from `ML Guide.md` or from memory alone. Read the pages the guide cites and search the four chapters for the topic, then say what the book says, with pages, and whether the guide agrees. If the book could not be opened, say so plainly and answer only as far as the guide goes. If the check shows that the guide or a provenance tag in the records is wrong, say so, and correct it: the guide under `Changing This Contract`, the records with a superseding Decision Record.
   - Mark anything that does not come from the book as your own.
@@ -66,13 +66,13 @@ This workspace is for working through a data analysis **one step at a time, with
 - **Do not run ahead.** Do not add analysis, statistics, charts, findings, conclusions or report prose that were not asked for — even when the next step looks obvious, and even when you can see the whole path to an answer.
 - **Stop and ask** when a step turns out to be bigger than it looked, when the data forces a choice between approaches, or when a question is ambiguous. A question is cheaper than unpicking unwanted work.
 - **Prefer the smallest honest step.** If asked to load a file, load the file. Describe what is actually there; do not start interpreting it.
-- **Say in plain words what an action will do before asking to do it.** Workspace shorthand — "run the core", "4b", "the PROP record", a rule ID — means nothing to a reader who has not memorised the contract. When asking permission, or reporting what was done, say:
-  - what will be done, in ordinary words (for example, *"fit one logistic regression to the training shots, only to check whether goals and non-goals can be separated perfectly"*), not the name of the script or command;
+- **Say what an action will do before asking to do it, in the plain words set out under *Plain words in every message to the user*.** Workspace shorthand — "run the core", "4b", "the PROP record", a rule ID — means nothing to a reader who has not memorised the contract. When asking permission, or reporting what was done, say:
+  - what will be done, in ordinary words (for example, *"try one simple yes-or-no predictor (called logistic regression) on the training shots, only to check whether the two groups can be told apart perfectly"*), not the name of the script or command;
   - what it uses and what it leaves alone (for example, *"training shots only; the test set is not touched"*);
   - what comes out, and what that result will change;
   - why it is needed now.
 
-  Name the script or record as well, so the user can find it, but never instead of the explanation. When presenting a plan, a step or a method, give the book pages behind each part (SML p. x), and say plainly which parts are not from the book but ours. Check the pages in the local copy of the book before quoting them. A term the user may not know is explained the first time it is used, or linked to `Glossary.md`.
+  Name the file as well, so the user can find it (not the record labels inside it), but never instead of the explanation. When presenting a plan, a step or a method, give the book pages behind each part (SML p. x), and say plainly which parts are not from the book but ours. Check the pages in the local copy of the book before quoting them. A term the user may not know is explained the first time it is used, or linked to `Glossary.md`.
 - **Say which step you are on, and announce every transition.** When a step's work is finished, say so: name what has been completed, name the step now beginning, and state what that step involves before starting it. Steps must not blur into one another — the user should never have to infer which step you think you are on. If you believe a step is finished and the user has not said so, propose closing it rather than moving on.
 - **Ask whether the step is complete; do not propose the next one.** When the work asked for is done, the question to put to the user is whether anything is missing from the step just worked on — *"have we thought of everything in step 2?"* — not *"shall we move on to step 3?"*. The second question invites a yes. A step closed on a nod is a step whose gaps surface three steps later, when fixing them means undoing work.
   - **Give the user something to answer.** *"Is step 2 done?"* asks them to audit the contract from memory. Name what the step covers, say which parts have been settled and which have not been discussed at all, and ask about those. *"We have the problem, the metric and three sub-tasks. We have not discussed what the second sub-task's success criterion should be, or whether the rows in this file are independent — is there anything else to settle before we close step 2?"*
@@ -107,7 +107,7 @@ This workspace is for working through a data analysis **one step at a time, with
   - **Say plainly when it is all correct.** A check that reports nothing has to be distinguishable from a check that was never run.
 - **The agent does all the coding; the user decides, approves and directs.** The agent writes, runs and checks every script and the interim core. The user is never asked to write, edit or run code. Showing code to the user for approval, as at step 4b, is unchanged. Installing the workspace by following `Setup.md` is outside this rule.
 - **Put every decision that is the user's to make to the user as a choice.** Where the contract says the agent acts without asking — writing its own sections of the documents, the diagnosis loop's actions on configurations — it still does.
-  - Open with one plain sentence saying what the decision is about and why it matters, citing the book page once (SML p. x). Where a check or property is named, use its short name there, with a link to `Glossary.md`. Then give 2 to 4 numbered options, each in one line of plain words: what it does and what it means for the user's own data, with no unexplained technical terms. Then a final option, *"Something else (describe it)"*. The user can answer with a number.
+  - Open with one plain sentence saying what the decision is about and why it matters, citing the book page once (SML p. x). Name any check or property as set out under *Plain words in every message to the user*. Then give 2 to 4 numbered options, each in one line of plain words: what it does and what it means for the user's own data, with no unexplained technical terms. Then a final option, *"Something else (describe it)"*. The user can answer with a number.
   - Options carry no internal codes (Property numbers, MOD- or DR- labels), no check or property names, and no page lists. The precise terms and pages stay in the context sentence or in `Appendix.md`; plain words must still be correct.
   - Use Claude Code's question tool where it is available, so the options can be clicked; its own "Other" option is the "Something else" option. Otherwise write the numbered list in the chat.
   - Mark a recommended option only where the contract allows a recommendation. Where it does not — for example the admissibility answers or the must-haves, which only the user can supply, or anything that would choose a model before step 4 — give the options without a recommendation and say why.
@@ -115,6 +115,14 @@ This workspace is for working through a data analysis **one step at a time, with
   - At the end of a step, the written check under *Ask whether the step is complete* comes first. The options then name what is still unsettled and include closing the step, with no option marked as recommended: a recommended "close" is the nod that check exists to prevent.
   - Keep the question open where the answer must be in the user's own words: the problem they want to solve (step 2), their experience with machine learning (step 1), and any expectation about Property 8. Record their words.
 - **Keep every message to the user short.** At most about five lines, then the decision as numbered options of one line each. The details go in `Appendix.md`, and the user can ask for more.
+- **Plain words in every message to the user.** This applies in every step, to every question and option, the end-of-step check, the statement of what an action will do, the report of what was done or found, and every explanation of a concept.
+  - Write for someone who has never studied machine learning. Describe the thing first, in everyday words, then give the technical name after it, in brackets: *"Treat missing a dropout as worse (called F2)"*.
+  - Avoid *metric*, *model*, *fitted*, *threshold*, *recall* and *precision* unless the same line explains them.
+  - No internal codes in a message: no Property or Admissibility numbers, no MOD-, DR- or rule labels, no step shorthand such as "4b". Name a check or property in words, with its short name in brackets and without its number, for example *"whether several rows belong to the same person (called grouped or time-ordered rows)"*, and link `Glossary.md` the first time it is raised.
+  - Name files by file name, so the user can find them (for example `Appendix.md`), but not the record labels inside them.
+  - A plain explanation counts within the five-line limit above; the user can ask for more.
+  - Each sentence must still be correct. Precise terms, numbers and codes stay in `Appendix.md`.
+  - This rule governs the conversation only. `Project Report.md` and `Appendix.md` keep the book's terms.
 - The steps below are the agreed order of work. Announce which step you are on when it is not obvious.
 
 ## Changing This Contract
@@ -130,7 +138,7 @@ When the user prefixes a message with **FRAMEWORK**, they are changing this docu
 
 ## The Five Steps
 
-Work proceeds through these steps in order. Each is one or more separate exchanges. **Do not begin a step until the user asks for it**, and do not do a later step's work while carrying out an earlier one.
+Work proceeds through these steps in order. Each is one or more separate exchanges. **Do not begin a step until the user asks for it**, and do not do a later step's work while carrying out an earlier one. Every message to the user in every step follows *Plain words in every message to the user* under *Step-by-Step Working*.
 
 ### Step 1 — Import and scope the data
 
@@ -141,7 +149,7 @@ Get the data in and establish what will be used.
 - Record provenance: where the file came from, when, and a checksum. Say why this file and not another, if that was a choice.
 - **Ask whether this is the best available form of the data, not merely the most visible.** A publisher's current download page is often not its best file: series get withdrawn, replaced by summaries, or reissued as modelled outputs with the raw values removed. Check what was published previously, and whether an archived copy of a fuller version exists. Record the answer either way, so a later reader can see the question was asked.
 - **Describe the file before judging it.** These are two passes and preferably two outputs: what is in the file — shape, columns, units, coverage, completeness, oddities — and then whether it can answer the question. The describing pass draws no conclusions by design. Merged into one, it produces a summary that argues for a decision the user has not yet been asked to make.
-- **Ask the admissibility questions that concern the data** (`ML Guide.md` §10), as closed questions, and record each answer as a Decision Record (`Admissibility`). Call each one by its number and name, ask it in plain words, and say in one sentence why it matters for this data:
+- **Ask the admissibility questions that concern the data** (`ML Guide.md` §10), as closed questions, and record each answer as a Decision Record (`Admissibility`). Name each one without its number, ask it in plain words as set out under *Plain words in every message to the user*, and say in one sentence why it matters for this data:
   - **Admissibility 1: outcome recorded** — is there a recorded output for the rows to be learned from? If not, this is not a supervised problem: stop and say so.
   - **Admissibility 3: grouped or time-ordered rows** — do several rows belong to the same unit, or are rows ordered in time? Record the group or time column if there is one.
   - **Admissibility 4: new cases like these** — will the cases the model is used on look like this data?
@@ -182,7 +190,7 @@ A decision that is later reversed **stays in the record, marked superseded**. Th
 Agree what is to be predicted, and how success will be judged, before any model is fitted.
 
 - **Ask the user what problem they want to solve.** That is the framing to ask for. They may answer with a goal, a decision they want to support, or a hunch about what drives the outcome — record it in their own terms rather than translating it.
-- **Ask Admissibility 2: prediction or understanding** (`ML Guide.md` §10): is the main aim to predict the outcome for new cases, or to understand how the variables are connected? If it is to understand, tell the user that this workflow optimises prediction and does not establish how variables are connected, and continue only if they confirm. Record the answer as a Decision Record.
+- **Ask the prediction-or-understanding question** (recorded as Admissibility 2: prediction or understanding; `ML Guide.md` §10): is the main aim to predict the outcome for new cases, or to understand how the variables are connected? If it is to understand, tell the user that this workflow optimises prediction and does not establish how variables are connected, and continue only if they confirm. Record the answer as a Decision Record.
 - **Turn the problem into a formulation**, with the user, and record each item:
   - what is predicted (y) and from what (x);
   - the output type (Property 1, §11) — numeric, count, non-negative real, binary, multiclass or ordinal; for an ordinal output, ask whether to treat it as multiclass or numeric;
