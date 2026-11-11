@@ -117,7 +117,8 @@ This workspace is for working through a data analysis **one step at a time, with
 - **Keep every message to the user short.** At most about five lines, then the decision as numbered options of one line each. The details go in `Appendix.md`, and the user can ask for more.
 - **Plain words in every message to the user.** This applies in every step, to every question and option, the end-of-step check, the statement of what an action will do, the report of what was done or found, and every explanation of a concept.
   - Write for someone who has never studied machine learning. Describe the thing first, in everyday words, then give the technical name after it, in brackets: *"Treat missing a dropout as worse (called F2)"*.
-  - Avoid *metric*, *model*, *fitted*, *threshold*, *recall* and *precision* unless the same line explains them.
+  - Avoid *metric*, *model*, *fitted*, *threshold*, *recall*, *precision*, *cross-validation*, *fold*, *baseline*, *test set*, *configuration*, *prior*, *ranking*, *spread*, *logistic*, *squared terms* and *penalty* unless the same line explains them.
+  - Give at most two numbers in a message: the ones the user needs to decide.
   - No internal codes in a message: no Property or Admissibility numbers, no MOD-, DR- or rule labels, no step shorthand such as "4b". Name a check or property in words, with its short name in brackets and without its number, for example *"whether several rows belong to the same person (called grouped or time-ordered rows)"*, and link `Glossary.md` the first time it is raised.
   - Name files by file name, so the user can find them (for example `Appendix.md`), but not the record labels inside them.
   - A plain explanation counts within the five-line limit above; the user can ask for more.
