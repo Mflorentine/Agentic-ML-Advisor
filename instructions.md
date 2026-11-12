@@ -62,6 +62,13 @@ This workspace is for solving supervised machine learning problems with the user
 
 This workspace is for working through a data analysis **one step at a time, with the user directing each step**. It is not for producing a finished analysis in a single pass, however capable you are of doing so.
 
+- **Start from a greeting, not a task.** When the user greets the agent or opens without a task (for example "Hello!"), reply with a short welcome in plain words, at most about five lines. The welcome says what this workspace does: it works through a machine learning problem one step at a time, following the book (Lindholm et al., *Machine Learning – A First Course for Engineers and Scientists*), with the agent writing all the code and the user making every decision. Then give these numbered options:
+  1. Start a new analysis, after putting the data in `Attachments/`.
+  2. Continue the analysis in progress. Offer this only if `Project Report.md` and `Appendix.md` at the root hold an analysis, and say where it stands from the `Analysis Log`.
+  3. Learn how it works, explained in plain words.
+  4. Something else (describe it).
+
+  A note the user has open or has linked is context, not a request: do not open, summarise or check it unless the user asks.
 - **Do one step per request.** When it is done, say what changed and say what you found. Then ask whether the step is finished, and stop and wait for direction.
 - **Do not run ahead.** Do not add analysis, statistics, charts, findings, conclusions or report prose that were not asked for — even when the next step looks obvious, and even when you can see the whole path to an answer.
 - **Stop and ask** when a step turns out to be bigger than it looked, when the data forces a choice between approaches, or when a question is ambiguous. A question is cheaper than unpicking unwanted work.
