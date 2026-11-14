@@ -4,7 +4,9 @@
 
 ## Abstract
 
-*A first draft at the end of step 1, headed "Draft", rewritten at the end of every step to say what is being done; made final in step 5, once the `Discussion` is written.*
+*Draft*
+
+This analysis asks how well the fuel economy of a car, in miles per gallon, can be predicted from its engine size, horsepower, weight, acceleration, number of cylinders, model year and country of origin. The data are 392 cars from model years 1970 to 1982, from the Auto MPG dataset of the UCI Machine Learning Repository, after six cars with no horsepower value were dropped. Cars with the same name are kept together when the data is split. The problem, the measure of success and the methods to compare are to be agreed before any model is fitted.
 
 ## Introduction
 
