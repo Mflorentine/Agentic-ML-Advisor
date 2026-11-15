@@ -106,6 +106,7 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 - Output type (Property 1: output type): non-negative real. Confirmed by the user on 2026-11-14: gallons used per 100 miles can never be below zero (see DR-06).
 - From what (x): the candidate inputs in the `Data Summary` (engine, weight and size). Not yet agreed.
 - Metric (the single number that decides between models): root mean squared error (RMSE), in litres per 100 km. The choice was made on 2026-11-14 (DR-07); its units changed to litres per 100 km under DR-08.
+- Success criterion, in the user's words (2026-11-15): "a good model is usually wrong by at most 1 litre per 100 km, and it does clearly better than guessing the average for every car." Clarified by the user on 2026-11-15: "usually" means the single agreed number (the metric in DR-07, root mean squared error) is at most 1 litre per 100 km. "Clearly better" is set by the user on 2026-11-15 as: the model beats the average guess (the baseline, SML p. 330) by more than the normal variation between the cross-validation folds. The workflow's rule for a clear margin over the baseline is C2: the margin must be at least 1 times the spread (`ML Guide.md` section 17, a threshold of ours `[I]`). Open: which spread is meant, the spread of the differences between the model and the average guess across the folds (as in C2), or the spread of the model's own error across the folds (as in the final evaluation, step 4g). The user is to choose.
 - To be agreed: the metrics to monitor alongside, the success criterion, the baseline, the requirements, and any expectation about the shape of the relationship.
 
 ### Sub-tasks
@@ -480,6 +481,9 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 | 17 | Output type confirmed by the user: non-negative real (never below zero). | `Appendix.md` Problem Definition, Problem; Decision Records, DR-06 |
 | 18 | Metric chosen by the user: root mean squared error (RMSE), in gallons used per 100 miles. | `Appendix.md` Problem Definition, Problem; Decision Records, DR-07 |
 | 19 | Target changed by the user: litres per 100 km (235.2 ÷ miles per gallon, assuming US gallons) instead of gallons used per 100 miles. Inputs kept in recorded units. DR-06 superseded by DR-08; DR-07 units superseded. Range of y: about 5.0 to 26.1 litres per 100 km. | `Appendix.md` Problem Definition; Decision Records, DR-06 (superseded), DR-07 (units superseded), DR-08 |
+| 20 | The user's success criterion recorded in their own words. Not yet turned into a testable rule; two points to clarify. | `Appendix.md` Problem Definition, Problem |
+| 21 | Success criterion, first part clarified by the user: the agreed single number must be at most 1 litre per 100 km. The comparison with the average guess is still open. | `Appendix.md` Problem Definition, Problem |
+| 22 | "Clearly better" set by the user as beating the average guess by more than the normal variation between the cross-validation folds. Which spread is meant is still open. | `Appendix.md` Problem Definition, Problem |
 
 ## Code Summary
 

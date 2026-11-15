@@ -9,6 +9,7 @@ Words and checks this workspace uses, explained in plain words. Book pages are t
 | **Success criterion** | The result a model must reach to be useful. It is agreed before any model is made, and checked once on the test data. | A school's marking tool must reach a set error before teachers rely on it. | Ours; the related idea is at SML p. 330 | `instructions.md`, step 2 |
 | **Metric** | The single number that decides which model is best. It is agreed before any models are compared. | The average size of the error in predicted exam scores. | SML p. 330 | `ML Guide.md`, section 2 |
 | **Baseline** | The simplest guess, which a model must beat to be worth using. | Predicting the average exam score of past students for every new student. | SML pp. 330–331 | `ML Guide.md`, section 2 |
+| **Typical error** | How far wrong a prediction usually is, looking at many cases. Some are wrong by less, some by more. | A weather app that is usually within 2 degrees of the real temperature, though some days it is off by 5. | SML p. 68 | `ML Guide.md`, section 5 |
 
 ## Admissibility checks
 
