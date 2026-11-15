@@ -1,0 +1,6 @@
+training cars: 314
+minimum (litres per 100 km): 5.05
+maximum (litres per 100 km): 26.13
+mean (litres per 100 km): 11.35
+median (litres per 100 km): 10.23
+bar width (litres per 100 km): 1.0
