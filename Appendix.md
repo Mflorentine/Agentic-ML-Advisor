@@ -92,7 +92,25 @@
 
 ## Problem Definition
 
-*Written in step 2, before anything is trained. Three parts. `Discussion`: how the problem was arrived at, what was ruled out, and whether it is a prediction problem. `Problem`: what is predicted, from what, the output type, the agreed metric, the success criterion, the baseline and the achievable level, the must-have requirements, and any expectations the user states about the relationship (quoted). `Sub-tasks`: the separately answerable parts. Ends with the train/test split, its seed, and the statement that the test set is locked.*
+### Discussion
+
+The user's own words, given on 2026-11-14 when asked what problem they want to solve: "I want to predict the fuel use of a new car from its design based on its engine, weight and size. This could help a buyer or a car designer know how much fuel a car will use before it is tested on the road."
+
+Admissibility 2: prediction or understanding: answered on 2026-11-14 as prediction. Decision Record DR-05.
+
+Open for the formulation: the data records miles per gallon, which goes up as fuel use goes down. The user's phrase is fuel use. Whether the predicted quantity is miles per gallon or fuel used per distance is to be agreed.
+
+### Problem
+
+- What is predicted (y): litres per 100 km, computed as 235.2 divided by the recorded miles per gallon (`235.2 / mpg`), assuming US gallons. Chosen by the user on 2026-11-14 and replaces the gallons per 100 miles target (DR-08). Each recorded figure is between 9.0 and 46.6 miles per gallon, so y would lie between about 5.0 and 26.1 litres per 100 km. The inputs stay in their recorded units, which are unverified.
+- Output type (Property 1: output type): non-negative real. Confirmed by the user on 2026-11-14: gallons used per 100 miles can never be below zero (see DR-06).
+- From what (x): the candidate inputs in the `Data Summary` (engine, weight and size). Not yet agreed.
+- Metric (the single number that decides between models): root mean squared error (RMSE), in litres per 100 km. The choice was made on 2026-11-14 (DR-07); its units changed to litres per 100 km under DR-08.
+- To be agreed: the metrics to monitor alongside, the success criterion, the baseline, the requirements, and any expectation about the shape of the relationship.
+
+### Sub-tasks
+
+- To be agreed in step 2.
 
 ## Analysis
 
@@ -265,6 +283,174 @@
 
 **Links:** `Attachments/Auto MPG/auto-mpg.data`
 
+### DR-05 · Admissibility · step 2
+
+- **Type:** Admissibility (Admissibility 2: prediction or understanding)
+- **Step:** 2
+- **Sub-task:** n/a (applies to the analysis as a whole)
+- **Date:** 2026-11-14
+- **Question:** Is the main aim to predict the outcome for new cases, or to understand how the variables are connected?
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's aim | "I want to predict the fuel use of a new car from its design based on its engine, weight and size." | M | User's statement, step 2, recorded in `Appendix.md` Problem Definition, Discussion |
+| User's answer | "Predict new cars' fuel figures" | M | Question put to the user in step 2 |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Admissibility 2: prediction or understanding | Predict: the workflow continues | [B SML p. 20] | The analysis optimises prediction for new cases. It does not claim to show how the variables are connected. |
+
+**Thresholds applied:** n/a
+
+**Options considered:** (a) predict new cases' fuel figures; (b) understand how the variables are connected. Chosen: (a), by the user.
+
+**Expectation:** n/a
+
+**Decision:** The aim is to predict the fuel figure of new cars from their engine, weight and size. The analysis does not claim to explain how these variables cause fuel use.
+
+**Why not:** Option (b) was not chosen; it would need the user to confirm continuing under this workflow.
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, answered: "Predict new cars' fuel figures".
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Appendix.md` Problem Definition, Discussion
+
+### DR-06 · FORM · step 2
+
+- **Type:** FORM (partial: the target only; the rest of the formulation is to be agreed)
+- **Step:** 2
+- **Sub-task:** n/a (applies to the analysis as a whole)
+- **Date:** 2026-11-14
+- **Question:** What quantity is predicted (y)?
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's aim | predict the fuel use of a new car from its design | M | DR-05; `Appendix.md` Problem Definition, Discussion |
+| Recorded measure | miles per gallon, 9.0 to 46.6; higher means further per gallon | M (metadata: the names file describes mpg as miles per gallon) | `Attachments/Auto MPG/auto-mpg.names` |
+| User's choice | "Gallons used per 100 miles" | M | Question put to the user in step 2 |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Property 1: output type | Proposed: non-negative real, since y is never below 0 (the guide's category for continuous values never below 0). To be confirmed with the user. | [B SML pp. 61–62] | y = 100 / mpg, computed in the analysis code. The value chosen decides the task gate (§12) and the prior. |
+
+**Thresholds applied:** n/a
+
+**Options considered:** (a) miles per gallon, as recorded; (b) gallons used per 100 miles. Chosen: (b), by the user.
+
+**Expectation:** n/a
+
+**Decision:** The predicted quantity is gallons used per 100 miles, computed from the recorded miles per gallon. A higher figure means more fuel used.
+
+**Why not:** Option (a) was not chosen; the user's aim is fuel use.
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, chose: "Gallons used per 100 miles".
+
+**Supersedes / superseded by:** superseded by DR-08 (the target changed from gallons used per 100 miles to litres per 100 km).
+
+**Links:** `Attachments/Auto MPG/auto-mpg.names`; `Appendix.md` Problem Definition
+
+### DR-07 · FORM · step 2
+
+- **Type:** FORM (partial: the metric only; the rest of the formulation is to be agreed)
+- **Step:** 2
+- **Sub-task:** n/a (applies to the analysis as a whole)
+- **Date:** 2026-11-14
+- **Question:** Which single number decides between models?
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Output | gallons used per 100 miles (DR-06), positive and never below zero (Property 1: output type, non-negative real, confirmed by the user) | M | DR-06; `Appendix.md` Problem Definition |
+| Default error for regression | squared error | [B SML p. 67] | `ML Guide.md` §2 and §16 |
+| User's choice | "Root mean squared error (RMSE)" | M | Question put to the user in step 2, options named and explained in plain words |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Diagnosis errors use the agreed selection metric when it is an error function in its own right | RMSE is an error function, so it is used as it is | [I] | The selection metric is RMSE in gallons per 100 miles |
+
+**Thresholds applied:** n/a
+
+**Options considered:** (a) mean absolute error (MAE), the average size of the miss, counting over- and under-estimates alike; (b) root mean squared error (RMSE), where big misses count for much more. Chosen: (b), by the user.
+
+**Expectation:** n/a
+
+**Decision:** The single number that decides between models is root mean squared error, in gallons used per 100 miles.
+
+**Why not:** Option (a) was not chosen by the user; it counts all misses in proportion and does not weight large misses more heavily.
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, chose: "Root mean squared error (RMSE)".
+
+**Supersedes / superseded by:** the choice of RMSE stands; its units are superseded by DR-08 (litres per 100 km instead of gallons per 100 miles).
+
+**Links:** `Appendix.md` Problem Definition, Problem
+
+### DR-08 · FORM · step 2
+
+- **Type:** FORM (partial: the target, replacing DR-06; the rest of the formulation is to be agreed)
+- **Step:** 2
+- **Sub-task:** n/a (applies to the analysis as a whole)
+- **Date:** 2026-11-14
+- **Question:** What quantity is predicted (y), in which units?
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Recorded measure | miles per gallon, 9.0 to 46.6 | M (the names file describes mpg as miles per gallon) | `Attachments/Auto MPG/auto-mpg.names` |
+| Conversion | litres per 100 km = 235.2 ÷ miles per gallon, assuming US gallons | M (user's statement) | User's message, step 2 |
+| Units of the inputs | recorded units, not verified | M (DR-07 and Data Summary, Units) | `Appendix.md` Data Summary, Units |
+| User's choice | "litres per 100 km instead of gallons per 100 miles", because these are the units used in Rwanda and Europe | M | User's message, step 2 |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Property 1: output type | non-negative real (unchanged from DR-06): y is never below zero | [B SML pp. 61–62] | The output type is unchanged by the change of units |
+
+**Thresholds applied:** n/a
+
+**Options considered:** (a) gallons used per 100 miles (DR-06); (b) litres per 100 km. Chosen: (b), by the user.
+
+**Expectation:** n/a
+
+**Decision:** The predicted quantity is litres per 100 km, computed as 235.2 divided by the recorded miles per gallon. This replaces DR-06. The inputs stay in their recorded units.
+
+**Why not:** Option (a) is replaced because the user's audience uses litres per 100 km. The conversion assumes the miles per gallon figures are US gallons; this is the user's assumption and is not verified against the source.
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, chose: litres per 100 km, with the conversion and the unverified inputs noted as above.
+
+**Supersedes / superseded by:** supersedes DR-06. DR-07 (RMSE) stands with its units changed.
+
+**Links:** `Attachments/Auto MPG/auto-mpg.names`; `Appendix.md` Problem Definition, Problem
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -289,6 +475,11 @@
 | 12 | Licence checked on the UCI dataset page: CC BY 4.0, attribution required. The licence had not been checked before this request. | `Appendix.md` Data Summary, Provenance |
 | 13 | Step 1 closed by the user. Still unconfirmed and carried into step 2: whether any input is built from the fuel figure (no such input found in the names file; not confirmed by the user). Draft Abstract written in `Project Report.md`. | `Project Report.md` Abstract; `Appendix.md` Data Summary |
 | 14 | Two facts from step 1 confirmed by the user: no candidate input is built from the fuel figure (leakage check); the data was downloaded on 11 November 2026. Row 13 is corrected accordingly. | `Appendix.md` Data Summary, Provenance and Target and leakage |
+| 15 | Step 2 started. User's problem recorded in its own words. Admissibility 2 (prediction or understanding) answered: predict. | `Appendix.md` Problem Definition, Discussion; Decision Records, DR-05 |
+| 16 | Target chosen by the user: gallons used per 100 miles, computed from the recorded miles per gallon. | `Appendix.md` Problem Definition, Problem; Decision Records, DR-06 |
+| 17 | Output type confirmed by the user: non-negative real (never below zero). | `Appendix.md` Problem Definition, Problem; Decision Records, DR-06 |
+| 18 | Metric chosen by the user: root mean squared error (RMSE), in gallons used per 100 miles. | `Appendix.md` Problem Definition, Problem; Decision Records, DR-07 |
+| 19 | Target changed by the user: litres per 100 km (235.2 ÷ miles per gallon, assuming US gallons) instead of gallons used per 100 miles. Inputs kept in recorded units. DR-06 superseded by DR-08; DR-07 units superseded. Range of y: about 5.0 to 26.1 litres per 100 km. | `Appendix.md` Problem Definition; Decision Records, DR-06 (superseded), DR-07 (units superseded), DR-08 |
 
 ## Code Summary
 
