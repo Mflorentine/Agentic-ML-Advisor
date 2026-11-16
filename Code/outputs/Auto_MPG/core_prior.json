@@ -1,0 +1,146 @@
+{
+  "step": "4b prior ranking",
+  "code_version": "sha256:062a113552100c3a9eebdb49df958d69e310b4ff8bc745e5fd944fcda091c5ee",
+  "admissible_set_code_version": "sha256:4aa2a3fc8c590cf0afe956fe97f4c17158cddb8c5d147d6c2d9e0db55df7ebb9",
+  "core_module_version": "sha256:4aa2a3fc8c590cf0afe956fe97f4c17158cddb8c5d147d6c2d9e0db55df7ebb9",
+  "label": "interim core, not reviewed",
+  "property_values_used": {
+    "property_1_output_type": "non-negative real",
+    "property_2_data_to_parameter_ratio": "ample",
+    "property_3_number_of_inputs": "few",
+    "property_4_categorical_share": "low",
+    "property_5_interpretability": "none",
+    "property_6_probabilities": "no",
+    "property_7_extrapolation": "no",
+    "property_8_expected_shape": "unknown",
+    "property_9_separability": "not applicable",
+    "property_10_class_imbalance": "not applicable",
+    "must_haves": [],
+    "sources": {
+      "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+      "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+      "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+      "property_6_probabilities": "DR-12 (user: no requirement)",
+      "property_7_extrapolation": "DR-13 (user: no)",
+      "property_8_expected_shape": "DR-14 (user: unknown)",
+      "property_9_10": "DR-23 (not applicable: numeric output)"
+    }
+  },
+  "ranking": [
+    {
+      "configuration": "Exponential",
+      "score": 1,
+      "add_ons": 0,
+      "entries": [
+        {
+          "property": "Property 1: output type = non-negative real",
+          "column": "Poisson·exponential",
+          "sign": 1,
+          "tag": "[B SML pp. 61–62]"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "configuration": "Exponential + L2",
+      "score": 1,
+      "add_ons": 1,
+      "entries": [
+        {
+          "property": "Property 1: output type = non-negative real",
+          "column": "Poisson·exponential",
+          "sign": 1,
+          "tag": "[B SML pp. 61–62]"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "configuration": "kNN",
+      "score": 0,
+      "add_ons": 0,
+      "entries": [],
+      "rank": 3
+    },
+    {
+      "configuration": "Tree",
+      "score": 0,
+      "add_ons": 0,
+      "entries": [],
+      "rank": 3
+    },
+    {
+      "configuration": "Linear",
+      "score": -1,
+      "add_ons": 0,
+      "entries": [
+        {
+          "property": "Property 1: output type = non-negative real",
+          "column": "Linear",
+          "sign": -1,
+          "tag": "[B SML p. 62]"
+        }
+      ],
+      "rank": 4
+    },
+    {
+      "configuration": "Linear + L2",
+      "score": -1,
+      "add_ons": 1,
+      "entries": [
+        {
+          "property": "Property 1: output type = non-negative real",
+          "column": "Linear",
+          "sign": -1,
+          "tag": "[B SML p. 62]"
+        }
+      ],
+      "rank": 5
+    },
+    {
+      "configuration": "Linear + poly",
+      "score": -1,
+      "add_ons": 1,
+      "entries": [
+        {
+          "property": "Property 1: output type = non-negative real",
+          "column": "Linear",
+          "sign": -1,
+          "tag": "[B SML p. 62]"
+        }
+      ],
+      "rank": 5
+    },
+    {
+      "configuration": "Linear + poly + L2",
+      "score": -1,
+      "add_ons": 2,
+      "entries": [
+        {
+          "property": "Property 1: output type = non-negative real",
+          "column": "Linear",
+          "sign": -1,
+          "tag": "[B SML p. 62]"
+        }
+      ],
+      "rank": 6
+    }
+  ],
+  "kept": [
+    "baseline (mean of the training outputs)",
+    "Exponential",
+    "Exponential + L2",
+    "kNN",
+    "Tree"
+  ],
+  "not_kept_DISF": [
+    "Linear",
+    "Linear + L2",
+    "Linear + poly",
+    "Linear + poly + L2"
+  ],
+  "cut_at_third_other": {
+    "score": 0,
+    "add_ons": 0
+  }
+}

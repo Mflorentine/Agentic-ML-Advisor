@@ -1096,6 +1096,64 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 
 **Links:** `Appendix.md` Decision Records, DR-17 (Properties 9 and 10 to be recorded in step 3)
 
+### DR-24 · ADMSET · step 4a
+
+- **Type:** ADMSET
+- **Step:** 4a
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-15
+- **Question:** Which of the 14 structural configurations are admissible, given the property values?
+- **Reference code:** `Code/Auto_MPG/core.py`, function `main`; code version sha256:4aa2a3fc8c590cf0afe956fe97f4c17158cddb8c5d147d6c2d9e0db55df7ebb9 (interim core, not reviewed); inputs passed: `Code/Auto_MPG/props.json`, the training rows from `Code/outputs/Auto_MPG/split_seed2026.csv`; output `Code/outputs/Auto_MPG/core_admset.json`.
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Property 1: output type | non-negative real | M (user) | DR-06, DR-08 |
+| Must-haves | none | M (user) | DR-11, DR-12, DR-13 |
+| Property 9 and 10 | not applicable (numeric output) | n/a | DR-23 |
+| Training rows | 314 | T | DR-16 |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Task gate, non-negative real (`ML Guide.md` section 12) | Exponential, Linear, k-NN and Tree admissible; Logistic and Poisson not | [B SML pp. 17, 63] | Logistic (4 configurations) and Poisson (2) removed, code EXCL |
+| Must-have requirements (section 12) | None set | n/a | No configuration removed with code USER |
+| MOD-1, separability (section 12) | Not applicable: numeric output | n/a | None |
+| MOD-2, collinearity or parameters at least the training rows (section 12) | Checked for Linear, Linear + poly and Exponential, without L2: 9, 21 and 9 parameters against 314 rows; each design has full rank once columns are standardised | [B→I SML pp. 46–47, 61, 63, 65] | No configuration removed by MOD-2 |
+
+**Thresholds applied:** none (MOD-2 uses the exact-rank test, not a threshold)
+
+**Options considered:** the 14 structural configurations of section 9
+
+**Expectation:** n/a
+
+**Decision:** Eight configurations are admissible: Linear, Linear + L2, Linear + poly, Linear + poly + L2, Exponential, Exponential + L2, kNN and Tree. Six are removed by the task gate (EXCL): Logistic, Logistic + L2, Logistic + poly, Logistic + poly + L2, Poisson and Poisson + L2.
+
+**Why not:**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| Logistic | EXCL | Task gate: not admissible for a non-negative real output |
+| Logistic + L2 | EXCL | Task gate, as above |
+| Logistic + poly | EXCL | Task gate, as above |
+| Logistic + poly + L2 | EXCL | Task gate, as above |
+| Poisson | EXCL | Task gate: Poisson is for counts |
+| Poisson + L2 | EXCL | Task gate, as above |
+
+**Correction recorded:** the first run of the interim core flagged Linear + poly under MOD-2, because the unstandardised polynomial columns gave a false rank deficiency (rank 20 of 21). The core was corrected before its output was used: exact collinearity is tested on standardised columns (rank 21 of 21). The corrected run is the one recorded here.
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** informed: the admissible set follows from the properties the user has given; no user choice is needed at this stage.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/Auto_MPG/core.py`; `Code/Auto_MPG/props.json`; `Code/outputs/Auto_MPG/core_admset.json`
+
 ## Recommendation
 
 *Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
@@ -1151,6 +1209,7 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 | 43 | Input design, transformations, decided by the user: none. Every input is used as recorded. | `Appendix.md` Decision Records, DR-21 |
 | 44 | Input design, car name, decided by the user: left out as an input; used only as the group column for the split. | `Appendix.md` Decision Records, DR-22 |
 | 45 | Step 3 closed by the user. Properties 9 and 10 recorded as not applicable (numeric output, DR-23). Draft Abstract updated in Project Report.md. | `Appendix.md` Decision Records, DR-23; `Project Report.md` Abstract |
+| 46 | Step 4 started. Step 4a: the interim core (`Code/Auto_MPG/core.py`, not reviewed) gives the admissible set: eight of the fourteen configurations. The first run's MOD-2 flag on Linear + poly was a numerical artifact and was corrected before any output was used. | `Appendix.md` Decision Records, DR-24; `Code/outputs/Auto_MPG/core_admset.json` |
 
 ## Code Summary
 
@@ -1160,6 +1219,8 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 - `Code/Auto_MPG/05_fig1_fuel_histogram.py`: Figure 1, a histogram of fuel use for the 314 training cars. Reads the raw file and `Code/outputs/Auto_MPG/split_seed2026.csv`; writes the light and dark PNG files and the summary text. Run from `Code/` with `uv run python Auto_MPG/05_fig1_fuel_histogram.py`. No random numbers; uses the locked split (seed 2026), training cars only.
 - `Code/Auto_MPG/06_fig2_fuel_vs_weight.py`: Figure 2, fuel use against weight, one dot per training car. Reads the raw file and the split file; writes the light and dark PNG files. Run from `Code/` with `uv run python Auto_MPG/06_fig2_fuel_vs_weight.py`. No random numbers; training cars only.
 - `Code/Auto_MPG/07_fig3_fuel_by_origin.py`: Figure 3, fuel use by origin code, one dot per training car, with each column's median. Reads the raw file and the split file; writes the light and dark PNG files. Run from `Code/` with `uv run python Auto_MPG/07_fig3_fuel_by_origin.py`. Jitter seed 2026; training cars only.
+- `Code/Auto_MPG/core.py`: interim core (not reviewed) for step 4a, the admissible set, from `ML Guide.md` sections 9 and 12. Reads `Code/Auto_MPG/props.json` and the training rows; writes `Code/outputs/Auto_MPG/core_admset.json`. Run from `Code/` with `uv run python Auto_MPG/core.py`. Code version: the SHA-256 is in DR-24. No random numbers.
+- `Code/Auto_MPG/props.json`: the property values passed to the core, copied from the Decision Records with their sources.
 - `Code/Auto_MPG/01_describe_data.py`: describing pass on the raw Auto MPG files for step 1. It reads `Attachments/Auto MPG/auto-mpg.data` and `auto-mpg.data-original`, prints counts, missing values, ranges and category counts, and writes nothing. Run from `Code/` with `uv run python Auto_MPG/01_describe_data.py`. It uses no random numbers, so no seed applies. It needs pandas, which is in `Code/pyproject.toml`.
 
 ## References

@@ -1,0 +1,237 @@
+{
+  "step": "4a admissible set",
+  "code_version": "sha256:4aa2a3fc8c590cf0afe956fe97f4c17158cddb8c5d147d6c2d9e0db55df7ebb9",
+  "label": "interim core, not reviewed",
+  "property_values": {
+    "property_1_output_type": "non-negative real",
+    "property_2_data_to_parameter_ratio": "ample",
+    "property_3_number_of_inputs": "few",
+    "property_4_categorical_share": "low",
+    "property_5_interpretability": "none",
+    "property_6_probabilities": "no",
+    "property_7_extrapolation": "no",
+    "property_8_expected_shape": "unknown",
+    "property_9_separability": "not applicable",
+    "property_10_class_imbalance": "not applicable",
+    "must_haves": [],
+    "sources": {
+      "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+      "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+      "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+      "property_6_probabilities": "DR-12 (user: no requirement)",
+      "property_7_extrapolation": "DR-13 (user: no)",
+      "property_8_expected_shape": "DR-14 (user: unknown)",
+      "property_9_10": "DR-23 (not applicable: numeric output)"
+    }
+  },
+  "training_rows": 314,
+  "admissible": [
+    "Linear",
+    "Linear + L2",
+    "Linear + poly",
+    "Linear + poly + L2",
+    "Exponential",
+    "Exponential + L2",
+    "kNN",
+    "Tree"
+  ],
+  "removed": [
+    {
+      "configuration": "Logistic",
+      "code": "EXCL",
+      "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+    },
+    {
+      "configuration": "Logistic + L2",
+      "code": "EXCL",
+      "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+    },
+    {
+      "configuration": "Logistic + poly",
+      "code": "EXCL",
+      "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+    },
+    {
+      "configuration": "Logistic + poly + L2",
+      "code": "EXCL",
+      "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+    },
+    {
+      "configuration": "Poisson",
+      "code": "EXCL",
+      "reason": "task gate: Poisson is not admissible for output type 'non-negative real' (section 12)"
+    },
+    {
+      "configuration": "Poisson + L2",
+      "code": "EXCL",
+      "reason": "task gate: Poisson is not admissible for output type 'non-negative real' (section 12)"
+    }
+  ],
+  "configurations": [
+    {
+      "configuration": "Linear",
+      "family": "Linear",
+      "polynomial_terms": false,
+      "L2": false,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": {
+        "parameters": 9,
+        "training_rows": 314,
+        "rank_standardised": 9,
+        "rank_unstandardised": 9,
+        "condition_standardised": 12.152674225097549,
+        "flagged": false
+      }
+    },
+    {
+      "configuration": "Linear + L2",
+      "family": "Linear",
+      "polynomial_terms": false,
+      "L2": true,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": null
+    },
+    {
+      "configuration": "Linear + poly",
+      "family": "Linear",
+      "polynomial_terms": true,
+      "L2": false,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": {
+        "parameters": 21,
+        "training_rows": 314,
+        "rank_standardised": 21,
+        "rank_unstandardised": 20,
+        "condition_standardised": 14776.869647413874,
+        "flagged": false
+      }
+    },
+    {
+      "configuration": "Linear + poly + L2",
+      "family": "Linear",
+      "polynomial_terms": true,
+      "L2": true,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": null
+    },
+    {
+      "configuration": "Logistic",
+      "family": "Logistic",
+      "polynomial_terms": false,
+      "L2": false,
+      "admissible": false,
+      "why_not": {
+        "code": "EXCL",
+        "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+      },
+      "mod2_check": null
+    },
+    {
+      "configuration": "Logistic + L2",
+      "family": "Logistic",
+      "polynomial_terms": false,
+      "L2": true,
+      "admissible": false,
+      "why_not": {
+        "code": "EXCL",
+        "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+      },
+      "mod2_check": null
+    },
+    {
+      "configuration": "Logistic + poly",
+      "family": "Logistic",
+      "polynomial_terms": true,
+      "L2": false,
+      "admissible": false,
+      "why_not": {
+        "code": "EXCL",
+        "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+      },
+      "mod2_check": null
+    },
+    {
+      "configuration": "Logistic + poly + L2",
+      "family": "Logistic",
+      "polynomial_terms": true,
+      "L2": true,
+      "admissible": false,
+      "why_not": {
+        "code": "EXCL",
+        "reason": "task gate: Logistic is not admissible for output type 'non-negative real' (section 12)"
+      },
+      "mod2_check": null
+    },
+    {
+      "configuration": "Poisson",
+      "family": "Poisson",
+      "polynomial_terms": false,
+      "L2": false,
+      "admissible": false,
+      "why_not": {
+        "code": "EXCL",
+        "reason": "task gate: Poisson is not admissible for output type 'non-negative real' (section 12)"
+      },
+      "mod2_check": null
+    },
+    {
+      "configuration": "Poisson + L2",
+      "family": "Poisson",
+      "polynomial_terms": false,
+      "L2": true,
+      "admissible": false,
+      "why_not": {
+        "code": "EXCL",
+        "reason": "task gate: Poisson is not admissible for output type 'non-negative real' (section 12)"
+      },
+      "mod2_check": null
+    },
+    {
+      "configuration": "Exponential",
+      "family": "Exponential",
+      "polynomial_terms": false,
+      "L2": false,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": {
+        "parameters": 9,
+        "training_rows": 314,
+        "rank_standardised": 9,
+        "rank_unstandardised": 9,
+        "condition_standardised": 12.152674225097549,
+        "flagged": false
+      }
+    },
+    {
+      "configuration": "Exponential + L2",
+      "family": "Exponential",
+      "polynomial_terms": false,
+      "L2": true,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": null
+    },
+    {
+      "configuration": "kNN",
+      "family": "kNN",
+      "polynomial_terms": false,
+      "L2": false,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": null
+    },
+    {
+      "configuration": "Tree",
+      "family": "Tree",
+      "polynomial_terms": false,
+      "L2": false,
+      "admissible": true,
+      "why_not": null,
+      "mod2_check": null
+    }
+  ]
+}

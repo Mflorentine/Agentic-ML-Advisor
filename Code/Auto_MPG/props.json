@@ -1,0 +1,22 @@
+{
+  "property_1_output_type": "non-negative real",
+  "property_2_data_to_parameter_ratio": "ample",
+  "property_3_number_of_inputs": "few",
+  "property_4_categorical_share": "low",
+  "property_5_interpretability": "none",
+  "property_6_probabilities": "no",
+  "property_7_extrapolation": "no",
+  "property_8_expected_shape": "unknown",
+  "property_9_separability": "not applicable",
+  "property_10_class_imbalance": "not applicable",
+  "must_haves": [],
+  "sources": {
+    "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+    "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+    "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+    "property_6_probabilities": "DR-12 (user: no requirement)",
+    "property_7_extrapolation": "DR-13 (user: no)",
+    "property_8_expected_shape": "DR-14 (user: unknown)",
+    "property_9_10": "DR-23 (not applicable: numeric output)"
+  }
+}
