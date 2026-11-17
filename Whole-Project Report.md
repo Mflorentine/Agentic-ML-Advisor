@@ -60,9 +60,9 @@ flowchart TB
 
 The workflow chooses among a fixed set of model types from chapters 2 and 3 of Lindholm et al. (2026): linear regression, logistic regression, Poisson and exponential generalised linear models, k-nearest neighbours and decision trees. Polynomial terms (squares and cubes of the numerical inputs) and L2 regularisation can be added to the regression models where the book allows them, giving fourteen configurations in all. Methods from other chapters are not used, and which inputs a model receives is agreed with the user beforehand. The output decides the families (Lindholm et al., 2026). In five of the six analyses the output is a category, so linear regression, the Poisson model and the exponential generalised linear model were excluded, and only logistic regression, k-nearest neighbours and decision trees remained. In Auto MPG the output is a positive amount, so the logistic and Poisson models were excluded and eight configurations remained. Two rules remove logistic regression without regularisation when its parameters would not be well defined: when a straight boundary separates the training classes perfectly, and when some inputs exactly duplicate others (Lindholm et al., 2026). The second is our reading of the book. These rules removed the unregularised logistic models in Mobile Price, Sepsis and Student Dropout. In Student Dropout the user also marked class probabilities as essential, which left only the logistic configurations.
 
-The remaining configurations are ranked before any model is fitted, from properties of the problem and the user's stated preferences. This ranking is our addition, not the book's, and it decides what is compared first, not what is chosen. The best-ranked few are kept, with the simplest model for the task and a baseline. In the original Heart Failure analysis and its rerun, the ranking left out k-nearest neighbours, and in the rerun also the decision tree. In Auto MPG the exponential generalised linear model was ranked first, the same model with L2 regularisation second, and k-nearest neighbours and decision trees third; the four linear regression configurations were left out, and the user then asked for linear regression to be kept as a simple starting model. The kept configurations are compared by cross-validation on the agreed metric, as the book recommends (Lindholm et al., 2026), with each model's own settings tuned inside the training part of each fold. The leading model is then checked for underfitting and overfitting, following the book's chapter on working practice (Lindholm et al., 2026), and the comparison is extended where the check points. In Mobile Price this widened the range of regularisation strengths, and in the rerun it brought back k-nearest neighbours and the decision tree. In Student Dropout the check found underfitting, but the options it allowed were excluded: more polynomial terms, because the inputs were already many, and the other model types, because the required class probabilities excluded them. In Auto MPG the leading method's training error was just above the 1-litre limit, which the user chose to keep. A check for underfitting then added linear regression with polynomial terms, which did not change the leading method, and the checks stopped when the user said that no further measurements were available.
+The remaining configurations are ranked before any model is fitted, from properties of the problem and the user's stated preferences. This ranking is our addition, not the book's, and it decides what is compared first, not what is chosen. The best-ranked few are kept, with the simplest model for the task and a baseline. The kept configurations are compared by cross-validation on the agreed metric, as the book recommends (Lindholm et al., 2026), with each model's own settings tuned inside the training part of each fold. The leading model is then checked for underfitting and overfitting, following the book's chapter on working practice (Lindholm et al., 2026), and the comparison is extended where the check points. The checks are repeated until a stopping rule applies, and the rule that applied is recorded.
 
-The recommendation is the simplest of the models whose cross-validated score cannot be told apart from the best, following the book's advice not to settle on a complicated model where a simpler one would do (Lindholm et al., 2026). "Cannot be told apart" means a difference smaller than half its variation across the folds, a threshold that is ours. The rule decided four of the six analyses: the decision tree in the original Heart Failure analysis; logistic regression with L2 regularisation in Sepsis; plain logistic regression in the rerun; and, in Student Dropout, logistic regression with L2 regularisation over the same model with polynomial terms, whose cross-validated F2 differed by less than half its variation. In Mobile Price, one model was ahead of the others by more than that variation, so the rule did not apply. In Auto MPG, k-nearest neighbours, linear regression and linear regression with polynomial terms could not be told apart, and the tie-break on the prior ranking chose k-nearest neighbours. Each recommendation is reported with a selection confidence, which is ours and computed from three factors. C1, the margin over the runner-up, is clear if the recommended model is ahead by at least the variation of the difference across the folds, moderate if by at least half of it, and none otherwise. C2, the margin over the baseline, is clear if it is at least that variation. C3 is whether more training data was still lowering the validation error between 80 % and 100 % of the training data, and is limited if it was. Confidence is High when C1 and C2 are clear and C3 is adequate, Low when C1 is none or C2 is not clear, and Medium otherwise.
+The recommendation is the simplest of the models whose cross-validated score cannot be told apart from the best, following the book's advice not to settle on a complicated model where a simpler one would do (Lindholm et al., 2026). "Cannot be told apart" means a difference smaller than half its variation across the folds, a threshold that is ours. Each recommendation is reported with a selection confidence, which is ours and computed from three factors. C1, the margin over the runner-up, is clear if the recommended model is ahead by at least the variation of the difference across the folds, moderate if by at least half of it, and none otherwise. C2, the margin over the baseline, is clear if it is at least that variation. C3 is whether more training data was still lowering the validation error between 80 % and 100 % of the training data, and is limited if it was. Confidence is High when C1 and C2 are clear and C3 is adequate, Low when C1 is none or C2 is not clear, and Medium otherwise.
 
 ### How it relates to smlbook.org
 
@@ -76,7 +76,7 @@ The guide's method changed nine times while the analyses were worked through, an
 
 Each analysis divided its data once into training data and test data, before any model was fitted (Lindholm et al., 2026), and held back a fifth of the rows as test data. The rows were shuffled first, as the book advises. Every split except Auto MPG's was also stratified, so that both parts keep the same share of each outcome; stratifying the split is our choice. Auto MPG is a regression with no classes, so its split was not stratified; instead, rows with the same car name were kept together on one side of the split, so that no car model appears on both sides. The Heart Failure rerun made no new split: at the user's choice, it reused the original test set, so the two versions are compared on exactly the same 60 patients. The test data were locked, and nothing in the exploration or the model choice read them. All six analyses used seed 2026 for the split and the folds.
 
-The models were compared on the training data by k-fold cross-validation (Lindholm et al., 2026). The training data were divided into ten parts, or folds; each model was fitted ten times, each time on nine folds and scored on the tenth, and the ten scores were averaged. Every model was scored on the same folds, so that two models can be compared fold by fold. The folds were stratified in the same way as the split, except that Sepsis was stratified by outcome and hospital, and Auto MPG was grouped by car name, so that cars with the same name always fell on the same side. Each model's settings were chosen by a second, five-fold cross-validation inside each of the ten training parts, and the model was scored only on the part held back, so that the settings were never chosen on the data that score the model (Lindholm et al., 2026); this nested design is ours. Every step that learns from the data, such as scaling the inputs, was fitted inside the training part each time. Where the metric needed a decision threshold, it was chosen after the model had been selected, on the training data alone, in the original Heart Failure analysis, Sepsis and the rerun. In Student Dropout it was chosen inside each configuration's cross-validation, so that each configuration was compared at its own best threshold. Mobile Price and Auto MPG needed no threshold.
+The models were compared on the training data by k-fold cross-validation (Lindholm et al., 2026). The training data were divided into ten parts, or folds; each model was fitted ten times, each time on nine folds and scored on the tenth, and the ten scores were averaged. Every model was scored on the same folds, so that two models can be compared fold by fold. The folds were stratified in the same way as the split, except that Sepsis was stratified by outcome and hospital, and Auto MPG was grouped by car name, so that cars with the same name always fell on the same side. Each model's settings were chosen by a second, five-fold cross-validation inside each of the ten training parts, and the model was scored only on the part held back, so that the settings were never chosen on the data that score the model (Lindholm et al., 2026); this nested design is ours. Every step that learns from the data, such as scaling the inputs, was fitted inside the training part each time. Where the metric needed a decision threshold, it was chosen after the model had been selected, on the training data alone, in the original Heart Failure analysis, Sepsis and the rerun. In Student Dropout it was chosen inside each configuration's cross-validation, so that each configuration was compared at its own best threshold. Mobile Price and Auto MPG needed no threshold. PR-AUC is the area under the precision–recall curve, computed as average precision.
 
 Only after the user had approved the chosen model was it refitted on all the training data and evaluated once on the test data, with the baseline evaluated on the same test data. The uncertainty reported with that result is the standard deviation of the deciding metric across the ten outer folds. Each fold is smaller than the test set, so this approximates the uncertainty of the test result rather than measuring it; using it in this way is ours. Each analysis fixed its success criterion before any model was fitted. The baseline was flagging nobody in Sepsis and the rerun, the most common class in Student Dropout, the most common price band in Mobile Price, the F2 of flagging every patient on the training rows in the original Heart Failure analysis, and the average guess in Auto MPG. In the four analyses other than Student Dropout and Auto MPG, the test result minus its uncertainty had to exceed the baseline. In Student Dropout the model's test F2 had to be above the F2 of flagging every student on the same test rows. In Auto MPG it had two parts: a test error of at most 1 litre per 100 km, and a margin over the average guess of at least the spread. Table 1 sets out these choices for each analysis.
 
@@ -91,7 +91,6 @@ Only after the user had approved the chosen model was it refitted on all the tra
 | Student Dropout | new | 3,539 / 885 (1,137 / 284 dropouts) | outcome | F2 | chosen inside each configuration's cross-validation, to maximise F2 | fold variation of F2 |
 | Auto MPG | new, grouped by car name | 314 / 78 (no classes) | not stratified; grouped by car name | root mean squared error | none (numerical output) | fold variation of the root mean squared error |
 
-All six analyses used seed 2026 for the split and the folds. PR-AUC is the area under the precision'recall curve, computed as average precision.
 
 
 ## Results
@@ -100,7 +99,11 @@ Each sub-section reports what came out of the method described under the same he
 
 ### The machine learning methods used
 
-Table 2 gives, for each analysis, the recommended configuration, its single evaluation on the test data on the agreed metric with the fold standard deviation (SD) as its uncertainty, and whether the analysis's own success criterion was met. The selection confidence is followed by its three factors, C1 to C3.
+Table 2 gives, for each analysis, the recommended configuration, its single evaluation on the test data, the baseline on the same test data, the fold standard deviation (SD) as its uncertainty, and whether the analysis's own success criterion was met. The criterion was met in four analyses: Sepsis, Mobile Price, the Heart Failure rerun and Student Dropout. It was not met in the original Heart Failure analysis, where the tree's test F2 was 0.6780 against the 0.7903 required, or in Auto MPG, where the test error was 1.08 litres per 100 km against the 1-litre limit. Auto MPG's second part, a clear margin over the average guess, was met.
+
+The recommended configuration led the cross-validation in five of the six analyses. In the Heart Failure rerun, logistic regression with squares and cubes led, and the recommended plain logistic regression was less than half a spread behind it, so the simpler model was chosen. The margin over the next configuration was clear only in Mobile Price; in the other five it was less than half the variation across the folds, so another configuration would have served about as well. In the original Heart Failure analysis and its rerun, the ranking left out k-nearest neighbours, and in the rerun also the decision tree. In Auto MPG the ranking left out the four linear regression configurations, and the user asked for linear regression to be kept as a simple starting model. The checks for underfitting extended the comparison in Mobile Price, where the range of regularisation strengths was widened, and in the rerun, where k-nearest neighbours and the decision tree were brought back. In Student Dropout the check found underfitting, but the options it allowed were excluded: more polynomial terms, because the inputs were already many, and the other model types, because the required class probabilities excluded them. In Auto MPG the leading method's training error was just above the 1-litre limit, which the user chose to keep, and a further check that added linear regression with polynomial terms did not change the leading method.
+
+The recommendation rule decided four analyses: the decision tree in the original Heart Failure analysis; logistic regression with L2 regularisation in Sepsis; plain logistic regression in the rerun; and, in Student Dropout, logistic regression with L2 regularisation over the same model with polynomial terms, whose cross-validated F2 differed by less than half its variation. In Mobile Price one model was ahead of the others by more than that variation, so the rule did not apply. In Auto MPG, k-nearest neighbours, linear regression and linear regression with polynomial terms could not be told apart, and the tie-break on the prior ranking chose k-nearest neighbours. The selection confidence is made of three factors. C1 is the margin over the next configuration, which was clear only in Mobile Price. C2 is the margin over the baseline, which was clear in all six. C3 is whether more training data still lowered the error, which was adequate in all six. Because C2 and C3 were the same everywhere, C1 alone set the level: High in Mobile Price and Low in the other five.
 
 <small><b>Table 2.</b> Recommended configuration and test result for each analysis.</small>
 
@@ -110,66 +113,12 @@ Table 2 gives, for each analysis, the recommended configuration, its single eval
 | Sepsis | logistic regression with L2, λ = 10⁻³; threshold 0.040 | PR-AUC | 0.0847 (0.0156) | 0.0315 (flag nobody, on the test data) | 7,818 (246 with sepsis) | met (required above 0.0315 + 0.0156 = 0.0471) | Low (none, clear, adequate) |
 | Mobile Price | logistic regression with L2, λ = 10⁻⁵ | accuracy | 0.9600 (0.0141) | 0.2500 (most common band, on the test data) | 400 (100 per band) | met (0.9600 − 0.0141 = 0.9459, required above 0.2500) | High (clear, clear, adequate) |
 | Heart Failure rerun | logistic regression; threshold 0.10 | PR-AUC | 0.6983 (0.0938) | 0.3167 (flag nobody, on the test data) | 60 (19 deaths) | met (0.6983 − 0.0938 = 0.6045, required above 0.3167) | Low (none, clear, adequate) |
-
-#### Heart Failure (original): cross-validation
-
-The mean F2 at threshold 0.5 was:
-- flagging every patient 0.7032;
-- decision tree 0.5567;
-- logistic regression with squares and cubes 0.5286;
-- logistic regression, with and without L2, 0.4798 each;
-- the most common class 0.
-
-A variant of the tree with a wider range of leaf sizes, added by the diagnosis, scored 0.5207. The tree's margin over the runner-up was 0.0281 (spread 0.1422), and its margin over the most common class 0.5567 (spread 0.1124).
-
-#### Sepsis: cross-validation
-
-The mean PR-AUC was:
-- logistic regression with L2 0.0930;
-- the same with squares and cubes 0.0907;
-- k-nearest neighbours 0.0706;
-- decision tree 0.0678;
-- flagging nobody 0.0315.
-
-The margin over the runner-up was 0.0023 (spread 0.0077), and over the baseline 0.0615 (spread 0.0156).
-
-#### Mobile Price: cross-validation
-
-The mean accuracy was:
-- logistic regression with L2, with λ searched down to 10⁻⁸, 0.9706;
-- the same with λ searched down to 10⁻⁴, 0.9637;
-- with squares and cubes added, 0.9431;
-- decision tree 0.8281;
-- k-nearest neighbours 0.6250;
-- the most common band 0.2500.
-
-The margin over the runner-up was 0.0069 (spread 0.0055), and over the baseline 0.7206 (spread 0.0141).
-
-#### Heart Failure rerun: cross-validation
-
-The mean PR-AUC was:
-- logistic regression with squares and cubes 0.7064;
-- the same with L2 0.6882;
-- logistic regression with L2 0.6703;
-- logistic regression 0.6627;
-- k-nearest neighbours 0.5633;
-- decision tree 0.5546;
-- flagging nobody 0.3221.
-
-The recommended model's margin over the runner-up was −0.0437 (spread 0.1171), and over the baseline 0.3406 (spread 0.0892).
-
-#### The two Heart Failure analyses on the same 60 test patients (19 deaths)
-
-- The two analyses used different deciding metrics and success criteria. The rerun decided on PR-AUC: success meant test PR-AUC minus its fold SD above the test share of deaths. The original decided on F2: success meant test F2 above the flag-everyone F2 on the training rows by more than its fold SD.
-- The original analysis's decision tree, at threshold 0.2, had a test F2 of 0.6780.
-- The rerun's logistic regression had a test PR-AUC of 0.6983, and a test F2 of 0.6400 at threshold 0.10.
-- In nested cross-validation at their tuned thresholds, the mean F2 was 0.6943 for the tree and 0.7127 for the logistic regression.
-
-Flagging every patient gives an F2 of 0.6985 on these test patients and 0.7038 on the 239 training patients.
+| Student Dropout | logistic regression with L2, λ = 10⁻²; threshold 0.20 | F2 | 0.8350 (0.0323) | 0.7026 (flag everyone, on the test rows); the most common class scores 0 | 885 (284 dropouts) | met (0.8350, above 0.7026) | Low (none, clear, adequate) |
+| Auto MPG | k-nearest neighbours, 3 neighbours | root mean squared error (litres per 100 km) | 1.08 (0.34) | 3.66 (average guess, on the same cars) | 78 (no classes) | not met: part 1 (at most 1 litre) not met; part 2 (margin 2.58 against spread 0.56) met | Low (none, clear, adequate) |
 
 ### How it relates to smlbook.org
 
-Table 3 counts the rules applied in each analysis's Decision Records by provenance tag. Each row of a record's table of rules applied is counted once, under one tag, in this order of precedence: a rule not in the guide (UNLISTED), then [B→I], then [B], then [I]. Records later superseded in full are not counted, and neither are the diagnosis records, which have no such table.
+Each rule applied in the Decision Records is tagged with its source: the book's advice ([B]), a book fact turned into advice ([B→I]), or our own inference or threshold ([I]). Table 3 counts each row of a record's table of rules applied once, under one tag, in this order of precedence: a rule not in the guide (UNLISTED), then [B→I], then [B], then [I]. Records superseded in full are not counted, and neither are the diagnosis records, which have no such table; a record superseded only in part stays in force.
 
 <small><b>Table 3.</b> Rules applied in the Decision Records in force, by provenance tag.</small>
 
@@ -179,29 +128,30 @@ Table 3 counts the rules applied in each analysis's Decision Records by provenan
 | Sepsis | 15 (20) | 52 | 31 | 11 | 7 | 3 | 0 |
 | Mobile Price | 17 (21) | 50 | 23 | 5 | 18 | 1 | 3 |
 | Heart Failure rerun | 16 (17) | 52 | 26 | 8 | 15 | 1 | 2 |
-| All four | 63 | 199 | 97 | 36 | 55 | 6 | 5 |
+| Student Dropout | 27 (28) | 71 | 28 | 14 | 23 | 0 | 6 |
+| Auto MPG | 34 (36) | 59 | 28 | 3 | 17 | 0 | 11 |
+| **All six** | 124 | 329 | 153 | 53 | 95 | 6 | 22 |
 
-The six UNLISTED rows are rules not in the guide, recorded as ours. In the original Heart Failure analysis, the diagnosis judged whether the training error was above what the application needs by comparing the training F2 with the flag-everyone reference. In Sepsis, they were the flag for survival analysis, and the stratification of the test split and of the folds by hospital as well as outcome. In Mobile Price, the misclassification rate was the main metric for four classes, with the full confusion matrix reported. In the rerun, PR-AUC was computed as average precision. The five untagged rows either record that a rule had nothing to act on, such as no ranking entry applying or no hyperparameter to tune, or cite the working contract (`instructions.md`) rather than the guide.
+The prior ranking's expected order was written down before any model was fitted, and checked afterwards. Cross-validation agreed with it in Sepsis and Student Dropout, partly agreed in the Heart Failure rerun, and disagreed in the original Heart Failure analysis, in Mobile Price and in Auto MPG. In Auto MPG the prior expected the exponential generalised linear model first, then the same model with L2 regularisation, then k-nearest neighbours and the decision tree; linear regression was added by the user. Cross-validation did not confirm this order: k-nearest neighbours led linear regression with polynomial terms by 0.013 litres per 100 km, against a spread of 0.218.
 
-The expectation, prior agreement and grounding, defined under Methods, were as follows.
-- Heart Failure (original): expectation disagree, the decision tree, expected last, coming first; prior agreement disagree, the tree being third in the ranking; grounding one [B→I] entry, that an inspectable model was preferred.
-- Sepsis: expectation partial, the two logistic configurations leading as expected but k-nearest neighbours above the decision tree, the reverse of the order expected; prior agreement agree; grounding two [B→I] entries, that an inspectable model was preferred and that class probabilities or a tuned threshold were needed.
-- Mobile Price: expectation agree, the two logistic configurations leading; prior agreement disagree, logistic regression with L2 being third in a ranking in which no entry applied, so that every prior score was 0 and the order came from the number of add-ons alone; grounding none.
-- Heart Failure rerun: expectation disagree, logistic regression with squares and cubes, expected last of the four logistic configurations, coming first; prior agreement partial, the winner being second in the ranking; grounding one [B→I] entry, that class probabilities or a tuned threshold were needed.
-
-Of the changes to the method listed under Methods, the change to how underfitting is judged (27 October, ML Guide.md §18 O4) led Sepsis to re-run its first diagnosis pass (DR-17). In Mobile Price, the fifth change replaced the reading of the guide agreed with the user at its recommendation step with a general rule, and nothing was re-run.
+The recommended configuration had grounding in book facts turned into advice ([B→I]) in three analyses: two entries in Sepsis, and one each in the two Heart Failure analyses, all about wanting an inspectable model or needing class probabilities or a tuned threshold. In the other three, no entry applied to the recommended configuration, and its prior score was 0. Six rules are not in the guide (UNLISTED), all in the first four analyses. The 22 untagged rows record that a rule had nothing to act on ('n/a'), take a value from metadata ('M'), or cite the guide or the working contract without a tag.
 
 ### Training and validation methods
 
-Table 1 gives the training and test rows of each analysis, with the positives or the rows per class. Table 2 gives the spread of the deciding metric across the outer folds for each recommended configuration, and whether each success criterion was met. Mobile Price needed no decision threshold. For the other three analyses, Table 4 gives the threshold chosen on the training data, the nested cross-validation result at that threshold, and the test F2; for the two Heart Failure analyses it also gives the F2 of flagging every patient.
+The training and test rows were 239 and 60 in both Heart Failure analyses (77 and 19 deaths), 31,270 and 7,818 in Sepsis (984 and 246 with sepsis), 1,600 and 400 in Mobile Price (400 and 100 in each price band), 3,539 and 885 in Student Dropout (1,137 and 284 dropouts), and 314 and 78 cars in Auto MPG. The spread of the deciding metric across the ten outer folds is the uncertainty in Table 2. For the analyses with a threshold, Table 4 also gives the spread of the nested cross-validation F2 beside its result.
 
-<small><b>Table 4.</b> Decision threshold, nested cross-validation at the tuned threshold, and F2 on the test data, with the F2 of flagging every patient.</small>
+Three analyses chose their decision threshold after the model had been selected, on the training data: 0.2 for the original Heart Failure analysis, 0.040 for Sepsis and 0.10 for the Heart Failure rerun. Student Dropout chose its threshold inside each configuration's cross-validation. The threshold chosen on all the training rows, and used for the test, was 0.20; within the folds of the cross-validation it was 0.15 in eight folds and 0.20 in two. Mobile Price needed no threshold, since it chooses among four price bands, and Auto MPG has none, since it predicts a number. Table 4 gives, for each analysis with a threshold, the nested cross-validation result at that threshold, the test F2, and the F2 of flagging every case, which is reported for the two Heart Failure analyses and Student Dropout. Sepsis did not report that reference. Precision and recall in cross-validation are given only for Sepsis and the rerun.
+
+The two Heart Failure analyses were tested on the same 60 patients, 19 of whom died. On those patients the original decision tree, at threshold 0.2, had a test F2 of 0.6780, the rerun's logistic regression, at threshold 0.10, had 0.6400, and flagging every patient gave 0.6985. In nested cross-validation on the training patients, the tree's F2 was 0.6943 and the logistic regression's was 0.7127, against 0.7038 for flagging every patient. The rerun's test PR-AUC was 0.6983, against 0.3167 for flagging nobody. The two analyses differ in metric and success criterion, and the rerun reused the original test set, whose result was known before the rerun.
+
+<small><b>Table 4.</b> Decision threshold, nested cross-validation at the tuned threshold, and F2 on the test data, with the F2 of flagging every case.</small>
 
 | Analysis | Threshold | Nested CV F2 (fold SD) | Nested CV precision (fold SD) | Nested CV recall (fold SD) | Test F2 | Flag everyone: F2 on the training rows | Flag everyone: F2 on the test rows |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Heart Failure (original) | 0.2 | 0.6943 (0.0865) |  |  | 0.6780 | 0.7038 | 0.6985 |
-| Sepsis | 0.040 | 0.2204 (0.0182) | 0.0723 (0.0050) | 0.4582 (0.0737) | 0.2326 |  |  |
+| Heart Failure (original) | 0.2 | 0.6943 (0.0865) | not recorded | not recorded | 0.6780 | 0.7038 | 0.6985 |
+| Sepsis | 0.040 | 0.2204 (0.0182) | 0.0723 (0.0050) | 0.4582 (0.0737) | 0.2326 | not reported | not reported |
 | Heart Failure rerun | 0.10 | 0.7127 (0.0614) | 0.4012 (0.0553) | 0.8946 (0.1056) | 0.6400 | 0.7038 | 0.6985 |
+| Student Dropout | 0.20 | 0.8311 (0.0323) | not recorded | not recorded | 0.8350 | 0.7030 | 0.7026 |
 
 ## Discussion
 
