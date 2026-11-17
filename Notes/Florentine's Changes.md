@@ -2,7 +2,7 @@
 
 Changes before 16 October are already in David's version of the workspace, so they are not listed here.
 
-A running summary of the changes Florentine made to the framework (`instructions.md`, `ML Guide.md`, `Glossary.md`) with messages beginning **FRAMEWORK**, written for David. Newest last. Each entry gives the date, the commit, what changed, why, and what it means in practice. Where the commit message does not give a reason, the entry says "Reason to confirm with Florentine" rather than guessing.
+A running summary of the changes Florentine made to the framework (`instructions.md`, `ML Guide.md`, `Glossary.md`) with messages beginning **FRAMEWORK**, written for David. Newest last. Each entry gives the date, the commit, what changed, why, and what it means in practice. Where the reason is not yet written, the entry says "Reason to be added".
 
 ## October 2026
 
@@ -27,7 +27,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 4. The agent codes; the user decides through numbered options (27 October, `492bfea`)
 
 - **What changed.** `instructions.md`: the agent writes, runs and checks all code. Decisions for the user are given as two to four numbered options with trade-offs and book pages, plus "Something else", through the question tool where available. Recommendations only where the contract allows them. One decision per question. At the end of a step the written check comes first, and no option is recommended. The problem, the experience level and any expectation about the shape stay open, in the user's words.
-- **Why.** Reason to confirm with Florentine.
+- **Why.** Reason to be added.
 - **In practice.** The user is never asked to write or run code, and each decision is put as a clear choice.
 
 ### 5. Underfitting and the O2 comparison on imbalanced classes (27 October, `0d68044`)
@@ -45,7 +45,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 7. Abstract, data-and-split Methods, success criterion and F-beta reference (30 October, `2ebdf24`, `34bf9d9`, `2a821ed`)
 
 - **What changed.** Step 5 writes an Abstract after the Discussion. Methods opens with the data and the split. Results states, for each sub-task, whether the success criterion was met. Where a threshold is tuned for an F-beta measure, the F-beta of flagging every case is reported beside the model's, as a reference only (`ML Guide.md` §16). `instructions.md`, `Templates/Report.md` and `ML Guide.md` Part III (the FINAL record and the Recommendation Report) match these parts.
-- **Why.** Reason to confirm with Florentine.
+- **Why.** Reason to be added.
 - **In practice.** The analysis report has these parts. In an analysis with a tuned F-beta threshold, the flag-everyone reference is shown beside the model.
 
 ## November 2026
@@ -53,7 +53,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 8. Keep every message short (3 November, `f725bf9`)
 
 - **What changed.** `instructions.md`: a message to the user is at most about five lines, then the decision as numbered options of one line each. Details go in `Appendix.md`.
-- **Why.** Reason to confirm with Florentine.
+- **Why.** Reason to be added.
 - **In practice.** Applies to future analyses; finished analyses are not affected.
 
 ### 9. Merge of David's branch into Florentine's (10 November, `bb79a8c`)
@@ -71,53 +71,53 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 11. Logistic regression as a generalised linear model (10 November, `8f6b1df`)
 
 - **What changed.** `ML Guide.md`: MOD-2 (collinearity or too many parameters) now also covers unregularised logistic regression. The column "GLM" in §13 becomes "Poisson · exponential". The Student Dropout interim core (`Code/dropout/admissible.py`) changed to match. The guide's version note says records made under the earlier rule stay valid for what they record.
-- **Why.** Reason to confirm with Florentine. The commit message says only "FRAMEWORK change"; the guide's version note gives the book's reading (SML p. 63).
+- **Why.** Reason to be added. The commit message says only "FRAMEWORK change"; the guide's version note gives the book's reading (SML p. 63).
 - **In practice.** The Student Dropout analysis is finished, and its records are unchanged.
 
 ### 12. The decision threshold for F-beta (10 November, `ded1bdf`)
 
 - **What changed.** `ML Guide.md` §16: when the selection metric is F2 or another F-beta, the threshold is tuned inside each configuration's inner cross-validation, so each configuration is compared at its own best threshold. Otherwise the threshold is tuned after model selection, as before.
-- **Why.** Reason to confirm with Florentine.
+- **Why.** Reason to be added.
 - **In practice.** Only analyses with an F-beta selection metric and a tuned threshold. This change is inside a commit titled "students dropout step 4b", which also contains the Student Dropout analysis's own work; only the guide change is a framework change.
 
 ### 13. Plain words in messages (11 November, `cce610c`, `58f3c88`)
 
 - **What changed.** `instructions.md`: a list of technical words that must be explained on the same line when used in a message (metric, model, fitted, threshold, recall, precision, cross-validation, fold, baseline, test set, configuration, prior, ranking, spread, logistic, squared terms, penalty). At most two numbers in a message. The plain-words rule applies to every message.
-- **Why.** David's feedback at our meeting on 11 November: the options and messages were too technical for a beginner.
+- **Why.** To make the options and messages easier to understand for a beginner.
 - **In practice.** Messages to the user keep to plain words, and technical terms come with an explanation.
 
 ### 14. Choices explained to the user (11 November, `2a00272`)
 
 - **What changed.** `instructions.md`: each decision for the user opens with one plain sentence on what it is about and why it matters, with the book page cited once. Checks and properties are named by their short names. Options carry no codes or page lists.
-- **Why.** David's feedback at our meeting on 11 November: the options and messages were too technical for a beginner.
+- **Why.** To make the options and messages easier to understand for a beginner.
 - **In practice.** Each decision is put in plain words, with the reason first.
 
 ### 15. Explaining the user's own analysis (11 November, `07f2203`)
 
 - **What changed.** `instructions.md`: when the workflow explains the user's own analysis, it says what happened in their data and why, in at most five lines. The general procedure stays in `ML Guide.md`.
-- **Why.** David's feedback at our meeting on 11 November: the options and messages were too technical for a beginner.
+- **Why.** To make the options and messages easier to understand for a beginner.
 - **In practice.** Explanations are about the user's data, not the general method.
 
 ### 16. The welcome message (12 November, `46520d0`)
 
 - **What changed.** `instructions.md`: a greeting or an opening with no task gets a short welcome (at most about five lines) and four numbered options: start a new analysis; continue the analysis in progress, only if one is in progress; learn how the workflow works; something else. A note the user has open or linked is context, not a request.
-- **Why.** Reason to confirm with Florentine.
+- **Why.** Reason to be added.
 - **In practice.** The first message from the agent follows this form.
 
 ### 17. Options with a name, meaning and reason; a plainer Glossary (15 November, `6f1ca1c`)
 
 - **What changed.** `instructions.md`: a named method or measure in an option takes at most two short lines: its name with its short name in brackets, what it is in plain words, and why to choose it. No links to `Glossary.md` in messages or question boxes; the pointer is written in plain words. `Glossary.md` is rewritten in plain words for a beginner, with examples from everyday topics, a book page and a "More detail" pointer, and the words success criterion, metric and baseline are added.
-- **Why.** David's feedback at our meeting on 11 November: the options and messages were too technical for a beginner.
+- **Why.** To make the options and messages easier to understand for a beginner.
 - **In practice.** Options and the Glossary are easier to read for someone new to machine learning.
 
 ### 18. A typical-error entry in the Glossary (15 November, `460a6e9`)
 
 - **What changed.** `Glossary.md`: one entry added, "Typical error": how far wrong a prediction usually is, looking at many cases. The same commit records the user's success criterion in `Appendix.md`; that is analysis content, not a framework change.
-- **Why.** Reason to confirm with Florentine.
+- **Why.** Reason to be added.
 - **In practice.** The Glossary has the term; an analysis can refer to it.
 
 ### 19. Short messages, no technical words, and approval of every calculation program (17 November, `cdd7fa0`)
 
 - **What changed.** `instructions.md`: (a) when asking the user to approve a program that does calculations, say in one or two plain sentences what it does, that the user does not need to read the code, and that it has not yet been checked by an expert; this applies to every new program after step 4b, and its results are not used before approval. (b) No working notes while work is in progress: one message when the work is done, at most five short lines. (c) No code file names, and no words such as script, core, interim, prior, family, nested, penalty or exponential, unless explained on the same line.
-- **Why.** David's feedback at our meeting on 11 November: the options and messages were too technical for a beginner.
+- **Why.** To make the options and messages easier to understand for a beginner.
 - **In practice.** The user sees one short message per piece of work, and approves each calculation program before its results are used.
