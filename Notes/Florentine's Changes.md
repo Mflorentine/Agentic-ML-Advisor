@@ -2,7 +2,7 @@
 
 Changes before 16 October are already in David's version of the workspace, so they are not listed here.
 
-A running summary of the changes Florentine made to the framework (`instructions.md`, `ML Guide.md`, `Glossary.md`) with messages beginning **FRAMEWORK**, written for David. Newest last. Each entry gives the date, the commit, what changed, why, and what it means in practice. Where the reason is not yet written, the entry says "Reason to be added".
+A running summary of the changes Florentine made to the framework (`instructions.md`, `ML Guide.md`, `Glossary.md`) with messages beginning **FRAMEWORK**, written for David. Newest last. Each entry gives the date, the commit, what changed, why, and what it means in practice. Every entry now has its reason.
 
 ## October 2026
 
@@ -27,7 +27,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 4. The agent codes; the user decides through numbered options (27 October, `492bfea`)
 
 - **What changed.** `instructions.md`: the agent writes, runs and checks all code. Decisions for the user are given as two to four numbered options with trade-offs and book pages, plus "Something else", through the question tool where available. Recommendations only where the contract allows them. One decision per question. At the end of a step the written check comes first, and no option is recommended. The problem, the experience level and any expectation about the shape stay open, in the user's words.
-- **Why.** Reason to be added.
+- **Why.** The user should not have to write code, and should decide by choosing between clear options.
 - **In practice.** The user is never asked to write or run code, and each decision is put as a clear choice.
 
 ### 5. Underfitting and the O2 comparison on imbalanced classes (27 October, `0d68044`)
@@ -45,7 +45,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 7. Abstract, data-and-split Methods, success criterion and F-beta reference (30 October, `2ebdf24`, `34bf9d9`, `2a821ed`)
 
 - **What changed.** Step 5 writes an Abstract after the Discussion. Methods opens with the data and the split. Results states, for each sub-task, whether the success criterion was met. Where a threshold is tuned for an F-beta measure, the F-beta of flagging every case is reported beside the model's, as a reference only (`ML Guide.md` §16). `instructions.md`, `Templates/Report.md` and `ML Guide.md` Part III (the FINAL record and the Recommendation Report) match these parts.
-- **Why.** Reason to be added.
+- **Why.** So that each report says clearly whether the model met its goal, and compares it with simply flagging everyone, as learned from the two Heart Failure analyses.
 - **In practice.** The analysis report has these parts. In an analysis with a tuned F-beta threshold, the flag-everyone reference is shown beside the model.
 
 ## November 2026
@@ -53,7 +53,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 8. Keep every message short (3 November, `f725bf9`)
 
 - **What changed.** `instructions.md`: a message to the user is at most about five lines, then the decision as numbered options of one line each. Details go in `Appendix.md`.
-- **Why.** Reason to be added.
+- **Why.** At my presentation, I was told the agent's answers and questions should be shorter.
 - **In practice.** Applies to future analyses; finished analyses are not affected.
 
 ### 9. Merge of David's branch into Florentine's (10 November, `bb79a8c`)
@@ -71,13 +71,13 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 11. Logistic regression as a generalised linear model (10 November, `8f6b1df`)
 
 - **What changed.** `ML Guide.md`: MOD-2 (collinearity or too many parameters) now also covers unregularised logistic regression. The column "GLM" in §13 becomes "Poisson · exponential". The Student Dropout interim core (`Code/dropout/admissible.py`) changed to match. The guide's version note says records made under the earlier rule stay valid for what they record.
-- **Why.** Reason to be added. The commit message says only "FRAMEWORK change"; the guide's version note gives the book's reading (SML p. 63).
+- **Why.** Student Dropout showed that plain logistic regression has the same problem as the other models when some inputs duplicate others (SML pp. 46–47, 63).
 - **In practice.** The Student Dropout analysis is finished, and its records are unchanged.
 
 ### 12. The decision threshold for F-beta (10 November, `ded1bdf`)
 
 - **What changed.** `ML Guide.md` §16: when the selection metric is F2 or another F-beta, the threshold is tuned inside each configuration's inner cross-validation, so each configuration is compared at its own best threshold. Otherwise the threshold is tuned after model selection, as before.
-- **Why.** Reason to be added.
+- **Why.** In Student Dropout, the models were compared on F2, which depends on the threshold, so each model should be compared at its own best threshold.
 - **In practice.** Only analyses with an F-beta selection metric and a tuned threshold. This change is inside a commit titled "students dropout step 4b", which also contains the Student Dropout analysis's own work; only the guide change is a framework change.
 
 ### 13. Plain words in messages (11 November, `cce610c`, `58f3c88`)
@@ -101,7 +101,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 16. The welcome message (12 November, `46520d0`)
 
 - **What changed.** `instructions.md`: a greeting or an opening with no task gets a short welcome (at most about five lines) and four numbered options: start a new analysis; continue the analysis in progress, only if one is in progress; learn how the workflow works; something else. A note the user has open or linked is context, not a request.
-- **Why.** Reason to be added.
+- **Why.** So that a new user who says hello understands in simple words what the workspace does and what to do first.
 - **In practice.** The first message from the agent follows this form.
 
 ### 17. Options with a name, meaning and reason; a plainer Glossary (15 November, `6f1ca1c`)
@@ -113,7 +113,7 @@ A running summary of the changes Florentine made to the framework (`instructions
 ### 18. A typical-error entry in the Glossary (15 November, `460a6e9`)
 
 - **What changed.** `Glossary.md`: one entry added, "Typical error": how far wrong a prediction usually is, looking at many cases. The same commit records the user's success criterion in `Appendix.md`; that is analysis content, not a framework change.
-- **Why.** Reason to be added.
+- **Why.** A beginner needs a simple word for how far wrong the predictions usually are.
 - **In practice.** The Glossary has the term; an analysis can refer to it.
 
 ### 19. Short messages, no technical words, and approval of every calculation program (17 November, `cdd7fa0`)
