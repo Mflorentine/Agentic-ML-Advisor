@@ -9,6 +9,7 @@
         "DR-09",
         "DR-18"
       ],
+      "superseded_in_part_kept": [],
       "in_force": {
         "records": 15,
         "rule_rows": 45,
@@ -56,6 +57,7 @@
         "DR-16",
         "DR-18"
       ],
+      "superseded_in_part_kept": [],
       "in_force": {
         "records": 15,
         "rule_rows": 52,
@@ -102,6 +104,7 @@
         "DR-13",
         "DR-14"
       ],
+      "superseded_in_part_kept": [],
       "in_force": {
         "records": 17,
         "rule_rows": 50,
@@ -145,6 +148,7 @@
       "superseded": [
         "DR-06"
       ],
+      "superseded_in_part_kept": [],
       "in_force": {
         "records": 16,
         "rule_rows": 52,
@@ -181,36 +185,131 @@
           "none": 2
         }
       }
+    },
+    "Student Dropout": {
+      "file": "Demonstration/Student Dropout/Appendix.md",
+      "records_total": 28,
+      "superseded": [
+        "DR-16"
+      ],
+      "superseded_in_part_kept": [
+        "DR-11"
+      ],
+      "in_force": {
+        "records": 27,
+        "rule_rows": 71,
+        "rows_by_strongest": {
+          "[B]": 28,
+          "[B→I]": 14,
+          "[I]": 23,
+          "UNLISTED": 0,
+          "none": 6
+        },
+        "tag_mentions": {
+          "[B]": 29,
+          "[B→I]": 14,
+          "[I]": 32,
+          "UNLISTED": 0,
+          "none": 6
+        }
+      },
+      "all_records": {
+        "records": 28,
+        "rule_rows": 75,
+        "rows_by_strongest": {
+          "[B]": 30,
+          "[B→I]": 16,
+          "[I]": 23,
+          "UNLISTED": 0,
+          "none": 6
+        },
+        "tag_mentions": {
+          "[B]": 31,
+          "[B→I]": 16,
+          "[I]": 32,
+          "UNLISTED": 0,
+          "none": 6
+        }
+      }
+    },
+    "Auto MPG": {
+      "file": "Demonstration/Auto MPG/Appendix.md",
+      "records_total": 36,
+      "superseded": [
+        "DR-06",
+        "DR-10"
+      ],
+      "superseded_in_part_kept": [
+        "DR-07",
+        "DR-15",
+        "DR-17"
+      ],
+      "in_force": {
+        "records": 34,
+        "rule_rows": 59,
+        "rows_by_strongest": {
+          "[B]": 28,
+          "[B→I]": 3,
+          "[I]": 17,
+          "UNLISTED": 0,
+          "none": 11
+        },
+        "tag_mentions": {
+          "[B]": 28,
+          "[B→I]": 3,
+          "[I]": 22,
+          "UNLISTED": 0,
+          "none": 11
+        }
+      },
+      "all_records": {
+        "records": 36,
+        "rule_rows": 61,
+        "rows_by_strongest": {
+          "[B]": 29,
+          "[B→I]": 4,
+          "[I]": 17,
+          "UNLISTED": 0,
+          "none": 11
+        },
+        "tag_mentions": {
+          "[B]": 29,
+          "[B→I]": 4,
+          "[I]": 22,
+          "UNLISTED": 0,
+          "none": 11
+        }
+      }
     }
   },
   "totals": {
     "in_force": {
-      "rows_by_strongest [B]": 97,
-      "rows_by_strongest [B→I]": 36,
-      "rows_by_strongest [I]": 55,
+      "rows_by_strongest [B]": 153,
+      "rows_by_strongest [B→I]": 53,
+      "rows_by_strongest [I]": 95,
       "rows_by_strongest UNLISTED": 6,
-      "rows_by_strongest none": 5,
-      "tag_mentions [B]": 98,
-      "tag_mentions [B→I]": 36,
-      "tag_mentions [I]": 69,
+      "rows_by_strongest none": 22,
+      "tag_mentions [B]": 155,
+      "tag_mentions [B→I]": 53,
+      "tag_mentions [I]": 123,
       "tag_mentions UNLISTED": 6,
-      "tag_mentions none": 5,
-      "rule_rows": 199,
-      "records": 63
+      "tag_mentions none": 22,
+      "rule_rows": 329,
+      "records": 124
     },
     "all": {
-      "rows_by_strongest [B]": 114,
-      "rows_by_strongest [B→I]": 51,
-      "rows_by_strongest [I]": 81,
+      "rows_by_strongest [B]": 173,
+      "rows_by_strongest [B→I]": 71,
+      "rows_by_strongest [I]": 121,
       "rows_by_strongest UNLISTED": 8,
-      "rows_by_strongest none": 9,
-      "tag_mentions [B]": 115,
-      "tag_mentions [B→I]": 51,
-      "tag_mentions [I]": 100,
+      "rows_by_strongest none": 26,
+      "tag_mentions [B]": 175,
+      "tag_mentions [B→I]": 71,
+      "tag_mentions [I]": 154,
       "tag_mentions UNLISTED": 8,
-      "tag_mentions none": 9,
-      "rule_rows": 263,
-      "records": 77
+      "tag_mentions none": 26,
+      "rule_rows": 399,
+      "records": 141
     }
   }
 }

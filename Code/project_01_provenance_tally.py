@@ -1,13 +1,14 @@
-"""Project Report: tally of the provenance tags in the *Rules applied* tables of the four analyses' Decision Records.
+"""Project Report: tally of the provenance tags in the *Rules applied* tables of the six analyses' Decision Records.
 
 Reads   Demonstration/Heart Failure/Demonstration Appendix.md, Demonstration/Sepsis/Appendix.md,
-        Demonstration/Mobile Price/Appendix.md, Demonstration/Heart Failure rerun/Appendix.md   (read only)
+        Demonstration/Mobile Price/Appendix.md, Demonstration/Heart Failure rerun/Appendix.md,
+        Demonstration/Student Dropout/Appendix.md, Demonstration/Auto MPG/Appendix.md   (read only)
 Writes  Code/outputs/project/provenance_tally.json  and  Code/outputs/project/provenance_tally.md
 
 How it counts (so the Project Report only copies the result):
   - A Decision Record is a "### DR-NN · TYPE · step N" section of the appendix's `Decision Records`.
   - Records "in force" exclude those whose *Supersedes / superseded by* field says "superseded by" without
-    "in part"; a record superseded only in part stays in force. Counts are also given over all records.
+    "in part"; a record superseded only in part stays in force.   - A Decision Record is
   - Only the *Rules applied* table of each record is read, one row per rule applied; DX records, which use
     *Observation -> action* instead, contribute no rows.
   - Each row is classified by the tags in its Provenance column, two ways:
@@ -15,7 +16,7 @@ How it counts (so the Project Report only copies the result):
                          (the convention of the analyses' Recommendation Reports, part 13);
       tag_mentions       every distinct tag kind in the row counted once, so a row tagged "[B pp.72-73]; [I]"
                          counts once under [B] and once under [I].
-  - "[B p" and "[B pp" are book advice [B]; "[B→I" is a book fact interpreted into advice; "[I]" is ours;
+  - "[B" not followed by an arrow (for example "[B p.", "[B pp.", "[B SML p.") is book advice [B]; "[B→I" is a book fact interpreted into advice; "[I]" is ours;
     "UNLISTED" marks a rule not in the guide (written UNLISTED [I]).
 
 Run:    cd Code && uv run python project_01_provenance_tally.py
@@ -32,8 +33,16 @@ ANALYSES = {
     "Sepsis": ROOT / "Demonstration" / "Sepsis" / "Appendix.md",
     "Mobile Price": ROOT / "Demonstration" / "Mobile Price" / "Appendix.md",
     "Heart Failure rerun": ROOT / "Demonstration" / "Heart Failure rerun" / "Appendix.md",
+    "Student Dropout": ROOT / "Demonstration" / "Student Dropout" / "Appendix.md",
+    "Auto MPG": ROOT / "Demonstration" / "Auto MPG" / "Appendix.md",
 }
 KINDS = ["[B]", "[B→I]", "[I]", "UNLISTED", "none"]
+# Records whose Supersedes field says "superseded by" but only for some of their content, the rest standing
+# (read by hand from each field, 2026-11-17). They stay in force. Matched by the analysis name in ANALYSES.
+PARTLY_SUPERSEDED = {
+    "Student Dropout": {"DR-11"},   # Properties 9-10 and 2-3 superseded; Properties 1, 4-8 stand
+    "Auto MPG": {"DR-07", "DR-15", "DR-17"},  # units, sub-task wording and Property 3 superseded; the rest stands
+}
 
 
 def records(text: str) -> dict[str, str]:
@@ -49,7 +58,7 @@ def superseded(rec: str) -> bool:
 
 
 def rule_rows(rec: str) -> list[str]:
-    m = re.search(r"\*\*Rules applied\*\*\s*\n\n\| Rule .*?\n\| ---.*?\n((?:\|.*\n?)+)", rec)
+    m = re.search(r"\*\*Rules applied:?\*\*\s*\n\n\| Rule .*?\n\| ---.*?\n((?:\|.*\n?)+)", rec)
     if not m:
         return []
     rows = []
@@ -65,7 +74,7 @@ def kinds_in(prov: str) -> set[str]:
         k.add("UNLISTED")
     if "[B→I" in prov:
         k.add("[B→I]")
-    if re.search(r"\[B pp?\.", prov):
+    if re.search(r"\[B(?!→)", prov):
         k.add("[B]")
     if "[I]" in prov.replace("UNLISTED [I]", ""):
         k.add("[I]")
@@ -79,10 +88,10 @@ def strongest(k: set[str]) -> str:
     return "none"
 
 
-def tally(recs: dict[str, str], in_force_only: bool) -> dict:
+def tally(recs: dict[str, str], in_force_only: bool, partly: set[str]) -> dict:
     by_row, mentions, n_rec, n_rows = Counter(), Counter(), 0, 0
     for dr, rec in recs.items():
-        if in_force_only and superseded(rec):
+        if in_force_only and superseded(rec) and dr not in partly:
             continue
         n_rec += 1
         for prov in rule_rows(rec):
@@ -99,9 +108,11 @@ def main() -> None:
     result, totals = {"analyses": {}}, {"in_force": Counter(), "all": Counter()}
     for name, path in ANALYSES.items():
         recs = records(path.read_text(encoding="utf-8"))
+        partly = PARTLY_SUPERSEDED.get(name, set())
         a = {"file": str(path.relative_to(ROOT)).replace("\\", "/"), "records_total": len(recs),
-             "superseded": sorted(dr for dr, r in recs.items() if superseded(r)),
-             "in_force": tally(recs, True), "all_records": tally(recs, False)}
+             "superseded": sorted(dr for dr, r in recs.items() if superseded(r) and dr not in partly),
+             "superseded_in_part_kept": sorted(partly),
+             "in_force": tally(recs, True, partly), "all_records": tally(recs, False, partly)}
         result["analyses"][name] = a
         for scope, key in (("in_force", "in_force"), ("all", "all_records")):
             totals[scope].update({f"rows_by_strongest {k}": v for k, v in a[key]["rows_by_strongest"].items()})
@@ -111,7 +122,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "provenance_tally.json").write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    lines = ["# Provenance tags in the *Rules applied* tables of the four analyses", "",
+    lines = ["# Provenance tags in the *Rules applied* tables of the six analyses", "",
              "Counting method: see the docstring of `Code/project_01_provenance_tally.py`. Records in force exclude fully "
              "superseded records; DX records have no *Rules applied* table.", "",
              "| Analysis | Records in force (of all) | Rule rows | [B] | [B→I] | [I] | UNLISTED | no tag |",
@@ -121,7 +132,7 @@ def main() -> None:
         lines.append(f"| {name} | {a['in_force']['records']} ({a['records_total']}) | {a['in_force']['rule_rows']} | "
                      f"{r['[B]']} | {r['[B→I]']} | {r['[I]']} | {r['UNLISTED']} | {r['none']} |")
     t = result["totals"]["in_force"]
-    lines.append(f"| **All four** | {t['records']} | {t['rule_rows']} | {t['rows_by_strongest [B]']} | "
+    lines.append(f"| **All six** | {t['records']} | {t['rule_rows']} | {t['rows_by_strongest [B]']} | "
                  f"{t['rows_by_strongest [B→I]']} | {t['rows_by_strongest [I]']} | {t['rows_by_strongest UNLISTED']} | "
                  f"{t['rows_by_strongest none']} |")
     lines += ["", "Rows by strongest tag (one class per row, priority UNLISTED > [B→I] > [B] > [I]). Tag mentions "
