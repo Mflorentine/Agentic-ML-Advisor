@@ -22,7 +22,7 @@ Every model choice is recorded as it is made. Each decision gets a Decision Reco
 
 ## Example analyses
 
-Six finished examples, each worked through steps 1–5:
+Seven finished examples, each worked through steps 1–5:
 
 - [xG/](Demonstration/xG/): an expected-goals model for football shots from StatsBomb open data, and whether knowing the team improves it. [Report](Demonstration/xG/Report.md), [Appendix](Demonstration/xG/Appendix.md).
 - [Demonstration/Heart Failure/](Demonstration/Heart%20Failure/) predicts death during follow-up from the Heart Failure Clinical Records data. Its [Demonstration Report.md](Demonstration/Heart%20Failure/Demonstration%20Report.md) is the argument; its [Demonstration Appendix.md](Demonstration/Heart%20Failure/Demonstration%20Appendix.md) is the full record behind it, including every decision record.
@@ -30,6 +30,7 @@ Six finished examples, each worked through steps 1–5:
 - [Demonstration/Mobile Price/](Demonstration/Mobile%20Price/) places phones in one of four price bands from their specifications, using the Kaggle Mobile Price Classification data. Its [Report.md](Demonstration/Mobile%20Price/Report.md) and [Appendix.md](Demonstration/Mobile%20Price/Appendix.md) follow the same pattern.
 - [Demonstration/Heart Failure rerun/](Demonstration/Heart%20Failure%20rerun/) is the first problem again, on the same test patients, with the method as revised during the project. Its [Report.md](Demonstration/Heart%20Failure%20rerun/Report.md) and [Appendix.md](Demonstration/Heart%20Failure%20rerun/Appendix.md) follow the same pattern.
 - [Demonstration/Student%20Dropout/](Demonstration/Student%20Dropout/) predicts, from the enrolment information and the first- and second-semester results of 4,424 students, whether a student drops out, using the UCI Predict Students' Dropout and Academic Success data. Its [Report.md](Demonstration/Student%20Dropout/Report.md) and [Appendix.md](Demonstration/Student%20Dropout/Appendix.md) follow the same pattern.
+- [Demonstration/Auto%20MPG/](Demonstration/Auto%20MPG/) predicts the fuel use, in litres per 100 km, of a car that has not yet been tested on the road, from its design, model year and country of origin, using the UCI Auto MPG data for cars from model years 1970 to 1982. Its [Report.md](Demonstration/Auto%20MPG/Report.md) and [Appendix.md](Demonstration/Auto%20MPG/Appendix.md) follow the same pattern.
 
 Each analysis's code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
 
@@ -41,8 +42,8 @@ Each finished analysis's code, outputs and data stay in `Code/` and `Attachments
 | --- | --- |
 | Agentic system that guides users through ML problem-solving | Done: the five-step workflow in [instructions.md](instructions.md). |
 | Uses smlbook.org chapters 2, 3, 4 and 13 | Done: [ML Guide.md](ML%20Guide.md), with page references. |
-| Helps users choose ML techniques | Demonstrated on six analyses of five datasets: heart failure (binary, twice), sepsis (binary), Mobile Price (four classes), StatsBomb football shots (binary, xG) and UCI student dropout (binary), each with its own interim core (`Code/core.py`, `Code/sepsis/core.py`, `Code/mobile/core.py`, `Code/hf2/core.py`, `Code/xg/core.py`, and for student dropout `Code/dropout/cv.py` with its supporting cores). The reusable `Code/advisor/` is not yet built. |
-| Step-by-step guidance from formulation to evaluation | Demonstrated end to end, steps 1–5, on all six analyses: [Heart Failure](Demonstration/Heart%20Failure/), [Sepsis](Demonstration/Sepsis/), [Mobile Price](Demonstration/Mobile%20Price/), the [Heart Failure rerun](Demonstration/Heart%20Failure%20rerun/), [xG](Demonstration/xG/) and [Student Dropout](Demonstration/Student%20Dropout/). |
+| Helps users choose ML techniques | Demonstrated on seven analyses of six datasets: heart failure (binary, twice), sepsis (binary), Mobile Price (four classes), StatsBomb football shots (binary, xG) and UCI student dropout (binary) and Auto MPG (fuel use, numeric), each with its own interim core (`Code/core.py`, `Code/sepsis/core.py`, `Code/mobile/core.py`, `Code/hf2/core.py`, `Code/xg/core.py`, and for student dropout `Code/dropout/cv.py` with its supporting cores, and for Auto MPG `Code/Auto_MPG/core.py` with its supporting programs). The reusable `Code/advisor/` is not yet built. |
+| Step-by-step guidance from formulation to evaluation | Demonstrated end to end, steps 1–5, on all seven analyses: [Heart Failure](Demonstration/Heart%20Failure/), [Sepsis](Demonstration/Sepsis/), [Mobile Price](Demonstration/Mobile%20Price/), the [Heart Failure rerun](Demonstration/Heart%20Failure%20rerun/), [xG](Demonstration/xG/), [Student Dropout](Demonstration/Student%20Dropout/) and [Auto MPG](Demonstration/Auto%20MPG/). |
 | Project report | Finished: [Whole-Project Report.md](Whole-Project%20Report.md) has its Title, Abstract, Introduction, Methods, Results, Discussion and Limitations, with an overview figure of the workflow's parts (Figure 1) at the start of Methods. |
 | Available online through GitHub | Done. |
 

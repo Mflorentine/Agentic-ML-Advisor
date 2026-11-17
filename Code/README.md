@@ -24,6 +24,7 @@ Each finished analysis refers to these files by path, so they are not moved or r
 | Mobile Price (finished) | `mobile_01_describe_data.py` … `mobile_09_fig4_confusion.py` | `mobile/core.py`, with `mobile/props_dr09.json` | `outputs/mobile/` | `../Demonstration/Mobile Price/` |
 | xG (finished) | `xg/01_download_shots.py` … `xg/13_fig_learning_curves_team.py`, with `xg/features.py` and `xg/xg_style.py` | `xg/core.py`, with `xg/inputs/` | `outputs/xg/` and `outputs/xg/figures/` | `../Demonstration/xG/` |
 | Student Dropout (finished) | `dropout/01_describe_data.py` … `dropout/09_final_test.py`, with the figure scripts `dropout/fig1_approved_units.py` to `dropout/fig3_learning_curve.py` | `dropout/cv.py`, with `dropout/core.py`, `dropout/admissible.py`, `dropout/prior.py` and `dropout/recommend.py` | `outputs/dropout/` and `outputs/dropout/figures/` | `../Demonstration/Student Dropout/` |
+| Auto MPG (finished) | `Auto_MPG/01_describe_data.py` … `Auto_MPG/09_fig5_learning_curve.py`, with `Auto_MPG/core_mae.py` | `Auto_MPG/core.py`, with `Auto_MPG/core_prior.py`, `Auto_MPG/core_cv.py`, `Auto_MPG/core_cv_round2.py`, `Auto_MPG/core_cv_round3.py`, `Auto_MPG/core_recommend.py`, `Auto_MPG/core_final.py` and `Auto_MPG/props.json` | `outputs/Auto_MPG/` | `../Demonstration/Auto MPG/` |
 
 Each script says at the top what it reads, what it writes and how to run it. The full guide to an analysis's code is the `Code Summary` section of its `Appendix.md`.
 

@@ -92,3 +92,21 @@ The files are the original download and are never modified. The shot tables deri
 | Enrolment years | 2008/2009 to 2018/2019, from Realinho et al. (2022, *Data*, 7(11), 146, DOI [10.3390/data7110146](https://doi.org/10.3390/data7110146)), as checked by the user. The UCI page gives no years. |
 
 The file is the original download and is never modified. Citation as given by UCI: Realinho, Vieira Martins, Machado and Baptista (2021), with the DOI above.
+
+## `Auto MPG/` (`auto-mpg.data`, `auto-mpg.data-original`, `auto-mpg.names`, `Index`)
+
+| Item | Value |
+| --- | --- |
+| Source | UCI Machine Learning Repository, [Auto MPG](https://archive.ics.uci.edu/dataset/9/auto+mpg), dataset 9, DOI [10.24432/C5859H](https://doi.org/10.24432/C5859H). The page says the data is a slightly modified version of the StatLib library data, with 8 original instances removed for unknown mpg. |
+| Downloaded | 11 November 2026, by the user |
+| Licence | [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/), as stated on the UCI page under "License" (checked 14 November 2026). Sharing and adaptation are allowed with appropriate credit. |
+| Format | `auto-mpg.data`: ASCII text, LF line endings, no header row; eight numbers separated by spaces, then a tab and the car name in double quotes. Missing horsepower is written `?`. |
+| Size and rows | `auto-mpg.data`: 30,286 bytes · 398 data rows × 9 fields (8 numeric and the car name). `auto-mpg.data-original`: 32,149 bytes · 406 rows, with `NA` for missing values. |
+| Columns | `mpg`, `cylinders`, `displacement`, `horsepower`, `weight`, `acceleration`, `model year`, `origin`, `car name` |
+| SHA-256 | `auto-mpg.data` `48b830e11feee5572525f8f1691ddb9d38d3d7b7063edcd8fca672c2a5e17d8d`; `auto-mpg.data-original` `57c15897a86fe1bdddb96416698f3dbb064164eb80c0a1eea011eb7674bc0094`; `auto-mpg.names` `f6ac336f3b11955d71adee2100faf30f8c1be20e6727476836d437d35804599c`; `Index` `841000f240b9562fc3985ef5eeba74db747b07cee8c10633608f6e6e5f7bde22` |
+
+The files are the original download and are never modified. The analysis uses `auto-mpg.data` only, after dropping six cars with no horsepower value (see [Demonstration/Auto MPG/Appendix.md](../Demonstration/Auto%20MPG/Appendix.md)).
+
+## Citation
+
+- Quinlan, R. (1993). Auto MPG [Dataset]. UCI Machine Learning Repository. [https://doi.org/10.24432/C5859H](https://doi.org/10.24432/C5859H).

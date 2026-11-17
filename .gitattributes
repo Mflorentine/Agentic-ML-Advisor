@@ -11,3 +11,6 @@ Code/*/core.py -text
 
 # The xG interim core is identified by the SHA-256 of its bytes (its Decision Records quote it).
 Code/xg/core.py -text
+
+# The Auto MPG data (Attachments/Auto MPG/) is stored byte for byte, so its checksums in SOURCE.md hold.
+"Attachments/Auto MPG/**" -text
