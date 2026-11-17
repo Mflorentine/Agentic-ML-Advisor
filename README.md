@@ -32,8 +32,6 @@ Seven finished examples, each worked through steps 1–5:
 - [Demonstration/Student%20Dropout/](Demonstration/Student%20Dropout/) predicts, from the enrolment information and the first- and second-semester results of 4,424 students, whether a student drops out, using the UCI Predict Students' Dropout and Academic Success data. Its [Report.md](Demonstration/Student%20Dropout/Report.md) and [Appendix.md](Demonstration/Student%20Dropout/Appendix.md) follow the same pattern.
 - [Demonstration/Auto%20MPG/](Demonstration/Auto%20MPG/) predicts the fuel use, in litres per 100 km, of a car that has not yet been tested on the road, from its design, model year and country of origin, using the UCI Auto MPG data for cars from model years 1970 to 1982. Its [Report.md](Demonstration/Auto%20MPG/Report.md) and [Appendix.md](Demonstration/Auto%20MPG/Appendix.md) follow the same pattern.
 
-Each analysis's code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it are still valid.
-
 Each finished analysis's code, outputs and data stay in `Code/` and `Attachments/`, so the file paths and checksums recorded in it stay valid; [Code/README.md](Code/README.md) says which files belong to which analysis.
 
 ## Progress
@@ -44,22 +42,20 @@ Each finished analysis's code, outputs and data stay in `Code/` and `Attachments
 | Uses smlbook.org chapters 2, 3, 4 and 13 | Done: [ML Guide.md](ML%20Guide.md), with page references. |
 | Helps users choose ML techniques | Demonstrated on seven analyses of six datasets: heart failure (binary, twice), sepsis (binary), Mobile Price (four classes), StatsBomb football shots (binary, xG) and UCI student dropout (binary) and Auto MPG (fuel use, numeric), each with its own interim core (`Code/core.py`, `Code/sepsis/core.py`, `Code/mobile/core.py`, `Code/hf2/core.py`, `Code/xg/core.py`, and for student dropout `Code/dropout/cv.py` with its supporting cores, and for Auto MPG `Code/Auto_MPG/core.py` with its supporting programs). The reusable `Code/advisor/` is not yet built. |
 | Step-by-step guidance from formulation to evaluation | Demonstrated end to end, steps 1–5, on all seven analyses: [Heart Failure](Demonstration/Heart%20Failure/), [Sepsis](Demonstration/Sepsis/), [Mobile Price](Demonstration/Mobile%20Price/), the [Heart Failure rerun](Demonstration/Heart%20Failure%20rerun/), [xG](Demonstration/xG/), [Student Dropout](Demonstration/Student%20Dropout/) and [Auto MPG](Demonstration/Auto%20MPG/). |
-| Project report | Finished: [Whole-Project Report.md](Whole-Project%20Report.md) has its Title, Abstract, Introduction, Methods, Results, Discussion and Limitations, with an overview figure of the workflow's parts (Figure 1) at the start of Methods. |
+| Project report | Finished: [Whole-Project Report.md](Whole-Project%20Report.md), titled "A Step-by-Step Workflow for Supervised Machine Learning Models with an AI Agent, Following a Textbook", covers the six analyses (the xG analysis is David's and is not part of it). It has its Title, Abstract, Introduction, Methods, Results, Discussion and Limitations, with an overview figure of the workflow's parts (Figure 1) at the start of Methods. |
 | Available online through GitHub | Done. |
 
-The method changed five times during the project, each change recorded in the version note of [ML Guide.md](ML%20Guide.md). One further change, in [instructions.md](instructions.md), altered how decisions are put to the user: every decision that is the user's is offered as two to four numbered options, each with its trade-off.
+The method changed nine times during the project, each change recorded in the version note of [ML Guide.md](ML%20Guide.md). One further change, in [instructions.md](instructions.md), altered how decisions are put to the user: every decision that is the user's is offered as two to four numbered options, each with its trade-off.
 
-Later changes, made after the four analyses were finished:
-- **30 October.** [ML Guide.md](ML%20Guide.md) §16 adds the flag-everyone reference: wherever a decision threshold is tuned for F2 or another F_β, the F_β of flagging every case is reported beside the model's, on the training and the test rows. It is a reference only, not the baseline. The `Report.md` template gains an `Abstract`, a data-and-split paragraph opening `Methods`, the success criterion stated as met or not met in `Results`, and the flag-everyone F2 in `Results` where a threshold was tuned.
-- **3 November.** [instructions.md](instructions.md) asks the agent to keep every message to the user short: at most about five lines, then the decision as numbered options of one line each.
+A summary of the framework changes, with the reason for each, is in [Florentine's Changes.md](Notes/Florentine's%20Changes.md).
 
 ### Next steps
 
 See [Notes/Note for Florentine.md](Notes/Note%20for%20Florentine.md) for how the method is to be improved by working through the datasets, and [Notes/Davids Changes.md](Notes/Davids%20Changes.md) for the framework changes made since.
 
-- Build `Code/advisor/`, and check that it reproduces the four analyses' recorded outputs.
+- Build `Code/advisor/`, and check that it reproduces the six analyses' recorded outputs.
 - Apply the flag-everyone F2 rule of 30 October in the next analysis that tunes a decision threshold for F2.
-- Try a problem with a numerical or count output, which the four analyses never reached.
+- Try a problem with a count output, which none of the six analyses has tested.
 
 ## The five steps
 
@@ -86,8 +82,8 @@ The report also carries a standing disclaimer, between `Discussion` and `Appendi
 | [Templates/](Templates/) | The empty [Report.md](Templates/Report.md) and [Appendix.md](Templates/Appendix.md), copied to the top of the workspace when an analysis starts; and [Whole-Project Report.md](Templates/Whole-Project%20Report.md), the template for a report on the project as a whole. Not edited by an analysis. |
 | [Project Report.md](Project%20Report.md) and [Appendix.md](Appendix.md) | The analysis in progress: the report, built up through the five steps, and the running record (data, problem, workings, decision records, recommendation, log, code guide), filled from step 1. This is where you work. |
 | [Demonstration/](Demonstration/) | Finished analyses, one folder each, submitted from the top of the workspace when an analysis is finished: [xG/](Demonstration/xG/), [Heart Failure/](Demonstration/Heart%20Failure/), [Heart Failure rerun/](Demonstration/Heart%20Failure%20rerun/), [Sepsis/](Demonstration/Sepsis/) and [Mobile Price/](Demonstration/Mobile%20Price/) and [Student Dropout/](Demonstration/Student%20Dropout/), each with its own `Report.md` and `Appendix.md`, and [Whole-Project Report.md](Whole-Project%20Report.md), the report on the project as a whole. A finished analysis is not edited by a new one. |
-| `Attachments/` | Your data. Never modified. Holds the data of the example analyses, with checksums in [Attachments/SOURCE.md](Attachments/SOURCE.md). The heart failure data and the Student Dropout data are committed; both are licensed CC BY 4.0. The sepsis and Mobile Price data are kept locally under their licence terms, and the StatsBomb xG data is downloaded by its script and not committed. A local copy of the book in `smlbook/` is not committed either. |
-| [Notes/](Notes/) | Notes for collaborators: [Davids Changes.md](Notes/Davids%20Changes.md), a running summary of every framework change, and [Note for Florentine.md](Notes/Note%20for%20Florentine.md), the handover note. |
+| `Attachments/` | Your data. Never modified. Holds the data of the example analyses, with checksums in [Attachments/SOURCE.md](Attachments/SOURCE.md). The heart failure, Student Dropout and Auto MPG data are committed; all three are licensed CC BY 4.0. The sepsis and Mobile Price data are kept locally under their licence terms, and the StatsBomb xG data is downloaded by its script and not committed. A local copy of the book in `smlbook/` is not committed either. |
+| [Notes/](Notes/) | Notes for collaborators: [Davids Changes.md](Notes/Davids%20Changes.md), a running summary of every framework change; [Florentine's Changes.md](Notes/Florentine's%20Changes.md), a summary of Florentine's framework changes; and [Note for Florentine.md](Notes/Note%20for%20Florentine.md), the handover note. |
 | `Code/` | The Python environment, the figure styles (`viz_style.py` for Heart Failure, `sml_style.py` for the book's style, `xg_style.py` for xG), and each analysis's scripts, interim core and outputs. `advisor/` will hold the deterministic core the agent calls for ranking, cross-validation, confidence and the recommendation (not yet implemented). Until then, each analysis has its own interim core, not reviewed: `Code/core.py` (Heart Failure; never changed, and `Code/advisor/` will replace it), `Code/sepsis/core.py` (Sepsis), `Code/mobile/core.py` (Mobile Price), `Code/hf2/core.py` (Heart Failure rerun), `Code/xg/core.py` (xG) and `Code/dropout/` (Student Dropout: `cv.py`, with `core.py`, `admissible.py`, `prior.py` and `recommend.py`). `Code/outputs/project/` holds the provenance tally behind the Whole-Project Report, made by `Code/project_01_provenance_tally.py`. [Code/README.md](Code/README.md) says which scripts, cores and outputs belong to which analysis. |
 | [Setup.md](Setup.md) | Installation and the everyday commands. |
 
@@ -113,6 +109,6 @@ Commit as you go. The agent stages named files rather than everything, so an unf
 
 This workspace is based on the [human-agentic-data-analysis](https://github.com/Vivid-Insights/human-agentic-data-analysis) template by Vivid-Insights, licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). Changes in this repository are shared under the same licence; see [LICENSE](LICENSE).
 
-The included dataset is the UCI Heart Failure Clinical Records dataset (CC BY 4.0), credited in [Attachments/SOURCE.md](Attachments/SOURCE.md). Any other data you analyse remains under its owners' terms.
+The included datasets are the UCI Heart Failure Clinical Records, Student Dropout and Auto MPG datasets, each under CC BY 4.0 and credited in [Attachments/SOURCE.md](Attachments/SOURCE.md). Any other data you analyse remains under its owners' terms.
 
 The book the guide is based on is read at [smlbook.org](https://smlbook.org/) and remains under its owners' terms.
