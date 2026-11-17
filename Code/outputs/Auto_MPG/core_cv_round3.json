@@ -1,0 +1,277 @@
+{
+  "step": "4e diagnosis pass 2 (cross-validation of Linear + poly)",
+  "code_version": "sha256:cdea08943a39ab2b3faa71ebf04361ec5fa23d96c58aeefd3fe1f0e0256aa63a",
+  "label": "interim program, not reviewed; NOT YET APPROVED BY THE USER",
+  "seed": 2026,
+  "outer_parts": 10,
+  "part_sizes": [
+    31,
+    31,
+    31,
+    31,
+    32,
+    31,
+    31,
+    31,
+    31,
+    34
+  ],
+  "measure": "root mean squared error, litres per 100 km",
+  "property_values_used": {
+    "property_1_output_type": "non-negative real",
+    "property_2_data_to_parameter_ratio": "ample",
+    "property_3_number_of_inputs": "few",
+    "property_4_categorical_share": "low",
+    "property_5_interpretability": "none",
+    "property_6_probabilities": "no",
+    "property_7_extrapolation": "no",
+    "property_8_expected_shape": "unknown",
+    "property_9_separability": "not applicable",
+    "property_10_class_imbalance": "not applicable",
+    "must_haves": [],
+    "sources": {
+      "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+      "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+      "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+      "property_6_probabilities": "DR-12 (user: no requirement)",
+      "property_7_extrapolation": "DR-13 (user: no)",
+      "property_8_expected_shape": "DR-14 (user: unknown)",
+      "property_9_10": "DR-23 (not applicable: numeric output)"
+    }
+  },
+  "folds": [
+    {
+      "fold": 0,
+      "baseline": {
+        "E_val": 3.025348818572571
+      },
+      "Linear + poly": {
+        "degree": 3,
+        "E_train": 1.2238170487028,
+        "E_val": 1.2350757101398222,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.3155132530422156
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.2510479076756016
+          }
+        ]
+      }
+    },
+    {
+      "fold": 1,
+      "baseline": {
+        "E_val": 4.2728313763123875
+      },
+      "Linear + poly": {
+        "degree": 3,
+        "E_train": 1.23578487534336,
+        "E_val": 1.0837057898351674,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.3780628003252275
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.2903487091291503
+          }
+        ]
+      }
+    },
+    {
+      "fold": 2,
+      "baseline": {
+        "E_val": 3.941963912201911
+      },
+      "Linear + poly": {
+        "degree": 2,
+        "E_train": 1.3239020790981855,
+        "E_val": 1.065473866749554,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.3504599977776728
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.4081349145918887
+          }
+        ]
+      }
+    },
+    {
+      "fold": 3,
+      "baseline": {
+        "E_val": 3.8426822947916905
+      },
+      "Linear + poly": {
+        "degree": 3,
+        "E_train": 1.2467403867965114,
+        "E_val": 0.9672702757453827,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.4487487106241492
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.446883099090229
+          }
+        ]
+      }
+    },
+    {
+      "fold": 4,
+      "baseline": {
+        "E_val": 4.963632175105038
+      },
+      "Linear + poly": {
+        "degree": 3,
+        "E_train": 1.1509379950945482,
+        "E_val": 1.830911325339739,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.493460628023508
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.4573389678985826
+          }
+        ]
+      }
+    },
+    {
+      "fold": 5,
+      "baseline": {
+        "E_val": 3.2564339451389093
+      },
+      "Linear + poly": {
+        "degree": 3,
+        "E_train": 1.2276440384882312,
+        "E_val": 1.1980116038223307,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.4451985180872853
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.4270548173657505
+          }
+        ]
+      }
+    },
+    {
+      "fold": 6,
+      "baseline": {
+        "E_val": 4.388256983780689
+      },
+      "Linear + poly": {
+        "degree": 2,
+        "E_train": 1.3091407784222548,
+        "E_val": 1.2171630871516474,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.3983571031234525
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.4209420941124828
+          }
+        ]
+      }
+    },
+    {
+      "fold": 7,
+      "baseline": {
+        "E_val": 4.3154174900223135
+      },
+      "Linear + poly": {
+        "degree": 3,
+        "E_train": 1.2193583050019041,
+        "E_val": 1.4099854739551139,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.3469482708174862
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.305015810579159
+          }
+        ]
+      }
+    },
+    {
+      "fold": 8,
+      "baseline": {
+        "E_val": 3.555611802150368
+      },
+      "Linear + poly": {
+        "degree": 2,
+        "E_train": 1.29240974745401,
+        "E_val": 1.3990568257598621,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.610358768753817
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.6879622719583303
+          }
+        ]
+      }
+    },
+    {
+      "fold": 9,
+      "baseline": {
+        "E_val": 3.9330530455975885
+      },
+      "Linear + poly": {
+        "degree": 3,
+        "E_train": 1.1339184865175516,
+        "E_val": 1.871648823165078,
+        "inner_table": [
+          {
+            "degree": 2,
+            "inner_mean_RMSE": 1.3416877546165327
+          },
+          {
+            "degree": 3,
+            "inner_mean_RMSE": 1.2733378950445302
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "Linear + poly": {
+      "CV mean RMSE": 1.3278302781663698,
+      "SD across folds": 0.3085425488778507,
+      "E_train mean": 1.2363653740919358,
+      "margin over baseline (mean)": 2.621692906200977,
+      "margin spread (SD of fold margins)": 0.5409439300567631,
+      "margin over spread": 4.846515064742244,
+      "most common setting": "degree 3",
+      "settings chosen by fold": [
+        "degree 3",
+        "degree 3",
+        "degree 2",
+        "degree 3",
+        "degree 3",
+        "degree 3",
+        "degree 2",
+        "degree 3",
+        "degree 2",
+        "degree 3"
+      ]
+    }
+  }
+}

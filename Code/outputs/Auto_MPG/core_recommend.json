@@ -1,0 +1,261 @@
+{
+  "step": "4f recommendation and selection confidence",
+  "code_version": "sha256:63165b95dbe1fe973ab8427a27bbc68437ab47c190e57a21c7c4041700070348",
+  "label": "interim program, not reviewed; NOT YET APPROVED BY THE USER",
+  "property_values_used": {
+    "property_1_output_type": "non-negative real",
+    "property_2_data_to_parameter_ratio": "ample",
+    "property_3_number_of_inputs": "few",
+    "property_4_categorical_share": "low",
+    "property_5_interpretability": "none",
+    "property_6_probabilities": "no",
+    "property_7_extrapolation": "no",
+    "property_8_expected_shape": "unknown",
+    "property_9_separability": "not applicable",
+    "property_10_class_imbalance": "not applicable",
+    "must_haves": [],
+    "sources": {
+      "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+      "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+      "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+      "property_6_probabilities": "DR-12 (user: no requirement)",
+      "property_7_extrapolation": "DR-13 (user: no)",
+      "property_8_expected_shape": "DR-14 (user: unknown)",
+      "property_9_10": "DR-23 (not applicable: numeric output)"
+    }
+  },
+  "cv_mean_RMSE": {
+    "baseline": 3.9495231843673464,
+    "Linear": 1.380527902728867,
+    "Exponential": 1.4175124311004694,
+    "Exponential + L2": 1.4452254787107888,
+    "kNN": 1.3149924152092418,
+    "Tree": 1.6288307973587048,
+    "Linear + poly": 1.3278302781663698
+  },
+  "cv_spread_RMSE": {
+    "baseline": 0.5735553576354336,
+    "Linear": 0.36176211370300787,
+    "Exponential": 0.3827964610839465,
+    "Exponential + L2": 0.3838167489100919,
+    "kNN": 0.3047491126964997,
+    "Tree": 0.3840620319141331,
+    "Linear + poly": 0.3085425488778507
+  },
+  "C2_by_configuration": {
+    "Linear": {
+      "margin": 2.568995281638479,
+      "spread": 0.5851146541281876,
+      "clear": true
+    },
+    "Exponential": {
+      "margin": 2.5320107532668774,
+      "spread": 0.6719244859090345,
+      "clear": true
+    },
+    "Exponential + L2": {
+      "margin": 2.5042977056565574,
+      "spread": 0.681521037505127,
+      "clear": true
+    },
+    "kNN": {
+      "margin": 2.634530769158104,
+      "spread": 0.5610712664968986,
+      "clear": true
+    },
+    "Tree": {
+      "margin": 2.3206923870086418,
+      "spread": 0.5526829375275432,
+      "clear": true
+    },
+    "Linear + poly": {
+      "margin": 2.621692906200977,
+      "spread": 0.5409439300567631,
+      "clear": true
+    }
+  },
+  "eligible": [
+    "Linear",
+    "Exponential",
+    "Exponential + L2",
+    "kNN",
+    "Tree",
+    "Linear + poly"
+  ],
+  "leader_by_CV_mean": "kNN",
+  "margins_to_leader": {
+    "Linear": {
+      "margin": 0.06553548751962521,
+      "spread": 0.18933151543004656,
+      "ratio": 0.3461414618203856
+    },
+    "Exponential": {
+      "margin": 0.10252001589122717,
+      "spread": 0.20081042401909519,
+      "ratio": 0.5105313451331515
+    },
+    "Exponential + L2": {
+      "margin": 0.1302330635015465,
+      "spread": 0.20258050239112269,
+      "ratio": 0.6428706709893789
+    },
+    "Tree": {
+      "margin": 0.3138383821494628,
+      "spread": 0.31409827179515293,
+      "ratio": 0.9991725849231682
+    },
+    "Linear + poly": {
+      "margin": 0.012837862957127633,
+      "spread": 0.2184436223430222,
+      "ratio": 0.058769685374326586
+    }
+  },
+  "candidates": [
+    "kNN",
+    "Linear",
+    "Linear + poly"
+  ],
+  "chosen": "kNN",
+  "runner_up": "Linear + poly",
+  "C1": {
+    "level": "none",
+    "margin": 0.012837862957127633,
+    "spread": 0.2184436223430222,
+    "ratio": 0.058769685374326586
+  },
+  "C3": {
+    "level": "adequate",
+    "learning_curve": {
+      "mean at 80 %": 1.3936691526176772,
+      "mean at 100 %": 1.3149924152092418,
+      "fold SD of the method": 0.3047491126964997,
+      "drop from 80 % to 100 %": 0.0786767374084354,
+      "curve (parts by fractions)": [
+        [
+          1.9509,
+          1.9149,
+          1.571,
+          1.6038,
+          1.4876,
+          1.411,
+          1.3022,
+          1.1973,
+          1.211,
+          1.2044
+        ],
+        [
+          1.8061,
+          1.3154,
+          1.2536,
+          1.2881,
+          1.3057,
+          1.2846,
+          1.3002,
+          1.376,
+          1.1985,
+          1.1705
+        ],
+        [
+          1.5757,
+          1.7109,
+          1.4364,
+          1.1465,
+          1.1309,
+          1.0624,
+          1.0863,
+          1.0952,
+          1.0564,
+          1.0296
+        ],
+        [
+          1.7797,
+          1.8565,
+          1.6705,
+          1.49,
+          1.4655,
+          1.2513,
+          1.2371,
+          1.2073,
+          1.3078,
+          1.1597
+        ],
+        [
+          3.0364,
+          2.5503,
+          2.4113,
+          2.318,
+          2.2644,
+          2.1808,
+          2.1492,
+          2.2125,
+          2.1145,
+          1.9988
+        ],
+        [
+          2.2354,
+          2.1187,
+          1.9012,
+          1.8282,
+          1.7163,
+          1.685,
+          1.6394,
+          1.5384,
+          1.5651,
+          1.4795
+        ],
+        [
+          1.7012,
+          1.8299,
+          1.6364,
+          1.4736,
+          1.3879,
+          1.2689,
+          1.4115,
+          1.2561,
+          1.3579,
+          1.2243
+        ],
+        [
+          1.7221,
+          1.5541,
+          1.474,
+          1.4424,
+          1.3344,
+          1.3075,
+          1.2902,
+          1.1422,
+          1.0919,
+          0.9717
+        ],
+        [
+          1.9298,
+          1.4632,
+          1.4889,
+          1.2001,
+          1.2085,
+          1.306,
+          1.2849,
+          1.3488,
+          1.3379,
+          1.3201
+        ],
+        [
+          2.3192,
+          1.9021,
+          1.8601,
+          1.6567,
+          1.6993,
+          1.6757,
+          1.6051,
+          1.5631,
+          1.5796,
+          1.5915
+        ]
+      ]
+    }
+  },
+  "selection_confidence": "Low",
+  "prior_agreement": "disagree",
+  "breadth_note": "6 configurations compared (more than 10: no)",
+  "seed": 2026
+}

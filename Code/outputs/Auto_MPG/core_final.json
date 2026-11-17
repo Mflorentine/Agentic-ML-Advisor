@@ -1,0 +1,48 @@
+{
+  "step": "4g final evaluation (test cars, once)",
+  "code_version": "sha256:fc73659298e0739daaa7dc0eed788781b731d3d5828287985fc32b52c4546fad",
+  "label": "interim program, not reviewed; NOT YET APPROVED BY THE USER",
+  "property_values_used": {
+    "property_1_output_type": "non-negative real",
+    "property_2_data_to_parameter_ratio": "ample",
+    "property_3_number_of_inputs": "few",
+    "property_4_categorical_share": "low",
+    "property_5_interpretability": "none",
+    "property_6_probabilities": "no",
+    "property_7_extrapolation": "no",
+    "property_8_expected_shape": "unknown",
+    "property_9_separability": "not applicable",
+    "property_10_class_imbalance": "not applicable",
+    "must_haves": [],
+    "sources": {
+      "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+      "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+      "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+      "property_6_probabilities": "DR-12 (user: no requirement)",
+      "property_7_extrapolation": "DR-13 (user: no)",
+      "property_8_expected_shape": "DR-14 (user: unknown)",
+      "property_9_10": "DR-23 (not applicable: numeric output)"
+    }
+  },
+  "k_chosen": 3,
+  "average_error_by_k_across_parts": {
+    "1": 1.577755605683778,
+    "3": 1.2854945846553383,
+    "5": 1.329782138850523,
+    "7": 1.3603859872120965,
+    "9": 1.4175143419909837,
+    "15": 1.510931097546902,
+    "21": 1.5844394397506145,
+    "31": 1.6472676057099545,
+    "51": 1.716931431451582
+  },
+  "spread_across_parts_of_chosen_k": 0.33600297321127887,
+  "training_rows": 314,
+  "test_rows": 78,
+  "test_rmse_nearest_cases": 1.0771992153428511,
+  "test_rmse_average_guess": 3.6583910747056256,
+  "test_rmse_recomputed_from_saved_predictions": 1.0771992153428511,
+  "test_rmse_average_guess_recomputed": 3.658391074705626,
+  "predictions_file": "D:\\CoRE AI Research Visit\\human-agentic-data-analysis\\human-agentic-data-analysis\\Code\\outputs\\Auto_MPG\\core_final_predictions.csv",
+  "seed": 2026
+}

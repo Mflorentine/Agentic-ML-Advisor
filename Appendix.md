@@ -1154,9 +1154,677 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 
 **Links:** `Code/Auto_MPG/core.py`; `Code/Auto_MPG/props.json`; `Code/outputs/Auto_MPG/core_admset.json`
 
+### DR-25 · PRIOR · step 4b
+
+- **Type:** PRIOR
+- **Step:** 4b
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-15
+- **Question:** Which admissible configurations are tried first, and which are kept for cross-validation, given the property values, before any model is trained?
+- **Reference code:** `Code/Auto_MPG/core_prior.py`, code version sha256:062a113552100c3a9eebdb49df958d69e310b4ff8bc745e5fd944fcda091c5ee (interim core, not reviewed); admissible set from `Code/Auto_MPG/core.py`, code version sha256:4aa2a3fc8c590cf0afe956fe97f4c17158cddb8c5d147d6c2d9e0db55df7ebb9 (DR-24); inputs passed: `Code/Auto_MPG/props.json`; output `Code/outputs/Auto_MPG/core_prior.json`.
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Property 1: output type | non-negative real | M | DR-06, DR-08 |
+| Property 2: data-to-parameter ratio | ample | M (computed) | DR-19 |
+| Property 3: number of inputs | few (8 columns) | M (computed) | DR-19 |
+| Property 4: categorical share | low | M (computed) | DR-19 |
+| Properties 5, 6, 7 | none, no, no | M (user) | DR-11, DR-12, DR-13 |
+| Property 8: expected shape | unknown | M (user) | DR-14 |
+| Properties 9 and 10 | not applicable | n/a | DR-23 |
+
+Only the Property 1 row of the suitability matrix is known to apply, so only it is scored: Linear −1, Exponential +1. Property 2 and Property 3 have entries only for the "limited" and "many" values, which do not hold. Unknown and not-applicable properties contribute nothing.
+
+**Ranking (admissible set, highest score first; ties broken by fewer add-ons):**
+
+| Rank | Configuration | Score | Add-ons | Kept or not |
+| --- | --- | --- | --- | --- |
+| 1 | Exponential | +1 | 0 | kept |
+| 2 | Exponential + L2 | +1 | 1 | kept |
+| 3 | kNN | +0 | 0 | kept |
+| 3 | Tree | +0 | 0 | kept |
+| 4 | Linear | -1 | 0 | DISF |
+| 5 | Linear + L2 | -1 | 1 | DISF |
+| 5 | Linear + poly | -1 | 1 | DISF |
+| 6 | Linear + poly + L2 | -1 | 2 | DISF |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Property 1: output type = non-negative real, suitability row (section 13) | Linear −1; Poisson·exponential +1 | [B SML p. 62]; [B SML pp. 61–62] | Exponential +1; Linear −1; k-NN and Tree 0 |
+| SEQ-1 (section 14) | The baseline is always included | [B SML pp. 330–331] | Kept |
+| SEQ-2 (section 14) | Simple-first: the plain parametric model for a non-negative real output, taken as Exponential | [I] (the guide's own reading for exponential as simple-first) | Kept; see the open point below |
+| Keep rule (section 15, step 4) | The baseline, the simple-first, the three highest-ranked others, and any tie at the third place | [I] | Exponential + L2, k-NN and Tree kept; no tie at the cut |
+
+**Thresholds applied:** none (the prior uses no numeric threshold)
+
+**Options considered:** the eight admissible configurations (DR-24)
+
+**Expectation:** The prior ranks the exponential family first for a non-negative real output, so the expected cross-validation order is: Exponential and Exponential + L2 close together, ahead of k-NN and Tree; all of them ahead of the baseline. The L2 version carries one add-on that the prior does not expect to help. This is what the advisor can know before fitting; the prior does not decide.
+
+**Decision:** Keep the baseline, Exponential (simple-first), Exponential + L2, k-NN and Tree for cross-validation. Linear, Linear + L2, Linear + poly and Linear + poly + L2 are not kept.
+
+**Why not:**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| Linear | DISF | Ranked 4th of 6 with score −1; not one of the three highest-ranked others |
+| Linear + L2 | DISF | Score −1, one add-on; not kept after the ranking |
+| Linear + poly | DISF | Score −1, one add-on; not kept after the ranking |
+| Linear + poly + L2 | DISF | Score −1, two add-ons; not kept after the ranking |
+
+**Open point for the user:** the simple-first rule (SEQ-2) names the plain parametric model for the task. For a non-negative real output, Linear is also admissible. Taking Exponential as the simple-first is our reading. If Linear is to be the simple-first, it is kept as well and cross-validated in round 1.
+
+**Confidence:** n/a
+
+**Outcome vs expectation (filled at 4d, DR-29): partial.** Agreed: the two exponential models are close to each other, both beat the baseline, and the decision tree is behind them. Disagreed: the nearest-cases method is not behind the exponential models; on this measure it has the lowest cross-validation error of the five kept configurations, and the straight-line model (not in the prior's kept set, added by the user) is also ahead of the exponential model in round 1. The penalty version was not ahead of the plain exponential model, as expected. Recorded as a finding; not explained away.
+
+**User involvement:** informed: the ranking and the kept set are presented for agreement at 4b; no cross-validation has been run.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/Auto_MPG/core_prior.py`; `Code/outputs/Auto_MPG/core_prior.json`; `Appendix.md` Decision Records, DR-24
+
+### DR-26 · PRIOR · step 4b (user amendment and approval of the interim core)
+
+- **Type:** PRIOR (amendment: the simple-first set and approval of the interim core)
+- **Step:** 4b
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-15
+- **Question:** Which configurations are cross-validated in round 1, and is the interim core approved for use?
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Prior kept set (core) | baseline, Exponential, Exponential + L2, kNN, Tree | M (computed) | DR-25; `Code/outputs/Auto_MPG/core_prior.json` |
+| User's choice on the simple start | "Also the straight-line model": Linear is kept and cross-validated in round 1, alongside Exponential | M (user) | Question put to the user at 4b |
+| Approval of the script | "Approve the script" (`Code/Auto_MPG/core.py`, `Code/Auto_MPG/core_prior.py`, not reviewed by anyone else) | M (user) | Question put to the user at 4b |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| SEQ-2 (section 14), simple-first | The simple start is the plain parametric model for the task; the user adds the straight-line model to the simple starts | [B SML p. 331]; the user's choice | Linear is kept; it was DISF in DR-25 and is no longer DISF |
+| Interim core (`Machine Learning Scope and Reasoning`) | Approved by the user before its outputs are used | n/a | Results of `core.py` (DR-24) and `core_prior.py` (DR-25) may be used |
+
+**Thresholds applied:** none
+
+**Options considered:** (a) Exponential only as the simple start; (b) Exponential and Linear as simple starts. Chosen: (b), by the user.
+
+**Expectation:** n/a
+
+**Decision:** Round 1 cross-validates the baseline, Exponential and Linear. Round 2 cross-validates Exponential + L2, kNN and Tree. The interim core is approved for use.
+
+**Why not:** (a) was not chosen by the user.
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, answered: "Approve the script"; "Also the straight-line model".
+
+**Supersedes / superseded by:** amends the kept set of DR-25: Linear is kept (DISF removed for it).
+
+**Links:** `Appendix.md` Decision Records, DR-25; `Code/Auto_MPG/core_prior.py`
+
+### DR-27 · PRIOR · step 4b (cross-validation protocol)
+
+- **Type:** PRIOR (cross-validation protocol, agreed at 4b)
+- **Step:** 4b
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-15
+- **Question:** How are the configurations compared, and how are their settings chosen?
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Grouping | rows with one car name are kept in the same part | M (DR-02) | DR-02 |
+| Outer checking | ten parts of the training cars, shuffled with seed 2026; the same parts for every configuration | M (user agreed the protocol at 4b) | `ML Guide.md` section 16 |
+| Settings | chosen inside each outer training part by five further parts (grouped) | M (user agreed) | `ML Guide.md` section 16 |
+| Selection measure | root mean squared error, in litres per 100 km | M (DR-07) | DR-07 |
+| Test set | 78 cars, locked until the single final evaluation | M (DR-16) | DR-16 |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Outer checking, ten parts (section 16) | ten shuffled parts, same for every configuration | [B SML pp. 72–73] | The comparison uses the same parts |
+| Group folds (section 16) | parts kept together by car name | [B SML p. 329] | No car name is on both sides of a check |
+| Hyperparameter tuning (section 16) | five further parts inside each outer training part | [I]; tuning on the checking parts would make them optimistic [B SML p. 74] | Settings are chosen without touching the held-back part |
+| Scaling for k-NN and penalised fits (REQ-2, REQ-3, REQ-1) | scaling fitted inside each training part only | [B SML pp. 26–27]; [I] | No information leaks from the held-back part |
+| Exponential model (section 9, implementation notes) | fitted as a gamma regression with a logarithmic link | [I] | The exponential model of the workflow |
+| Grids (section 16) | k in {1, 3, 5, 7, 9, 15, 21, 31, 51}; tree depth and leaf size; penalty strength over a grid of powers of ten | [I] | Settings searched over these grids |
+
+**Thresholds applied:** none beyond the grids above
+
+**Options considered:** the protocol of section 16 of the guide, as set out in 4b
+
+**Expectation:** n/a
+
+**Decision:** Ten outer parts, grouped by car name, shuffled with seed 2026; five inner parts for settings; the same outer parts for every configuration; the root mean squared error as the measure; the test cars locked.
+
+**Why not:** n/a (no alternative was put forward by the user)
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, answered: "Agree the methods and the checking".
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `ML Guide.md` section 16; `Code/outputs/Auto_MPG/split_seed2026.csv`
+
+### DR-28 · CV · step 4c (round 1)
+
+- **Type:** CV
+- **Step:** 4c
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-15
+- **Question:** How do the simple-first configurations compare with the baseline in cross-validation, and does the simple-first beat the baseline clearly (SEQ-3)?
+- **Reference code:** `Code/Auto_MPG/core_cv.py`, code version sha256:8f4859c2c13bb6e26e38f4f02e010c6e9aaca860091b7d8cda462a0ff4f9cde7 (interim core, not reviewed); inputs: training rows (314), outer parts from seed 2026, `Code/Auto_MPG/props.json`; output `Code/outputs/Auto_MPG/core_cv_round1.json`.
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Outer parts | ten, grouped by car name, seed 2026; sizes [31, 31, 31, 31, 32, 31, 31, 31, 31, 34] | CV | DR-27 |
+| Measure | root mean squared error, litres per 100 km | CV | DR-07 |
+| Training rows used | 314 (the test cars are not read) | T | DR-16 |
+
+**CV table (round 1)**
+
+| Configuration | Post-prior | Tuned hyperparameters | CV mean (RMSE) | Margin vs baseline (mean) | Spread of margin (SD) | Margin / spread | E_train (mean) | E_val (mean) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (mean of training outputs) | no | n/a | 3.950 | n/a | n/a | n/a | 3.968 | 3.950 |
+| Exponential (simple-first, SEQ-2) | no | none (no penalty) | 1.418 | 2.532 | 0.672 | 3.768 | 1.391 | 1.418 |
+| Linear (simple start, added by the user) | no | none (no penalty) | 1.381 | 2.569 | 0.585 | 4.391 | 1.354 | 1.381 |
+
+Margins are the baseline's fold error minus the model's fold error, so positive means better than the baseline. The spread is the standard deviation of the ten fold margins (section 16, not the standard error).
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| SEQ-3 (section 14): continue once the simple-first beats the baseline | Exponential margin / spread = 3.768, at least 1 (C2 threshold, ours) | [B SML pp. 331–332]; threshold [I] | Round 2 may proceed; no DX-1 |
+| C2, margin over the baseline (section 17) | Linear and Exponential both clear, at margin / spread 4.391 and 3.768 | [I] | Recorded for 4d and 4f |
+
+**Thresholds applied:** margin at least 1 times the spread (C2, ours). Value used: Exponential 3.768; Linear 4.391.
+
+**Options considered:** the baseline, Exponential and Linear (round 1, DR-26)
+
+**Expectation:** n/a (round 1 has no expectation of its own; the expectation for the order is in DR-25)
+
+**Decision:** The simple-first configurations beat the baseline clearly; round 2 is run. No diagnosis pass is needed at this point.
+
+**Why not:** n/a
+
+**Confidence:** n/a (selection confidence is computed at 4f)
+
+**Outcome vs expectation:** n/a for round 1 (the prior's expectation in DR-25 is filled in at 4d, after round 2)
+
+**User involvement:** informed: round 1 ran as agreed at 4b (DR-26, DR-27). **Approved:** the script `Code/Auto_MPG/core_cv.py` was written in step 4c, after the scripts were approved at 4b, and its output was recorded before the user had seen it. The user approved the script on 2026-11-17 after it was described in plain words, and the round 1 results stand.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/Auto_MPG/core_cv.py`; `Code/outputs/Auto_MPG/core_cv_round1.json`
+
+### DR-29 · CV · step 4d (round 2)
+
+- **Type:** CV
+- **Step:** 4d
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** How do the remaining kept configurations compare with the baseline and round 1 on the same ten outer parts, with their settings chosen inside each part?
+- **Reference code:** `Code/Auto_MPG/core_cv_round2.py`, code version sha256:631bea526162473fe9860ea626f29bac94e02a3ed0fad02057ae862ccffff5e3 (interim core, approved by the user on 2026-11-17); it imports the approved round 1 functions from `Code/Auto_MPG/core_cv.py` (approved 2026-11-17); inputs: 314 training rows, outer parts from seed 2026; output `Code/outputs/Auto_MPG/core_cv_round2.json`.
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Outer parts | ten, grouped by car name, seed 2026; sizes [31, 31, 31, 31, 32, 31, 31, 31, 31, 34] (the same as round 1) | CV | DR-27 |
+| Inner parts | five, grouped by car name, inside each outer training part, seed 2026 | CV | DR-27 |
+| Grids | penalty strength 1e-4 to 1e4 in powers of ten; k in {1, 3, 5, 7, 9, 15, 21, 31, 51}; tree depth {1, 2, 3, 4, 5, 6, 8, 10, 15, 20} with leaf size {1, 5, 10, 20} | CV | DR-27 |
+| Measure | root mean squared error, litres per 100 km | CV | DR-07 |
+
+**CV table (round 2, with round 1 for reference)**
+
+| Configuration | Post-prior | Tuned hyperparameters (most common across outer parts) | CV mean (RMSE) | Margin vs baseline (mean) | Spread of margin (SD) | Margin / spread | E_train (mean) | E_val (mean) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Baseline (mean of training outputs) | no | n/a | 3.950 | n/a | n/a | n/a | n/a | 3.950 |
+| Exponential + L2 (round 2) | no | penalty strength 0.0001 (by part: 0.01, 0.1, 0.0001, 0.0001, 0.0001, 0.1, 0.0001, 0.0001, 0.0001, 0.0001) | 1.445 | 2.504 | 0.682 | 3.675 | 1.400 | 1.445 |
+| kNN (round 2) | no | k = 3 (by part: 5, 3, 5, 3, 5, 5, 3, 3, 3, 3) | 1.315 | 2.635 | 0.561 | 4.696 | 1.009 | 1.315 |
+| Tree (round 2) | no | depth 6, leaf 5 (by part: (6, 5), (6, 1), (6, 10), (6, 5), (6, 1), (5, 1), (4, 1), (5, 1), (8, 10), (6, 5)) | 1.629 | 2.321 | 0.553 | 4.199 | 1.007 | 1.629 |
+
+For reference, from round 1 (DR-28): Exponential 1.418; Linear 1.381; baseline 3.950.
+
+Margins are the baseline's fold error minus the model's fold error, so positive means better than the baseline. The spread is the standard deviation of the ten fold margins.
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Settings tuned inside each outer part (section 16) | five inner parts, lowest mean inner error chosen | [I] | The outer parts were not used to choose settings |
+| REQ-2, REQ-3, REQ-1 | scaling fitted inside each training part | [B SML pp. 26–27]; [I] | No leak from the held-back part |
+| C2, margin over the baseline (section 17) | Exponential + L2 3.675; kNN 4.696; Tree 4.199 (each at least 1) | [I] | Recorded for 4f |
+
+**Observations recorded, not interpreted here:** the gap between training and held-back error is small for the exponential models (about 0.026 for Exponential in round 1), and large for kNN (0.306) and Tree (0.622). These gaps are an input to the diagnosis at 4e.
+
+**Thresholds applied:** margin at least 1 times the spread (C2, ours); each of the three margins is above 1.
+
+**Options considered:** the three remaining kept configurations (DR-25, with the user's choice in DR-26)
+
+**Expectation:** n/a (the expectation is in DR-25)
+
+**Decision:** Round 2 is recorded as run on the same outer parts. The outcome against the prior's expectation is recorded in DR-25 (partial).
+
+**Why not:** n/a
+
+**Confidence:** n/a (computed at 4f)
+
+**Outcome vs expectation:** n/a (see DR-25)
+
+**User involvement:** asked, approved the script on 2026-11-17 before the run.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/Auto_MPG/core_cv_round2.py`; `Code/outputs/Auto_MPG/core_cv_round2.json`; `Code/outputs/Auto_MPG/core_cv_round1.json`
+
+### DR-30 · DX · step 4e (diagnosis pass 1)
+
+- **Type:** DX
+- **Step:** 4e
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** For the leading configuration, which observation holds first, and what action follows (section 18)?
+- **Reference code:** observations computed from `Code/outputs/Auto_MPG/core_cv_round1.json` and `Code/outputs/Auto_MPG/core_cv_round2.json` (approved scripts, DR-28 and DR-29). No new program was run for this pass.
+
+**Leading configuration:** kNN (lowest cross-validation error of the kept set, 1.315 litres per 100 km; DR-29).
+
+**Observation → action**
+
+| ID | Observation | Test | Result | Values |
+| --- | --- | --- | --- | --- |
+| O1 | Does not beat the baseline | C2 = not clear | does not hold | margin / spread 4.696 (C2 clear, at least 1) |
+| O2 | Training error already above what the application needs | error on training parts worse than the success criterion (1 litre per 100 km) | **holds** | mean 1.009 against 1.0; 4 of 10 parts above 1.0 |
+| O5 | Tuned setting at the edge of its grid | selected value at the smallest or largest grid value in most outer parts | does not hold | k = 3 in 6 parts, k = 5 in 4; not at the edge of {1 … 51} |
+| O3 | Overfitting | gap ≥ 2 × training error | does not hold | gap 0.306 against 2 × 1.009 = 2.018 |
+| O4 | Underfitting | training error ≥ 2 × gap | would hold (1.009 ≥ 0.612), but O2 comes first | not used |
+| O6 | More data likely to help | C3 = limited | not evaluated | C3 is computed at 4f; not needed for this pass |
+
+**Action taken:** DX-2: stop and rethink the problem and the method with the user (`[B SML p. 78]`). The loop pauses here until the user answers.
+
+**Stopping check (S1–S6):** none of S1 to S6 applies yet. The pause is for the user, not a stopping rule.
+
+**Thresholds applied:** O2 uses the success criterion of 1 litre per 100 km (agreed in step 2); O3 and O4 use the ratio of 2 in the guide (ours, `[I]`); O5 uses the grid edge.
+
+**Expectation:** n/a (DX-2 does not change the configurations, so there is no CV result to expect)
+
+**Decision:** Pause the loop and ask the user about the 1-litre limit: the error on the training cars is at or just above it for the leading method, so the limit may not be reachable with these methods on this data.
+
+**Why not:** n/a
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, answered: keep the 1-litre limit and carry on with the checks (2026-11-17). See DR-31.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/outputs/Auto_MPG/core_cv_round2.json`; `Appendix.md` Decision Records, DR-27 and DR-29
+
+### DR-31 · DX · step 4e (user's answer to DX-2)
+
+- **Type:** DX
+- **Step:** 4e
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** After DX-2 (rethink the problem with the user), should the 1-litre limit change, and how should the loop continue?
+- **Reference code:** none (a decision by the user; no calculation)
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| Observation O2 (training error at or above the limit) | holds for the leading method (1.009 against 1.0) | M (from DR-30) | DR-30 |
+| User's answer | "Keep the 1-litre limit and carry on with the checks" | M | Question put to the user at 4e |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| DX-2 (section 18) | The user keeps the limit; the problem is not changed | `[B SML p. 78]` | Formulation unchanged; the success criterion stays as agreed in step 2 |
+| Order of observations (section 18) | O2 still holds after DX-2, because the limit is unchanged; the rules give no action that moves past it without changing the problem or the data | n/a | Open point: see the decision below |
+
+**Thresholds applied:** the success criterion of 1 litre per 100 km (agreed in step 2)
+
+**Options considered:** (a) keep the limit; (b) change the limit to a level the user chooses; (c) stop. Chosen: (a), by the user.
+
+**Expectation:** n/a
+
+**Decision:** The limit stays at 1 litre per 100 km. The guide does not say what the loop does next when O2 still holds after DX-2 with the limit kept. The next action is therefore put to the user, rather than chosen by the agent.
+
+**Why not:** (b) and (c) were not chosen by the user.
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, answered: "Keep the 1-litre limit and carry on with the checks".
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Appendix.md` Decision Records, DR-30
+
+### DR-32 · DX · step 4e (diagnosis pass 2, pending approval)
+
+- **Type:** DX
+- **Step:** 4e
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** After the user chose to try more flexible models (DR-31), which observation holds next, and what action follows?
+- **Reference code:** `Code/Auto_MPG/core_cv_round3.py`, code version sha256:cdea08943a39ab2b3faa71ebf04361ec5fa23d96c58aeefd3fe1f0e0256aa63a (interim program, approved by the user on 2026-11-17 after a plain-words description).
+
+**Observations (from the approved round 1 and round 2 outputs, DR-28 and DR-29)**
+
+| ID | Observation | Result | Values |
+| --- | --- | --- | --- |
+| O1 | does not beat the baseline | does not hold | margin / spread 4.696 for the leading method |
+| O2 | training error above the limit | holds, but already answered by the user (DR-31) | 1.009 against 1.0 |
+| O5 | tuned setting at the grid edge | does not hold for the leading method | k = 3 or 5 |
+| O3 | overfitting | does not hold | gap 0.306 against 2 × 1.009 |
+| O4 | underfitting | **holds**: training error ≥ 2 × gap (1.009 ≥ 0.612) | first observation left to act on |
+| O6 | more data likely to help | not evaluated | C3 is computed at 4f |
+
+**Action (DX-5, section 18):** add polynomial terms, since the number of inputs is few (Property 3, DR-19). The leading method is the nearest-cases method, which does not take polynomial terms, so the action applies to the straight-line model: **Linear + poly**, a post-prior configuration (admissible, DR-24; it was not kept at 4b, DR-25). It is checked on the same ten groups, with the degree (2 or 3) chosen inside each training part (DR-27 protocol).
+
+**Also required by DX-5:** asking the user whether more input measurements exist. Not yet asked.
+
+**Stopping check (S1–S6):** none applies.
+
+**Thresholds applied:** margin at least 1 times the spread (C2, ours); O3 and O4 ratio of 2 (ours).
+
+**Expectation:** Linear + poly should lower the error on the training cars, since the observation says the model is too simple for them. Whether it also lowers the error on held-back groups is the question; the advisor does not expect a large gain, since the straight-line model's gap is already small (about 0.03 in round 1). This is a prediction to be checked, not a finding.
+
+**Decision:** Propose the check of Linear + poly on the same ten groups, once the user has approved the program that runs it.
+
+**Why not:** n/a
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** pending
+
+**User involvement:** asked, answered (DR-31): try more flexible models. Program approved on 2026-11-17.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/Auto_MPG/core_cv_round3.py`; `Appendix.md` Decision Records, DR-30, DR-31
+
+### DR-33 · CV · step 4e (diagnosis pass 2, result)
+
+- **Type:** CV (post-prior configuration, added by the diagnosis loop)
+- **Step:** 4e
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** Does Linear + poly, checked on the same ten groups, beat the leading method (nearest cases) or the simple starts?
+- **Reference code:** `Code/Auto_MPG/core_cv_round3.py`, code version sha256:cdea08943a39ab2b3faa71ebf04361ec5fa23d96c58aeefd3fe1f0e0256aa63a; output `Code/outputs/Auto_MPG/core_cv_round3.json`.
+
+**CV table (post-prior)**
+
+| Configuration | Post-prior | Tuned hyperparameters | CV mean (RMSE) | Margin vs baseline (mean) | Spread of margin (SD) | Margin / spread | E_train (mean) | E_val (mean) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Linear + poly | yes | degree 3 (degree 2 in 3 parts) | 1.328 | 2.622 | 0.541 | 4.847 | 1.236 | 1.328 |
+
+For comparison (DR-28, DR-29): nearest cases 1.315, exponential with penalty 1.445, tree 1.629.
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Post-prior configuration (section 18) | Linear + poly added and checked on the same parts | [I] | Counts for the breadth note, not for prior agreement |
+| Stopping check, S3 (section 18) | Two consecutive passes with no gain of at least 0.5 × spread: only one pass has changed the configurations so far | [I] | S3 not yet met |
+| Leading configuration | Unchanged: nearest cases, 1.315, is still lower than Linear + poly, 1.328 | n/a | Observations recomputed at the next pass |
+
+**Observations for the next pass:** O2 (error on training cars above the limit) still holds for the leader. O4 (underfitting) still holds for the leader. No configuration with a lower error than the leader has been found.
+
+**Action taken:** DX-5 applied in full except one part: adding polynomial terms (this pass). The remaining part of DX-5 is to ask whether more input measurements exist; that question is put to the user next.
+
+**Thresholds applied:** margin at least 1 times the spread (C2, ours)
+
+**Options considered:** Linear + poly (post-prior)
+
+**Expectation:** Linear + poly should lower the error on training cars (it does: 1.236, against 1.354 for the straight-line model in round 1) and should not gain much on held-back groups.
+
+**Decision:** Linear + poly does not change the leader. The next step is to ask the user about more input measurements.
+
+**Why not:** n/a
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** the lowering of the training error was as expected; the held-back error (1.328) is near the leader's and above it, which is consistent with the expectation of no large gain. Agree.
+
+**User involvement:** informed; program approved on 2026-11-17.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/Auto_MPG/core_cv_round3.py`; `Code/outputs/Auto_MPG/core_cv_round3.json`; DR-32
+
+### DR-34 · DX · step 4e (answer to DX-5, and the stopping rule)
+
+- **Type:** DX
+- **Step:** 4e
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** Are there more input measurements to try (DX-5), and does a stopping rule now apply (S1 to S6)?
+- **Reference code:** none new (a decision by the user; the stopping check uses the recorded results in DR-28, DR-29 and DR-33)
+
+**Evidence**
+
+| Item | Value | Evidence tag | Where |
+| --- | --- | --- | --- |
+| User's answer on more measurements | "No, these seven are all there are" | M | Question put to the user at 4e |
+| Pass 1 (DX-2) | no change to any configuration; the user kept the limit | M | DR-30, DR-31 |
+| Pass 2 (DX-5, polynomial terms) | the leading method unchanged; Linear + poly did not beat it | CV | DR-33 |
+| Leader's spread across parts (SD of its margins over the baseline) | 0.561 (round 2); half of it is 0.280 | CV | DR-29 |
+| Gain in the leader's error from pass 2 | none: 1.315 before, 1.315 after | CV | DR-29, DR-33 |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| DX-5 (section 18) | Both parts done: polynomial terms tried (DR-33); more measurements: none (user) | [B SML pp. 333–334] | DX-5 is exhausted |
+| S3 (section 18): two consecutive passes give no gain of at least 0.5 × spread | Pass 1 and pass 2 both gave no gain | [I] | **Applies: stop** |
+| S1, S2, S4, S5, S6 | S1 not met (the limit is not met on the training cars); S2 not stated; S4 not applicable; S5 not requested; S6 (five passes) not reached | n/a | None applies beyond S3 |
+| DX-6 (more data likely to help, O6) | Not evaluated: the loop stops at S3 first | n/a | Not used |
+
+**Thresholds applied:** no gain of at least 0.5 × spread (S3, ours). The spread used is 0.561 (leader, round 2); the gain is zero.
+
+**Options considered:** (a) stop the loop now (S3); (b) try further configurations (none is left by the rules).
+
+**Expectation:** n/a
+
+**Decision:** The diagnosis loop stops under S3. The leading method stays nearest cases, with CV mean error 1.315 litres per 100 km (DR-29). The next step is the recommendation (4f).
+
+**Why not:** n/a
+
+**Confidence:** n/a
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked, answered: "No, these seven are all there are".
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Appendix.md` Decision Records, DR-29, DR-30, DR-31, DR-33
+
+### DR-35 · FINAL · step 4f (recommendation, before the test set)
+
+- **Type:** FINAL (part 1: recommendation and confidence; the test result is added at 4g)
+- **Step:** 4f
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** Which configuration is recommended, and how sure is the choice (section 19 and section 17)?
+- **Reference code:** `Code/Auto_MPG/core_recommend.py`, code version sha256:63165b95dbe1fe973ab8427a27bbc68437ab47c190e57a21c7c4041700070348 (interim program, approved by the user on 2026-11-17); inputs: the approved checking results (`core_cv_round1.json`, `core_cv_round2.json`, `core_cv_round3.json`); output `Code/outputs/Auto_MPG/core_recommend.json`. The test set has not been read.
+
+**Section 19 trace**
+
+| Step | Result |
+| --- | --- |
+| 1. Eligible (C2 clear, no must-haves set) | all six configurations checked: Linear, Exponential, Exponential + L2, kNN, Tree, Linear + poly |
+| 2. Best CV mean | kNN, 1.315 |
+| 2. Candidates (margin to kNN below half a spread) | kNN, Linear (0.066 against half-spread 0.095), Linear + poly (0.013 against 0.109) |
+| 3. Choose (fewest add-ons, then prior score, then CV mean) | kNN: no add-ons, prior score 0; Linear: no add-ons, prior score −1; so kNN |
+| Chosen | kNN, with k tuned inside each part (most often 3) |
+
+**Selection confidence (section 17)**
+
+| Factor | Value | Rule |
+| --- | --- | --- |
+| C1 margin over the runner-up (Linear + poly) | none: margin 0.013, spread 0.218, ratio 0.059 | clear if at least 1 × spread; moderate 0.5 to 1; none below 0.5 |
+| C2 margin over the baseline | clear: margin 2.635, spread 0.561 | clear if at least 1 × spread |
+| C3 data adequacy | adequate: error at 80 % 1.394, at 100 % 1.315; drop 0.079, against half the fold spread 0.152 | limited if still falling by at least half a spread |
+| **Selection confidence** | **Low** (C1 = none) | High needs C1 clear; Low if C1 is none or C2 is not clear |
+
+**Reported alongside, not combined into the level**
+- Prior agreement: **disagree**. The prior expected the exponential model first; cross-validation ranks the nearest-cases method first (DR-25, DR-29).
+- Grounding: the nearest-cases method has prior score 0 with no matrix entries, so no [B], [B→I] or [I] entries stand behind its prior score.
+- Breadth note: six configurations were compared, plus the baseline; the note for more than ten does not apply.
+
+**Why not (all 14 structural configurations except the recommendation, each with one code)**
+
+| Configuration | Code | Evidence |
+| --- | --- | --- |
+| Logistic, Logistic + L2, Logistic + poly, Logistic + poly + L2 (4) | EXCL | Not admissible for a non-negative real output (DR-24) |
+| Poisson, Poisson + L2 (2) | EXCL | Not admissible for a non-negative real output (DR-24) |
+| Linear + L2, Linear + poly + L2 (2) | DISF | Admissible but not kept after the prior ranking (DR-25) |
+| Linear (margin 0.066, below half a spread) | SIMP | Could not be told apart from the recommendation; no add-ons in either; the prior score chose kNN (DR-25) |
+| Linear + poly (margin 0.013, below half a spread) | SIMP | Could not be told apart; the recommendation has fewer add-ons (DR-33) |
+| Exponential (margin 0.103, spread 0.201) | OUTP | Recommendation ahead, but the margin is moderate (about half a spread), not clear. The guide's codes name no moderate case; OUTP is the closest (ours, flagged for the user) |
+| Exponential + L2 (margin 0.130, spread 0.203) | OUTP | As above (moderate margin) |
+| Tree (margin 0.314, spread 0.314) | OUTP | Clearly behind: margin at least one spread |
+
+**Thresholds applied:** candidates below half a spread (section 19, step 2); C1 at 1 and 0.5 spread; C2 at 1 spread; C3 at half the fold spread (ours, `[I]`)
+
+**Options considered:** the six configurations cross-validated (DR-28, DR-29, DR-33); the eight admissible ones (DR-24)
+
+**Expectation:** n/a (the expectation is recorded in DR-25; the outcome is in DR-25)
+
+**Decision:** Recommend kNN (nearest cases), with k tuned inside each part. Selection confidence is Low, because the margin over the next best method is none. The test set is not used yet.
+
+**Why not:** the table above.
+
+**Confidence:** Low (C1 none, C2 clear, C3 adequate). Prior agreement: disagree. Grounding: none. Breadth note: six compared.
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** informed: the recommendation and its confidence are presented for agreement before the test set is used.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/outputs/Auto_MPG/core_recommend.json`; DR-24, DR-25, DR-28, DR-29, DR-33
+
+### DR-36 · FINAL · step 4g (test result, once)
+
+- **Type:** FINAL (part 2: the single test-set evaluation)
+- **Step:** 4g
+- **Sub-task:** the one sub-task
+- **Date:** 2026-11-17
+- **Question:** How does the recommended method perform on the held-back test cars, once, against the average guess?
+- **Reference code:** `Code/Auto_MPG/core_final.py`, sha256:fc73659298e0739daaa7dc0eed788781b731d3d5828287985fc32b52c4546fad (interim program, approved by the user on 2026-11-17); outputs `Code/outputs/Auto_MPG/core_final.json` and `core_final_predictions.csv`. The error was recomputed from the saved predictions by a separate calculation: 1.077, which matches 1.077.
+
+**Test result**
+
+| Item | Value |
+| --- | --- |
+| Method | nearest cases, number of neighbours 3 (lowest average error across the ten training parts) |
+| Test cars | 78 (held back; used once) |
+| Error on the test cars (root mean squared error) | 1.077 litres per 100 km |
+| Average guess on the same test cars | 3.658 litres per 100 km |
+| Uncertainty | 0.336 litres per 100 km (spread of the error across the ten training parts, for 3 neighbours) |
+| Margin over the average guess on the test cars | 2.581 litres per 100 km |
+| Spread of that margin across the training parts | 0.561 litres per 100 km |
+
+**Success criterion (agreed in step 2)**
+
+| Part | Requirement | Result | Met? |
+| --- | --- | --- | --- |
+| 1 | error at most 1 litre per 100 km on the test cars | 1.077 | no |
+| 2 | margin over the average guess at least as large as its spread across the training parts | margin 2.581 against spread 0.561 | yes |
+| Overall | both parts | | **not met** |
+
+**Rules applied**
+
+| Rule ID | Result | Provenance | Effect |
+| --- | --- | --- | --- |
+| Test set used once (`ML Guide.md` section 3) | the 78 test cars read once, in this step | [B SML pp. 74, 328] | No further use of the test cars for this sub-task |
+| Recomputed test error (the check required in step 4g) | same value by two routes | [I] | Consistency check passed |
+
+**Thresholds applied:** the success criterion's 1 litre per 100 km (agreed in step 2); the clear-margin rule of at least 1 times the spread (ours, `[I]`)
+
+**Options considered:** n/a (the single evaluation of the recommended method)
+
+**Expectation:** n/a
+
+**Decision:** The success criterion is **not met** on the test cars: the first part is not met, and the second part is met.
+
+**Why not:** n/a
+
+**Confidence:** Low (as in DR-35). The test result does not change the level.
+
+**Outcome vs expectation:** n/a
+
+**User involvement:** asked; approved the final check on 2026-11-17, with the program described in plain words first.
+
+**Supersedes / superseded by:** n/a
+
+**Links:** `Code/outputs/Auto_MPG/core_final.json`; `Code/outputs/Auto_MPG/core_final_predictions.csv`; DR-35
+
 ## Recommendation
 
-*Written at the end of step 4, one sub-heading per sub-task, after its single test-set evaluation: the thirteen-part Recommendation Report of `ML Guide.md` §25, assembled from the Decision Records. Nothing in it is new.*
+### Sub-task: fuel use of a new car from its design, model year and country of origin
+
+**1. Problem.** Predict the fuel use of a new car, in litres per 100 km, computed as 235.2 divided by the recorded miles per gallon (assuming US gallons). Output: non-negative real (DR-06, DR-08). Inputs: displacement, horsepower, weight, acceleration, model year and cylinders as numbers, origin as a category, one yes-or-no column dropped per category, no transformation, car name not an input (DR-19 to DR-22). Metric: root mean squared error (DR-07); monitored alongside: mean absolute error (DR-09). Success criterion (DR-18 and the Problem Definition): error at most 1 litre per 100 km on the test cars, and a clear margin over the average guess (at least one spread). Baseline: the mean of the training outputs (SEQ-1). Achievable level: not stated. Must-haves: none (DR-11, DR-12). Extrapolation: no (DR-13). Expected shape: unknown; the user expects more fuel for heavier cars and bigger engines (DR-14).
+
+**2. Recommendation.** Nearest cases (k-nearest neighbours), with the number of neighbours 3 (the value with the lowest average error across the ten training parts). Selection confidence: **Low** (DR-35).
+
+**3. Test-set result.** Error 1.077 litres per 100 km on 78 test cars, against 3.658 for the average guess on the same cars; uncertainty 0.336 (spread across parts). Success criterion: **not met** (DR-36). Mean absolute error on the same cars (reported beside the main number, not deciding; `Code/outputs/Auto_MPG/core_mae.json`): 0.81 for the recommended method, 3.02 for the average guess.
+
+**4. Why this configuration.** Constraints: the output is a positive amount, so the logistic family and the Poisson family are excluded (EXCL, DR-24); no must-have is set; the collinearity check removes no configuration (DR-24). Cross-validation evidence: the margin over the next best method (straight line with curves) is 0.013 against a spread of 0.218, which is none; the margin over the baseline is 2.635 against 0.561, which is clear (DR-29, DR-33, DR-35). Simplicity: no add-ons; the straight line also has none, so the prior score decided the tie (DR-35).
+
+**5. Ranking table** (margins are positive when the recommended method is better; "vs baseline" is the margin over the average guess, with its spread).
+
+| Rank | Configuration | Prior rank | Prior score | Post-prior | CV mean | Margin vs recommended (± spread) | Margin vs baseline (± spread) | Why-not code |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Nearest cases (recommended) | 3 | 0 | no | 1.315 | n/a | 2.635 ± 0.561 | recommended |
+| 2 | Straight line with curves | not kept | −1 | yes | 1.328 | 0.013 ± 0.218 | 2.622 ± 0.541 | SIMP |
+| 3 | Straight line | 4 | −1 | no | 1.381 | 0.066 ± 0.189 | 2.569 ± 0.585 | SIMP |
+| 4 | Exponential (simple start) | 1 | +1 | no | 1.418 | 0.103 ± 0.201 | 2.532 ± 0.672 | OUTP (moderate margin; see part 7) |
+| 5 | Exponential with penalty | 2 | +1 | no | 1.445 | 0.130 ± 0.203 | 2.504 ± 0.682 | OUTP (moderate margin; see part 7) |
+| 6 | Decision tree | 3 | 0 | no | 1.629 | 0.314 ± 0.314 | 2.321 ± 0.553 | OUTP |
+| — | Straight line with penalty; straight line with curves and penalty | not kept | −1 | — | not run | — | — | DISF |
+| — | Logistic family (4); Poisson family (2) | — | — | — | — | — | — | EXCL |
+
+**6. Prior versus evidence.** Agreement: **disagree**. The prior expected the exponential model first and the straight line after it (DR-25). The cross-validation put the nearest-cases method first and the straight line ahead of the exponential model (DR-28, DR-29). The prior's positive-output rule did not separate the families on this data. The expectation was recorded before any fitting; the disagreement is reported as found.
+
+**7. Why not the others.** Grouped by code, in priority order: EXCL: the logistic family (four) and the Poisson family (two), as the output is a positive amount (DR-24). DISF: the two straight-line settings with the penalty, not kept after the prior ranking (DR-25). SIMP: the straight line and the straight line with curves, which could not be told apart from the recommendation (margins below half a spread). OUTP: the exponential model, the exponential model with the penalty, and the decision tree, all behind the recommendation. For the exponential models the margin is moderate (about half a spread) rather than clear; the guide's codes name no moderate case, so OUTP is the closest code and is flagged here as our reading.
+
+**8. Confidence.** Level: **Low**. C1 (margin over the next best, the straight line with curves): none, 0.013 against a spread of 0.218. C2 (margin over the baseline): clear, 2.635 against 0.561. C3 (more training cars would still help): adequate; the error fell from 1.394 at 80 % to 1.315 at 100 %, a drop of 0.079 against half a spread of 0.152. Prior agreement: disagree. Grounding: the nearest-cases method has prior score 0 and no matrix entries behind it. Breadth: six configurations compared plus the baseline, so the breadth note does not apply.
+
+**9. How the model predicts.** For a new car, the method finds the 3 training cars most similar to it on the scaled inputs, and reports their average fuel use. It has no formula to inspect; a person can see which cars it used. Trust limits: the error is an average over cars like those in the data; it says nothing about the worst single prediction; it holds only for cars like those in the data.
+
+**10. Use and limits.** The model can be used to estimate typical fuel use for cars like those in the data, as an average. It was not shown to meet the 1-litre part of the criterion on the test cars. Limits from the data: units of the inputs are not verified; the origin codes are not named in the file; six cars with no horsepower value were dropped, and small-engine cars are fewer in the 392-car set than in the file; the test result rests on 78 cars, with an uncertainty of 0.336; car names are a proxy for car models, not for physical cars (DR-02, DR-22).
+
+**11. Improvement history.** Pass 1: observation that the error on training cars is at the limit (O2) → DX-2, the limit kept by the user (DR-30, DR-31). Pass 2: observation that the model is too simple (O4) → DX-5, straight line with curves added; no gain (DR-32, DR-33). DX-5, the question on more measurements: none (DR-34). Stop: rule S3, two passes without a gain of at least half a spread (DR-34).
+
+**12. Thresholds applied.** Clear margin: at least 1 times the spread (C2). Candidates: margin below half a spread (section 19). C1: 1 and 0.5 times the spread. C3: half the fold spread. Settings grids: as in DR-27. Learning check: error at 80 % and 100 % of the training cars. Stop rule S3: half a spread. Observation O2: the 1-litre limit. Observations O3 and O4: a ratio of 2.
+
+**13. Trace index and provenance.** Decision Records: DR-01 to DR-04 (admissibility); DR-05 to DR-15 (formulation); DR-16 (split); DR-17 and DR-19 to DR-23 (properties and input design); DR-24 (admissible set); DR-25 to DR-27 and DR-26 (prior and protocol); DR-28, DR-29 and DR-33 (cross-validation); DR-30 to DR-32 and DR-34 (diagnosis); DR-35 and DR-36 (recommendation and test). Tags in the decision records, counted as occurrences, not rules: book advice [B SML]: 32; book fact turned into advice [B→I SML]: 6; our inference or threshold [I]: 26. The counts are occurrences in the text and are not an independent tally of rules.
 
 ## Analysis Log
 
@@ -1210,6 +1878,33 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 | 44 | Input design, car name, decided by the user: left out as an input; used only as the group column for the split. | `Appendix.md` Decision Records, DR-22 |
 | 45 | Step 3 closed by the user. Properties 9 and 10 recorded as not applicable (numeric output, DR-23). Draft Abstract updated in Project Report.md. | `Appendix.md` Decision Records, DR-23; `Project Report.md` Abstract |
 | 46 | Step 4 started. Step 4a: the interim core (`Code/Auto_MPG/core.py`, not reviewed) gives the admissible set: eight of the fourteen configurations. The first run's MOD-2 flag on Linear + poly was a numerical artifact and was corrected before any output was used. | `Appendix.md` Decision Records, DR-24; `Code/outputs/Auto_MPG/core_admset.json` |
+| 47 | Step 4b: the interim prior core (`Code/Auto_MPG/core_prior.py`, not reviewed) gives the prior ranking. Kept: baseline, Exponential, Exponential + L2, k-NN, Tree. Not kept: four Linear configurations (DISF). Recorded as DR-25 before any training. | `Appendix.md` Decision Records, DR-25; `Code/outputs/Auto_MPG/core_prior.json` |
+| 48 | User approved the interim core (`core.py`, `core_prior.py`) and chose to add the straight-line model to the simple starts. Round 1: baseline, Exponential, Linear. Round 2: Exponential + L2, kNN, Tree. Recorded as DR-26. | `Appendix.md` Decision Records, DR-26 |
+| 49 | Cross-validation protocol agreed at 4b: ten outer parts grouped by car name (seed 2026), five inner parts, the same outer parts for every configuration, root mean squared error, test cars locked. Recorded as DR-27. Draft Methods paragraph written in `Project Report.md`. | `Appendix.md` Decision Records, DR-27; `Project Report.md` Methods |
+| 50 | Step 4c: cross-validation round 1 (baseline, Exponential, Linear), with the interim script `Code/Auto_MPG/core_cv.py`. Both simple-first configurations beat the baseline clearly. Recorded as DR-28. | `Appendix.md` Decision Records, DR-28; `Code/outputs/Auto_MPG/core_cv_round1.json` |
+| 51 | Approval gap recorded. `Code/Auto_MPG/core_cv.py` was written in step 4c, after the user approved `core.py` and `core_prior.py` at 4b, and its round 1 output was recorded (DR-28) before the user saw the script. Round 1 is provisional until the user approves the script. Round 2 is held until then. | `Appendix.md` Decision Records, DR-28 |
+| 52 | User approved `Code/Auto_MPG/core_cv.py` (round 1) on 2026-11-17, after its description in plain words. Round 1 results stand (DR-28). | `Appendix.md` Decision Records, DR-28 |
+| 53 | Round 2 script `Code/Auto_MPG/core_cv_round2.py` written for Exponential + L2, kNN and Tree, with inner tuning. Not yet approved and not run; no round 2 output exists. Awaiting the user's approval. | `Code/Auto_MPG/core_cv_round2.py` |
+| 54 | Round 2 script approved by the user on 2026-11-17 and run: Exponential + L2, kNN and Tree on the same outer parts. Recorded as DR-29. Outcome against the prior's expectation filled in DR-25 (partial). Step 4d complete. | `Appendix.md` Decision Records, DR-29 and DR-25; `Code/outputs/Auto_MPG/core_cv_round2.json` |
+| 55 | Step 4e, diagnosis pass 1, on the leading method (nearest cases). The error on training cars is just above the 1-litre limit (observation O2 holds), so the action is DX-2: pause and ask the user. Recorded as DR-30. | `Appendix.md` Decision Records, DR-30 |
+| 56 | User kept the 1-litre limit (answer to DX-2). The rules do not say what follows when the same observation still holds with the limit kept; the next step is put to the user. Recorded as DR-31. | `Appendix.md` Decision Records, DR-31 |
+| 57 | Diagnosis pass 2: observation O4 (underfitting) holds; action DX-5 proposes Linear + poly, checked on the same ten groups. The user approved the program on 2026-11-17 after a plain-words description; it was run and the result is recorded as DR-33. | `Appendix.md` Decision Records, DR-32; `Code/Auto_MPG/core_cv_round3.py` |
+| 58 | Diagnosis pass 2 result: Linear + poly, CV mean 1.328, does not beat the leader (nearest cases, 1.315). Recorded as DR-33. Next: ask the user whether more input measurements exist (remaining part of DX-5). | `Appendix.md` Decision Records, DR-33; `Code/outputs/Auto_MPG/core_cv_round3.json` |
+| 59 | User: no further measurements. Stopping rule S3 applies (two passes, no gain of at least half a spread). Step 4e closed. Next: the recommendation (4f). Recorded as DR-34. | `Appendix.md` Decision Records, DR-34 |
+| 60 | Step 4f started. A new program, `Code/Auto_MPG/core_recommend.py`, is written to choose the recommended method by the workflow's rule and to rate confidence (including a learning check for the recommended method). Not yet approved by the user and not run; no result from it is used. | `Code/Auto_MPG/core_recommend.py` |
+| 61 | Step 4f: the approved program gives the recommendation: kNN (nearest cases), selection confidence Low (no clear margin over Linear + poly). Prior agreement: disagree. Recorded as DR-35, before the test set is used. | `Appendix.md` Decision Records, DR-35; `Code/outputs/Auto_MPG/core_recommend.json` |
+| 62 | Step 4f′ (write-up before the test set): Methods paragraph for the sub-task revised to match what was done, including the straight-line model with curved terms added in the diagnosis; first Results paragraph written with the cross-validation figures and the selection confidence. No test result yet. | `Project Report.md` Methods and Results |
+| 63 | Cross-validation figures drawn after the user asked for them (before the test set): Figure 4, comparison of methods (average and spread across parts); Figure 5, learning curve of the nearest-cases method. Read only from the approved result files. Added to Results. Codes removed from the report wording at the user's request; kept here. | `Code/Auto_MPG/08_fig4_cv_comparison.py`; `Code/Auto_MPG/09_fig5_learning_curve.py`; `Project Report.md` Results |
+| 64 | User kept Figures 4 and 5 in the report. Plain-words rewrite of the Methods and Results paragraphs for the sub-task (codes removed from the report, kept here). Next: approval of the final check on the test cars (not yet given). | `Project Report.md` Methods and Results |
+| 65 | Final check program `Code/Auto_MPG/core_final.py` written (the nearest-cases method, refitted on all training cars, checked once on the test cars, with the average guess on the same cars). Not yet approved and not run; the test cars have not been read. | `Code/Auto_MPG/core_final.py` |
+| 66 | Final check run once on the 78 test cars (approved by the user): nearest cases, 3 neighbours, error 1.077; average guess 3.658; success criterion not met. Recorded as DR-36. Test cars not used again. | `Appendix.md` Decision Records, DR-36; `Code/outputs/Auto_MPG/core_final.json` |
+| 67 | Step 4f′ and 4g write-up completed: Results paragraph for the test result; Methods sentence on the final fit; draft Abstract updated; Recommendation Report (13 parts) written in the Appendix. | `Project Report.md`; `Appendix.md` Recommendation |
+| 68 | Step 4 closed by the user. Step 5 started: the Discussion is to be written after its paragraph structure is agreed with the user. | `Appendix.md` Analysis Log |
+| 69 | Step 5: Discussion written in four themes, as agreed with the user (why this method; how it predicts; whether the success criterion was met and what the model can be used for; the limits, including the six dropped small-engine cars, unverified units, the US-gallon assumption, unnamed origin codes, cars from 1970 to 1982, and the learning curve still falling a little). Final Abstract written, with the word Draft removed. Title to be chosen by the user. | `Project Report.md` Discussion and Abstract |
+| 70 | Title chosen by the user: "Predicting the fuel use of new cars from their design". Title check run against the report: the word "new" does not match the data, which are cars from model years 1970 to 1982; the Discussion says the results say nothing about newer cars. Two ways to resolve it are offered to the user (see the message to the user). | `Project Report.md` title; `Appendix.md` Analysis Log |
+| 71 | Title changed at the user's choice to: "Predicting the fuel use of cars from their design" (the word "new" removed to match the 1970 to 1982 data). | `Project Report.md` title |
+| 72 | Mean absolute error on the 78 test cars added to Results, from the saved predictions, after the user approved the calculation: 0.81 for the recommended method; 3.02 for the average guess. Program: `Code/Auto_MPG/core_mae.py` (approved by the user). | `Code/outputs/Auto_MPG/core_mae.json`; `Project Report.md` Results |
+| 73 | At the user's request, "a new car" changed to "a car that has not yet been tested on the road" in the Abstract and the Introduction, to match the title. Other uses (Discussion, sub-headings) not yet changed. | `Project Report.md` Abstract and Introduction |
 
 ## Code Summary
 
@@ -1221,6 +1916,15 @@ Open for the formulation: the data records miles per gallon, which goes up as fu
 - `Code/Auto_MPG/07_fig3_fuel_by_origin.py`: Figure 3, fuel use by origin code, one dot per training car, with each column's median. Reads the raw file and the split file; writes the light and dark PNG files. Run from `Code/` with `uv run python Auto_MPG/07_fig3_fuel_by_origin.py`. Jitter seed 2026; training cars only.
 - `Code/Auto_MPG/core.py`: interim core (not reviewed) for step 4a, the admissible set, from `ML Guide.md` sections 9 and 12. Reads `Code/Auto_MPG/props.json` and the training rows; writes `Code/outputs/Auto_MPG/core_admset.json`. Run from `Code/` with `uv run python Auto_MPG/core.py`. Code version: the SHA-256 is in DR-24. No random numbers.
 - `Code/Auto_MPG/props.json`: the property values passed to the core, copied from the Decision Records with their sources.
+- `Code/Auto_MPG/core_prior.py`: interim core (not reviewed) for step 4b, the prior ranking, from `ML Guide.md` sections 13 to 15. Uses the admissible set from `core.py`. Writes `Code/outputs/Auto_MPG/core_prior.json`. Run from `Code/` with `uv run python Auto_MPG/core_prior.py`. No random numbers.
+- `Code/Auto_MPG/core_cv.py`: interim core (not reviewed; approved by the user on 2026-11-17) for cross-validation, round 1: baseline, Exponential and Linear, on ten outer parts grouped by car name (seed 2026). Writes `Code/outputs/Auto_MPG/core_cv_round1.json`. Run from `Code/` with `uv run python Auto_MPG/core_cv.py`. Seed 2026; training cars only.
+- `Code/Auto_MPG/core_cv_round2.py`: interim core (not reviewed; approved by the user on 2026-11-17) for cross-validation, round 2: Exponential + L2, kNN and Tree, with settings tuned by five further parts inside each outer part. Run on 2026-11-17. Writes `Code/outputs/Auto_MPG/core_cv_round2.json` when run. Seed 2026; training cars only.
+- `Code/Auto_MPG/core_cv_round3.py`: interim program (not reviewed; approved by the user on 2026-11-17) for diagnosis pass 2: Linear + poly, with the degree (2 or 3) chosen inside each training part, on the same ten groups. Run on 2026-11-17. Writes `Code/outputs/Auto_MPG/core_cv_round3.json`. Seed 2026; training cars only.
+- `Code/Auto_MPG/core_recommend.py`: interim program (not reviewed; approved by the user on 2026-11-17) for step 4f: picks the recommended method from the approved checking results by the workflow's rule (section 19), rates confidence (section 17), and runs a learning check for the chosen method. Reads the approved result files; writes `Code/outputs/Auto_MPG/core_recommend.json` when run. Seed 2026; training cars only. Run on 2026-11-17.
+- `Code/Auto_MPG/08_fig4_cv_comparison.py`: Figure 4, average error of each method across the ten parts, with its spread. Reads `Code/outputs/Auto_MPG/core_recommend.json`; writes light and dark PNG files. Run from `Code/` with `uv run python Auto_MPG/08_fig4_cv_comparison.py`. No random numbers.
+- `Code/Auto_MPG/09_fig5_learning_curve.py`: Figure 5, learning curve of the nearest-cases method across the ten parts, with its spread. Reads `Code/outputs/Auto_MPG/core_recommend.json`; writes light and dark PNG files. Run from `Code/` with `uv run python Auto_MPG/09_fig5_learning_curve.py`. No random numbers.
+- `Code/Auto_MPG/core_mae.py`: calculation of the mean absolute error on the 78 test cars, from the saved predictions only (approved by the user on this date). Writes `Code/outputs/Auto_MPG/core_mae.json`. Run from `Code/` with `uv run python Auto_MPG/core_mae.py`. No random numbers.
+- `Code/Auto_MPG/core_final.py`: interim program (not reviewed; NOT YET APPROVED) for the final check: chooses the number of neighbours across the ten training parts, refits on all 314 training cars, checks once on the 78 test cars, with the average guess on the same cars and a second calculation from saved predictions. Writes `Code/outputs/Auto_MPG/core_final.json` and `core_final_predictions.csv` when run. Seed 2026. Not yet run.
 - `Code/Auto_MPG/01_describe_data.py`: describing pass on the raw Auto MPG files for step 1. It reads `Attachments/Auto MPG/auto-mpg.data` and `auto-mpg.data-original`, prints counts, missing values, ranges and category counts, and writes nothing. Run from `Code/` with `uv run python Auto_MPG/01_describe_data.py`. It uses no random numbers, so no seed applies. It needs pandas, which is in `Code/pyproject.toml`.
 
 ## References

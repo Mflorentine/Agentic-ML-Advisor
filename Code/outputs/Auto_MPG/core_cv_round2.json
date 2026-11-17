@@ -1,0 +1,2746 @@
+{
+  "step": "4d cross-validation round 2",
+  "code_version": "sha256:631bea526162473fe9860ea626f29bac94e02a3ed0fad02057ae862ccffff5e3",
+  "round_1_script": "D:\\CoRE AI Research Visit\\human-agentic-data-analysis\\human-agentic-data-analysis\\Code\\Auto_MPG\\core_cv.py",
+  "label": "interim core, not reviewed; NOT YET APPROVED BY THE USER",
+  "seed": 2026,
+  "outer_parts": 10,
+  "part_sizes": [
+    31,
+    31,
+    31,
+    31,
+    32,
+    31,
+    31,
+    31,
+    31,
+    34
+  ],
+  "measure": "root mean squared error, litres per 100 km",
+  "property_values_used": {
+    "property_1_output_type": "non-negative real",
+    "property_2_data_to_parameter_ratio": "ample",
+    "property_3_number_of_inputs": "few",
+    "property_4_categorical_share": "low",
+    "property_5_interpretability": "none",
+    "property_6_probabilities": "no",
+    "property_7_extrapolation": "no",
+    "property_8_expected_shape": "unknown",
+    "property_9_separability": "not applicable",
+    "property_10_class_imbalance": "not applicable",
+    "must_haves": [],
+    "sources": {
+      "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+      "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+      "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+      "property_6_probabilities": "DR-12 (user: no requirement)",
+      "property_7_extrapolation": "DR-13 (user: no)",
+      "property_8_expected_shape": "DR-14 (user: unknown)",
+      "property_9_10": "DR-23 (not applicable: numeric output)"
+    }
+  },
+  "grids": {
+    "alpha": [
+      0.0001,
+      0.001,
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0,
+      1000.0,
+      10000.0
+    ],
+    "k": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      15,
+      21,
+      31,
+      51
+    ],
+    "depth": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10,
+      15,
+      20
+    ],
+    "leaf": [
+      1,
+      5,
+      10,
+      20
+    ]
+  },
+  "folds": [
+    {
+      "fold": 0,
+      "baseline": {
+        "E_val": 3.025348818572571
+      },
+      "Exponential + L2": {
+        "setting": "0.01",
+        "E_train": 1.4239888445872089,
+        "E_val": 1.2650243486667336,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.4014183356161407
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.4001490126171376
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.3937560023451168
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.4328435752082778
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.7607770505268405
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 3.1370619638655404
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.9926763962802148
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 4.124862771250677
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 4.138850364755707
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "5",
+        "E_train": 1.1262806905778435,
+        "E_val": 1.204398881216009,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.626550104044565
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.4358107404776845
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.3311196405260763
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.3803145429545771
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.44324186462159
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.5628537445032686
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.6377949552798234
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.6739520414475784
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.8000827648567364
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(6, 5)",
+        "E_train": 1.0215571322087558,
+        "E_val": 1.155370499315351,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.383657331191485
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.383657331191485
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.383657331191485
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.383657331191485
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 2.1125757551795132
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 2.1125757551795132
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 2.1125757551795132
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 2.1125757551795132
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.785045852709834
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.7588234727913634
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.747876360800565
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.8241098152450799
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.695813546682274
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.4929169181427049
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.5180156981901483
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.7413756221140506
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.5936686842484915
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.468477427998648
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.5126454138033278
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.7413756221140506
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.6099384299931603
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.4459340951895496
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.496762530483095
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.7413756221140506
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.7997933547225535
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.4664076411966354
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.496762530483095
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.7413756221140506
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.7417680664689772
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.466798553316091
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.496762530483095
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.7413756221140506
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.5813960114310253
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.466798553316091
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.496762530483095
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.7413756221140506
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.6339632603821799
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.466798553316091
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.496762530483095
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.7413756221140506
+          }
+        ]
+      }
+    },
+    {
+      "fold": 1,
+      "baseline": {
+        "E_val": 4.2728313763123875
+      },
+      "Exponential + L2": {
+        "setting": "0.1",
+        "E_train": 1.465444498862541,
+        "E_val": 1.2538208106014597,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.443335108407998
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.440944635611557
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.4263127628892733
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.4149937078303325
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.5567725663837861
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 2.785126633424987
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.6106723101953158
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.7377644114485458
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 3.751208112759726
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "3",
+        "E_train": 0.9616381299178266,
+        "E_val": 1.1704570084951496,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.4696973551373613
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.3133889121861675
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.3829273279340553
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.396938370074756
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.423558180342619
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.5005585429052548
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.5181184885827783
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.5519970660093676
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.6245974025279923
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(6, 1)",
+        "E_train": 0.6768838986687589,
+        "E_val": 1.416625724211268,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.5830751056551495
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.5830751056551495
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.5830751056551495
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.5830751056551495
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 1.971994476111415
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 1.971994476111415
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 1.971994476111415
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 1.971994476111415
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.9039924460146018
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.9039924460146018
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.8863313932464068
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.817497110358601
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.7857439529296726
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.674645005995994
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.6843615201402038
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.6970539688071842
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.7363277137255029
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.6670816227152951
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.6510618984763041
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.6910480075223515
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.6213797966168997
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.6249877262103147
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.6498564565169862
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.6910480075223515
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.6349312549309034
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.625613364729195
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.6498564565169862
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.6910480075223515
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.7074070126251564
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.625613364729195
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.6498564565169862
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.6910480075223515
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.725850595521181
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.625613364729195
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.6498564565169862
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.6910480075223515
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.7158957120369283
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.625613364729195
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.6498564565169862
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.6910480075223515
+          }
+        ]
+      }
+    },
+    {
+      "fold": 2,
+      "baseline": {
+        "E_val": 3.941963912201911
+      },
+      "Exponential + L2": {
+        "setting": "0.0001",
+        "E_train": 1.4267211071938115,
+        "E_val": 1.1933842256254874,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.4359613089244738
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.4364810421971679
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.442606271543148
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.4730347603752998
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.6574973173529823
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 2.8316577627049577
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.6077846366476733
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.7281999482842223
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 3.740956872247061
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "5",
+        "E_train": 1.1304007297840373,
+        "E_val": 1.0295878366925453,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.3951852350143912
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.2153151394817903
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.200309292136421
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.277353542123846
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.3376472145922595
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.5017761413489463
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.5428668889879869
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.6252234706499695
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.7418848854452076
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(6, 10)",
+        "E_train": 1.2522082444375557,
+        "E_val": 1.6074772502619799,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.567457634651598
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.567457634651598
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.567457634651598
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.567457634651598
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 1.9065215547274588
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 1.9065215547274588
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 1.9065215547274588
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 1.8646606324045893
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.5677753695064667
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.5938823124680366
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.5990037899556657
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.7040603488774615
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.4692356838792469
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.4769562308636968
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.4742201708616764
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.6380862706594712
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.5173146438447507
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.5038914637907166
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.4577564331551698
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.6350293957622004
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.5836435642079572
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.5304287492646425
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.4572896588870514
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.6350293957622004
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.6709675146456013
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.5341193994544837
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.4574019994042868
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.6350293957622004
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.7181678936127924
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.536420390848726
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.4574019994042868
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.6350293957622004
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.6990300922877342
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.536420390848726
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.4574019994042868
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.6350293957622004
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.6943921868015415
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.536420390848726
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.4574019994042868
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.6350293957622004
+          }
+        ]
+      }
+    },
+    {
+      "fold": 3,
+      "baseline": {
+        "E_val": 3.8426822947916905
+      },
+      "Exponential + L2": {
+        "setting": "0.0001",
+        "E_train": 1.422834153854632,
+        "E_val": 1.1184040691626334,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.467580692665195
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.468438626629778
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.4773949949753393
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.5246567622632086
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.7384382888350998
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 2.900867694771106
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.6487495559042715
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.7633208044626043
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 3.7753967079776154
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "3",
+        "E_train": 0.9549170621917358,
+        "E_val": 1.159727633615663,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.4422093653478494
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.3120927546787797
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.4198762496839072
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.4655967251014277
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.5194084921273385
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.5911109107801835
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.653680542456609
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.717868213345593
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.814521487532923
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(6, 5)",
+        "E_train": 1.027085480972735,
+        "E_val": 1.229395531348833,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.6637786334989
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.6637786334989
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.6637786334989
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.6637786334989
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 2.0694008879583756
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 2.0694008879583756
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 2.0694008879583756
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 2.093340649841422
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.8519438324384037
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.829975650750552
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.819872842391898
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.7812211505360314
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.8224823684141913
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.8093903478804907
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.7824905120222279
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.6996956675353456
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.8322951939358607
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.629466615426947
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.754772176923155
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.6835950968879718
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.8550367649740633
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.6269856565805334
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.7460474857435166
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.6835950968879718
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.9367028790584933
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.6312517870824454
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.761364509811571
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.6835950968879718
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.982497851382497
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.6306871254981434
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.761364509811571
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.6835950968879718
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.9303930200525798
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.6306871254981434
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.761364509811571
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.6835950968879718
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.9010721960800492
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.6306871254981434
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.761364509811571
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.6835950968879718
+          }
+        ]
+      }
+    },
+    {
+      "fold": 4,
+      "baseline": {
+        "E_val": 4.963632175105038
+      },
+      "Exponential + L2": {
+        "setting": "0.0001",
+        "E_train": 1.3360399061270842,
+        "E_val": 1.9263909170667677,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.5145834923735837
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.5152696241891719
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.520938855751271
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.5553312210357277
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.7830161232848631
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 3.00288785538491
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.773672924793383
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.8906361768132216
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 3.902889337230288
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "5",
+        "E_train": 1.0505892776332044,
+        "E_val": 1.99876012401954,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.5590635594376312
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.4784242332635606
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.4307088878828438
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.475282905478874
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.5340338216156062
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.6267556687623936
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.6719610119946922
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.7199937277946702
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.797586806223146
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(6, 1)",
+        "E_train": 0.6537486585415195,
+        "E_val": 1.949744534513964,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.444872649659537
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.444872649659537
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.444872649659537
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.444872649659537
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 2.0112929804298156
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 2.0112929804298156
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 2.0112929804298156
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 2.0112929804298156
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.9132670771720501
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.9132670771720501
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.9132670771720501
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.784558071182964
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.840812739662944
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.8086497803303374
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.7099412656469255
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.672333578316842
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.7311148762712403
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.7507037821364364
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.7361546028821082
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.672333578316842
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.6170225361164992
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.739068184735686
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.7347262482703614
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.672333578316842
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.6185932084947687
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.746979865871167
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.7340966098213726
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.672333578316842
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.6352348099908949
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.7488548450103643
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.7340966098213726
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.672333578316842
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.700612225039563
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.7488548450103643
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.7340966098213726
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.672333578316842
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.7234375015115249
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.7488548450103643
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.7340966098213726
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.672333578316842
+          }
+        ]
+      }
+    },
+    {
+      "fold": 5,
+      "baseline": {
+        "E_val": 3.2564339451389093
+      },
+      "Exponential + L2": {
+        "setting": "0.1",
+        "E_train": 1.4121095475872534,
+        "E_val": 1.8001814997982386,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.5630469269959961
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.562761318093441
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.5615495581521386
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.5572727801482271
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.7367130119766259
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 3.0099021575095186
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.8550881170292675
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.986944138791175
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 4.000916934312343
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "5",
+        "E_train": 1.095054786043773,
+        "E_val": 1.4794800602749372,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.6446283465000366
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.4699407596770304
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.4673288312642425
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.5233816624385121
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.557607246718174
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.6029869279792883
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.6729992739582813
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.671386870379593
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.7205523514896992
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(5, 1)",
+        "E_train": 0.8956820038165901,
+        "E_val": 1.753145437029767,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.3143291750392483
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.3143291750392483
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.3143291750392483
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.3143291750392483
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 1.9812920269546939
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 1.9812920269546939
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 1.9812920269546939
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 1.9812920269546939
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.6666757911443788
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.6762798673325356
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.6842800834427945
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.6619967330353085
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.4916654641719318
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.5351835093361874
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.4843817093953047
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.6227216720236342
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.4393240883578606
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.471009565549236
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.4997480515664043
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.6227216720236342
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.4927809217266688
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.460720864949141
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.4902753058198637
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.6227216720236342
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.5336538540965234
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.5051872638071448
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.4887756183288885
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.6227216720236342
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.657078421995903
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.5051872638071448
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.4887756183288885
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.6227216720236342
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.6506633387488623
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.5051872638071448
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.4887756183288885
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.6227216720236342
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.6616528355322466
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.5051872638071448
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.4887756183288885
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.6227216720236342
+          }
+        ]
+      }
+    },
+    {
+      "fold": 6,
+      "baseline": {
+        "E_val": 4.388256983780689
+      },
+      "Exponential + L2": {
+        "setting": "0.0001",
+        "E_train": 1.4224555163573307,
+        "E_val": 1.090760778517378,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.4428250414285722
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.443181586994356
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.4484272520944603
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.503660532205147
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.7686999766276323
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 2.927344048404833
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.706072659029567
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.8290790403835295
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 3.8421552202878493
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "3",
+        "E_train": 0.9524504990798124,
+        "E_val": 1.224300110425637,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.6032713730957795
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.4809878707910653
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.5223373984507638
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.5444005848091718
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.5933918281271255
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.6424843960348146
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.6627672148220811
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.74624770581181
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.8342962306091006
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(4, 1)",
+        "E_train": 1.2586534335036572,
+        "E_val": 2.1473437103159343,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.47220469970321
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.47220469970321
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.47220469970321
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.47220469970321
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 2.0503864402672347
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 2.0503864402672347
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 2.0503864402672347
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 2.0503864402672347
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.7587272570460422
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.8003608951150418
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.7880771299206983
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.7527105510047662
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.5719061677410882
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.7002322746860046
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.6946201023387732
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.756669403200729
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.599976008054349
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.6770479264073692
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.7289558858463507
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.756669403200729
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.6326947140081844
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.7228213952790246
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.7526023628160228
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.756669403200729
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.7235366206467464
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.7221152036886305
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.7526023628160228
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.756669403200729
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.5779534777349333
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.7220465097863014
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.7526023628160228
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.756669403200729
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.6978492371728309
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.7220465097863014
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.7526023628160228
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.756669403200729
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.694559425943909
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.7220465097863014
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.7526023628160228
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.756669403200729
+          }
+        ]
+      }
+    },
+    {
+      "fold": 7,
+      "baseline": {
+        "E_val": 4.3154174900223135
+      },
+      "Exponential + L2": {
+        "setting": "0.0001",
+        "E_train": 1.4323440026445964,
+        "E_val": 1.1133359629991062,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.4828503639703463
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.483253882017983
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.4895774086620766
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.5444910692305214
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.6621668747679537
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 2.8473082836002397
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.7035740575703735
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.83586651912237
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 3.8498715534850225
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "3",
+        "E_train": 0.9830282572235319,
+        "E_val": 0.971661449640523,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.5209343779470639
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.3721426778172556
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.3939520227911353
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.450999544122521
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.482225336244954
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.5886931925642287
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.650101675113886
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.6737248417193462
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.7482462352677377
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(5, 1)",
+        "E_train": 0.9790567522461704,
+        "E_val": 1.2589319817413769,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.340991520389493
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.340991520389493
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.340991520389493
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.340991520389493
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 1.9457520554432797
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 1.9457520554432797
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 1.9457520554432797
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 1.9457520554432797
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.883240196810211
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.883240196810211
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.8052060597013007
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.7182585403501094
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.6609590448011928
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.7144853283972892
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.7788667863685603
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.7028364076745437
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.5967751837882491
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.687015112734309
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.7251169763215102
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.705649358141741
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.6228694600030533
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.6992842403029556
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.7282868527411133
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.705649358141741
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.7629829171478548
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.6758510595904812
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.7282868527411133
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.705649358141741
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.68073482537236
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.6800678637394775
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.7282868527411133
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.705649358141741
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.6879659585007054
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.6800678637394775
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.7282868527411133
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.705649358141741
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.6671547432045126
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.6800678637394775
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.7282868527411133
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.705649358141741
+          }
+        ]
+      }
+    },
+    {
+      "fold": 8,
+      "baseline": {
+        "E_val": 3.555611802150368
+      },
+      "Exponential + L2": {
+        "setting": "0.0001",
+        "E_train": 1.3772026001009516,
+        "E_val": 1.5515523759300625,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.5351792268855036
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.5361803350999927
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.5476078722875848
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.6064366763628897
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.9444640158418942
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 3.3490461771036673
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 4.205505083745679
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 4.336003499551033
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 4.349734663131839
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "3",
+        "E_train": 0.9399143140732126,
+        "E_val": 1.3200766340483738,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.6059453601116065
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.3699367260929673
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.4796066344415517
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.5371775389775006
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.5783422976437338
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.705505576395701
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.7972356539277796
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.8769551466988053
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.9859429262005919
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(8, 10)",
+        "E_train": 1.2283964265634328,
+        "E_val": 1.5366924438976428,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.7802695281017087
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.7802695281017087
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.7802695281017087
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.7802695281017087
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 2.1952065357939823
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 2.1952065357939823
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 2.1952065357939823
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 2.208767374023058
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.8804660942938582
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.8804660942938582
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.8599490639715839
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.858025310616148
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.8100487555548948
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.7871010607638649
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.755661545323759
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.7959881420870782
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.9634572454406911
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.8875675760885535
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.7480495444059678
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.7962163729467626
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.9336275370688871
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.8005062407290393
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.7482966356589824
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.7962163729467626
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 2.0322300896524412
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.8958306954028394
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.7428266416448046
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.7962163729467626
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 2.070689798405679
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.7981189069635424
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.7428266416448046
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.7962163729467626
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 2.132761411976177
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.7981189069635424
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.7428266416448046
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.7962163729467626
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 2.132761411976177
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.7981189069635424
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.7428266416448046
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.7962163729467626
+          }
+        ]
+      }
+    },
+    {
+      "fold": 9,
+      "baseline": {
+        "E_val": 3.9330530455975885
+      },
+      "Exponential + L2": {
+        "setting": "0.0001",
+        "E_train": 1.2821520180082968,
+        "E_val": 2.1393997987400195,
+        "inner_table": [
+          {
+            "setting": "0.0001",
+            "inner_mean_RMSE": 1.2823534661017688
+          },
+          {
+            "setting": "0.001",
+            "inner_mean_RMSE": 1.2848150589405334
+          },
+          {
+            "setting": "0.01",
+            "inner_mean_RMSE": 1.3083967546840845
+          },
+          {
+            "setting": "0.1",
+            "inner_mean_RMSE": 1.418800706098081
+          },
+          {
+            "setting": "1.0",
+            "inner_mean_RMSE": 1.7162808882674718
+          },
+          {
+            "setting": "10.0",
+            "inner_mean_RMSE": 2.8511081798422806
+          },
+          {
+            "setting": "100.0",
+            "inner_mean_RMSE": 3.610767546618257
+          },
+          {
+            "setting": "1000.0",
+            "inner_mean_RMSE": 3.731234208538755
+          },
+          {
+            "setting": "10000.0",
+            "inner_mean_RMSE": 3.744062445227366
+          }
+        ]
+      },
+      "kNN": {
+        "setting": "3",
+        "E_train": 0.9002133568868097,
+        "E_val": 1.5914744136640435,
+        "inner_table": [
+          {
+            "setting": "1",
+            "inner_mean_RMSE": 1.649062141273283
+          },
+          {
+            "setting": "3",
+            "inner_mean_RMSE": 1.3974123125968112
+          },
+          {
+            "setting": "5",
+            "inner_mean_RMSE": 1.5057831176967278
+          },
+          {
+            "setting": "7",
+            "inner_mean_RMSE": 1.5221655537147114
+          },
+          {
+            "setting": "9",
+            "inner_mean_RMSE": 1.5627823344609226
+          },
+          {
+            "setting": "15",
+            "inner_mean_RMSE": 1.6400202752796804
+          },
+          {
+            "setting": "21",
+            "inner_mean_RMSE": 1.6857258799604686
+          },
+          {
+            "setting": "31",
+            "inner_mean_RMSE": 1.7525256457730076
+          },
+          {
+            "setting": "51",
+            "inner_mean_RMSE": 1.8141002596128835
+          }
+        ]
+      },
+      "Tree": {
+        "setting": "(6, 5)",
+        "E_train": 1.074512991775896,
+        "E_val": 2.2335808609509327,
+        "inner_table": [
+          {
+            "setting": "(1, 1)",
+            "inner_mean_RMSE": 2.5837898673795827
+          },
+          {
+            "setting": "(1, 5)",
+            "inner_mean_RMSE": 2.5837898673795827
+          },
+          {
+            "setting": "(1, 10)",
+            "inner_mean_RMSE": 2.5837898673795827
+          },
+          {
+            "setting": "(1, 20)",
+            "inner_mean_RMSE": 2.5837898673795827
+          },
+          {
+            "setting": "(2, 1)",
+            "inner_mean_RMSE": 2.010286693125173
+          },
+          {
+            "setting": "(2, 5)",
+            "inner_mean_RMSE": 2.010286693125173
+          },
+          {
+            "setting": "(2, 10)",
+            "inner_mean_RMSE": 2.010286693125173
+          },
+          {
+            "setting": "(2, 20)",
+            "inner_mean_RMSE": 2.034216347441544
+          },
+          {
+            "setting": "(3, 1)",
+            "inner_mean_RMSE": 1.7995266978501991
+          },
+          {
+            "setting": "(3, 5)",
+            "inner_mean_RMSE": 1.7305142073578996
+          },
+          {
+            "setting": "(3, 10)",
+            "inner_mean_RMSE": 1.8200738562800656
+          },
+          {
+            "setting": "(3, 20)",
+            "inner_mean_RMSE": 1.7549576689981747
+          },
+          {
+            "setting": "(4, 1)",
+            "inner_mean_RMSE": 1.6657618625042878
+          },
+          {
+            "setting": "(4, 5)",
+            "inner_mean_RMSE": 1.5303557915833645
+          },
+          {
+            "setting": "(4, 10)",
+            "inner_mean_RMSE": 1.657687382769354
+          },
+          {
+            "setting": "(4, 20)",
+            "inner_mean_RMSE": 1.661023050443056
+          },
+          {
+            "setting": "(5, 1)",
+            "inner_mean_RMSE": 1.5486616010879921
+          },
+          {
+            "setting": "(5, 5)",
+            "inner_mean_RMSE": 1.4836497056805762
+          },
+          {
+            "setting": "(5, 10)",
+            "inner_mean_RMSE": 1.6295342886446513
+          },
+          {
+            "setting": "(5, 20)",
+            "inner_mean_RMSE": 1.661023050443056
+          },
+          {
+            "setting": "(6, 1)",
+            "inner_mean_RMSE": 1.4807053462437403
+          },
+          {
+            "setting": "(6, 5)",
+            "inner_mean_RMSE": 1.4362961492636157
+          },
+          {
+            "setting": "(6, 10)",
+            "inner_mean_RMSE": 1.6483556797181411
+          },
+          {
+            "setting": "(6, 20)",
+            "inner_mean_RMSE": 1.661023050443056
+          },
+          {
+            "setting": "(8, 1)",
+            "inner_mean_RMSE": 1.497184073944974
+          },
+          {
+            "setting": "(8, 5)",
+            "inner_mean_RMSE": 1.4536662555362594
+          },
+          {
+            "setting": "(8, 10)",
+            "inner_mean_RMSE": 1.6529072018650492
+          },
+          {
+            "setting": "(8, 20)",
+            "inner_mean_RMSE": 1.661023050443056
+          },
+          {
+            "setting": "(10, 1)",
+            "inner_mean_RMSE": 1.5509106090948115
+          },
+          {
+            "setting": "(10, 5)",
+            "inner_mean_RMSE": 1.4602507728198941
+          },
+          {
+            "setting": "(10, 10)",
+            "inner_mean_RMSE": 1.6529072018650492
+          },
+          {
+            "setting": "(10, 20)",
+            "inner_mean_RMSE": 1.661023050443056
+          },
+          {
+            "setting": "(15, 1)",
+            "inner_mean_RMSE": 1.559428012845904
+          },
+          {
+            "setting": "(15, 5)",
+            "inner_mean_RMSE": 1.4602507728198941
+          },
+          {
+            "setting": "(15, 10)",
+            "inner_mean_RMSE": 1.6529072018650492
+          },
+          {
+            "setting": "(15, 20)",
+            "inner_mean_RMSE": 1.661023050443056
+          },
+          {
+            "setting": "(20, 1)",
+            "inner_mean_RMSE": 1.559428012845904
+          },
+          {
+            "setting": "(20, 5)",
+            "inner_mean_RMSE": 1.4602507728198941
+          },
+          {
+            "setting": "(20, 10)",
+            "inner_mean_RMSE": 1.6529072018650492
+          },
+          {
+            "setting": "(20, 20)",
+            "inner_mean_RMSE": 1.661023050443056
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "CV mean RMSE": 3.9495231843673464,
+      "SD across folds": 0.5735553576354336
+    },
+    "Exponential + L2": {
+      "CV mean RMSE": 1.4452254787107888,
+      "SD across folds": 0.3838167489100919,
+      "E_train mean": 1.4001292195323707,
+      "margin over baseline (mean)": 2.5042977056565574,
+      "margin spread (SD of fold margins)": 0.681521037505127,
+      "margin over spread": 3.674571389350131,
+      "most common setting": "0.0001",
+      "settings chosen by fold": [
+        "0.01",
+        "0.1",
+        "0.0001",
+        "0.0001",
+        "0.0001",
+        "0.1",
+        "0.0001",
+        "0.0001",
+        "0.0001",
+        "0.0001"
+      ]
+    },
+    "kNN": {
+      "CV mean RMSE": 1.3149924152092418,
+      "SD across folds": 0.3047491126964997,
+      "E_train mean": 1.0094487103411784,
+      "margin over baseline (mean)": 2.634530769158104,
+      "margin spread (SD of fold margins)": 0.5610712664968986,
+      "margin over spread": 4.695536781997491,
+      "most common setting": "3",
+      "settings chosen by fold": [
+        "5",
+        "3",
+        "5",
+        "3",
+        "5",
+        "5",
+        "3",
+        "3",
+        "3",
+        "3"
+      ]
+    },
+    "Tree": {
+      "CV mean RMSE": 1.6288307973587048,
+      "SD across folds": 0.3840620319141331,
+      "E_train mean": 1.0067785022735072,
+      "margin over baseline (mean)": 2.3206923870086418,
+      "margin spread (SD of fold margins)": 0.5526829375275432,
+      "margin over spread": 4.198957900510524,
+      "most common setting": "(6, 5)",
+      "settings chosen by fold": [
+        "(6, 5)",
+        "(6, 1)",
+        "(6, 10)",
+        "(6, 5)",
+        "(6, 1)",
+        "(5, 1)",
+        "(4, 1)",
+        "(5, 1)",
+        "(8, 10)",
+        "(6, 5)"
+      ]
+    }
+  }
+}

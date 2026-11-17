@@ -1,0 +1,10 @@
+{
+  "step": "test-set mean absolute error, from the saved predictions",
+  "code_version": "sha256:8bc829f7b9338b64476dbd471dfa33a354356e77a0003b45c47eddb0c068e31a",
+  "label": "interim program, not reviewed; NOT YET APPROVED BY THE USER",
+  "predictions_file": "D:\\CoRE AI Research Visit\\human-agentic-data-analysis\\human-agentic-data-analysis\\Code\\outputs\\Auto_MPG\\core_final_predictions.csv",
+  "test_rows": 78,
+  "k_chosen": 3,
+  "mean_absolute_error_nearest_cases": 0.8097452052273449,
+  "mean_absolute_error_average_guess": 3.0179517543039336
+}

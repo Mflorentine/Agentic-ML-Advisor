@@ -1,0 +1,237 @@
+{
+  "step": "4c cross-validation round 1",
+  "code_version": "sha256:8f4859c2c13bb6e26e38f4f02e010c6e9aaca860091b7d8cda462a0ff4f9cde7",
+  "label": "interim core, not reviewed",
+  "seed": 2026,
+  "outer_parts": 10,
+  "measure": "root mean squared error, litres per 100 km",
+  "property_values_used": {
+    "property_1_output_type": "non-negative real",
+    "property_2_data_to_parameter_ratio": "ample",
+    "property_3_number_of_inputs": "few",
+    "property_4_categorical_share": "low",
+    "property_5_interpretability": "none",
+    "property_6_probabilities": "no",
+    "property_7_extrapolation": "no",
+    "property_8_expected_shape": "unknown",
+    "property_9_separability": "not applicable",
+    "property_10_class_imbalance": "not applicable",
+    "must_haves": [],
+    "sources": {
+      "property_1_output_type": "DR-06, DR-08 (user confirmed non-negative real)",
+      "property_2_3_4": "DR-17, DR-19 (input design: 8 input columns after encoding, 314 training cars)",
+      "property_5_interpretability": "DR-11 (user: no requirement; DR-10 superseded)",
+      "property_6_probabilities": "DR-12 (user: no requirement)",
+      "property_7_extrapolation": "DR-13 (user: no)",
+      "property_8_expected_shape": "DR-14 (user: unknown)",
+      "property_9_10": "DR-23 (not applicable: numeric output)"
+    }
+  },
+  "part_sizes": [
+    31,
+    31,
+    31,
+    31,
+    32,
+    31,
+    31,
+    31,
+    31,
+    34
+  ],
+  "folds": [
+    {
+      "fold": 0,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 4.060381060431128,
+        "E_val": 3.025348818572571
+      },
+      "Linear": {
+        "E_train": 1.3820700492625018,
+        "E_val": 1.1514552840712762
+      },
+      "Exponential": {
+        "E_train": 1.4180318344029232,
+        "E_val": 1.2547798360340152
+      }
+    },
+    {
+      "fold": 1,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 3.939333066174962,
+        "E_val": 4.2728313763123875
+      },
+      "Linear": {
+        "E_train": 1.3744419830671732,
+        "E_val": 1.2135899070448688
+      },
+      "Exponential": {
+        "E_train": 1.4184780181930676,
+        "E_val": 1.11577198201563
+      }
+    },
+    {
+      "fold": 2,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 3.973896893626307,
+        "E_val": 3.941963912201911
+      },
+      "Linear": {
+        "E_train": 1.3921436107344964,
+        "E_val": 1.0189561898638846
+      },
+      "Exponential": {
+        "E_train": 1.4266968031703169,
+        "E_val": 1.1933181397382582
+      }
+    },
+    {
+      "fold": 3,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 3.9844089658587083,
+        "E_val": 3.8426822947916905
+      },
+      "Linear": {
+        "E_train": 1.3822399394070466,
+        "E_val": 1.1397801016506404
+      },
+      "Exponential": {
+        "E_train": 1.4228237044527825,
+        "E_val": 1.118704103884961
+      }
+    },
+    {
+      "fold": 4,
+      "training_rows": 282,
+      "held_out_rows": 32,
+      "baseline": {
+        "E_train": 3.841376850339467,
+        "E_val": 4.963632175105038
+      },
+      "Linear": {
+        "E_train": 1.2955136973867631,
+        "E_val": 1.9011511164743238
+      },
+      "Exponential": {
+        "E_train": 1.3360390942805036,
+        "E_val": 1.9263364446626001
+      }
+    },
+    {
+      "fold": 5,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 4.040735061318592,
+        "E_val": 3.2564339451389093
+      },
+      "Linear": {
+        "E_train": 1.3585251096802702,
+        "E_val": 1.4074824541705286
+      },
+      "Exponential": {
+        "E_train": 1.378400716547824,
+        "E_val": 1.6691885195174396
+      }
+    },
+    {
+      "fold": 6,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 3.921458996000508,
+        "E_val": 4.388256983780689
+      },
+      "Linear": {
+        "E_train": 1.3715945159744072,
+        "E_val": 1.2470462933619069
+      },
+      "Exponential": {
+        "E_train": 1.4224431501439496,
+        "E_val": 1.0910388303124916
+      }
+    },
+    {
+      "fold": 7,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 3.9354794362579715,
+        "E_val": 4.3154174900223135
+      },
+      "Linear": {
+        "E_train": 1.381287358457258,
+        "E_val": 1.1655298175247444
+      },
+      "Exponential": {
+        "E_train": 1.4323293614923287,
+        "E_val": 1.1130215707630835
+      }
+    },
+    {
+      "fold": 8,
+      "training_rows": 283,
+      "held_out_rows": 31,
+      "baseline": {
+        "E_train": 4.012773683345229,
+        "E_val": 3.555611802150368
+      },
+      "Linear": {
+        "E_train": 1.3553962474384826,
+        "E_val": 1.424048621505233
+      },
+      "Exponential": {
+        "E_train": 1.3771723987406075,
+        "E_val": 1.5530999988898015
+      }
+    },
+    {
+      "fold": 9,
+      "training_rows": 280,
+      "held_out_rows": 34,
+      "baseline": {
+        "E_train": 3.9745580078457947,
+        "E_val": 3.9330530455975885
+      },
+      "Linear": {
+        "E_train": 1.2447427609586952,
+        "E_val": 2.1362392416212668
+      },
+      "Exponential": {
+        "E_train": 1.2819690939081225,
+        "E_val": 2.1398648851864124
+      }
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "CV mean RMSE": 3.9495231843673464,
+      "SD across folds": 0.5735553576354336,
+      "E_train mean": 3.9684402021198664
+    },
+    "Linear": {
+      "CV mean RMSE": 1.380527902728867,
+      "SD across folds": 0.36176211370300787,
+      "E_train mean": 1.3537955272367097,
+      "margin over baseline (mean)": 2.568995281638479,
+      "margin spread (SD of fold margins)": 0.5851146541281876,
+      "margin over spread": 4.390584415401875
+    },
+    "Exponential": {
+      "CV mean RMSE": 1.4175124311004694,
+      "SD across folds": 0.3827964610839465,
+      "E_train mean": 1.3914384175332428,
+      "margin over baseline (mean)": 2.5320107532668774,
+      "margin spread (SD of fold margins)": 0.6719244859090345,
+      "margin over spread": 3.768296596367322
+    }
+  }
+}
