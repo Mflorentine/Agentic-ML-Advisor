@@ -56,7 +56,7 @@ flowchart TB
 
 <small><b>Figure 1.</b> The parts of the workflow and how they connect. Arrows show who asks, who decides, who computes and what is recorded.</small>
 
-### The machine learning methods used
+### Book-Grounded AI Agent Decision Framework
 
 The workflow chooses among a fixed set of model types from chapters 2 and 3 of Lindholm et al. (2026): linear regression, logistic regression, Poisson and exponential generalised linear models, k-nearest neighbours and decision trees. Polynomial terms (squares and cubes of the numerical inputs) and L2 regularisation can be added to the regression models where the book allows them, giving fourteen configurations in all. Methods from other chapters are not used, and which inputs a model receives is agreed with the user beforehand. The output decides the families (Lindholm et al., 2026). In five of the six analyses the output is a category, so linear regression, the Poisson model and the exponential generalised linear model were excluded, and only logistic regression, k-nearest neighbours and decision trees remained. In Auto MPG the output is a positive amount, so the logistic and Poisson models were excluded and eight configurations remained. Two rules remove logistic regression without regularisation when its parameters would not be well defined: when a straight boundary separates the training classes perfectly, and when some inputs exactly duplicate others (Lindholm et al., 2026). The second is our reading of the book. These rules removed the unregularised logistic models in Mobile Price, Sepsis and Student Dropout. In Student Dropout the user also marked class probabilities as essential, which left only the logistic configurations.
 
@@ -64,7 +64,7 @@ The remaining configurations are ranked before any model is fitted, from propert
 
 The recommendation is the simplest of the models whose cross-validated score cannot be told apart from the best, following the book's advice not to settle on a complicated model where a simpler one would do (Lindholm et al., 2026). "Cannot be told apart" means a difference smaller than half its variation across the folds, a threshold that is ours. Each recommendation is reported with a selection confidence, which is ours and computed from three factors. C1, the margin over the runner-up, is clear if the recommended model is ahead by at least the variation of the difference across the folds, moderate if by at least half of it, and none otherwise. C2, the margin over the baseline, is clear if it is at least that variation. C3 is whether more training data was still lowering the validation error between 80 % and 100 % of the training data, and is limited if it was. Confidence is High when C1 and C2 are clear and C3 is adequate, Low when C1 is none or C2 is not clear, and Medium otherwise.
 
-### How it relates to smlbook.org
+### Development of an Agentic AI Workspace
 
 The method rests on chapters 2, 3, 4 and 13 of Lindholm et al. (2026), and Part I of the guide summarises them with page references. The practice that decides a result is the book's (Lindholm et al., 2026): the problem, the metric, a baseline and the test data are fixed before any model is fitted; models are compared by k-fold cross-validation on the training data; the test data are held out and used once, at the end; the work starts simple and adds complexity only when the errors call for it; and when one outcome is rare, precision, recall and the precision–recall curve are used rather than the misclassification rate. Every rule in the guide is tagged as the book's advice ([B]), a fact from the book turned into advice ([B→I]), or our own ([I]), and the decision records copy the tags. Where the evidence suggests a method outside the four chapters might help, it is recorded as a flag and never claimed to be better. Student Dropout flagged bagging, random forests and boosting, neural networks, and kernel methods; Sepsis flagged survival analysis, which the book does not cover.
 
@@ -72,7 +72,7 @@ Several parts are ours, and are marked as ours wherever they are used: the step-
 
 The guide's method changed nine times while the analyses were worked through, and each change is recorded in its version note. Six were made before 10 November 2026: the rule for diagnosis errors on imbalanced classes (18 October); the stratified folds, the test uncertainty and the underfitting check against the required error (27 October); backward elimination (28 October); and the F2 reference (30 October). Three of the six were prompted by Sepsis. Three more were made on 10 November: the diagnosis errors combine two rules, one for an error measure that is itself an error function and one for an imbalanced class, as combined in the merge of the two branches; logistic regression falls under the rule for unregularised fits; and the F2 threshold is tuned inside each configuration's cross-validation. The original Heart Failure analysis ran before any of these changes. Sepsis ran under the first four, and its first diagnosis pass was re-run after the underfitting change. Mobile Price ran under the first four from its start, and the fifth and sixth were made after it finished. The Heart Failure rerun ran under the first six. Student Dropout and Auto MPG ran under the rules as amended on 10 November: Student Dropout applied the amended rule for logistic regression and tuned its threshold inside each configuration, and Auto MPG, a regression, uses its error measure as it is.
 
-### Training and validation methods
+### Evaluation of Workspace Effectiveness
 
 Each analysis divided its data once into training data and test data, before any model was fitted (Lindholm et al., 2026), and held back a fifth of the rows as test data. The rows were shuffled first, as the book advises. Every split except Auto MPG's was also stratified, so that both parts keep the same share of each outcome; stratifying the split is our choice. Auto MPG is a regression with no classes, so its split was not stratified; instead, rows with the same car name were kept together on one side of the split, so that no car model appears on both sides. The Heart Failure rerun made no new split: at the user's choice, it reused the original test set, so the two versions are compared on exactly the same 60 patients. The test data were locked, and nothing in the exploration or the model choice read them. All six analyses used seed 2026 for the split and the folds.
 
@@ -97,7 +97,7 @@ Only after the user had approved the chosen model was it refitted on all the tra
 
 Each sub-section reports what came out of the method described under the same heading in Methods.
 
-### The machine learning methods used
+### Book-Grounded AI Agent Decision Framework
 
 Table 2 gives, for each analysis, the recommended configuration, its single evaluation on the test data, the baseline on the same test data, the fold standard deviation (SD) as its uncertainty, and whether the analysis's own success criterion was met. The criterion was met in four analyses: Sepsis, Mobile Price, the Heart Failure rerun and Student Dropout. It was not met in the original Heart Failure analysis, where the tree's test F2 was 0.6780 against the 0.7903 required, or in Auto MPG, where the test error was 1.08 litres per 100 km against the 1-litre limit. Auto MPG's second part, a clear margin over the average guess, was met.
 
@@ -116,7 +116,7 @@ The recommendation rule decided four analyses: the decision tree in the original
 | Student Dropout | logistic regression with L2, λ = 10⁻²; threshold 0.20 | F2 | 0.8350 (0.0323) | 0.7026 (flag everyone, on the test rows); the most common class scores 0 | 885 (284 dropouts) | met (0.8350, above 0.7026) | Low (none, clear, adequate) |
 | Auto MPG | k-nearest neighbours, 3 neighbours | root mean squared error (litres per 100 km) | 1.08 (0.34) | 3.66 (average guess, on the same cars) | 78 (no classes) | not met: part 1 (at most 1 litre) not met; part 2 (margin 2.58 against spread 0.56) met | Low (none, clear, adequate) |
 
-### How it relates to smlbook.org
+### Development of an Agentic AI Workspace
 
 Each rule applied in the Decision Records is tagged with its source: the book's advice ([B]), a book fact turned into advice ([B→I]), or our own inference or threshold ([I]). Table 3 counts each row of a record's table of rules applied once, under one tag, in this order of precedence: a rule not in the guide (UNLISTED), then [B→I], then [B], then [I]. Records superseded in full are not counted, and neither are the diagnosis records, which have no such table; a record superseded only in part stays in force.
 
@@ -136,7 +136,7 @@ The prior ranking's expected order was written down before any model was fitted,
 
 The recommended configuration had grounding in book facts turned into advice ([B→I]) in three analyses: two entries in Sepsis, and one each in the two Heart Failure analyses, all about wanting an inspectable model or needing class probabilities or a tuned threshold. In the other three, no entry applied to the recommended configuration, and its prior score was 0. Six rules are not in the guide (UNLISTED), all in the first four analyses. The 22 untagged rows record that a rule had nothing to act on ('n/a'), take a value from metadata ('M'), or cite the guide or the working contract without a tag.
 
-### Training and validation methods
+### Evaluation of Workspace Effectiveness
 
 The training and test rows were 239 and 60 in both Heart Failure analyses (77 and 19 deaths), 31,270 and 7,818 in Sepsis (984 and 246 with sepsis), 1,600 and 400 in Mobile Price (400 and 100 in each price band), 3,539 and 885 in Student Dropout (1,137 and 284 dropouts), and 314 and 78 cars in Auto MPG. The spread of the deciding metric across the ten outer folds is the uncertainty in Table 2. For the analyses with a threshold, Table 4 also gives the spread of the nested cross-validation F2 beside its result.
 
